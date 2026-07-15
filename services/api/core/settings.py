@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'debug_toolbar',
     'channels',
+    'drf_spectacular',
 
     # my apps
     'apps.accounts',
@@ -100,6 +101,13 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Campus & Clubs API",
+    "DESCRIPTION": "Campus & Clubs Backend API",
+    "VERSION": "1.0.0",
 }
 
 SIMPLE_JWT = {

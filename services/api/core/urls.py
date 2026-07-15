@@ -19,6 +19,11 @@ from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +35,13 @@ urlpatterns = [
     path('api/v1/posts/', include('apps.posts.urls')),
     path('api/v1/connections/', include('apps.connections.urls')),
     path('api/v1/notifications/', include('apps.notifications.urls')),
+
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="docs",
+    ),
 ]
 
 if settings.DEBUG:
