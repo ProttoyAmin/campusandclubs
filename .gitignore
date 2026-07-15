@@ -1,0 +1,5 @@
+services/api/.env.local
+services/api/requirements.txt
+services/api/FEED_ALGORITHM.md
+services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
+services/api/db.sqlite3
