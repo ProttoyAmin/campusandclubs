@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count, Q, Prefetch
-from djoser.views import UserViewSet
+from django.db.models import Count, Q
 from rest_framework import status, viewsets, permissions
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework.response import Response

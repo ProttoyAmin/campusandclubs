@@ -3,3 +3,33 @@ services/api/requirements.txt
 services/api/FEED_ALGORITHM.md
 services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
 services/api/db.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# Django
+media/
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

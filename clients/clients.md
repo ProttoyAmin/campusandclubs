@@ -1,4 +1,4 @@
-clients:
+clients/
     web/
     mobile/
     android?/

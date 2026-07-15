@@ -22,7 +22,7 @@ urlpatterns = [
     # User lookup
     path("auth/users/user/<str:username>/", views.get_user_byUsername, name="user_details"),
     path('auth/all/', views.get_users, name="all_users"),
-    path('auth/<int:user_id>/all/', views.CompleteUserInfoView.as_view(), name="all_users_by_id"),
+    path('auth/<uuid:user_id>/all/', views.CompleteUserInfoView.as_view(), name="all_users_by_id"),
     
     # Current user endpoints
     path('auth/me/', views.get_current_user, name='current_user'),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('auth/me/email-preference/', views.manage_email_preference, name='email_preference'),
     
     # User profiles
-    path('auth/<int:user_id>/', views.get_user_profile, name='user_profile'),
+    path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
     path('auth/<int:user_id>/clubs/', views.get_user_clubs, name='user_clubs'),
     path('auth/<int:user_id>/posts/', views.get_user_posts, name='user_posts'),
     path('auth/<int:user_id>/activity/', views.get_user_activity, name='user_activity'),
