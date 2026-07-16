@@ -1,41 +1,42 @@
+# Specific files
 services/api/.env.local
+services/api/db.sqlite3
 services/api/requirements.txt
 services/api/FEED_ALGORITHM.md
 services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
-services/api/db.sqlite3
 
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 *.sqlite3
 
 # Virtual environments
 .venv/
 venv/
+env/
+ENV/
 
 # Environment variables
 .env
 .env.*
+*.local
 
 # Django
 media/
 staticfiles/
 
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Python cache
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+public/
+.pnp
+.pnp.js
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -43,19 +44,24 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Python cache and testing
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
 
-# Editor directories and files
+# IDE / Editor
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-public/
+
+# OS
+.DS_Store
+Thumbs.db
