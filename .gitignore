@@ -1,37 +1,67 @@
+# Specific files
 services/api/.env.local
+services/api/db.sqlite3
 services/api/requirements.txt
 services/api/FEED_ALGORITHM.md
 services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
-services/api/db.sqlite3
 
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 *.sqlite3
 
 # Virtual environments
 .venv/
 venv/
+env/
+ENV/
 
 # Environment variables
 .env
 .env.*
+*.local
 
 # Django
 media/
 staticfiles/
 
-# IDE
-.vscode/
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+public/
+.pnp
+.pnp.js
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Python cache and testing
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
+
+# IDE / Editor
+.vscode/*
+!.vscode/extensions.json
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Python cache
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-node_modules
-*.log
