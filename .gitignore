@@ -31,7 +31,6 @@ staticfiles/
 node_modules/
 dist/
 dist-ssr/
-public/
 .pnp
 .pnp.js
 

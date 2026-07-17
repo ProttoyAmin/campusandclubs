@@ -1,0 +1,1 @@
+export const PORT = import.meta.env.VITE_WEB_PORT as number

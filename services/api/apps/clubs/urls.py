@@ -1,26 +1,36 @@
 # apps/clubs/urls.py
 from django.urls import path
 from . import views, views_clubs_post_views, views_members_views, views_event_views
+from apps.clubs.__views import ClubListCreateView
 
 app_name = 'clubs'
 
 urlpatterns = [
     # ==================== CLUB MANAGEMENT ====================
-    path('', views.list_clubs, name='list_clubs'),    # ---- checked
+#     path('', views.list_clubs, name='list_clubs'),    # ---- checked
+    path('', ClubListCreateView.as_view(), name='list_clubs'),    # ---- checked
+    path('<uuid:pk>/', views.club_info, name='club_info'),    # 
+
+
+
+
+
+
+
+
     path('recommended/', views.recommended_clubs, name='recommended_clubs'),  # NEW
     path('test/manager/', views.SuperuserOnlyStrictTestView.as_view(),
          name='manager_only_test'),
     path('create/', views.create_club, name='create_club'),    # ---- checked
-    path('<int:pk>/', views.club_info, name='club_info'),    # ---- checked
-    path('<int:pk>/join/', views.join_club,
+    path('<uuid:pk>/join/', views.join_club,
          name='join_club'),    # ---- checked
-    path('<int:pk>/leave/', views.leave_club,
+    path('<uuid:pk>/leave/', views.leave_club,
          name='leave_club'),    # ---- checked
-    path('<int:pk>/stats/', views.club_stats, name='club_stats'),  # NEW
-    path('<int:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
+    path('<uuid:pk>/stats/', views.club_stats, name='club_stats'),  # NEW
+    path('<uuid:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
 
     # ==================== MEMBER MANAGEMENT ====================
-    path('<int:pk>/members/', views_members_views.list_members,
+    path('<uuid:pk>/members/', views_members_views.list_members,
          name='list_members'),    # ---- checked
     path('<int:pk>/members/search/', views_members_views.search_members,
          name='search_members'),  # NEW
@@ -63,7 +73,7 @@ urlpatterns = [
 
 
     # ==================== EVENT MANAGEMENT ====================
-    path('<int:pk>/events/', views_event_views.list_events, name='list_events'),
+    path('<uuid:pk>/events/', views_event_views.list_events, name='list_events'),
     path('<int:pk>/events/public/', views_event_views.public_club_events,
          name='public_club_events'),  # NEW
     path('<int:pk>/events/my/', views_event_views.user_events,
@@ -84,7 +94,7 @@ urlpatterns = [
 #          name='upcoming_events'),  # NEW
 #     path('<int:pk>/events/past/', views_event_views.past_events,
 #          name='past_events'),  # NEW
-     path('<int:pk>/posts/', views_clubs_post_views.list_posts, name='list_posts'),
+     path('<uuid:pk>/posts/', views_clubs_post_views.list_posts, name='list_posts'),
 
     # ==================== CLUB SETTINGS ====================
 #     path('<int:pk>/settings/', views.club_settings, name='club_settings'),  # NEW

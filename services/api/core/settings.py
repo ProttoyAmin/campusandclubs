@@ -81,7 +81,7 @@ INSTALLED_APPS = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your React/Next.js dev server
+    "http://localhost:4000",  # Your React/Next.js dev server
     "http://localhost:5173",  # Vite default port
     "http://127.0.0.1:3000",
     # Add your production domain here

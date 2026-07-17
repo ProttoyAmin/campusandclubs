@@ -33,20 +33,20 @@ urlpatterns = [
     
     # User profiles
     path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
-    path('auth/<int:user_id>/clubs/', views.get_user_clubs, name='user_clubs'),
-    path('auth/<int:user_id>/posts/', views.get_user_posts, name='user_posts'),
-    path('auth/<int:user_id>/activity/', views.get_user_activity, name='user_activity'),
+    path('auth/<uuid:user_id>/clubs/', views.get_user_clubs, name='user_clubs'),
+    path('auth/<uuid:user_id>/posts/', views.get_user_posts, name='user_posts'),
+    path('auth/<uuid:user_id>/activity/', views.get_user_activity, name='user_activity'),
     
     # User roles and permissions
-    path('auth/<int:user_id>/roles/', views.get_all_user_roles, name='user_all_roles'),
-    path('auth/<int:user_id>/roles/club/<int:club_id>/', views.get_user_roles_in_club, name='user_club_roles'),
-    path('clubs/<int:club_id>/users/<int:user_id>/assign-role/', views.assign_role_to_user, name='assign_role'),
-    path('clubs/<int:club_id>/users/<int:user_id>/remove-role/', views.remove_role_from_user, name='remove_role'),
-    path('clubs/<int:club_id>/users/<int:user_id>/check-permission/<str:permission>/', 
+    path('auth/<uuid:user_id>/roles/', views.get_all_user_roles, name='user_all_roles'),
+    path('auth/<uuid:user_id>/roles/club/<uuid:club_id>/', views.get_user_roles_in_club, name='user_club_roles'),
+    path('clubs/<uuid:club_id>/users/<uuid:user_id>/assign-role/', views.assign_role_to_user, name='assign_role'),
+    path('clubs/<uuid:club_id>/users/<uuid:user_id>/remove-role/', views.remove_role_from_user, name='remove_role'),
+    path('clubs/<uuid:club_id>/users/<uuid:user_id>/check-permission/<str:permission>/', 
          views.check_user_permission, name='check_permission'),
     
     # Club role management
-    path('clubs/<int:club_id>/roles/<str:role_name>/users/', views.get_users_with_role, name='users_with_role'),
+    path('clubs/<uuid:club_id>/roles/<str:role_name>/users/', views.get_users_with_role, name='users_with_role'),
     
     # Search
     path('search/', views.search_users, name='search_users'),
