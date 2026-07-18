@@ -95,6 +95,23 @@ CORS_ALLOW_CREDENTIALS = True  # Important for cookies
 
 AUTH_USER_MODEL = "accounts.User"
 
+
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
+
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -130,12 +147,12 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '/username-reset/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
-    'TOKEN_MODEL': None,  # We are using JWT instead of default token model
+    # 'TOKEN_MODEL': None,  # We are using JWT instead of default token model
     'SERIALIZERS': {
-        'user_create_password_retype': 'apps.accounts.serializers.RegisterSerializer',
-        'user_create': 'apps.accounts.serializers.RegisterSerializer',
-        'user': 'apps.accounts.serializers.UserSerializer',
-        'current_user': 'apps.accounts.serializers.RegisterSerializer',
+        'user_create_password_retype': 'apps.accounts.serialize.auth.register.RegisterSerializer',
+        'user_create': 'apps.accounts.serialize.auth.register.RegisterSerializer',
+        'user': 'apps.accounts.serialize.user.profile.UserSerializer',
+        'current_user': 'apps.accounts.serialize.user.profile.UserSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
     'EMAIL': {

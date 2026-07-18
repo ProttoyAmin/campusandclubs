@@ -8,7 +8,7 @@ const Profile = React.lazy(
 
 export const userRoutes = [
     {
-        path: routes.user.private.profile.username,
+        path: routes.user.public.profile,
         element: <Profile />
     }
 ]

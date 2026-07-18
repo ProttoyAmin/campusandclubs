@@ -1,5 +1,5 @@
 from .club.viewsets import *
-from .club.generic_views import ClubListCreateView
+from .club.generics import ClubListCreateView
 
 __all__ = [
     'ClubListCreateView',

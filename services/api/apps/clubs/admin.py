@@ -1,15 +1,15 @@
 from django.contrib import admin
-from . import models
+from apps.clubs.models import Club, Role, Membership, Invite, Event
 
 
 class RoleInline(admin.TabularInline):
-    model = models.Role
+    model = Role
     extra = 0
     fields = ('name', 'permissions', 'is_default', 'color')
 
 
 class MembershipInline(admin.TabularInline):
-    model = models.Membership
+    model = Membership
     extra = 0
     raw_id_fields = ('user',)
 
@@ -18,12 +18,12 @@ class MembershipInline(admin.TabularInline):
             # Get the club from the parent object
             if request.resolver_match.kwargs.get('object_id'):
                 club_id = request.resolver_match.kwargs.get('object_id')
-                kwargs["queryset"] = models.Role.objects.filter(
+                kwargs["queryset"] = Role.objects.filter(
                     club_id=club_id)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-@admin.register(models.Club)
+@admin.register(Club)
 class ClubAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'origin',
                     'is_public', 'is_active', 'created_at')
@@ -37,7 +37,7 @@ class ClubAdmin(admin.ModelAdmin):
 
 
 class RoleInline(admin.TabularInline):
-    model = models.Role
+    model = Role
     extra = 0
     fields = ('name', 'can_manage_members', 'can_manage_posts',
               'can_manage_events', 'can_manage_settings', 'is_default', 'color')
@@ -45,13 +45,13 @@ class RoleInline(admin.TabularInline):
 
 class MembershipRoleInline(admin.TabularInline):
     """Inline for roles within membership"""
-    model = models.Membership.roles.through  # Through table for ManyToMany
+    model = Membership.roles.through  # Through table for ManyToMany
     extra = 1
     verbose_name = "Role"
     verbose_name_plural = "Roles"
 
 
-@admin.register(models.Membership)
+@admin.register(Membership)
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'club', 'get_role_names',
                     'primary_role_name', 'joined_at')
@@ -98,17 +98,17 @@ class MembershipAdmin(admin.ModelAdmin):
                 club_id = request._obj_.club_id
             elif request.resolver_match.kwargs.get('object_id'):
                 try:
-                    membership = models.Membership.objects.get(
+                    membership = Membership.objects.get(
                         pk=request.resolver_match.kwargs.get('object_id'))
                     club_id = membership.club_id
-                except models.Membership.DoesNotExist:
+                except Membership.DoesNotExist:
                     club_id = None
 
             if club_id:
-                kwargs["queryset"] = models.Role.objects.filter(
+                kwargs["queryset"] = Role.objects.filter(
                     club_id=club_id)
             else:
-                kwargs["queryset"] = models.Role.objects.none()
+                kwargs["queryset"] = Role.objects.none()
                 kwargs["help_text"] = "Please select a club first, then save and edit to assign roles."
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
@@ -124,17 +124,17 @@ class MembershipAdmin(admin.ModelAdmin):
                 club_id = request._obj_.club_id
             elif request.resolver_match.kwargs.get('object_id'):
                 try:
-                    membership = models.Membership.objects.get(
+                    membership = Membership.objects.get(
                         pk=request.resolver_match.kwargs.get('object_id'))
                     club_id = membership.club_id
-                except models.Membership.DoesNotExist:
+                except Membership.DoesNotExist:
                     club_id = None
 
             if club_id:
-                kwargs["queryset"] = models.Role.objects.filter(
+                kwargs["queryset"] = Role.objects.filter(
                     club_id=club_id)
             else:
-                kwargs["queryset"] = models.Role.objects.none()
+                kwargs["queryset"] = Role.objects.none()
                 kwargs["help_text"] = "Please select a club first, then save and edit to assign primary role."
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -145,7 +145,7 @@ class MembershipAdmin(admin.ModelAdmin):
         return form
 
 
-@admin.register(models.Role)
+@admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'club', 'user_count', 'is_default')
     list_filter = ('club', 'is_default')
@@ -175,27 +175,27 @@ class RoleAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related('club')
 
 
-@admin.register(models.ClubPost)
-class ClubPostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'club', 'get_author', 'get_title', 'created_at')
-    list_filter = ('club', 'created_at')
-    search_fields = ('club__name', 'post__author__username', 'post__title')
-    raw_id_fields = ('post', 'club')
+# @admin.register(ClubPost)
+# class ClubPostAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'club', 'get_author', 'get_title', 'created_at')
+#     list_filter = ('club', 'created_at')
+#     search_fields = ('club__name', 'post__author__username', 'post__title')
+#     raw_id_fields = ('post', 'club')
 
-    def get_author(self, obj):
-        return obj.author.username if obj.author and hasattr(obj.author, 'username') else 'No author'
-    get_author.short_description = 'Author'
+#     def get_author(self, obj):
+#         return obj.author.username if obj.author and hasattr(obj.author, 'username') else 'No author'
+#     get_author.short_description = 'Author'
 
-    def get_title(self, obj):
-        return obj.title[:50] + '...' if obj.title and len(obj.title) > 50 else obj.title or 'No title'
-    get_title.short_description = 'Title'
+#     def get_title(self, obj):
+#         return obj.title[:50] + '...' if obj.title and len(obj.title) > 50 else obj.title or 'No title'
+#     get_title.short_description = 'Title'
 
-    def get_queryset(self, request):
-        # Optimize queries
-        return super().get_queryset(request).select_related('post', 'club', 'post__author')
+#     def get_queryset(self, request):
+#         # Optimize queries
+#         return super().get_queryset(request).select_related('post', 'club', 'post__author')
 
 
-@admin.register(models.Event)
+@admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'creator', 'club', 'start_time',
                     'end_time', 'max_participants', 'participant_count')
@@ -225,7 +225,7 @@ class EventAdmin(admin.ModelAdmin):
     participant_count.short_description = 'Participants'
 
 
-@admin.register(models.Invite)
+@admin.register(Invite)
 class InviteAdmin(admin.ModelAdmin):
     list_display = ('id', 'invite_type', 'inviter', 'invitee',
                     'club', 'event', 'status', 'created_at', 'expires_at')

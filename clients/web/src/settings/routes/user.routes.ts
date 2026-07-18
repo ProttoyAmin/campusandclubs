@@ -5,5 +5,8 @@ export const userRoutes = {
             username: '/@/u/:username',
         },
         settings: '@/u/:username/settings',
-    }
+    },
+    public: {
+        profile: '/@/u/:username',
+    },
 } as const;

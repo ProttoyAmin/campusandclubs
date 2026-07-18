@@ -124,10 +124,6 @@ class User(AbstractUser):
         """Get all clubs the user is a member of"""
         return self.clubs.all()
 
-    @property
-    def club_count(self):
-        """Count of clubs user has joined"""
-        return self.clubs.count()
 
     @property
     def owned_clubs(self):
@@ -290,44 +286,44 @@ class User(AbstractUser):
         from apps.connections.models import Block
         return Block.is_blocked(user, self)
 
-    def can_view_profile(self, viewer):
-        """
-        Check if viewer can view this user's profile
-        Rules:
-        1. Own profile - always yes
-        2. Blocked - no
-        3. Public profile - yes
-        4. Private profile + follower - yes
-        5. Private profile + not follower - no
-        """
-        # User can always view their own profile
-        if viewer == self:
-            return True
+    # def can_view_profile(self, viewer) -> bool:
+    #     """
+    #     Check if viewer can view this user's profile
+    #     Rules:
+    #     1. Own profile - always yes
+    #     2. Blocked - no
+    #     3. Public profile - yes
+    #     4. Private profile + follower - yes
+    #     5. Private profile + not follower - no
+    #     """
+    #     # User can always view their own profile
+    #     if viewer == self:
+    #         return True
 
-        # Handle anonymous users
-        if not isinstance(viewer, User) or not viewer.is_authenticated:
-            # Anonymous users can only view public profiles
-            return not self.is_private
+    #     # Handle anonymous users
+    #     if not isinstance(viewer, User) or not viewer.is_authenticated:
+    #         # Anonymous users can only view public profiles
+    #         return not self.is_private
 
-        # Check if blocked
-        from apps.connections.models import Block
-        if Block.has_blocked_each_other(self, viewer):
-            return False
+    #     # Check if blocked
+    #     from apps.connections.models import Block
+    #     if Block.has_blocked_each_other(self, viewer):
+    #         return False
 
-        # Public profiles are visible to all
-        if not self.is_private:
-            return True
+    #     # Public profiles are visible to all
+    #     if not self.is_private:
+    #         return True
 
-        # Private profiles only visible to accepted followers
-        from apps.connections.models import Follow
-        return Follow.is_following(viewer, self)
+    #     # Private profiles only visible to accepted followers
+    #     from apps.connections.models import Follow
+    #     return Follow.is_following(viewer, self)
 
-    def can_view_posts(self, viewer):
-        """
-        Check if viewer can view this user's posts
-        Same logic as profile viewing
-        """
-        return self.can_view_profile(viewer)
+    # def can_view_posts(self, viewer):
+    #     """
+    #     Check if viewer can view this user's posts
+    #     Same logic as profile viewing
+    #     """
+    #     return self.can_view_profile(viewer)
 
     # ==================== POST RELATED PROPERTIES ====================
 

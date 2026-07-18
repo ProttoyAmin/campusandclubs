@@ -773,7 +773,7 @@ def recommended_clubs(request):
     - Popular clubs in user's location
     - Clubs related to user's interests (if available)
     """
-    from apps.accounts.serializers import UserProfileSerializer
+    from apps.accounts.serialize.user import UserProfileSerializer
     user = request.user
 
     # Base query for active clubs

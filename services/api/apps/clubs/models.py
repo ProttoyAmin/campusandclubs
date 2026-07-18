@@ -68,7 +68,7 @@ class Club(models.Model):
         if not self.slug:
             from django.utils.text import slugify
             base_slug = slugify(self.name)
-            self.slug = f"{base_slug}{self.origin.code if self.origin else "global"}".lower()
+            self.slug = f"{self.origin.code if self.origin else 'global'}-{base_slug}".lower()
 
         super().save(*args, **kwargs)
 

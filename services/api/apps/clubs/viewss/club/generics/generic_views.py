@@ -65,7 +65,7 @@ class ClubListCreateView(generics.ListCreateAPIView):
 
         clubs = clubs.distinct().annotate(
             member_count=Count('members', distinct=True),
-            post_count=Count('club_posts', distinct=True),
+            # post_count=Count('club.posts', distinct=True),
             event_count=Count('events', distinct=True),
         ).prefetch_related(
             Prefetch(
@@ -120,7 +120,7 @@ class ClubListCreateView(generics.ListCreateAPIView):
 
         club = Club.objects.annotate(
             member_count=Count('members', distinct=True),
-            post_count=Count('club_posts', distinct=True),
+            # post_count=Count('club_posts', distinct=True),
             event_count=Count('events', distinct=True),
         ).prefetch_related(
             Prefetch(

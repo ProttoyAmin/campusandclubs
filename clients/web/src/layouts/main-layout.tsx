@@ -16,10 +16,9 @@ export type MainLayoutContext = {
 
 
 const MainLayout: React.FC = () => {
-    const [user, setUser] = React.useState({ name: "Alex", role: "Admin" });
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Outlet context={{user, setUser}}/>
+      <Outlet />
     </Suspense>
   );
 };

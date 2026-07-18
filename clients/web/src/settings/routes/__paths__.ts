@@ -2,21 +2,26 @@ import { routes } from "./__main__";
 import { generateRouteFromPath } from "./utils";
 
 export const paths = {
+
+
   private: {
+
     user: {
-      private: {
-        me: routes.user.private.me,
-        profile: (username: string) =>
-          generateRouteFromPath(routes.user.private.profile.username, {
-            username,
-          }),
-        settings: (username: string) =>
-          generateRouteFromPath(routes.user.private.settings, {
-            username,
-          }),
-      },
+      me: routes.user.private.me,
+      profile: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.username, {
+          username,
+        }),
+      settings: (username: string) =>
+        generateRouteFromPath(routes.user.private.settings, {
+          username,
+        }),
     },
+    
   },
+
+
+  
   public: {
     home: routes.home,
     auth: {
