@@ -18,7 +18,11 @@ from apps.accounts.view.user.common import (
     get_user_by_username,
     get_users,
     get_current_user,
-    get_user_activity
+    get_user_activity,
+    get_user_clubs,
+    UserRetrieveUpdateDestroyView,
+    UserListCreateView
+    
 )
 
 app_name = 'accounts'
@@ -39,8 +43,8 @@ urlpatterns = [
     path("auth/validate/", ValidateUserTypeView.as_view(), name="validate_type"),
     
     # # User lookup
-    path("auth/users/user/<str:username>/", get_user_by_username, name="user_details_by_username"),
-    path('auth/all/', get_users, name="all_users"),
+    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(), name="user_details_by_username"),
+    path('auth/all/', UserListCreateView.as_view(), name="all_users"),
     path('auth/<uuid:user_id>/all/', CompleteUserInfoView.as_view(), name="all_users_by_id"),
     
     # # Current user endpoints
@@ -52,7 +56,7 @@ urlpatterns = [
     
     # # User profiles
     # path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
-    # path('auth/<uuid:user_id>/clubs/', views.get_user_clubs, name='user_clubs'),
+    path('auth/users/<uuid:user_id>/clubs/', get_user_clubs, name='user_clubs'),
     # path('auth/<uuid:user_id>/posts/', views.get_user_posts, name='user_posts'),
     path('auth/users/<uuid:user_id>/activity/', get_user_activity, name='user_activity'),
     

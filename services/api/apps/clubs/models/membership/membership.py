@@ -1,4 +1,3 @@
-from typing import Any
 from django.db import models
 from django.conf import settings
 
@@ -27,6 +26,15 @@ class Membership(models.Model):
         blank=True,
         help_text="User's roles in the club"
     )
+
+    application = models.OneToOneField(
+        "clubs.MembershipApplication",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="membership",
+    )
+
     joined_at = models.DateTimeField(auto_now_add=True)
     # Add a primary field to mark which role is primary/display
     primary_role = models.ForeignKey(
@@ -44,7 +52,7 @@ class Membership(models.Model):
             models.Index(fields=['user', 'club']),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         role_names = ", ".join([role.name for role in self.roles.all()])
         return f"{self.user.username} in {self.club.name} ({role_names})"
 

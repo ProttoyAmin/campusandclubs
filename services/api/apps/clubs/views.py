@@ -2,6 +2,7 @@
 from rest_framework import permissions, response, status, generics
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework import parsers
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from django.db.models import Count, Q, Prefetch, Exists, OuterRef
 from django.shortcuts import get_object_or_404
@@ -37,7 +38,7 @@ class SuperuserOnlyStrictTestView(APIView):
     permission_classes = [permissions.IsAuthenticated,
                           club_permissions.IsSuperUserOnly]
 
-    def get(self, request):
+    def get(self, request: Request):
         return response.Response({
             "status": "Success",
             "message": f"Welcome, **STRICT SUPERUSER** {request.user.username}! Staff users are denied."

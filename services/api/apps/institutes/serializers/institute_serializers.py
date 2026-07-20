@@ -13,7 +13,7 @@ from djoser.serializers import UserCreateSerializer
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from apps.institutes.models import Institute
-from . import models
+
 
 
 class InstituteSerializer(serializers.ModelSerializer):
@@ -135,7 +135,7 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
 
     def get_email_domains(self, obj):
         """Get all active email domains associated with the institute"""
-        domains = obj.get_active_email_domains()
+        domains = obj.get_active_email_domains
         return [{
                 domain.domain_type: domain.domain
                 for domain in domains}]

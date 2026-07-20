@@ -182,11 +182,11 @@ def get_user_clubs(request, user_id) -> Response:
         context={'request': request}
     )
     
-    # serializer = ClubListSerializer(
-    #     clubs,
-    #     many=True,
-    #     context={'request': request}
-    # )
+    serializer = ClubListSerializer(
+        clubs,
+        many=True,
+        context={'request': request}
+    )
 
     return Response({
         'user_id': user.id,

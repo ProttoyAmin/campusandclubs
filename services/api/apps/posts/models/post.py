@@ -1,32 +1,14 @@
-# apps/posts/models.py
+
+import uuid
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
 
-from django.conf import settings
-
-import os, uuid
-
-
-def post_image_upload_path(instance, filename):
-    """Generate upload path for post images"""
-    ext = filename.split('.')[-1]
-    # Handle both Post and PostMedia instances
-    post_id = instance.id if hasattr(instance, 'post') and instance.post is None else (
-        instance.post.id if hasattr(instance, 'post') else instance.id)
-    filename = f"{post_id}_image_{instance.order if hasattr(instance, 'order') else 0}.{ext}"
-    return os.path.join('posts', 'images', filename)
-
-
-def post_video_upload_path(instance, filename):
-    """Generate upload path for post videos"""
-    ext = filename.split('.')[-1]
-    # Handle both Post and PostMedia instances
-    post_id = instance.id if hasattr(instance, 'post') and instance.post is None else (
-        instance.post.id if hasattr(instance, 'post') else instance.id)
-    filename = f"{post_id}_video_{instance.order if hasattr(instance, 'order') else 0}.{ext}"
-    return os.path.join('posts', 'videos', filename)
-
+from apps.posts.models.utils import (
+    post_image_upload_path,
+    post_video_upload_path
+)
 
 class Post(models.Model):
     """Unified post model for both regular user posts and club posts"""
@@ -138,7 +120,7 @@ class Post(models.Model):
     @property
     def repost_count(self):
         """Count of reposts (posts that reference this as original)"""
-        return self.reposts.filter(is_deleted=False).count()
+        return self.reposts.filter(is_deleted=False).count()  # type: ignore
 
     @property
     def image(self):
@@ -173,7 +155,7 @@ class Post(models.Model):
             })
 
         # Add multiple media from PostMedia
-        for media in self.media_files.all():
+        for media in self.media_files.all():    # type: ignore
             media_list.append({
                 'type': media.media_type,
                 'url': media.media_url,
@@ -193,54 +175,3 @@ class Post(models.Model):
         """Restore a soft-deleted post"""
         self.is_deleted = False
         self.save()
-
-
-class PostMedia(models.Model):
-    """Model to store multiple media files for a post"""
-    MEDIA_TYPE_CHOICES = [
-        ('IMAGE', 'Image'),
-        ('VIDEO', 'Video'),
-    ]
-
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
-    post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name='media_files')
-    media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES)
-
-    # Media fields - File uploads
-    image_file = models.ImageField(
-        upload_to=post_image_upload_path, blank=True, null=True)
-    video_file = models.FileField(
-        upload_to=post_video_upload_path, blank=True, null=True)
-
-    # Media fields - URLs
-    image_url = models.URLField(blank=True, null=True)
-    video_url = models.URLField(blank=True, null=True)
-
-    # Order for carousel display
-    order = models.PositiveIntegerField(default=0)
-
-    created_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        ordering = ['order', 'created_at']
-        indexes = [
-            models.Index(fields=['post', 'order']),
-        ]
-
-    def __str__(self):
-        return f"{self.post.id} - {self.media_type} - {self.order}"
-
-    @property
-    def media_url(self):
-        """Return the appropriate media URL"""
-        if self.media_type == 'IMAGE':
-            if self.image_file:
-                return self.image_file.url
-            return self.image_url
-        elif self.media_type == 'VIDEO':
-            if self.video_file:
-                return self.video_file.url
-            return self.video_url
-        return None

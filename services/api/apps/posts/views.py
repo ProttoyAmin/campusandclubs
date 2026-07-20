@@ -12,9 +12,12 @@ import os
 from apps.interactions.serializers import CommentSerializer
 
 # Create your views here.
-from . import models, serializers
+from . import serializers
 from apps.interactions.models import Like, Comment, Share
 from apps.posts.serializers import PostSerializer, PostListSerializer
+from apps.posts.models import (
+    Post
+)
 from core.pagination import StandardResultsSetPagination
 
 
@@ -30,7 +33,7 @@ def list_posts(request):
     """
 
     # Show all posts (user, clubs) [ add this flag to get the club posts as well --- club__isnull=True
-    posts = models.Post.objects.filter(is_deleted=False, is_public=True).select_related(
+    posts = Post.objects.filter(is_deleted=False, is_public=True).select_related(
         'author').prefetch_related('media_files')
 
     post_type = request.query_params.get('post_type')
@@ -144,7 +147,7 @@ def create_post_with_media(request):
 @permission_classes([IsAuthenticated])
 def post_detail(request, post_id):
     """Get, update, or delete a post"""
-    post = get_object_or_404(models.Post.objects.select_related(
+    post = get_object_or_404(Post.objects.select_related(
         'author').prefetch_related('media_files'), pk=post_id, is_deleted=False)
 
     # Check privacy for GET
@@ -197,9 +200,9 @@ def repost(request, post_id):
     """
 
     original_post = get_object_or_404(
-        models.Post, pk=post_id, is_deleted=False)
+        Post, pk=post_id, is_deleted=False)
 
-    existing_repost = models.Post.objects.filter(
+    existing_repost = Post.objects.filter(
         author=request.user,
         original_post=original_post,
         is_deleted=False
@@ -212,7 +215,7 @@ def repost(request, post_id):
         )
 
     content = request.data.get('content', '')
-    repost = models.Post.objects.create(
+    repost = Post.objects.create(
         author=request.user,
         post_type=original_post.post_type,
         content=content,
@@ -229,9 +232,9 @@ def repost(request, post_id):
 @permission_classes([AllowAny])
 def post_likes(request, post_id):
     """Get all likes on a post"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
     likes = Like.objects.filter(
         content_type=content_type,
         object_id=post.id
@@ -259,9 +262,9 @@ def post_likes(request, post_id):
 @permission_classes([IsAuthenticated])
 def toggle_post_like(request, post_id):
     """Like or unlike a post (toggle)"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
 
     like, created = Like.objects.get_or_create(
         user=request.user,
@@ -298,9 +301,9 @@ def toggle_post_like(request, post_id):
 @permission_classes([AllowAny])
 def post_comments(request, post_id):
     """Get all comments on a post"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
 
     comments = Comment.objects.filter(
         content_type=content_type,
@@ -353,7 +356,7 @@ def create_post_comment(request, post_id):
     Create a comment on a post
     Body: { "content": "Great post!", "parent": null }
     """
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
     content = request.data.get('content')
     parent_id = request.data.get('parent')
@@ -364,7 +367,7 @@ def create_post_comment(request, post_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
 
     # Verify parent if provided
     parent = None
@@ -400,11 +403,11 @@ def create_post_comment(request, post_id):
 @permission_classes([IsAuthenticated])
 def manage_post_comment(request, post_id, comment_id):
     """Update or delete a comment"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
     comment = get_object_or_404(Comment, pk=comment_id)
 
     # Verify comment belongs to this post
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
     if comment.content_type != content_type or comment.object_id != post.id:
         return Response(
             {'detail': 'Comment does not belong to this post.'},
@@ -448,7 +451,7 @@ def manage_post_comment(request, post_id, comment_id):
 @permission_classes([IsAuthenticated])
 def toggle_comment_like(request, post_id, comment_id):
     """Like or unlike a comment"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
     comment = get_object_or_404(Comment, pk=comment_id)
 
     comment_content_type = ContentType.objects.get_for_model(Comment)
@@ -488,7 +491,7 @@ def toggle_comment_like(request, post_id, comment_id):
 @permission_classes([AllowAny])
 def get_comment_replies(request, post_id, comment_id):
     """Get all replies to a specific comment"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
     parent_comment = get_object_or_404(Comment, pk=comment_id)
 
     replies = Comment.objects.filter(parent=parent_comment).select_related(
@@ -538,9 +541,9 @@ def get_comment_replies(request, post_id, comment_id):
 @permission_classes([AllowAny])
 def post_shares(request, post_id):
     """Get all shares of a post"""
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
     shares = Share.objects.filter(
         content_type=content_type,
         object_id=post.id
@@ -572,9 +575,9 @@ def toggle_post_share(request, post_id):
     Share or unshare a post
     Body: { "message": "Check this out!" }  // optional
     """
-    post = get_object_or_404(models.Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(models.Post)
+    content_type = ContentType.objects.get_for_model(Post)
     message = request.data.get('message', '')
 
     # Check if already shared
@@ -663,7 +666,7 @@ def get_feed(request):
     # Q1: Posts from users I follow (their public posts)
     # Q2: Posts from public profiles (is_private=False) that are public posts
     # Only show regular user posts (not club posts)
-    posts = models.Post.objects.filter(
+    posts = Post.objects.filter(
         Q(
             # Posts from users I follow
             author_id__in=following_users,
@@ -718,7 +721,7 @@ def trending_posts(request):
     # Get posts from last 24 hours (regular user posts only, not club posts)
     time_threshold = timezone.now() - timedelta(hours=24)
 
-    posts = models.Post.objects.filter(
+    posts = Post.objects.filter(
         is_deleted=False,
         is_public=True,
         club__isnull=True,  # Exclude club posts from trending
@@ -796,7 +799,7 @@ def upload_post_media(request):
         )
 
     # Create a temporary post to get an ID for the file path
-    temp_post = models.Post.objects.create(
+    temp_post = Post.objects.create(
         author=request.user,
         post_type='IMAGE' if file_type == 'image' else 'VIDEO',
         content='',  # Empty content for temp post
@@ -865,7 +868,7 @@ def create_mixed_media_post(request):
         )
 
     # Create the main post
-    post = models.Post.objects.create(
+    post = Post.objects.create(
         author=request.user,
         post_type=post_type,
         content=content,

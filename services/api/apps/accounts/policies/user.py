@@ -4,7 +4,7 @@ from apps.accounts.models import User
 
 class UserPolicy(Policy[User, User]):
     
-    def view(self, viewer: User) -> bool:
+    def can_view_profile(self, viewer: User) -> bool:
         """
         Check if viewer can view this user's profile
         Rules:
@@ -45,5 +45,5 @@ class UserPolicy(Policy[User, User]):
         Check if viewer can view this user's posts
         Same logic as profile viewing
         """
-        return self.view(viewer)
+        return self.can_view_profile(viewer)
 

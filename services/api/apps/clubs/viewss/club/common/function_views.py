@@ -106,6 +106,8 @@ def club_info(request: Request, pk) -> response.Response:
             {'detail': f'{club.name} has been deleted.'},
             status=status.HTTP_200_OK
         )
+    
+    return response.Response({'detail': 'Method Not Allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from . import models
+from apps.posts.models import Post, PostMedia
 # Register your models here.
 
-admin.site.register(models.Post)
-admin.site.register(models.PostMedia)
+admin.site.register(Post)
+admin.site.register(PostMedia)

@@ -36,28 +36,28 @@ urlpatterns = [
 #     path('<uuid:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
 
 #     # ==================== MEMBER MANAGEMENT ====================
-#     path('<uuid:pk>/members/', views_members_views.list_members,
-#          name='list_members'),    # ---- checked
-#     path('<int:pk>/members/search/', views_members_views.search_members,
-#          name='search_members'),  # NEW
-#     path('<int:pk>/members/<int:user_id>/', views_members_views.member_detail,
-#          name='member_detail'),  # NEW
-#     path('<int:pk>/members/<int:user_id>/role/',
-#          views_members_views.update_member_role, name='update_member_role'),
-#     path('<int:pk>/members/<int:user_id>/remove/',
-#          views_members_views.remove_member, name='remove_member'),
-#     path('<int:pk>/members/invite/', views_members_views.invite_member,
-#          name='invite_member'),  # NEW
-#     path('<int:pk>/invites/', views_members_views.list_club_invites,
-#          name='club_invites'),  # NEW
-#     path('invites/me/', views_members_views.my_club_invites,
-#          name='club_invites'),  # NEW
-#     path('invites/accept/<int:invite_id>', views_members_views.accept_club_invite,
-#          name='accept_club_invite'),  # NEW
-# #     path('<int:pk>/members/pending/', views_members_views.pending_members,
-# #          name='pending_members'),  # NEW
-# #     path('<int:pk>/members/requests/', views_members_views.membership_requests,
-# #          name='membership_requests'),  # NEW
+    path('<uuid:pk>/members/', views_members_views.list_members,
+         name='list_members'),    # ---- checked
+    # path('<int:pk>/members/search/', views_members_views.search_members,
+    #      name='search_members'),  # NEW
+    # path('<int:pk>/members/<int:user_id>/', views_members_views.member_detail,
+    #      name='member_detail'),  # NEW
+    # path('<int:pk>/members/<int:user_id>/role/',
+    #      views_members_views.update_member_role, name='update_member_role'),
+    # path('<int:pk>/members/<int:user_id>/remove/',
+    #      views_members_views.remove_member, name='remove_member'),
+    # path('<int:pk>/members/invite/', views_members_views.invite_member,
+    #      name='invite_member'),  # NEW
+    # path('<int:pk>/invites/', views_members_views.list_club_invites,
+    #      name='club_invites'),  # NEW
+    # path('invites/me/', views_members_views.my_club_invites,
+    #      name='club_invites'),  # NEW
+    # path('invites/accept/<int:invite_id>', views_members_views.accept_club_invite,
+    #      name='accept_club_invite'),  # NEW
+#     path('<int:pk>/members/pending/', views_members_views.pending_members,
+#          name='pending_members'),  # NEW
+#     path('<int:pk>/members/requests/', views_members_views.membership_requests,
+#          name='membership_requests'),  # NEW
 
 #     # ==================== ROLE MANAGEMENT ====================
 #     path('<int:pk>/roles/', views_members_views.list_roles, name='list_roles'),
@@ -79,7 +79,7 @@ urlpatterns = [
 
 
 #     # ==================== EVENT MANAGEMENT ====================
-#     path('<uuid:pk>/events/', views_event_views.list_events, name='list_events'),
+    path('<uuid:pk>/events/', views_event_views.list_events, name='list_events'),
 #     path('<int:pk>/events/public/', views_event_views.public_club_events,
 #          name='public_club_events'),  # NEW
 #     path('<int:pk>/events/my/', views_event_views.user_events,
@@ -100,7 +100,7 @@ urlpatterns = [
 # #          name='upcoming_events'),  # NEW
 # #     path('<int:pk>/events/past/', views_event_views.past_events,
 # #          name='past_events'),  # NEW
-#      path('<uuid:pk>/posts/', views_clubs_post_views.list_posts, name='list_posts'),
+     path('<uuid:pk>/posts/', views_clubs_post_views.list_posts, name='list_posts'),
 
 #     # ==================== CLUB SETTINGS ====================
 # #     path('<int:pk>/settings/', views.club_settings, name='club_settings'),  # NEW

@@ -1,15 +1,20 @@
 from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.request import Request
 from rest_framework.response import Response
 
-from apps.institutes import models, serializers
+from apps.institutes import models
 from core import pagination
+from apps.institutes.serializers import (
+    InstituteSerializer,
+    InstituteDetailSerializer
+)
 
-# Create your views here.
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def institute_list(request):
+def institute_list(request: Request) -> Response:
     requested_fields = request.query_params.get('fields')
     field_list = None
     
@@ -44,9 +49,9 @@ def institute_list(request):
     # Pass fields to serializer via context
     context = {'request': request}
     if field_list:
-        context['fields'] = field_list
+        context.get('fields', field_list)
     
-    serializer = serializers.InstituteSerializer(
+    serializer = InstituteSerializer(
         paginated_institutes, 
         many=True, 
         context=context
@@ -55,9 +60,10 @@ def institute_list(request):
     return paginator.get_paginated_response(serializer.data)
 
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def institute_info(request, pk):
+def institute_info(request: Request, pk) -> Response:
     requested_fields = request.query_params.get('fields')
     field_list = None
     
@@ -76,9 +82,9 @@ def institute_info(request, pk):
     
     context = {'request': request}
     if field_list:
-        context['fields'] = field_list
+        context.get('fields', field_list)
     
-    serializer = serializers.InstituteDetailSerializer(
+    serializer = InstituteDetailSerializer(
         paginated_institutes, 
         many=True, 
         context=context

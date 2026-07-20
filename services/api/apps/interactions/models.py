@@ -16,7 +16,7 @@ class Like(models.Model):
 
     # Generic relation to any content type, allows liking different models (Post, ClubPost, etc)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.BigIntegerField()
+    object_id = models.UUIDField()
     content_object = GenericForeignKey('content_type', 'object_id')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -45,7 +45,7 @@ class Comment(models.Model):
 
     # Generic relation to any content type, allows commenting on different models (Post, ClubPost, etc)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.BigIntegerField()
+    object_id = models.UUIDField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
@@ -88,7 +88,7 @@ class Share(models.Model):
     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='shares')
     
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.BigIntegerField()
+    object_id = models.UUIDField()
     content_object = GenericForeignKey('content_type', 'object_id')
     
     # Optional message when sharing

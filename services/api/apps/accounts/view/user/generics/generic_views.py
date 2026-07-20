@@ -8,6 +8,7 @@ from apps.accounts.serialize.user import (
     UserSerializer
 )
 
+
 class ValidateUserTypeView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserTypeSerializer
@@ -23,7 +24,7 @@ class ValidateUserTypeView(generics.GenericAPIView):
         user: User = request.user  # type: ignore
         validated_data = serializer.validated_data
         
-        user.institute = validated_data['institute']
+        # user.institute = validated_data['institute']
         user.type = validated_data['user_type']
         user.professional_email = validated_data['professional_email']
         user.save()
@@ -31,7 +32,7 @@ class ValidateUserTypeView(generics.GenericAPIView):
         return Response({
             "message": "Type and institute assigned successfully.",
             "user_type": user.type,
-            "institute": user.institute.name,
+            # "institute": user.institute.name,
             "data" : serializer.data
         }, status=status.HTTP_200_OK)
 
@@ -42,3 +43,5 @@ class CompleteUserInfoView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     lookup_field = 'id'
     lookup_url_kwarg = 'user_id'
+
+

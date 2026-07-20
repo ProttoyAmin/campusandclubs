@@ -1,3 +1,242 @@
+# from django.contrib import admin
+
+# from apps.clubs.models import (
+#     Club,
+#     Role,
+#     Membership,
+#     Invite,
+#     Event,
+#     Category,
+#     MembershipApplication,
+#     MembershipApplicationForm,
+#     MembershipApplicationResponse,
+# )
+
+
+# class RoleInline(admin.TabularInline):
+#     model = Role
+#     extra = 0
+#     fields = ("name", "permissions", "is_default", "color")
+
+
+# class MembershipInline(admin.TabularInline):
+#     model = Membership
+#     extra = 0
+#     raw_id_fields = ("user", "primary_role", "application")
+
+
+# class MembershipApplicationFormInline(admin.TabularInline):
+#     """Questions a club asks on its membership application form."""
+#     model = MembershipApplicationForm
+#     extra = 0
+#     fields = ("question", "type", "required", "order")
+#     ordering = ("order",)
+
+
+# @admin.register(Club)
+# class ClubAdmin(admin.ModelAdmin):
+#     list_display = ("name", "owner", "origin", "privacy", "status", "join_mode", "created_at")
+#     list_filter = ("privacy", "status", "join_mode", "origin", "scope")
+#     search_fields = ("name", "origin__name", "owner__username")
+#     inlines = [RoleInline, MembershipInline, MembershipApplicationFormInline]
+#     raw_id_fields = ("owner", "category")
+
+
+# @admin.register(Membership)
+# class MembershipAdmin(admin.ModelAdmin):
+#     list_display = ("user", "club", "get_role_names", "primary_role_name", "joined_at")
+#     list_filter = ("club", "roles", "joined_at")
+#     search_fields = ("user__username", "club__name", "roles__name")
+#     raw_id_fields = ("user", "club", "primary_role", "application")
+#     filter_horizontal = ("roles",)
+
+#     fieldsets = (
+#         ("Membership Info", {"fields": ("user", "club", "primary_role", "application")}),
+#         ("Roles", {"fields": ("roles",), "description": "Select multiple roles for this member"}),
+#         ("Timestamps", {"fields": ("joined_at",), "classes": ("collapse",)}),
+#     )
+
+#     readonly_fields = ("joined_at",)
+
+#     def get_role_names(self, obj: Membership) -> str:
+#         return ", ".join(role.name for role in obj.roles.all())
+#     get_role_names.short_description = "Roles"
+
+#     def primary_role_name(self, obj: Membership) -> str:
+#         return obj.primary_role.name if obj.primary_role else "None"
+#     primary_role_name.short_description = "Primary Role"
+
+#     def formfield_for_manytomany(self, db_field, request, **kwargs):
+#         if db_field.name == "roles":
+#             club_id = self._get_club_id(request)
+#             if club_id:
+#                 kwargs["queryset"] = Role.objects.filter(club_id=club_id)
+#             else:
+#                 kwargs["queryset"] = Role.objects.none()
+#                 kwargs["help_text"] = "Please select a club first, then save and edit to assign roles."
+#         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         if db_field.name == "primary_role":
+#             club_id = self._get_club_id(request)
+#             if club_id:
+#                 kwargs["queryset"] = Role.objects.filter(club_id=club_id)
+#             else:
+#                 kwargs["queryset"] = Role.objects.none()
+#                 kwargs["help_text"] = "Please select a club first, then save and edit to assign primary role."
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+#     def _get_club_id(self, request):
+#         if request.method == "POST":
+#             return request.POST.get("club")
+#         if getattr(request, "_obj_", None) is not None:
+#             return request._obj_.club_id
+#         object_id = request.resolver_match.kwargs.get("object_id")
+#         if object_id:
+#             membership = Membership.objects.filter(pk=object_id).first()
+#             return membership.club_id if membership else None
+#         return None
+
+#     def get_form(self, request, obj=None, **kwargs):
+#         request._obj_ = obj
+#         return super().get_form(request, obj, **kwargs)
+
+
+# @admin.register(Role)
+# class RoleAdmin(admin.ModelAdmin):
+#     list_display = ("name", "club", "is_default")
+#     list_filter = ("club", "is_default")
+#     search_fields = ("name", "club__name")
+#     raw_id_fields = ("club",)
+
+#     fieldsets = (
+#         (None, {"fields": ("club", "name", "color", "is_default")}),
+#         ("Permissions", {"fields": ("permissions",)}),
+#     )
+
+#     readonly_fields = ("created_at", "updated_at")
+
+#     def get_queryset(self, request):
+#         return super().get_queryset(request).select_related("club")
+
+
+# @admin.register(Event)
+# class EventAdmin(admin.ModelAdmin):
+#     list_display = ("title", "creator", "club", "start_time", "end_time", "max_participants")
+#     list_filter = ("club", "created_at", "status")
+#     search_fields = ("title", "club__name", "creator__username", "location")
+#     raw_id_fields = ("club", "creator", "participants")
+#     filter_horizontal = ("participants",)
+
+#     fieldsets = (
+#         (None, {"fields": ("title", "description", "club", "creator")}),
+#         ("Time & Location", {"fields": ("start_time", "end_time", "location")}),
+#         ("Settings", {"fields": ("status", "max_participants", "image")}),
+#         ("Participants", {"fields": ("participants",), "classes": ("collapse",)}),
+#     )
+
+
+# @admin.register(Invite)
+# class InviteAdmin(admin.ModelAdmin):
+#     list_display = ("id", "invite_type", "inviter", "invitee", "club", "event", "status", "created_at", "expires_at")
+#     list_filter = ("invite_type", "status", "created_at", "club")
+#     search_fields = ("inviter__username", "invitee__username", "club__name", "event__title")
+#     raw_id_fields = ("inviter", "invitee", "club", "event")
+#     readonly_fields = ("created_at", "responded_at")
+
+#     fieldsets = (
+#         ("Invitation Info", {"fields": ("invite_type", "status", "message")}),
+#         ("Parties", {"fields": ("inviter", "invitee")}),
+#         ("Target", {"fields": ("club", "event")}),
+#         ("Timestamps", {"fields": ("created_at", "expires_at", "responded_at"), "classes": ("collapse",)}),
+#     )
+
+#     def get_queryset(self, request):
+#         return super().get_queryset(request).select_related("inviter", "invitee", "club", "event")
+
+
+# class MembershipApplicationResponseInline(admin.TabularInline):
+#     """Answers submitted for a single application."""
+#     model = MembershipApplicationResponse
+#     extra = 0
+#     fields = ("question", "answer")
+#     raw_id_fields = ("question",)
+
+
+# @admin.register(MembershipApplication)
+# class MembershipApplicationAdmin(admin.ModelAdmin):
+#     list_display = ("club", "applicant", "status", "reviewed_by", "reviewed_at", "created_at")
+#     list_filter = ("club", "status", "created_at")
+#     search_fields = ("club__name", "applicant__username")
+#     raw_id_fields = ("club", "applicant", "reviewed_by")
+#     readonly_fields = ("created_at", "updated_at")
+#     inlines = [MembershipApplicationResponseInline]
+
+#     def get_queryset(self, request):
+#         return super().get_queryset(request).select_related("club", "applicant", "reviewed_by")
+
+
+# @admin.register(MembershipApplicationForm)
+# class MembershipApplicationFormAdmin(admin.ModelAdmin):
+#     list_display = ("question", "club", "type", "required", "order")
+#     list_filter = ("club", "type", "required")
+#     search_fields = ("question", "club__name")
+#     raw_id_fields = ("club",)
+#     ordering = ("club", "order")
+
+
+# @admin.register(Category)
+# class CategoryAdmin(admin.ModelAdmin):
+#     list_display = ("name", "slug", "created_at")
+#     search_fields = ("name", "slug")
+#     prepopulated_fields = {"slug": ("name",)}
+#     readonly_fields = ("created_at", "updated_at")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MODELS.PY
 from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError

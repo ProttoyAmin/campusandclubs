@@ -33,7 +33,7 @@ class MembershipSerializer(rest_serializers.ModelSerializer):
     username = rest_serializers.CharField(
         source='user.username', read_only=True)
     email = rest_serializers.EmailField(source='user.email', read_only=True)
-    user_id = rest_serializers.IntegerField(source='user.id', read_only=True)
+    user_id = rest_serializers.UUIDField(source='user.id', read_only=True)
     profile_picture_url = rest_serializers.SerializerMethodField()
 
     # CHANGE: roles is now a list

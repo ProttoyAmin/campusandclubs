@@ -2,15 +2,11 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-from django.contrib.contenttypes.fields import GenericRelation
-from apps.posts.models import Post
-from apps.clubs.models import Role
-from . import managers
 # Create your models here.
 
 
 class User(AbstractUser):
+
     USER_TYPES = [
         ('student', 'Student'),
         ('faculty', 'Faculty'),
@@ -38,23 +34,23 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    institute = models.ForeignKey(
-        "institutes.Institute",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="users"
-    )
+    # institute = models.ForeignKey(
+    #     "institutes.Institute",
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name="users"
+    # )
     professional_email = models.EmailField(
         unique=True, blank=True, null=True, default=None)
     student_id = models.CharField(unique=True, blank=True, null=True)
-    department = models.ForeignKey(
-        "institutes.Department",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="users"
-    )
+    # department = models.ForeignKey(
+    #     "institutes.Department",
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True,
+    #     related_name="users"
+    # )
     year = models.PositiveSmallIntegerField(blank=True, null=True)
     level = models.PositiveBigIntegerField(blank=True, null=True)
     email_verified = models.BooleanField(default=False)
@@ -94,6 +90,7 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
 
@@ -114,10 +111,10 @@ class User(AbstractUser):
 
     # ==================== CLUB RELATED PROPERTIES ====================
     
-    @property
-    def origin(self):
-        """Get the user origin (institute name)"""
-        return self.institute.name if self.institute else None
+    # @property
+    # def origin(self):
+    #     """Get the user origin (institute name)"""
+    #     return self.institute.name if self.institute else None
 
     @property
     def joined_clubs(self):
@@ -190,28 +187,6 @@ class User(AbstractUser):
                     'role': role
                 })
         return roles
-
-    # def get_club_permssions(self, club):
-    #     """Get all permissions for a user in a specific club"""
-    #     from apps.clubs.models import Membership
-    #     try:
-    #         membership = Membership.objects.get(user=self, club=club)
-    #         permissions = set()
-    #         for role in membership.roles.all():
-    #             permissions.update(role.permissions.all())
-    #         return list(permissions)
-    #     except Membership.DoesNotExist:
-    #         return []
-
-    def get_club_posts_count(self):
-        """Count of posts in clubs"""
-        from apps.posts.models import Post
-        return Post.objects.filter(author=self, club_post__isnull=False).count()
-
-    def get_club_posts(self):
-        """Get all club posts created by this user"""
-        from apps.posts.models import Post
-        return Post.objects.filter(author=self, club__isnull=False, is_deleted=False)
 
     # ==================== CONNECTIONS RELATED PROPERTIES ====================
 
@@ -286,45 +261,6 @@ class User(AbstractUser):
         from apps.connections.models import Block
         return Block.is_blocked(user, self)
 
-    # def can_view_profile(self, viewer) -> bool:
-    #     """
-    #     Check if viewer can view this user's profile
-    #     Rules:
-    #     1. Own profile - always yes
-    #     2. Blocked - no
-    #     3. Public profile - yes
-    #     4. Private profile + follower - yes
-    #     5. Private profile + not follower - no
-    #     """
-    #     # User can always view their own profile
-    #     if viewer == self:
-    #         return True
-
-    #     # Handle anonymous users
-    #     if not isinstance(viewer, User) or not viewer.is_authenticated:
-    #         # Anonymous users can only view public profiles
-    #         return not self.is_private
-
-    #     # Check if blocked
-    #     from apps.connections.models import Block
-    #     if Block.has_blocked_each_other(self, viewer):
-    #         return False
-
-    #     # Public profiles are visible to all
-    #     if not self.is_private:
-    #         return True
-
-    #     # Private profiles only visible to accepted followers
-    #     from apps.connections.models import Follow
-    #     return Follow.is_following(viewer, self)
-
-    # def can_view_posts(self, viewer):
-    #     """
-    #     Check if viewer can view this user's posts
-    #     Same logic as profile viewing
-    #     """
-    #     return self.can_view_profile(viewer)
-
     # ==================== POST RELATED PROPERTIES ====================
 
     @property
@@ -339,10 +275,10 @@ class User(AbstractUser):
         from apps.posts.models import Post
         return Post.objects.filter(author=self, club__isnull=True, is_deleted=False).count()
 
-    @property
-    def total_posts_count(self):
-        """Total posts (user posts + club posts)"""
-        return self.user_post_count + self.get_club_posts_count()
+    # @property
+    # def total_posts_count(self):
+    #     """Total posts (user posts + club posts)"""
+    #     return self.user_post_count + self.get_club_posts_count()
 
     # ==================== INTERACTION PROPERTIES ====================
 
