@@ -1,7 +1,10 @@
 # apps/clubs/urls.py
 from django.urls import path
 from . import views, views_clubs_post_views, views_members_views, views_event_views
-from apps.clubs.viewss.club.generics import ClubListCreateView
+from apps.clubs.viewss.club.generics import (
+    ClubListCreateView,
+    ClubRetrieveUpdateDestroyAPIView
+)
 
 from apps.clubs.viewss.club.common import (
      club_info,
@@ -14,7 +17,8 @@ urlpatterns = [
     # ==================== CLUB MANAGEMENT ====================
 #     path('', views.list_clubs, name='list_clubs'),    # ---- checked
     path('', ClubListCreateView.as_view(), name='list_clubs'),    # ---- checked
-    path('<uuid:pk>/', club_info, name='club_info'),    # 
+    # path('<uuid:pk>/', club_info, name='club_info'),    # 
+    path('<uuid:pk>/', ClubRetrieveUpdateDestroyAPIView.as_view(), name='club_info'),    # 
     
 #     path('create/', views.create_club, name='create_club'),    # ---- checked
     

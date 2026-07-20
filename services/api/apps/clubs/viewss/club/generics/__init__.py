@@ -1,5 +1,9 @@
-from .generic_views import ClubListCreateView
+from .generic_views import (
+    ClubListCreateView,
+    ClubRetrieveUpdateDestroyAPIView
+)
 
 all = [
-    'ClubListCreateView'
+    ClubListCreateView,
+    ClubRetrieveUpdateDestroyAPIView
 ]

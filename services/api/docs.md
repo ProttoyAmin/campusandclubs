@@ -103,3 +103,82 @@ Move to PostGIS + `PointField` only when:
 - Migrating to Postgres anyway.
 
 PostGIS gives spatial indexes that make radius queries dramatically faster than per-row Haversine computation. The `Location` model's shape (plain float lat/lng) transfers cleanly to `PointField` later — this isn't a dead end, just a deliberately deferred upgrade.
+
+
+
+
+
+
+
+<!-- Request Info -->
+
+
+<!-- request.__dict__ -->
+{'_auth': None,
+ '_authenticator': <rest_framework.authentication.SessionAuthentication object at 0x000002401D147380>,
+ '_content_type': <class 'rest_framework.request.Empty'>,
+ '_data': <class 'rest_framework.request.Empty'>,
+ '_files': <class 'rest_framework.request.Empty'>,
+ '_full_data': <class 'rest_framework.request.Empty'>,
+ '_request': <ASGIRequest: GET '/api/v1/accounts/auth/request-info/'>,
+ '_stream': <class 'rest_framework.request.Empty'>,
+ '_user': <SimpleLazyObject: <User: prottoy - 0aa9ce92-d3c1-4f62-9e5e-e2076ceaf39e>>,
+ 'accepted_media_type': 'text/html',
+ 'accepted_renderer': <rest_framework.renderers.BrowsableAPIRenderer object at 0x000002401D1478C0>,
+ 'authenticators': [<rest_framework_simplejwt.authentication.JWTAuthentication object at 0x000002401D147230>,
+                    <rest_framework.authentication.SessionAuthentication object at 0x000002401D147380>],
+ 'csrf_processing_done': True,
+ 'negotiator': <rest_framework.negotiation.DefaultContentNegotiation object at 0x000002401D1474D0>,
+ 'parser_context': {'args': (),
+                    'encoding': 'utf-8',
+                    'kwargs': {},
+                    'request': <rest_framework.request.Request: GET '/api/v1/accounts/auth/request-info/'>,
+                    'view': <apps.accounts.view.auth.request_info.WrappedAPIView object at 0x000002401D146CF0>},
+ 'parsers': [<rest_framework.parsers.JSONParser object at 0x000002401D146E40>,
+             <rest_framework.parsers.FormParser object at 0x000002401D146F90>,
+             <rest_framework.parsers.MultiPartParser object at 0x000002401D1470E0>],
+ 'version': None,
+ 'versioning_scheme': None}
+
+
+<!-- request._request.META -->
+
+{'CSRF_COOKIE': 'LXHbf5FqInQDHvjvEspG28A5wnbHKf1J',
+ 'HTTP_ACCEPT': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+ 'HTTP_ACCEPT_ENCODING': 'gzip, deflate, br, zstd',
+ 'HTTP_ACCEPT_LANGUAGE': 'en-US,en;q=0.9,ru;q=0.8,bn;q=0.7',
+ 'HTTP_CACHE_CONTROL': 'no-cache',
+ 'HTTP_CONNECTION': 'keep-alive',
+ 'HTTP_COOKIE': 'tabstyle=html-tab; '
+                'csrftoken=LXHbf5FqInQDHvjvEspG28A5wnbHKf1J; '
+                'sessionid=j2a4sbuxq683t488x4k2nqug4u4tywp5; '
+                'refresh=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NjkxNjcyMSwiaWF0IjoxNzg0MzI0NzIxLCJqdGkiOiI3OWM1Y2Q1OWQxMDE0MzE1OTU4ZTk2MmY5NTA2MjU2MCIsInVzZXJfaWQiOiIwYWE5Y2U5Mi1kM2MxLTRmNjItOWU1ZS1lMjA3NmNlYWYzOWUifQ.jwiG8REGYtmox4HBP8jAXX8ti6KLUan6oGucFc-1anc',
+ 'HTTP_HOST': '127.0.0.1:8000',
+ 'HTTP_PRAGMA': 'no-cache',
+ 'HTTP_SEC_CH_UA': '"Not;A=Brand";v="8", "Chromium";v="150", "Google '
+                   'Chrome";v="150"',
+ 'HTTP_SEC_CH_UA_MOBILE': '?0',
+ 'HTTP_SEC_CH_UA_PLATFORM': '"Windows"',
+ 'HTTP_SEC_FETCH_DEST': 'document',
+ 'HTTP_SEC_FETCH_MODE': 'navigate',
+ 'HTTP_SEC_FETCH_SITE': 'none',
+ 'HTTP_SEC_FETCH_USER': '?1',
+ 'HTTP_UPGRADE_INSECURE_REQUESTS': '1',
+ 'HTTP_USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 '
+                    'Safari/537.36',
+ 'PATH_INFO': '/api/v1/accounts/auth/request-info/',
+ 'QUERY_STRING': '',
+ 'REMOTE_ADDR': '127.0.0.1',
+ 'REMOTE_HOST': '127.0.0.1',
+ 'REMOTE_PORT': 52352,
+ 'REQUEST_METHOD': 'GET',
+ 'SCRIPT_NAME': '',
+ 'SERVER_NAME': '127.0.0.1',
+ 'SERVER_PORT': '8000',
+ 'wsgi.multiprocess': True,
+ 'wsgi.multithread': True}
+x
+
+<!-- session -->
+([('_auth_user_id', '0aa9ce92-d3c1-4f62-9e5e-e2076ceaf39e'), ('_auth_user_backend', 'django.contrib.auth.backends.ModelBackend'), ('_auth_user_hash', '54c38175e94a778aa09dee7bf13bf4f904f1996553a80cab1037f19d6bb9fcc6')])

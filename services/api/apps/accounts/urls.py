@@ -6,7 +6,8 @@ from . import views
 from apps.accounts.view.auth import (
     LoginView,
     LogoutView,
-    RegisterView
+    RegisterView,
+    get_request_info
 )
 
 from apps.accounts.view.user.generics import (
@@ -35,6 +36,12 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
+
+    path("auth/request-info/", get_request_info, name="request_info"),
+
+
+
+
     
     # Authentication endpoints
     path("auth/logout/", LogoutView.as_view(), name="jwt_logout"),

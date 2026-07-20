@@ -72,6 +72,7 @@ class Club(models.Model):
     )
 
     allow_public_posts = models.BooleanField(default=True)
+    enable_applications = models.BooleanField(default=False)
 
     rules = models.TextField(
         blank=True, null=True, default="", help_text="Club rules and guidelines"

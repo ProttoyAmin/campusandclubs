@@ -26,7 +26,7 @@ def club_info(request: Request, pk) -> response.Response:
     - DELETE: Only club owner
     """
     # Base queryset
-    base_qs = Club.objects.filter(is_active=True)
+    base_qs = Club.objects.filter(status='active')
 
     if request.method == 'GET':
         club_qs = base_qs.filter(
@@ -95,12 +95,13 @@ def club_info(request: Request, pk) -> response.Response:
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
+        from django.utils import timezone
         if not is_owner:
             return response.Response({'detail': 'Only the club owner can delete the club.'},
                                      status=status.HTTP_403_FORBIDDEN
                                      )
 
-        club.is_active = False
+        club.deleted_at = timezone.now()
         club.save()
         return response.Response(
             {'detail': f'{club.name} has been deleted.'},
@@ -120,7 +121,7 @@ def join_club(request, pk):
     Secret clubs cannot be joined via this endpoint (must be invited).
     """
     from apps.clubs.models import Role
-    club: Club = get_object_or_404(Club, pk=pk, is_active=True)
+    club: Club = get_object_or_404(Club, pk=pk, status='active')
 
     # Prevent joining secret clubs
     if club.privacy == 'secret':
@@ -192,7 +193,7 @@ def recommended_clubs(request):
     user = request.user
 
     # Base query for active clubs
-    clubs = Club.objects.filter(is_active=True)
+    clubs = Club.objects.filter(status='active')
     clubs = clubs.exclude(privacy='secret')
 
     # Exclude clubs user is already a member of

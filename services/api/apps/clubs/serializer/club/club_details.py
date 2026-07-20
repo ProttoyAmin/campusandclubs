@@ -25,13 +25,15 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     origin = serializers.CharField()
     owner_details = serializers.SerializerMethodField()
     member_count = serializers.SerializerMethodField()
-    post_count = serializers.SerializerMethodField()
-    event_count = serializers.SerializerMethodField()
+    # post_count = serializers.SerializerMethodField()
+    # event_count = serializers.SerializerMethodField()
     user_role = serializers.SerializerMethodField()
     is_member = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
+
+    is_public = serializers.SerializerMethodField()
 
     url = serializers.SerializerMethodField()
     members_url = serializers.SerializerMethodField()
@@ -45,8 +47,8 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
-            'member_count', 'post_count', 'event_count',
-            'user_role', 'is_member', 'is_owner',
+            'member_count', 'join_mode', 'status', 'scope', 'category', 
+            'user_role', 'is_member', 'is_owner', 'enable_applications',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
         ]
@@ -74,6 +76,9 @@ class ClubDetailSerializer(serializers.ModelSerializer):
  
     def get_banner(self, obj: Club) -> str | None:
         return obj.banner
+
+    def get_is_public(self, obj: Club) -> bool:
+        return obj.privacy == 'public'
 
     def get_url(self, obj: Club) -> str:
         request = self._get_request()
@@ -108,11 +113,11 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     def get_member_count(self, obj: Club) -> int:
         return getattr(obj, 'member_count', obj.members.count())
 
-    def get_post_count(self, obj: Club) -> int:
-        return getattr(obj, 'post_count', obj.total_posts)
+    # def get_post_count(self, obj: Club) -> int:
+    #     return getattr(obj, 'post_count', obj.total_posts)
     
-    def get_event_count(self, obj: Club) -> int:
-        return getattr(obj, 'event_count', obj.total_events)
+    # def get_event_count(self, obj: Club) -> int:
+    #     return getattr(obj, 'event_count', obj.total_events)
 
     def get_user_role(self, obj: Club) -> UserRoleDetails | None:
         request = self._get_request()

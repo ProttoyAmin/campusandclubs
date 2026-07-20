@@ -117,8 +117,8 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
     
         
     def get_clubs(self, obj):
-        """Get all clubs associated with the institute"""
-        clubs = Club.objects.filter(origin=obj, is_active=True)
+        """Get all clubs associated with the institute that are active"""
+        clubs = Club.objects.filter(origin=obj, status='active')
         return [{
                 "id" : str(club.id),
                 "name": club.name,
