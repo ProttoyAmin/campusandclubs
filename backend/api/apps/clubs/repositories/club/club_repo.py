@@ -6,7 +6,7 @@ from django.db.models import (
 )
 
 from core.repositories import BaseRepository
-from apps.clubs.models import Club, Membership
+from apps.clubs.models import Club, Membership, Visibility
 from apps.clubs.repositories.role.role_repo import RoleRepository
 
 class ClubRepository(BaseRepository[Club]):
@@ -18,7 +18,7 @@ class ClubRepository(BaseRepository[Club]):
 
     def visible_to(self, user) -> QuerySet[Club]:
         """Public clubs, plus any club the user is a member of."""
-        return self.get_queryset().filter(Q(privacy="public") | Q(members=user))
+        return self.get_queryset().filter(Q(privacy=Visibility.PUBLIC) | Q(members=user) | Q(privacy=Visibility.PRIVATE))
 
     def joined_by(self, user) -> QuerySet[Club]:
         return self.get_queryset().filter(members=user)

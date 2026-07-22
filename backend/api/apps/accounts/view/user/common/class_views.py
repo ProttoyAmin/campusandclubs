@@ -12,7 +12,7 @@ from apps.accounts.services import AccountService
 from apps.accounts.serialize.user import UserProfileSerializer, PrivateUserSerializer
 
 class UserRetrieveUpdateDestroyView(
-    PolicyMixin[UserPolicy],
+    PolicyMixin[UserPolicy, User],
     ServiceMixin[AccountService],
     PrivateResponseMixin[User],
     generics.RetrieveUpdateDestroyAPIView
@@ -44,7 +44,7 @@ class UserRetrieveUpdateDestroyView(
         return Response(serializer.data)
 
 class UserListCreateView(
-    PolicyMixin[UserPolicy],
+    PolicyMixin[UserPolicy, User],
     ServiceMixin[AccountService],
     generics.ListCreateAPIView[User]
 ):

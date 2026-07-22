@@ -1,14 +1,13 @@
+# form_question.py
 from django.db import models
 from .enums import QuestionType
+from .form import Form
 
+import uuid
 
-class MembershipApplicationForm(models.Model):
-    """A question a club asks on its membership application form."""
-
-    id = models.AutoField(primary_key=True)
-    club = models.ForeignKey(
-        "clubs.Club", on_delete=models.CASCADE, related_name="application_questions"
-    )
+class FormQuestion(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    form = models.ForeignKey(Form, on_delete=models.CASCADE, related_name="questions")
     question = models.TextField()
     type = models.CharField(max_length=30, choices=QuestionType.choices)
     required = models.BooleanField(default=False)
@@ -20,6 +19,4 @@ class MembershipApplicationForm(models.Model):
 
     class Meta:
         ordering = ["order"]
-        indexes = [models.Index(fields=["club", "order"])]
-        verbose_name = "Membership Application Form"
-        verbose_name_plural = "Membership Application Forms"
+        indexes = [models.Index(fields=["form", "order"])]

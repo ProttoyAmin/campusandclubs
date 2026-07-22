@@ -2,8 +2,8 @@
 # REST Client file for testing Club API endpoints
 ### Variables
 @baseUrl = http://127.0.0.1:8000/api/v1/clubs/
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyNzAxMTk0LCJpYXQiOjE3NjI2OTc1OTQsImp0aSI6IjgyNjcxOTAxMTFjYzQyY2Q4YmI0MTljNmFjNjM1MzhmIiwidXNlcl9pZCI6IjEifQ.kqMcsI2wWeLiQk2t_Rmc89CNeJObOQwYnA8nS7_0xQU
-@clubId = 7393023691770040320
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0NzQ3ODI5LCJpYXQiOjE3ODQ3NDQyMjksImp0aSI6ImVhYWY1ZmRiZTM2OTQ3ZjViMmViOGNlNTcxYzg2ZGRiIiwidXNlcl9pZCI6ImU4ZjU5ZjM1LWEzZmItNGQxNy04YmMxLTNmZGI3MjZjNmI2YSJ9.hhf1Zg29fO_NxRPJkM6Ek5Erai_e6jl4ReIUY5yo77I
+@clubId = 8f9ed101-cbf8-4b34-9e6d-6c6973cb2236
 @postId = 7391907467086532608
 @eventId = 7392190347431907328
 @userId = 3
@@ -22,14 +22,18 @@ GET {{baseUrl}}
 Authorization: Bearer {{accessToken}}
 
 ### Create Club   -----WORKS---
-POST {{baseUrl}}create/
+POST {{baseUrl}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "New Club",
-  "about": "A community for technology lovers to share ideas and collaborate"
+  "name" : "New Club Name",
+  "about": "This is a new club for testing purposes.",
+  "privacy": "private",
+  "scope": "exclusive",
+  "origin": "e19bf0c3-b011-45d2-abd0-dc44f4d9d76f"
 }
+
 
 ### Get Club Details ---WORKS---
 GET {{baseUrl}}{{clubId}}/
@@ -45,6 +49,15 @@ Authorization: Bearer {{accessToken}}
 POST {{baseUrl}}{{clubId}}/join/
 Authorization: Bearer {{accessToken}}
 
+
+### Apply to Club (Admin Only) ___WORKS---
+POST {{baseUrl}}{{clubId}}/applications/
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "message": "Hey there, I'm interested in your club!"
+}
 
 
 ### Update Club (Admin Only) ___WORKS---

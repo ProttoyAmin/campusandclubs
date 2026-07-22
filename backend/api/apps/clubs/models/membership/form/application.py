@@ -1,21 +1,28 @@
 from django.db import models
 from django.conf import settings
 
+import uuid
 from .enums import ApplicationStatus
 
 
 class MembershipApplication(models.Model):
     """One user's submission to join a club. Not a Membership yet."""
 
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     club = models.ForeignKey(
         "clubs.Club", on_delete=models.CASCADE, related_name="applications"
     )
     applicant = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="club_applications"
     )
+    form = models.ForeignKey("clubs.Form", on_delete=models.SET_NULL, null=True, blank=True, related_name="application_forms")
     status = models.CharField(
         max_length=20, choices=ApplicationStatus.choices, default=ApplicationStatus.PENDING
+    )
+    message = models.TextField(
+        null=True,
+        blank=True,
+        help_text="Optional note from the applicant, especially useful when the club has no form.",
     )
     reviewed_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

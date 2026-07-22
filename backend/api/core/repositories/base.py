@@ -24,6 +24,9 @@ class BaseRepository(Generic[T], ABC):
 
     def all(self) -> QuerySet[T]:
         return self.get_queryset()
+
+    def only(self, *fields: str) -> QuerySet[T]:
+        return self.get_queryset().only(*fields)
     
     def filter(self, **kwargs: Any) -> QuerySet[T]:
         return self.get_queryset().filter(**kwargs)

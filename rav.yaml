@@ -1,7 +1,8 @@
 scripts:
-  server: cd services/api && uv run python manage.py runserver
+  activate: cd backend/api && source ./venv/Scripts/activate
+  server: cd backend/api && uv run python manage.py runserver
   web: pnpm --filter web dev
-  migrations: cd services/api && uv run python manage.py makemigrations
-  migrate: cd services/api && uv run python manage.py migrate
+  migrations: cd backend/api && uv run python manage.py makemigrations
+  migrate: cd backend/api && uv run python manage.py migrate
   build: pnpm -r build
   start: pnpm --filter web start

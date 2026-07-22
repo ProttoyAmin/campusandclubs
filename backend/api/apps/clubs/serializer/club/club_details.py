@@ -22,7 +22,9 @@ class UserRoleDetails(TypedDict):
 
 class ClubDetailSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
-    origin = serializers.CharField()
+    origin = serializers.CharField(required=False, allow_blank=True, allow_null=True, 
+        default=None)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
     owner_details = serializers.SerializerMethodField()
     member_count = serializers.SerializerMethodField()
     # post_count = serializers.SerializerMethodField()
@@ -48,7 +50,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
             'member_count', 'join_mode', 'status', 'scope', 'category', 
-            'user_role', 'is_member', 'is_owner', 'enable_applications',
+            'user_role', 'is_member', 'is_owner',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
         ]

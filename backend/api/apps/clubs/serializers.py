@@ -286,89 +286,6 @@ class DemoSerializer(rest_serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ClubSerializer(rest_serializers.ModelSerializer):
-    """For create/update — requires name, origin, and optional fields"""
-    id = rest_serializers.CharField(read_only=True)
-    origin = rest_serializers.PrimaryKeyRelatedField(
-        queryset=Institute.objects.all(),
-        required=False,
-        allow_null=True,
-        help_text="Select an institute or leave empty for a global club."
-    )
-    allow_public_posts = rest_serializers.BooleanField(
-        default=False,
-        help_text="Allow anyone to see posts from this club even if they are not members."
-    )
-    # rules = rest_serializers.CharField(
-    #     required=True,
-    #     help_text="Rules for the club (e.g., 'No hate speech', 'No spam', 'No harassment')"
-    # )
-
-    class Meta:
-        model = models.Club
-        fields = ['id', 'name', 'origin', 'about',
-                  'avatar', 'banner', 'privacy', 'is_public', 'allow_public_posts']
-        read_only_fields = ['id']
-
-    def get_validators(self):
-        """
-        Remove the default UniqueTogetherValidator that DRF adds automatically
-        for the UniqueConstraint in the model. We'll handle this validation ourselves.
-        """
-        validators = super().get_validators()
-        validators = [
-            v for v in validators
-            if not (
-                hasattr(v, 'fields') and
-                set(getattr(v, 'fields', [])) == {'name', 'origin'}
-            )
-        ]
-        return validators
-
-    def validate(self, data):
-        """Check for duplicate club name + origin combination (robust)"""
-        name = data.get('name')
-        origin = data.get('origin')
-
-        instance = self.instance
-
-        if name:
-            # Normalize the input name for comparison
-            normalized_name = name.strip().replace(" ", "").lower()
-
-            # Check for existing clubs with same normalized name and origin
-            # We use Replace to remove spaces and Lower for case-insensitivity on the DB side
-            queryset = models.Club.objects.annotate(
-                normalized_name_db=Lower(
-                    Replace('name', Value(' '), Value('')))
-            ).filter(
-                normalized_name_db=normalized_name,
-                origin=origin
-            )
-
-            if instance:
-                queryset = queryset.exclude(pk=instance.pk)
-
-            if queryset.exists():
-                origin_name = origin.name if origin else "Global"
-                raise rest_serializers.ValidationError({
-                    'name': f'A club with a very similar name already exists for "{origin_name}". Please choose a more distinct name.'
-                })
-        return data
-
-    def update(self, instance, validated_data):
-        """Handle Slug update on name/origin change"""
-        if 'name' in validated_data or 'origin' in validated_data:
-            name = validated_data.get('name', instance.name)
-            origin = validated_data.get('origin', instance.origin)
-            origin_str = str(origin.id) if origin else "global"
-            instance.slug = slugify(f"{name.strip()}-{origin_str}")
-        return super().update(instance, validated_data)
-
-    def get_origin(self, obj):
-        return obj.origin
-
-
 class ClubAvatarUploadSerializer(rest_serializers.Serializer):
     avatar = rest_serializers.FileField(
         required=True,
@@ -560,9 +477,9 @@ class ClubMemberUpdateSerializer(rest_serializers.Serializer):
     role_id = rest_serializers.IntegerField(required=False)
     role_name = rest_serializers.CharField(required=False)
 
-    def validate(self, data):
-        role_id = data.get('role_id')
-        role_name = data.get('role_name')
+    def validate(self, attrs):
+        role_id = attrs.get('role_id')
+        role_name = attrs.get('role_name')
 
         if not role_id and not role_name:
             raise rest_serializers.ValidationError(
@@ -574,4 +491,4 @@ class ClubMemberUpdateSerializer(rest_serializers.Serializer):
                 "Provide either role_id or role_name, not both"
             )
 
-        return data
+        return attrs

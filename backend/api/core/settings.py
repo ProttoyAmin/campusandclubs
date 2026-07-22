@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_file = BASE_DIR / '.env.local'
 
 if path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
+    load_dotenv(dotenv_file)
 
 
 # Quick-start development settings - unsuitable for production

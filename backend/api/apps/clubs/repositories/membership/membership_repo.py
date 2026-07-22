@@ -1,3 +1,6 @@
+from apps.clubs.models.membership.membership import Membership
+
+
 from django.db.models import QuerySet, Prefetch, Count
 from core.repositories import BaseRepository
 from apps.clubs.models import (
@@ -12,7 +15,7 @@ class MembershipRepository(BaseRepository[Membership]):
     model = Membership
 
     def get_queryset(self) -> QuerySet[Membership]:
-        return super().get_queryset().filter(deleted_at__isnull=True)
+        return super().get_queryset()
 
     def add_role(self, membership: Membership, role: Role, set_as_primary: bool = False) -> Membership:
         membership.roles.add(role)
@@ -20,6 +23,17 @@ class MembershipRepository(BaseRepository[Membership]):
             membership.primary_role = role
             membership.save(update_fields=["primary_role"])
         return membership
+
+    def create_membership(
+        self,
+        club: Club,
+        user: User
+    ) -> Membership:
+        self.create(
+            club=club,
+            user=user,
+        )
+        return self.get_queryset().get(club=club, user=user)
     
     
 

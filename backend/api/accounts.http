@@ -1,16 +1,27 @@
-GET http://127.0.0.1:8000/api/v1/accounts/auth/users/ HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMzgxMzA3LCJpYXQiOjE3NjIzNzk1MDcsImp0aSI6ImJlNDNkNjdiZDVhODRlMWU4OWQ3OTEwNTliMWI2ZjZjIiwidXNlcl9pZCI6IjEifQ.dNZULESUmzIL_bOBiYfkIxiMweQGy6qc-FLM2T-m0gA
+
+@baseUrl = http://127.0.0.1:8000/api/v1/accounts/auth/
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0NzQ3ODI5LCJpYXQiOjE3ODQ3NDQyMjksImp0aSI6ImVhYWY1ZmRiZTM2OTQ3ZjViMmViOGNlNTcxYzg2ZGRiIiwidXNlcl9pZCI6ImU4ZjU5ZjM1LWEzZmItNGQxNy04YmMxLTNmZGI3MjZjNmI2YSJ9.hhf1Zg29fO_NxRPJkM6Ek5Erai_e6jl4ReIUY5yo77I
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzMzNjIyOSwiaWF0IjoxNzg0NzQ0MjI5LCJqdGkiOiI0OTliZThhMWI3OGM0ZjYwOWQzZTYxYzJkMWY3Nzg4YyIsInVzZXJfaWQiOiJlOGY1OWYzNS1hM2ZiLTRkMTctOGJjMS0zZmRiNzI2YzZiNmEifQ.M5nGUZIk1s_NlYdhZpeYf7FUyw2Rv8xHgi8H5Jux5jM
+@clubId = 9af7488b-98e3-4a93-a617-c35dc19a579d
+@postId = 7391907467086532608
+@eventId = 7392190347431907328
+@userId = 3
 
 
 ###
-POST http://127.0.0.1:8000/api/v1/accounts/auth/jwt/logout/ HTTP/1.1
+GET {{baseUrl}}users/ HTTP/1.1
+Authorization: Bearer {{accessToken}}
+
+
+###
+POST {{baseUrl}}jwt/logout/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxODMxMzIzLCJpYXQiOjE3NjE4Mjk1MjQsImp0aSI6IjAzMWQzMmVlODNkZDQ0MDViMWYxZmZlOTk1MDVjNzk5IiwidXNlcl9pZCI6IjEifQ.ZRjQd8m-T67kfiwerlPQbAygXx_LKgfbYHH88ZiLz7k
+Authorization: Bearer {{accessToken}}
 
 
 
 {
-  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MjQzNDMyMywiaWF0IjoxNzYxODI5NTIzLCJqdGkiOiJlY2FmYzgxMTYwMGQ0NGMwYmRlYjA1MmI2ZjFlNWM2NCIsInVzZXJfaWQiOiIxIn0.FpHmW_afsEEMTp7zcud9cqF92jFuMPFHHfdX6r0bbeQ"
+  "refresh": "{{refreshToken}}"
 }
 
 
@@ -18,66 +29,65 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 
 
 ###
-POST http://127.0.0.1:8000/api/v1/accounts/auth/obtain/ HTTP/1.1
+POST {{baseUrl}}login/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username_or_email" : "prottoy",
-    "password" : "12345"
+    "username_or_email" : "anotheruser",
+    "password" : "another@12345"
 }
 
 
 ###
-POST http://127.0.0.1:8000/api/v1/accounts/auth/jwt/refresh/ HTTP/1.1
+POST {{baseUrl}}jwt/refresh/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "refresh" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2NTMxODg5NSwiaWF0IjoxNzYyNzI2ODk1LCJqdGkiOiI4MjlmZTFhMjEyYjM0OTljYWUxOTYyZDY4ZTNhMGVlMiIsInVzZXJfaWQiOiIxIn0.ThhZAPgM_hwM0wlkkmH15nicIY7nqdrIuzYwtK_70bw"
+    "refresh" : "{{refreshToken}}"
 }
 
 ###
-POST http://127.0.0.1:8000/api/v1/accounts/auth/jwt/verify/ HTTP/1.1
+POST {{baseUrl}}jwt/verify/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyOTUxNjI1LCJpYXQiOjE3NjI5NDgwMjUsImp0aSI6IjZhNzYzYjk5ODc4ZDRlMTZiYmY3ZDJjNzQwODhhMzRhIiwidXNlcl9pZCI6IjEifQ.A4HDkfbHdLaS2OiRkrIe-7UF4xtDUBv2z5t7EjLb6fs"
+    "token" : "{{accessToken}}"
 }
 
 
 ###
-POST http://127.0.0.1:8000/api/v1/accounts/auth/register/ HTTP/1.1
+POST {{baseUrl}}register/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username" : "dutty",
-    "email" : "dutty@gmail.com",
-    "password" : "12345",
-    "re_password" : "12345",
-    "edu_mail" : "dutty@g.bracu.ac.bd"
+    "username" : "anotheruser",
+    "email" : "anotheruser@gmail.com",
+    "password" : "another@12345",
+    "re_password" : "another@12345"
 }
 ###
-GET http://127.0.0.1:8000/api/v1/accounts/auth/users/user/prottoy/ HTTP/1.1
+GET {{baseUrl}}users/user/prottoy/ HTTP/1.1
 Content-Type: application/json
-Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMzgxMzA3LCJpYXQiOjE3NjIzNzk1MDcsImp0aSI6ImJlNDNkNjdiZDVhODRlMWU4OWQ3OTEwNTliMWI2ZjZjIiwidXNlcl9pZCI6IjEifQ.dNZULESUmzIL_bOBiYfkIxiMweQGy6qc-FLM2T-m0gA
+Authorization: Bearer {{accessToken}}
 
 
 
 
 # POSTS
 ###
-GET http://127.0.0.1:8000/api/v1/clubs/ HTTP/1.1
+GET {{baseUrl}}clubs/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMzY3MjMwLCJpYXQiOjE3NjIzNjU0MzAsImp0aSI6IjE4MDQyZWMwN2VmZjQyMTg4MWFmMDM2MzVhOTFjMjU3IiwidXNlcl9pZCI6IjEifQ.RWqT2xG-Kep2u-LGKAdMiAVg1zeqLygqVQnpgMOax98
+Authorization: Bearer {{accessToken}}
 
 
 ###
-GET http://127.0.0.1:8000/api/v1/clubs/7391805127385944064/ HTTP/1.1
+GET {{baseUrl}}clubs/{{clubId}}/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMzQ4MDYxLCJpYXQiOjE3NjIzNDYyNjIsImp0aSI6ImMyYjE5NTRmMmVkNTQxYjI4YTNmNTExMGQxNDk3OWU1IiwidXNlcl9pZCI6IjEifQ.z2rPjM2y2Hlrp81_tzOgI1foxYwPHf_OsgKk58jUHQ8
+Authorization: Bearer {{accessToken}}
 
 
 
 ###
-GET http://127.0.0.1:8000/api/v1/clubs/7391852994666434560/members/ HTTP/1.1
+GET {{baseUrl}}clubs/{{clubId}}/members/ HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYyMzY3MjMwLCJpYXQiOjE3NjIzNjU0MzAsImp0aSI6IjE4MDQyZWMwN2VmZjQyMTg4MWFmMDM2MzVhOTFjMjU3IiwidXNlcl9pZCI6IjEifQ.RWqT2xG-Kep2u-LGKAdMiAVg1zeqLygqVQnpgMOax98
+Authorization: Bearer {{accessToken}}

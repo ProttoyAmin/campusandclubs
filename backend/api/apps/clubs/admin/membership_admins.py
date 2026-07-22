@@ -1,20 +1,11 @@
 from django.contrib import admin
-from apps.clubs.models import Membership, MembershipApplicationForm, Role, MembershipApplication, MembershipApplicationResponse
+from apps.clubs.models import Membership, Form, Role, MembershipApplication, MembershipApplicationResponse
 
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 0
     raw_id_fields = ("user", "primary_role", "application")
 
-
-
-
-class MembershipApplicationFormInline(admin.TabularInline):
-    """Questions a club asks on its membership application form."""
-    model = MembershipApplicationForm
-    extra = 0
-    fields = ("question", "type", "required", "order")
-    ordering = ("order",)
 
 
 class MembershipApplicationResponseInline(admin.TabularInline):
@@ -37,14 +28,6 @@ class MembershipApplicationAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("club", "applicant", "reviewed_by")
 
-
-@admin.register(MembershipApplicationForm)
-class MembershipApplicationFormAdmin(admin.ModelAdmin):
-    list_display = ("question", "club", "type", "required", "order")
-    list_filter = ("club", "type", "required")
-    search_fields = ("question", "club__name")
-    raw_id_fields = ("club",)
-    ordering = ("club", "order")
 
 
 @admin.register(Membership)

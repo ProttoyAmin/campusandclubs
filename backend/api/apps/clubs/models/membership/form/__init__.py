@@ -1,13 +1,18 @@
 from .application import MembershipApplication
-from .form_question import MembershipApplicationForm
+from .form import Form
 from .form_response import MembershipApplicationResponse
 from .enums import ApplicationStatus, QuestionType
+from .form_question import FormQuestion
+
 
 
 __all__ = [
     "MembershipApplication",
-    "MembershipApplicationForm",
+
+    "Form",
+    "QuestionType",
+    "FormQuestion",
+    
     "MembershipApplicationResponse",
     "ApplicationStatus",
-    "QuestionType",
 ]

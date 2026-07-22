@@ -1,15 +1,20 @@
 import logging
+from django.utils import timezone
 from django.contrib.auth.base_user import AbstractBaseUser
 from typing import Optional
 from django.db import transaction
 from django.db.models import QuerySet
+from django.views.generic.dates import timezone_today
+from rest_framework.exceptions import ValidationError
 
+from apps.clubs.models import Membership, ApplicationStatus
+from apps.clubs.repositories.form import FormRepository
 from core.services import BaseService
-from apps.clubs.models import Club, Visibility
+from apps.clubs.models import Club, Visibility, MembershipApplication
 from apps.clubs.repositories.club.club_repo import ClubRepository
 from apps.clubs.dtos import ClubListFilters
 from apps.clubs.repositories.role.role_repo import RoleRepository
-from apps.clubs.repositories.membership.membership_repo import MembershipRepository
+from apps.clubs.repositories import MembershipRepository, MembershipApplicationRepository
 
 from apps.accounts.models import User
 
@@ -28,7 +33,10 @@ class ClubService(BaseService[Club, ClubRepository]):
         super().__init__(actor, repository)
         self.role_repository = RoleRepository()
         self.membership_repository = MembershipRepository()
-    
+        self.membership_application_repository = MembershipApplicationRepository()
+        self.form_repository = FormRepository()
+
+
 
     def list_clubs(self, viewer, filters: ClubListFilters) -> QuerySet[Club]:
         clubs = (
@@ -61,5 +69,49 @@ class ClubService(BaseService[Club, ClubRepository]):
         
         return club
 
-    def get_club_detail(self, club_pk, viewer: User) -> QuerySet[Club]:
-        return self.repository.with_list_annotations(self.repository.get_queryset().filter(pk=club_pk), viewer)
+    def get_club_detail(self, club_pk, viewer: User) -> Club:
+        return self.repository.with_list_annotations(self.repository.get_queryset().filter(pk=club_pk), viewer).get()
+
+    def join_club(self, club: Club, user: User) -> Membership:
+        return self.membership_repository.create_membership(club, user)
+
+    def apply_to_club(self, club: Club, user: User, message: str) -> MembershipApplication:
+
+        if self.membership_application_repository.application_exists(club, user):
+            raise ValidationError({"detail": "You already have a pending application for this club."})
+
+        return self.membership_application_repository.create_membership_application(club, user, message)
+
+    def get_membership_applications(self, club: Club) -> QuerySet[MembershipApplication]:
+        return self.membership_application_repository.get_membership_applications(club)
+
+    def approve_application(self, application: MembershipApplication, reviewer: User) -> MembershipApplication:
+        if application.status != ApplicationStatus.PENDING:
+            raise ValidationError({"detail": "Only a pending application can be approved."})
+
+        application.status = ApplicationStatus.APPROVED
+        application.reviewed_by = reviewer
+        application.reviewed_at = timezone.now()
+        application.save(update_fields=["status", "reviewed_by", "reviewed_at"])
+
+        default_role = application.club.roles.filter(is_default=True).first()
+        membership = Membership.objects.create(user=application.applicant, club=application.club, application=application)
+        if default_role:
+            membership.add_role(default_role, set_as_primary=True)
+
+        return application
+
+    def reject_application(self, application: MembershipApplication, reviewer: User) -> MembershipApplication:
+        if application.status != ApplicationStatus.PENDING:
+            raise ValidationError({"detail": "Only a pending application can be rejected."})
+
+        application.status = ApplicationStatus.REJECTED
+        application.reviewed_by = reviewer
+        application.reviewed_at = timezone.now()
+        application.save(update_fields=["status", "reviewed_by", "reviewed_at"])
+        return application
+
+    def withdraw_application(self, application: MembershipApplication) -> MembershipApplication:
+        application.status = ApplicationStatus.WITHDRAWN
+        application.save(update_fields=["status"])
+        return application

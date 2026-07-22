@@ -1,5 +1,6 @@
-from typing import Any
+from typing import Any, TYPE_CHECKING
 import uuid
+
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -13,6 +14,13 @@ from apps.clubs.models.enums import (
 )
 
 from apps.clubs.models.club.club_category import Category
+
+
+if TYPE_CHECKING:
+    from apps.posts.models import Post
+    from apps.clubs.models import Event, Membership, MembershipApplication, Role
+    from django.db.models.fields.related_descriptors import RelatedManager
+
 
 # Visibility -> allowed JoinMode values, and the default for each.
 _ALLOWED_JOIN_MODES: dict[str, tuple[str, ...]] = {
@@ -72,7 +80,7 @@ class Club(models.Model):
     )
 
     allow_public_posts = models.BooleanField(default=True)
-    enable_applications = models.BooleanField(default=False)
+    # enable_applications = models.BooleanField(default=False)
 
     rules = models.TextField(
         blank=True, null=True, default="", help_text="Club rules and guidelines"
@@ -83,7 +91,7 @@ class Club(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="category",
+        related_name="clubs",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -105,6 +113,13 @@ class Club(models.Model):
                 fields=["name", "origin"], name="unique_club_per_institute"
             )
         ]
+
+    if TYPE_CHECKING:
+        posts: RelatedManager["Post"]
+        roles: RelatedManager["Role"]
+        events: RelatedManager["Event"]
+        memberships: RelatedManager["Membership"]
+        applications: RelatedManager["MembershipApplication"]
 
     def clean(self) -> None:
         allowed = _ALLOWED_JOIN_MODES.get(self.privacy, ())

@@ -1,16 +1,17 @@
+import uuid
 from django.db import models
 from .application import MembershipApplication
-from .form_question import MembershipApplicationForm
+from .form_question import FormQuestion
 
 class MembershipApplicationResponse(models.Model):
     """A single answer to a single question, within one application."""
 
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     application = models.ForeignKey(
         MembershipApplication, on_delete=models.CASCADE, related_name="answers"
     )
     question = models.ForeignKey(
-        MembershipApplicationForm, on_delete=models.CASCADE, related_name="answers"
+        FormQuestion, on_delete=models.CASCADE, related_name="answers"
     )
     answer = models.TextField()
 
