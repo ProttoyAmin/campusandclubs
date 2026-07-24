@@ -11,13 +11,17 @@
   },
   "dependencies": {
     "@campus/api": "workspace:*",
+    "@tanstack/react-query": "^5.101.4",
+    "axios": "^1.18.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "typescript-cookie": "^1.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.2",
+    "@tanstack/react-query-devtools": "^5.101.4",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

@@ -5,30 +5,33 @@ import { routes } from "./settings/routes/__main__";
 import { userRoutes } from "./features/user/router";
 import { UserProfileLayout } from "@/layouts/user";
 import { ClubMainLayout } from "./layouts/club";
+import AuthLayout from "./layouts/auth/auth-layout";
 import { clubRoutes } from "./features/club/router";
-
-
+import { authRoutes } from "./features/auth/router";
 
 export const router = createBrowserRouter([
-    {
+  {
+    element: <MainLayout />,
+    children: [
+      {
         element: <MainLayout />,
-        children: [
-            { path: routes.home, element: <App /> }
-        ]
-    },
+        children: [{ path: routes.home, element: <App /> }],
+      },
 
-    
-    {
+      {
+        element: <AuthLayout />,
+        children: [...authRoutes],
+      },
+
+      {
         element: <UserProfileLayout />,
-        children: [
-            ...userRoutes
-        ]
-    },
+        children: [...userRoutes],
+      },
 
-    {
+      {
         element: <ClubMainLayout />,
-        children: [
-            ...clubRoutes
-        ]
-    },
-])
+        children: [...clubRoutes],
+      },
+    ],
+  },
+]);

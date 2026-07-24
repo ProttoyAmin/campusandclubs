@@ -1,5 +1,5 @@
 scripts:
-  activate: cd backend/api && source ./venv/Scripts/activate
+  generate: cd backend/api && python manage.py spectacular --file ../../packages/api/schema/openapi.yaml
   server: cd backend/api && uv run python manage.py runserver
   web: pnpm --filter web dev
   migrations: cd backend/api && uv run python manage.py makemigrations

@@ -125,6 +125,9 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Campus & Clubs API",
     "DESCRIPTION": "Campus & Clubs Backend API",
     "VERSION": "1.0.0",
+    "PREPROCESSING_HOOKS": [
+        "core.openapi.hook.accounts_only",
+    ],
 }
 
 SIMPLE_JWT = {

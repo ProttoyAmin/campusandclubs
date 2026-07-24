@@ -9,352 +9,82 @@ import type {
 } from "./client";
 import { client } from "./client.gen";
 import type {
-  SchemaRetrieveData,
-  SchemaRetrieveResponses,
-  V1AccountsAuthActivityRetrieveData,
-  V1AccountsAuthActivityRetrieveResponses,
-  V1AccountsAuthAllPartialUpdateData,
-  V1AccountsAuthAllPartialUpdateResponses,
-  V1AccountsAuthAllRetrieve2Data,
-  V1AccountsAuthAllRetrieve2Responses,
-  V1AccountsAuthAllRetrieveData,
-  V1AccountsAuthAllRetrieveResponses,
-  V1AccountsAuthAllUpdateData,
-  V1AccountsAuthAllUpdateResponses,
-  V1AccountsAuthClubsRetrieveData,
-  V1AccountsAuthClubsRetrieveResponses,
-  V1AccountsAuthJwtCreateCreateData,
-  V1AccountsAuthJwtCreateCreateResponses,
-  V1AccountsAuthJwtLogoutCreateData,
-  V1AccountsAuthJwtLogoutCreateResponses,
-  V1AccountsAuthJwtRefreshCreateData,
-  V1AccountsAuthJwtRefreshCreateResponses,
-  V1AccountsAuthJwtVerifyCreateData,
-  V1AccountsAuthJwtVerifyCreateResponses,
-  V1AccountsAuthMainClubsRetrieveData,
-  V1AccountsAuthMainClubsRetrieveResponses,
-  V1AccountsAuthMainListData,
-  V1AccountsAuthMainListResponses,
-  V1AccountsAuthMainPartialUpdateData,
-  V1AccountsAuthMainPartialUpdateResponses,
-  V1AccountsAuthMainPostsRetrieveData,
-  V1AccountsAuthMainPostsRetrieveResponses,
-  V1AccountsAuthMainRetrieveData,
-  V1AccountsAuthMainRetrieveResponses,
-  V1AccountsAuthMainRolesRetrieve2Data,
-  V1AccountsAuthMainRolesRetrieve2Responses,
-  V1AccountsAuthMainRolesRetrieveData,
-  V1AccountsAuthMainRolesRetrieveResponses,
-  V1AccountsAuthMainUpdateData,
-  V1AccountsAuthMainUpdateResponses,
-  V1AccountsAuthMeClearProfilePictureCreateData,
-  V1AccountsAuthMeClearProfilePictureCreateResponses,
-  V1AccountsAuthMeEmailPreferencePartialUpdateData,
-  V1AccountsAuthMeEmailPreferencePartialUpdateResponses,
-  V1AccountsAuthMeEmailPreferenceRetrieveData,
-  V1AccountsAuthMeEmailPreferenceRetrieveResponses,
-  V1AccountsAuthMeProfilePartialUpdateData,
-  V1AccountsAuthMeProfilePartialUpdateResponses,
-  V1AccountsAuthMeProfileRetrieveData,
-  V1AccountsAuthMeProfileRetrieveResponses,
-  V1AccountsAuthMeRetrieveData,
-  V1AccountsAuthMeRetrieveResponses,
-  V1AccountsAuthMeUploadProfilePictureCreateData,
-  V1AccountsAuthMeUploadProfilePictureCreateResponses,
-  V1AccountsAuthObtainCreateData,
-  V1AccountsAuthObtainCreateResponses,
-  V1AccountsAuthPostsRetrieveData,
-  V1AccountsAuthPostsRetrieveResponses,
-  V1AccountsAuthRegisterCreateData,
-  V1AccountsAuthRegisterCreateResponses,
-  V1AccountsAuthRetrieveData,
-  V1AccountsAuthRetrieveResponses,
-  V1AccountsAuthRolesClubRetrieveData,
-  V1AccountsAuthRolesClubRetrieveResponses,
-  V1AccountsAuthRolesRetrieveData,
-  V1AccountsAuthRolesRetrieveResponses,
-  V1AccountsAuthTokenLoginCreateData,
-  V1AccountsAuthTokenLoginCreateResponses,
-  V1AccountsAuthTokenLogoutCreateData,
-  V1AccountsAuthTokenLogoutCreateResponses,
-  V1AccountsAuthUsersActivationCreateData,
-  V1AccountsAuthUsersActivationCreateResponses,
-  V1AccountsAuthUsersCreateData,
-  V1AccountsAuthUsersCreateResponses,
-  V1AccountsAuthUsersDestroyData,
-  V1AccountsAuthUsersDestroyResponses,
-  V1AccountsAuthUsersListData,
-  V1AccountsAuthUsersListResponses,
-  V1AccountsAuthUsersMeDestroyData,
-  V1AccountsAuthUsersMeDestroyResponses,
-  V1AccountsAuthUsersMePartialUpdateData,
-  V1AccountsAuthUsersMePartialUpdateResponses,
-  V1AccountsAuthUsersMeRetrieveData,
-  V1AccountsAuthUsersMeRetrieveResponses,
-  V1AccountsAuthUsersMeUpdateData,
-  V1AccountsAuthUsersMeUpdateResponses,
-  V1AccountsAuthUsersPartialUpdateData,
-  V1AccountsAuthUsersPartialUpdateResponses,
-  V1AccountsAuthUsersResendActivationCreateData,
-  V1AccountsAuthUsersResendActivationCreateResponses,
-  V1AccountsAuthUsersResetPasswordConfirmCreateData,
-  V1AccountsAuthUsersResetPasswordConfirmCreateResponses,
-  V1AccountsAuthUsersResetPasswordCreateData,
-  V1AccountsAuthUsersResetPasswordCreateResponses,
-  V1AccountsAuthUsersResetUsernameConfirmCreateData,
-  V1AccountsAuthUsersResetUsernameConfirmCreateResponses,
-  V1AccountsAuthUsersResetUsernameCreateData,
-  V1AccountsAuthUsersResetUsernameCreateResponses,
-  V1AccountsAuthUsersRetrieveData,
-  V1AccountsAuthUsersRetrieveResponses,
-  V1AccountsAuthUsersSetPasswordCreateData,
-  V1AccountsAuthUsersSetPasswordCreateResponses,
-  V1AccountsAuthUsersSetUsernameCreateData,
-  V1AccountsAuthUsersSetUsernameCreateResponses,
-  V1AccountsAuthUsersUpdateData,
-  V1AccountsAuthUsersUpdateResponses,
-  V1AccountsAuthUsersUserRetrieveData,
-  V1AccountsAuthUsersUserRetrieveResponses,
-  V1AccountsAuthValidateCreateData,
-  V1AccountsAuthValidateCreateResponses,
-  V1AccountsAuthValidateRetrieveData,
-  V1AccountsAuthValidateRetrieveResponses,
-  V1AccountsClubsRolesUsersRetrieveData,
-  V1AccountsClubsRolesUsersRetrieveResponses,
-  V1AccountsClubsUsersAssignRoleCreateData,
-  V1AccountsClubsUsersAssignRoleCreateResponses,
-  V1AccountsClubsUsersCheckPermissionRetrieveData,
-  V1AccountsClubsUsersCheckPermissionRetrieveResponses,
-  V1AccountsClubsUsersRemoveRoleCreateData,
-  V1AccountsClubsUsersRemoveRoleCreateResponses,
-  V1AccountsSearchRetrieveData,
-  V1AccountsSearchRetrieveResponses,
-  V1ActivitiesCommentsCreateCreateData,
-  V1ActivitiesCommentsCreateCreateResponses,
-  V1ActivitiesCommentsDestroyData,
-  V1ActivitiesCommentsDestroyResponses,
-  V1ActivitiesCommentsPartialUpdateData,
-  V1ActivitiesCommentsPartialUpdateResponses,
-  V1ActivitiesCommentsRepliesRetrieveData,
-  V1ActivitiesCommentsRepliesRetrieveResponses,
-  V1ActivitiesCommentsRetrieve2Data,
-  V1ActivitiesCommentsRetrieve2Responses,
-  V1ActivitiesCommentsRetrieveData,
-  V1ActivitiesCommentsRetrieveResponses,
-  V1ActivitiesLikesCheckRetrieveData,
-  V1ActivitiesLikesCheckRetrieveResponses,
-  V1ActivitiesLikesRetrieveData,
-  V1ActivitiesLikesRetrieveResponses,
-  V1ActivitiesLikesToggleCreateData,
-  V1ActivitiesLikesToggleCreateResponses,
-  V1ClubsCreateCreateData,
-  V1ClubsCreateCreateResponses,
-  V1ClubsDestroyData,
-  V1ClubsDestroyResponses,
-  V1ClubsEventsCreateCreateData,
-  V1ClubsEventsCreateCreateResponses,
-  V1ClubsEventsDestroyData,
-  V1ClubsEventsDestroyResponses,
-  V1ClubsEventsJoinCreateData,
-  V1ClubsEventsJoinCreateResponses,
-  V1ClubsEventsLeaveCreateData,
-  V1ClubsEventsLeaveCreateResponses,
-  V1ClubsEventsMyRetrieveData,
-  V1ClubsEventsMyRetrieveResponses,
-  V1ClubsEventsPartialUpdateData,
-  V1ClubsEventsPartialUpdateResponses,
-  V1ClubsEventsParticipantsRetrieveData,
-  V1ClubsEventsParticipantsRetrieveResponses,
-  V1ClubsEventsPublicRetrieveData,
-  V1ClubsEventsPublicRetrieveResponses,
-  V1ClubsEventsRetrieve2Data,
-  V1ClubsEventsRetrieve2Responses,
-  V1ClubsEventsRetrieveData,
-  V1ClubsEventsRetrieveResponses,
-  V1ClubsEventsStatusCreateData,
-  V1ClubsEventsStatusCreateResponses,
-  V1ClubsInvitesAcceptCreateData,
-  V1ClubsInvitesAcceptCreateResponses,
-  V1ClubsInvitesMeRetrieveData,
-  V1ClubsInvitesMeRetrieveResponses,
-  V1ClubsInvitesRetrieveData,
-  V1ClubsInvitesRetrieveResponses,
-  V1ClubsJoinCreateData,
-  V1ClubsJoinCreateResponses,
-  V1ClubsLeaveCreateData,
-  V1ClubsLeaveCreateResponses,
-  V1ClubsMembersInviteCreateData,
-  V1ClubsMembersInviteCreateResponses,
-  V1ClubsMembersRemoveDestroyData,
-  V1ClubsMembersRemoveDestroyResponses,
-  V1ClubsMembersRetrieve2Data,
-  V1ClubsMembersRetrieve2Responses,
-  V1ClubsMembersRetrieveData,
-  V1ClubsMembersRetrieveResponses,
-  V1ClubsMembersRolePartialUpdateData,
-  V1ClubsMembersRolePartialUpdateResponses,
-  V1ClubsMembersSearchRetrieveData,
-  V1ClubsMembersSearchRetrieveResponses,
-  V1ClubsOriginRetrieveData,
-  V1ClubsOriginRetrieveResponses,
-  V1ClubsPartialUpdateData,
-  V1ClubsPartialUpdateResponses,
-  V1ClubsPermissionsRetrieveData,
-  V1ClubsPermissionsRetrieveResponses,
-  V1ClubsPostsRetrieveData,
-  V1ClubsPostsRetrieveResponses,
-  V1ClubsRecommendedRetrieveData,
-  V1ClubsRecommendedRetrieveResponses,
-  V1ClubsRetrieve2Data,
-  V1ClubsRetrieve2Responses,
-  V1ClubsRetrieveData,
-  V1ClubsRetrieveResponses,
-  V1ClubsRolesAssignCreateData,
-  V1ClubsRolesAssignCreateResponses,
-  V1ClubsRolesCreateCreateData,
-  V1ClubsRolesCreateCreateResponses,
-  V1ClubsRolesDestroyData,
-  V1ClubsRolesDestroyResponses,
-  V1ClubsRolesPartialUpdateData,
-  V1ClubsRolesPartialUpdateResponses,
-  V1ClubsRolesPermissionsRetrieveData,
-  V1ClubsRolesPermissionsRetrieveResponses,
-  V1ClubsRolesRetrieveData,
-  V1ClubsRolesRetrieveResponses,
-  V1ClubsRolesSetPrimaryRoleCreateData,
-  V1ClubsRolesSetPrimaryRoleCreateResponses,
-  V1ClubsRolesUserRetrieveData,
-  V1ClubsRolesUserRetrieveResponses,
-  V1ClubsRolesUsersRetrieve2Data,
-  V1ClubsRolesUsersRetrieve2Responses,
-  V1ClubsRolesUsersRetrieveData,
-  V1ClubsRolesUsersRetrieveResponses,
-  V1ClubsSearchRetrieveData,
-  V1ClubsSearchRetrieveResponses,
-  V1ClubsStatsRetrieveData,
-  V1ClubsStatsRetrieveResponses,
-  V1ClubsTestManagerRetrieveData,
-  V1ClubsTestManagerRetrieveResponses,
-  V1ClubsTrendingRetrieveData,
-  V1ClubsTrendingRetrieveResponses,
-  V1ClubsUploadMediaCreateData,
-  V1ClubsUploadMediaCreateResponses,
-  V1ClubsUploadMediaDestroyData,
-  V1ClubsUploadMediaDestroyResponses,
-  V1ClubsUploadMediaPartialUpdateData,
-  V1ClubsUploadMediaPartialUpdateResponses,
-  V1ConnectionsBlockCreateData,
-  V1ConnectionsBlockCreateResponses,
-  V1ConnectionsBlockedRetrieveData,
-  V1ConnectionsBlockedRetrieveResponses,
-  V1ConnectionsFollowersRetrieveData,
-  V1ConnectionsFollowersRetrieveResponses,
-  V1ConnectionsFollowingRetrieveData,
-  V1ConnectionsFollowingRetrieveResponses,
-  V1ConnectionsMutualRetrieveData,
-  V1ConnectionsMutualRetrieveResponses,
-  V1ConnectionsRelationsConnectedRetrieveData,
-  V1ConnectionsRelationsConnectedRetrieveResponses,
-  V1ConnectionsRelationshipRetrieveData,
-  V1ConnectionsRelationshipRetrieveResponses,
-  V1ConnectionsRelationsPendingRetrieveData,
-  V1ConnectionsRelationsPendingRetrieveResponses,
-  V1ConnectionsRelationsRetrieveData,
-  V1ConnectionsRelationsRetrieveResponses,
-  V1ConnectionsRelationsSentRetrieveData,
-  V1ConnectionsRelationsSentRetrieveResponses,
-  V1ConnectionsRemoveDestroyData,
-  V1ConnectionsRemoveDestroyResponses,
-  V1ConnectionsRequestsAcceptCreateData,
-  V1ConnectionsRequestsAcceptCreateResponses,
-  V1ConnectionsRequestsRejectCreateData,
-  V1ConnectionsRequestsRejectCreateResponses,
-  V1ConnectionsRequestsRetrieveData,
-  V1ConnectionsRequestsRetrieveResponses,
-  V1ConnectionsStatusRetrieveData,
-  V1ConnectionsStatusRetrieveResponses,
-  V1ConnectionsSuggestionsRetrieveData,
-  V1ConnectionsSuggestionsRetrieveResponses,
-  V1ConnectionsToggleCreateData,
-  V1ConnectionsToggleCreateResponses,
-  V1ConnectionsUnblockCreateData,
-  V1ConnectionsUnblockCreateResponses,
-  V1InstitutesRetrieve2Data,
-  V1InstitutesRetrieve2Responses,
-  V1InstitutesRetrieveData,
-  V1InstitutesRetrieveResponses,
-  V1NotificationsClearDestroyData,
-  V1NotificationsClearDestroyResponses,
-  V1NotificationsCommentsRetrieveData,
-  V1NotificationsCommentsRetrieveResponses,
-  V1NotificationsCountsRetrieveData,
-  V1NotificationsCountsRetrieveResponses,
-  V1NotificationsDeleteDestroyData,
-  V1NotificationsDeleteDestroyResponses,
-  V1NotificationsDeliveriesRetrieveData,
-  V1NotificationsDeliveriesRetrieveResponses,
-  V1NotificationsFollowAcceptsRetrieveData,
-  V1NotificationsFollowAcceptsRetrieveResponses,
-  V1NotificationsFollowRequestsRetrieveData,
-  V1NotificationsFollowRequestsRetrieveResponses,
-  V1NotificationsLikesRetrieveData,
-  V1NotificationsLikesRetrieveResponses,
-  V1NotificationsMarkAllReadCreateData,
-  V1NotificationsMarkAllReadCreateResponses,
-  V1NotificationsMarkAllSeenCreateData,
-  V1NotificationsMarkAllSeenCreateResponses,
-  V1NotificationsPostsRetrieveData,
-  V1NotificationsPostsRetrieveResponses,
-  V1NotificationsReadCreateData,
-  V1NotificationsReadCreateResponses,
-  V1NotificationsRetrieve2Data,
-  V1NotificationsRetrieve2Responses,
-  V1NotificationsRetrieveData,
-  V1NotificationsRetrieveResponses,
-  V1NotificationsSeenCreateData,
-  V1NotificationsSeenCreateResponses,
-  V1PostsCommentsCreateCreateData,
-  V1PostsCommentsCreateCreateResponses,
-  V1PostsCommentsDestroyData,
-  V1PostsCommentsDestroyResponses,
-  V1PostsCommentsLikeCreateData,
-  V1PostsCommentsLikeCreateResponses,
-  V1PostsCommentsPartialUpdateData,
-  V1PostsCommentsPartialUpdateResponses,
-  V1PostsCommentsRepliesRetrieveData,
-  V1PostsCommentsRepliesRetrieveResponses,
-  V1PostsCommentsRetrieveData,
-  V1PostsCommentsRetrieveResponses,
-  V1PostsCreateCreateData,
-  V1PostsCreateCreateResponses,
-  V1PostsCreateMixedMediaCreateData,
-  V1PostsCreateMixedMediaCreateResponses,
-  V1PostsCreateWithMediaCreateData,
-  V1PostsCreateWithMediaCreateResponses,
-  V1PostsDestroyData,
-  V1PostsDestroyResponses,
-  V1PostsFeedRetrieveData,
-  V1PostsFeedRetrieveResponses,
-  V1PostsLikeCreateData,
-  V1PostsLikeCreateResponses,
-  V1PostsLikesRetrieveData,
-  V1PostsLikesRetrieveResponses,
-  V1PostsPartialUpdateData,
-  V1PostsPartialUpdateResponses,
-  V1PostsRepostCreateData,
-  V1PostsRepostCreateResponses,
-  V1PostsRetrieve2Data,
-  V1PostsRetrieve2Responses,
-  V1PostsRetrieveData,
-  V1PostsRetrieveResponses,
-  V1PostsShareCreateData,
-  V1PostsShareCreateResponses,
-  V1PostsSharesRetrieveData,
-  V1PostsSharesRetrieveResponses,
-  V1PostsTrendingRetrieveData,
-  V1PostsTrendingRetrieveResponses,
-  V1PostsUploadMediaCreateData,
-  V1PostsUploadMediaCreateResponses,
+  AllCreateData,
+  AllCreateResponses,
+  AllListData,
+  AllListResponses,
+  AllPartialUpdateData,
+  AllPartialUpdateResponses,
+  AllRetrieveData,
+  AllRetrieveResponses,
+  AllUpdateData,
+  AllUpdateResponses,
+  JwtCreateCreateData,
+  JwtCreateCreateResponses,
+  JwtRefreshCreateData,
+  JwtRefreshCreateResponses,
+  JwtVerifyCreateData,
+  JwtVerifyCreateResponses,
+  LoginCreateData,
+  LoginCreateResponses,
+  LogoutCreateData,
+  LogoutCreateResponses,
+  RegisterCreateData,
+  RegisterCreateResponses,
+  RequestInfoRetrieveData,
+  RequestInfoRetrieveResponses,
+  UsersActivationCreateData,
+  UsersActivationCreateResponses,
+  UsersActivityRetrieveData,
+  UsersActivityRetrieveResponses,
+  UsersClubsRetrieveData,
+  UsersClubsRetrieveResponses,
+  UsersCreateData,
+  UsersCreateResponses,
+  UsersDestroyData,
+  UsersDestroyResponses,
+  UsersListData,
+  UsersListResponses,
+  UsersMeDestroyData,
+  UsersMeDestroyResponses,
+  UsersMePartialUpdateData,
+  UsersMePartialUpdateResponses,
+  UsersMeRetrieveData,
+  UsersMeRetrieveResponses,
+  UsersMeUpdateData,
+  UsersMeUpdateResponses,
+  UsersPartialUpdateData,
+  UsersPartialUpdateResponses,
+  UsersResendActivationCreateData,
+  UsersResendActivationCreateResponses,
+  UsersResetPasswordConfirmCreateData,
+  UsersResetPasswordConfirmCreateResponses,
+  UsersResetPasswordCreateData,
+  UsersResetPasswordCreateResponses,
+  UsersResetUsernameConfirmCreateData,
+  UsersResetUsernameConfirmCreateResponses,
+  UsersResetUsernameCreateData,
+  UsersResetUsernameCreateResponses,
+  UsersRetrieveData,
+  UsersRetrieveResponses,
+  UsersSetPasswordCreateData,
+  UsersSetPasswordCreateResponses,
+  UsersSetUsernameCreateData,
+  UsersSetUsernameCreateResponses,
+  UsersUpdateData,
+  UsersUpdateResponses,
+  UsersUserDestroyData,
+  UsersUserDestroyResponses,
+  UsersUserPartialUpdateData,
+  UsersUserPartialUpdateResponses,
+  UsersUserRetrieveData,
+  UsersUserRetrieveResponses,
+  UsersUserUpdateData,
+  UsersUserUpdateResponses,
+  ValidateCreateData,
+  ValidateCreateResponses,
+  ValidateRetrieveData,
+  ValidateRetrieveResponses,
 } from "./types.gen";
 
 export type Options<
@@ -375,94 +105,10 @@ export type Options<
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-/**
- * OpenApi3 schema for this API. Format can be selected via content negotiation.
- *
- * - YAML: application/vnd.oai.openapi
- * - JSON: application/vnd.oai.openapi+json
- */
-export const schemaRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<SchemaRetrieveData, ThrowOnError>,
-): RequestResult<SchemaRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    SchemaRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/schema/",
-    ...options,
-  });
-
-/**
- * Get any user's public profile
- */
-export const v1AccountsAuthRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1AccountsAuthRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/",
-    ...options,
-  });
-
-/**
- * Get user's recent activity (likes, comments, shares)
- */
-export const v1AccountsAuthActivityRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthActivityRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthActivityRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthActivityRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/activity/",
-    ...options,
-  });
-
-export const v1AccountsAuthAllRetrieve2 = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthAllRetrieve2Data, ThrowOnError>,
-): RequestResult<V1AccountsAuthAllRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthAllRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
+export const allRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AllRetrieveData, ThrowOnError>,
+): RequestResult<AllRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<AllRetrieveResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -475,17 +121,11 @@ export const v1AccountsAuthAllRetrieve2 = <
     ...options,
   });
 
-export const v1AccountsAuthAllPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthAllPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthAllPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const allPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AllPartialUpdateData, ThrowOnError>,
+): RequestResult<AllPartialUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    V1AccountsAuthAllPartialUpdateResponses,
+    AllPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -505,14 +145,10 @@ export const v1AccountsAuthAllPartialUpdate = <
     },
   });
 
-export const v1AccountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1AccountsAuthAllUpdateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthAllUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    V1AccountsAuthAllUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const allUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AllUpdateData, ThrowOnError>,
+): RequestResult<AllUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<AllUpdateResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -530,123 +166,12 @@ export const v1AccountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * Get all clubs a user has joined
+ * User List and Create View
  */
-export const v1AccountsAuthClubsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthClubsRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthClubsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthClubsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/clubs/",
-    ...options,
-  });
-
-/**
- * Get all posts created by a user (both user posts and club posts)
- * Query params:
- * - source: all|user|club (default: all)
- * - post_type: TEXT|IMAGE|VIDEO (default: all)
- */
-export const v1AccountsAuthPostsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthPostsRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthPostsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/posts/",
-    ...options,
-  });
-
-/**
- * Get all roles for a user across all clubs
- */
-export const v1AccountsAuthRolesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthRolesRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthRolesRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthRolesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/roles/",
-    ...options,
-  });
-
-/**
- * Get user's roles in a specific club
- */
-export const v1AccountsAuthRolesClubRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthRolesClubRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthRolesClubRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthRolesClubRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/{user_id}/roles/club/{club_id}/",
-    ...options,
-  });
-
-/**
- * Get any user's public profile
- */
-export const v1AccountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1AccountsAuthAllRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthAllRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1AccountsAuthAllRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const allList = <ThrowOnError extends boolean = false>(
+  options?: Options<AllListData, ThrowOnError>,
+): RequestResult<AllListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<AllListResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -660,20 +185,37 @@ export const v1AccountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * User List and Create View
+ */
+export const allCreate = <ThrowOnError extends boolean = false>(
+  options: Options<AllCreateData, ThrowOnError>,
+): RequestResult<AllCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<AllCreateResponses, unknown, ThrowOnError>({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/all/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
  * Takes a set of user credentials and returns an access and refresh JSON web
  * token pair to prove the authentication of those credentials.
  */
-export const v1AccountsAuthJwtCreateCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthJwtCreateCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthJwtCreateCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const jwtCreateCreate = <ThrowOnError extends boolean = false>(
+  options: Options<JwtCreateCreateData, ThrowOnError>,
+): RequestResult<JwtCreateCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthJwtCreateCreateResponses,
+    JwtCreateCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -685,47 +227,15 @@ export const v1AccountsAuthJwtCreateCreate = <
     },
   });
 
-export const v1AccountsAuthJwtLogoutCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthJwtLogoutCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthJwtLogoutCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1AccountsAuthJwtLogoutCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/jwt/logout/",
-    ...options,
-  });
-
 /**
  * Takes a refresh type JSON web token and returns an access type JSON web
  * token if the refresh token is valid.
  */
-export const v1AccountsAuthJwtRefreshCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthJwtRefreshCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthJwtRefreshCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const jwtRefreshCreate = <ThrowOnError extends boolean = false>(
+  options: Options<JwtRefreshCreateData, ThrowOnError>,
+): RequestResult<JwtRefreshCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthJwtRefreshCreateResponses,
+    JwtRefreshCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -741,17 +251,11 @@ export const v1AccountsAuthJwtRefreshCreate = <
  * Takes a token and indicates if it is valid.  This view provides no
  * information about a token's fitness for a particular use.
  */
-export const v1AccountsAuthJwtVerifyCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthJwtVerifyCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthJwtVerifyCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const jwtVerifyCreate = <ThrowOnError extends boolean = false>(
+  options: Options<JwtVerifyCreateData, ThrowOnError>,
+): RequestResult<JwtVerifyCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthJwtVerifyCreateResponses,
+    JwtVerifyCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -764,450 +268,14 @@ export const v1AccountsAuthJwtVerifyCreate = <
   });
 
 /**
- * User ViewSet with extended functionality
- */
-export const v1AccountsAuthMainList = <ThrowOnError extends boolean = false>(
-  options?: Options<V1AccountsAuthMainListData, ThrowOnError>,
-): RequestResult<V1AccountsAuthMainListResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1AccountsAuthMainListResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/",
-    ...options,
-  });
-
-/**
- * User ViewSet with extended functionality
- */
-export const v1AccountsAuthMainRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthMainRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthMainRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/",
-    ...options,
-  });
-
-/**
- * User ViewSet with extended functionality
- */
-export const v1AccountsAuthMainPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMainPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    V1AccountsAuthMainPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-/**
- * User ViewSet with extended functionality
- */
-export const v1AccountsAuthMainUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1AccountsAuthMainUpdateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthMainUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    V1AccountsAuthMainUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-/**
- * Get user's clubs
- */
-export const v1AccountsAuthMainClubsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainClubsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMainClubsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthMainClubsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/clubs/",
-    ...options,
-  });
-
-/**
- * Get user's posts
- */
-export const v1AccountsAuthMainPostsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainPostsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMainPostsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthMainPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/posts/",
-    ...options,
-  });
-
-/**
- * Get all roles for user across clubs
- */
-export const v1AccountsAuthMainRolesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainRolesRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMainRolesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthMainRolesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/roles/",
-    ...options,
-  });
-
-/**
- * Get user's roles in a specific club
- */
-export const v1AccountsAuthMainRolesRetrieve2 = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthMainRolesRetrieve2Data, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMainRolesRetrieve2Responses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthMainRolesRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/main/{id}/roles/{club_id}/",
-    ...options,
-  });
-
-/**
- * Get current authenticated user's profile
- */
-export const v1AccountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1AccountsAuthMeRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthMeRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1AccountsAuthMeRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/",
-    ...options,
-  });
-
-/**
- * Clear the authenticated user's profile picture
- */
-export const v1AccountsAuthMeClearProfilePictureCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<
-    V1AccountsAuthMeClearProfilePictureCreateData,
-    ThrowOnError
-  >,
-): RequestResult<
-  V1AccountsAuthMeClearProfilePictureCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1AccountsAuthMeClearProfilePictureCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/clear-profile-picture/",
-    ...options,
-  });
-
-/**
- * Get or update user's email preference for notifications
- */
-export const v1AccountsAuthMeEmailPreferenceRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthMeEmailPreferenceRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMeEmailPreferenceRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1AccountsAuthMeEmailPreferenceRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/email-preference/",
-    ...options,
-  });
-
-/**
- * Get or update user's email preference for notifications
- */
-export const v1AccountsAuthMeEmailPreferencePartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<
-    V1AccountsAuthMeEmailPreferencePartialUpdateData,
-    ThrowOnError
-  >,
-): RequestResult<
-  V1AccountsAuthMeEmailPreferencePartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).patch<
-    V1AccountsAuthMeEmailPreferencePartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/email-preference/",
-    ...options,
-  });
-
-/**
- * Get or update current user's profile
- */
-export const v1AccountsAuthMeProfileRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthMeProfileRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMeProfileRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1AccountsAuthMeProfileRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/profile/",
-    ...options,
-  });
-
-/**
- * Get or update current user's profile
- */
-export const v1AccountsAuthMeProfilePartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthMeProfilePartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthMeProfilePartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).patch<
-    V1AccountsAuthMeProfilePartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/profile/",
-    ...options,
-  });
-
-/**
- * Upload a new profile picture for the authenticated user
- */
-export const v1AccountsAuthMeUploadProfilePictureCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<
-    V1AccountsAuthMeUploadProfilePictureCreateData,
-    ThrowOnError
-  >,
-): RequestResult<
-  V1AccountsAuthMeUploadProfilePictureCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1AccountsAuthMeUploadProfilePictureCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/me/upload-profile-picture/",
-    ...options,
-  });
-
-/**
  * Takes a set of user credentials and returns an access and refresh JSON web
  * token pair to prove the authentication of those credentials.
  */
-export const v1AccountsAuthObtainCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthObtainCreateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthObtainCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1AccountsAuthObtainCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    url: "/api/v1/accounts/auth/obtain/",
+export const loginCreate = <ThrowOnError extends boolean = false>(
+  options: Options<LoginCreateData, ThrowOnError>,
+): RequestResult<LoginCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<LoginCreateResponses, unknown, ThrowOnError>({
+    url: "/api/v1/accounts/auth/login/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1215,17 +283,31 @@ export const v1AccountsAuthObtainCreate = <
     },
   });
 
-export const v1AccountsAuthRegisterCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthRegisterCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthRegisterCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const logoutCreate = <ThrowOnError extends boolean = false>(
+  options?: Options<LogoutCreateData, ThrowOnError>,
+): RequestResult<LogoutCreateResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).post<
+    LogoutCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/logout/",
+    ...options,
+  });
+
+export const registerCreate = <ThrowOnError extends boolean = false>(
+  options: Options<RegisterCreateData, ThrowOnError>,
+): RequestResult<RegisterCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthRegisterCreateResponses,
+    RegisterCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1245,76 +327,30 @@ export const v1AccountsAuthRegisterCreate = <
     },
   });
 
-/**
- * Use this endpoint to obtain user authentication token.
- */
-export const v1AccountsAuthTokenLoginCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthTokenLoginCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthTokenLoginCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1AccountsAuthTokenLoginCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/token/login/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
-
-/**
- * Use this endpoint to logout user (remove user authentication token).
- */
-export const v1AccountsAuthTokenLogoutCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthTokenLogoutCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthTokenLogoutCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1AccountsAuthTokenLogoutCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/token/logout/",
-    ...options,
-  });
-
-export const v1AccountsAuthUsersList = <ThrowOnError extends boolean = false>(
-  options?: Options<V1AccountsAuthUsersListData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersListResponses, unknown, ThrowOnError> =>
+export const requestInfoRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<RequestInfoRetrieveData, ThrowOnError>,
+): RequestResult<RequestInfoRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    V1AccountsAuthUsersListResponses,
+    RequestInfoRetrieveResponses,
     unknown,
     ThrowOnError
   >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/request-info/",
+    ...options,
+  });
+
+export const usersList = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersListData, ThrowOnError>,
+): RequestResult<UsersListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<UsersListResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -1327,14 +363,10 @@ export const v1AccountsAuthUsersList = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const v1AccountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1AccountsAuthUsersCreateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1AccountsAuthUsersCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const usersCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersCreateData, ThrowOnError>,
+): RequestResult<UsersCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<UsersCreateResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -1351,13 +383,11 @@ export const v1AccountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const v1AccountsAuthUsersDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersDestroyData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersDestroyResponses, unknown, ThrowOnError> =>
+export const usersDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<UsersDestroyData, ThrowOnError>,
+): RequestResult<UsersDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    V1AccountsAuthUsersDestroyResponses,
+    UsersDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1373,39 +403,29 @@ export const v1AccountsAuthUsersDestroy = <
     ...options,
   });
 
-export const v1AccountsAuthUsersRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1AccountsAuthUsersRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{id}/",
-    ...options,
-  });
+export const usersRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<UsersRetrieveData, ThrowOnError>,
+): RequestResult<UsersRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<UsersRetrieveResponses, unknown, ThrowOnError>(
+    {
+      security: [
+        { scheme: "bearer", type: "http" },
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/v1/accounts/auth/users/{id}/",
+      ...options,
+    },
+  );
 
-export const v1AccountsAuthUsersPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersPartialUpdateData, ThrowOnError>,
+): RequestResult<UsersPartialUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    V1AccountsAuthUsersPartialUpdateResponses,
+    UsersPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1425,14 +445,10 @@ export const v1AccountsAuthUsersPartialUpdate = <
     },
   });
 
-export const v1AccountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1AccountsAuthUsersUpdateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    V1AccountsAuthUsersUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const usersUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersUpdateData, ThrowOnError>,
+): RequestResult<UsersUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<UsersUpdateResponses, unknown, ThrowOnError>({
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -1449,17 +465,57 @@ export const v1AccountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const v1AccountsAuthUsersActivationCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersActivationCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersActivationCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+/**
+ * Get user's recent activity (likes, comments, shares)
+ */
+export const usersActivityRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<UsersActivityRetrieveData, ThrowOnError>,
+): RequestResult<UsersActivityRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    UsersActivityRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{user_id}/activity/",
+    ...options,
+  });
+
+/**
+ * Get all clubs a user has joined
+ */
+export const usersClubsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<UsersClubsRetrieveData, ThrowOnError>,
+): RequestResult<UsersClubsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    UsersClubsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{user_id}/clubs/",
+    ...options,
+  });
+
+export const usersActivationCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersActivationCreateData, ThrowOnError>,
+): RequestResult<UsersActivationCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersActivationCreateResponses,
+    UsersActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1479,17 +535,11 @@ export const v1AccountsAuthUsersActivationCreate = <
     },
   });
 
-export const v1AccountsAuthUsersMeDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthUsersMeDestroyData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersMeDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersMeDestroy = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersMeDestroyData, ThrowOnError>,
+): RequestResult<UsersMeDestroyResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).delete<
-    V1AccountsAuthUsersMeDestroyResponses,
+    UsersMeDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1505,17 +555,11 @@ export const v1AccountsAuthUsersMeDestroy = <
     ...options,
   });
 
-export const v1AccountsAuthUsersMeRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthUsersMeRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersMeRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersMeRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersMeRetrieveData, ThrowOnError>,
+): RequestResult<UsersMeRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    V1AccountsAuthUsersMeRetrieveResponses,
+    UsersMeRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1531,17 +575,11 @@ export const v1AccountsAuthUsersMeRetrieve = <
     ...options,
   });
 
-export const v1AccountsAuthUsersMePartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthUsersMePartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersMePartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersMePartialUpdate = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersMePartialUpdateData, ThrowOnError>,
+): RequestResult<UsersMePartialUpdateResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).patch<
-    V1AccountsAuthUsersMePartialUpdateResponses,
+    UsersMePartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1561,43 +599,35 @@ export const v1AccountsAuthUsersMePartialUpdate = <
     },
   });
 
-export const v1AccountsAuthUsersMeUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersMeUpdateData, ThrowOnError>,
-): RequestResult<V1AccountsAuthUsersMeUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    V1AccountsAuthUsersMeUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
+export const usersMeUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersMeUpdateData, ThrowOnError>,
+): RequestResult<UsersMeUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<UsersMeUpdateResponses, unknown, ThrowOnError>(
+    {
+      security: [
+        { scheme: "bearer", type: "http" },
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/v1/accounts/auth/users/me/",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
       },
-    ],
-    url: "/api/v1/accounts/auth/users/me/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
     },
-  });
+  );
 
-export const v1AccountsAuthUsersResendActivationCreate = <
+export const usersResendActivationCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<V1AccountsAuthUsersResendActivationCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersResendActivationCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<UsersResendActivationCreateData, ThrowOnError>,
+): RequestResult<UsersResendActivationCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersResendActivationCreateResponses,
+    UsersResendActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1617,17 +647,11 @@ export const v1AccountsAuthUsersResendActivationCreate = <
     },
   });
 
-export const v1AccountsAuthUsersResetPasswordCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersResetPasswordCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersResetPasswordCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersResetPasswordCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersResetPasswordCreateData, ThrowOnError>,
+): RequestResult<UsersResetPasswordCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersResetPasswordCreateResponses,
+    UsersResetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1647,20 +671,17 @@ export const v1AccountsAuthUsersResetPasswordCreate = <
     },
   });
 
-export const v1AccountsAuthUsersResetPasswordConfirmCreate = <
+export const usersResetPasswordConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<
-    V1AccountsAuthUsersResetPasswordConfirmCreateData,
-    ThrowOnError
-  >,
+  options: Options<UsersResetPasswordConfirmCreateData, ThrowOnError>,
 ): RequestResult<
-  V1AccountsAuthUsersResetPasswordConfirmCreateResponses,
+  UsersResetPasswordConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersResetPasswordConfirmCreateResponses,
+    UsersResetPasswordConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1680,17 +701,11 @@ export const v1AccountsAuthUsersResetPasswordConfirmCreate = <
     },
   });
 
-export const v1AccountsAuthUsersResetUsernameCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersResetUsernameCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersResetUsernameCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersResetUsernameCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersResetUsernameCreateData, ThrowOnError>,
+): RequestResult<UsersResetUsernameCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersResetUsernameCreateResponses,
+    UsersResetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1710,20 +725,17 @@ export const v1AccountsAuthUsersResetUsernameCreate = <
     },
   });
 
-export const v1AccountsAuthUsersResetUsernameConfirmCreate = <
+export const usersResetUsernameConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<
-    V1AccountsAuthUsersResetUsernameConfirmCreateData,
-    ThrowOnError
-  >,
+  options: Options<UsersResetUsernameConfirmCreateData, ThrowOnError>,
 ): RequestResult<
-  V1AccountsAuthUsersResetUsernameConfirmCreateResponses,
+  UsersResetUsernameConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersResetUsernameConfirmCreateResponses,
+    UsersResetUsernameConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1743,17 +755,11 @@ export const v1AccountsAuthUsersResetUsernameConfirmCreate = <
     },
   });
 
-export const v1AccountsAuthUsersSetPasswordCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersSetPasswordCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersSetPasswordCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersSetPasswordCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersSetPasswordCreateData, ThrowOnError>,
+): RequestResult<UsersSetPasswordCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersSetPasswordCreateResponses,
+    UsersSetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1773,17 +779,11 @@ export const v1AccountsAuthUsersSetPasswordCreate = <
     },
   });
 
-export const v1AccountsAuthUsersSetUsernameCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersSetUsernameCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersSetUsernameCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const usersSetUsernameCreate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersSetUsernameCreateData, ThrowOnError>,
+): RequestResult<UsersSetUsernameCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthUsersSetUsernameCreateResponses,
+    UsersSetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1804,19 +804,13 @@ export const v1AccountsAuthUsersSetUsernameCreate = <
   });
 
 /**
- * Get user profile by username
+ * User Detail View
  */
-export const v1AccountsAuthUsersUserRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthUsersUserRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthUsersUserRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsAuthUsersUserRetrieveResponses,
+export const usersUserDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<UsersUserDestroyData, ThrowOnError>,
+): RequestResult<UsersUserDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    UsersUserDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1832,17 +826,88 @@ export const v1AccountsAuthUsersUserRetrieve = <
     ...options,
   });
 
-export const v1AccountsAuthValidateRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1AccountsAuthValidateRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthValidateRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+/**
+ * User Detail View
+ */
+export const usersUserRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<UsersUserRetrieveData, ThrowOnError>,
+): RequestResult<UsersUserRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    UsersUserRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/user/{username}/",
+    ...options,
+  });
+
+/**
+ * User Detail View
+ */
+export const usersUserPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersUserPartialUpdateData, ThrowOnError>,
+): RequestResult<UsersUserPartialUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).patch<
+    UsersUserPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/user/{username}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * User Detail View
+ */
+export const usersUserUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<UsersUserUpdateData, ThrowOnError>,
+): RequestResult<UsersUserUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<
+    UsersUserUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/user/{username}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const validateRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ValidateRetrieveData, ThrowOnError>,
+): RequestResult<ValidateRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    V1AccountsAuthValidateRetrieveResponses,
+    ValidateRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1858,17 +923,11 @@ export const v1AccountsAuthValidateRetrieve = <
     ...options,
   });
 
-export const v1AccountsAuthValidateCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsAuthValidateCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsAuthValidateCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const validateCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ValidateCreateData, ThrowOnError>,
+): RequestResult<ValidateCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    V1AccountsAuthValidateCreateResponses,
+    ValidateCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1886,3131 +945,4 @@ export const v1AccountsAuthValidateCreate = <
       "Content-Type": "application/json",
       ...options.headers,
     },
-  });
-
-/**
- * Get all users with a specific role in a club
- */
-export const v1AccountsClubsRolesUsersRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsClubsRolesUsersRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1AccountsClubsRolesUsersRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsClubsRolesUsersRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/clubs/{club_id}/roles/{role_name}/users/",
-    ...options,
-  });
-
-/**
- * Assign a role to a user in a club
- */
-export const v1AccountsClubsUsersAssignRoleCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsClubsUsersAssignRoleCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsClubsUsersAssignRoleCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    V1AccountsClubsUsersAssignRoleCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/assign-role/",
-    ...options,
-  });
-
-/**
- * Check if a user has a specific permission in a club
- */
-export const v1AccountsClubsUsersCheckPermissionRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<
-    V1AccountsClubsUsersCheckPermissionRetrieveData,
-    ThrowOnError
-  >,
-): RequestResult<
-  V1AccountsClubsUsersCheckPermissionRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1AccountsClubsUsersCheckPermissionRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/check-permission/{permission}/",
-    ...options,
-  });
-
-/**
- * Remove a role from a user in a club (set to default or None)
- */
-export const v1AccountsClubsUsersRemoveRoleCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1AccountsClubsUsersRemoveRoleCreateData, ThrowOnError>,
-): RequestResult<
-  V1AccountsClubsUsersRemoveRoleCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    V1AccountsClubsUsersRemoveRoleCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/remove-role/",
-    ...options,
-  });
-
-/**
- * Search users by username or email
- */
-export const v1AccountsSearchRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1AccountsSearchRetrieveData, ThrowOnError>,
-): RequestResult<V1AccountsSearchRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1AccountsSearchRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/search/",
-    ...options,
-  });
-
-/**
- * Get all comments for a specific content object
- * Query params:
- * - content_type: app_label.model_name
- * - object_id: ID of the object
- * - parent: (optional) ID of parent comment for nested replies
- *
- * Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
- */
-export const v1ActivitiesCommentsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ActivitiesCommentsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesCommentsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ActivitiesCommentsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific comment
- * - GET: Anyone can view
- * - PATCH: Only author can edit
- * - DELETE: Author can delete
- */
-export const v1ActivitiesCommentsDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ActivitiesCommentsDestroyData, ThrowOnError>,
-): RequestResult<V1ActivitiesCommentsDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ActivitiesCommentsDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/{comment_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific comment
- * - GET: Anyone can view
- * - PATCH: Only author can edit
- * - DELETE: Author can delete
- */
-export const v1ActivitiesCommentsRetrieve2 = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ActivitiesCommentsRetrieve2Data, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesCommentsRetrieve2Responses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ActivitiesCommentsRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/{comment_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific comment
- * - GET: Anyone can view
- * - PATCH: Only author can edit
- * - DELETE: Author can delete
- */
-export const v1ActivitiesCommentsPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ActivitiesCommentsPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesCommentsPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    V1ActivitiesCommentsPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/{comment_id}/",
-    ...options,
-  });
-
-/**
- * Get all replies to a specific comment
- */
-export const v1ActivitiesCommentsRepliesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ActivitiesCommentsRepliesRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesCommentsRepliesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ActivitiesCommentsRepliesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/{comment_id}/replies/",
-    ...options,
-  });
-
-/**
- * Create a comment on any content object
- * Body: {
- * "content_type": "clubs.clubpost",
- * "object_id": 123,
- * "content": "Great post!",
- * "parent": null  // Optional: ID of parent comment for replies
- * }
- */
-export const v1ActivitiesCommentsCreateCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ActivitiesCommentsCreateCreateData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesCommentsCreateCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1ActivitiesCommentsCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/comments/create/",
-    ...options,
-  });
-
-/**
- * Get all likes for a specific content object
- * Query params:
- * - content_type: app_label.model_name (e.g., "clubs.clubpost")
- * - object_id: ID of the object
- *
- * Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
- */
-export const v1ActivitiesLikesRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ActivitiesLikesRetrieveData, ThrowOnError>,
-): RequestResult<V1ActivitiesLikesRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ActivitiesLikesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/likes/",
-    ...options,
-  });
-
-/**
- * Check if current user has liked a specific object
- * Query params:
- * - content_type: app_label.model_name
- * - object_id: ID of the object
- *
- * Returns: { "is_liked": true/false }
- */
-export const v1ActivitiesLikesCheckRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ActivitiesLikesCheckRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesLikesCheckRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ActivitiesLikesCheckRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/likes/check/",
-    ...options,
-  });
-
-/**
- * Like or unlike any content object (toggle)
- * Body: {
- * "content_type": "clubs.clubpost",
- * "object_id": 123
- * }
- *
- * Returns: { "is_liked": true/false, "like_count": 42 }
- */
-export const v1ActivitiesLikesToggleCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ActivitiesLikesToggleCreateData, ThrowOnError>,
-): RequestResult<
-  V1ActivitiesLikesToggleCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1ActivitiesLikesToggleCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/activities/likes/toggle/",
-    ...options,
-  });
-
-/**
- * List clubs visible to the authenticated user:
- * - All public clubs
- * - Closed/Secret clubs only if user is a member
- *
- * Query params:
- * - search: Filter by name or origin
- * - privacy: Filter by privacy type (public/closed/secret)
- * - origin: Filter by specific origin
- * - my_clubs: Set to 'true' to only show clubs user is member of
- */
-export const v1ClubsRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ClubsRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/",
-    ...options,
-  });
-
-/**
- * Retrieve, update, or delete a club.
- * - GET: Public clubs visible to all; private clubs only to members
- * - PATCH: Only club owner or admins with can_manage_settings
- * - DELETE: Only club owner
- */
-export const v1ClubsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsDestroyData, ThrowOnError>,
-): RequestResult<V1ClubsDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ClubsDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/",
-    ...options,
-  });
-
-/**
- * Retrieve, update, or delete a club.
- * - GET: Public clubs visible to all; private clubs only to members
- * - PATCH: Only club owner or admins with can_manage_settings
- * - DELETE: Only club owner
- */
-export const v1ClubsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRetrieve2Data, ThrowOnError>,
-): RequestResult<V1ClubsRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/",
-    ...options,
-  });
-
-/**
- * Retrieve, update, or delete a club.
- * - GET: Public clubs visible to all; private clubs only to members
- * - PATCH: Only club owner or admins with can_manage_settings
- * - DELETE: Only club owner
- */
-export const v1ClubsPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsPartialUpdateData, ThrowOnError>,
-): RequestResult<V1ClubsPartialUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).patch<
-    V1ClubsPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/",
-    ...options,
-  });
-
-/**
- * List all events in a club
- * Query params:
- * - status: upcoming|ongoing|completed|cancelled
- */
-export const v1ClubsEventsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsEventsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsEventsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific event
- */
-export const v1ClubsEventsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsDestroyData, ThrowOnError>,
-): RequestResult<V1ClubsEventsDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ClubsEventsDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific event
- */
-export const v1ClubsEventsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsRetrieve2Data, ThrowOnError>,
-): RequestResult<V1ClubsEventsRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsEventsRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a specific event
- */
-export const v1ClubsEventsPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsEventsPartialUpdateData, ThrowOnError>,
-): RequestResult<V1ClubsEventsPartialUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).patch<
-    V1ClubsEventsPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/",
-    ...options,
-  });
-
-/**
- * Join an event as a participant
- */
-export const v1ClubsEventsJoinCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsJoinCreateData, ThrowOnError>,
-): RequestResult<V1ClubsEventsJoinCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsEventsJoinCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/join/",
-    ...options,
-  });
-
-/**
- * Leave an event
- */
-export const v1ClubsEventsLeaveCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsLeaveCreateData, ThrowOnError>,
-): RequestResult<V1ClubsEventsLeaveCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsEventsLeaveCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/leave/",
-    ...options,
-  });
-
-/**
- * Get all participants of an event
- */
-export const v1ClubsEventsParticipantsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsEventsParticipantsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ClubsEventsParticipantsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ClubsEventsParticipantsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/participants/",
-    ...options,
-  });
-
-/**
- * Update event status (admin/moderator only)
- */
-export const v1ClubsEventsStatusCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsStatusCreateData, ThrowOnError>,
-): RequestResult<V1ClubsEventsStatusCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsEventsStatusCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/{event_id}/status/",
-    ...options,
-  });
-
-/**
- * Create a new event in a club
- */
-export const v1ClubsEventsCreateCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsCreateCreateData, ThrowOnError>,
-): RequestResult<V1ClubsEventsCreateCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsEventsCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/create/",
-    ...options,
-  });
-
-/**
- * Get events for the authenticated user in a specific club
- * Query params:
- * - type: created|joined|upcoming|past
- */
-export const v1ClubsEventsMyRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsEventsMyRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsEventsMyRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsEventsMyRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/my/",
-    ...options,
-  });
-
-/**
- * Get public events for a club (no authentication required for public clubs)
- */
-export const v1ClubsEventsPublicRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsEventsPublicRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsEventsPublicRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsEventsPublicRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/events/public/",
-    ...options,
-  });
-
-/**
- * List all club invitations
- * Query params:
- * - status: pending|accepted|declined|expired
- */
-export const v1ClubsInvitesRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsInvitesRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsInvitesRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsInvitesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/invites/",
-    ...options,
-  });
-
-/**
- * Join a public or closed club.
- * Secret clubs cannot be joined via this endpoint (must be invited).
- */
-export const v1ClubsJoinCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsJoinCreateData, ThrowOnError>,
-): RequestResult<V1ClubsJoinCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsJoinCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/join/",
-    ...options,
-  });
-
-/**
- * Leave a club. Last admin cannot leave.
- */
-export const v1ClubsLeaveCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsLeaveCreateData, ThrowOnError>,
-): RequestResult<V1ClubsLeaveCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsLeaveCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/leave/",
-    ...options,
-  });
-
-/**
- * List all members of a club with filtering options
- * Query params:
- * - role: Filter by role name
- * - search: Search members by username or email
- * - sort: joined_at (default), username, role
- * - order: asc, desc (default)
- */
-export const v1ClubsMembersRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsMembersRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsMembersRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsMembersRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/",
-    ...options,
-  });
-
-/**
- * Get detailed information about a specific member
- */
-export const v1ClubsMembersRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsMembersRetrieve2Data, ThrowOnError>,
-): RequestResult<V1ClubsMembersRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsMembersRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/{user_id}/",
-    ...options,
-  });
-
-/**
- * Remove a member from the club
- */
-export const v1ClubsMembersRemoveDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsMembersRemoveDestroyData, ThrowOnError>,
-): RequestResult<V1ClubsMembersRemoveDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ClubsMembersRemoveDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/{user_id}/remove/",
-    ...options,
-  });
-
-/**
- * Update a member's role in a club
- * Body: { "role_id": "<role_id>" } or { "role_name": "<role_name>" }
- */
-export const v1ClubsMembersRolePartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsMembersRolePartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1ClubsMembersRolePartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    V1ClubsMembersRolePartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/{user_id}/role/",
-    ...options,
-  });
-
-/**
- * Send club invitation to a user
- * Required: invitee_id
- * Optional: message
- */
-export const v1ClubsMembersInviteCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsMembersInviteCreateData, ThrowOnError>,
-): RequestResult<V1ClubsMembersInviteCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsMembersInviteCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/invite/",
-    ...options,
-  });
-
-/**
- * Search members within a club
- */
-export const v1ClubsMembersSearchRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsMembersSearchRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ClubsMembersSearchRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ClubsMembersSearchRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/members/search/",
-    ...options,
-  });
-
-/**
- * Get all permissions available for the club
- */
-export const v1ClubsPermissionsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsPermissionsRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsPermissionsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsPermissionsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/permissions/",
-    ...options,
-  });
-
-/**
- * List all posts in a club with interaction counts
- */
-export const v1ClubsPostsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsPostsRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsPostsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/posts/",
-    ...options,
-  });
-
-/**
- * List all roles in a club
- */
-export const v1ClubsRolesRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsRolesRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsRolesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/",
-    ...options,
-  });
-
-/**
- * Update or delete a role
- */
-export const v1ClubsRolesDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesDestroyData, ThrowOnError>,
-): RequestResult<V1ClubsRolesDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ClubsRolesDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/{role_id}/",
-    ...options,
-  });
-
-/**
- * Update or delete a role
- */
-export const v1ClubsRolesPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesPartialUpdateData, ThrowOnError>,
-): RequestResult<V1ClubsRolesPartialUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).patch<
-    V1ClubsRolesPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/{role_id}/",
-    ...options,
-  });
-
-/**
- * Get all users with a specific role in a club
- */
-export const v1ClubsRolesUsersRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesUsersRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsRolesUsersRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsRolesUsersRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/{role_id}/users/",
-    ...options,
-  });
-
-/**
- * Get all users with a specific role (by name) in a club
- */
-export const v1ClubsRolesUsersRetrieve2 = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsRolesUsersRetrieve2Data, ThrowOnError>,
-): RequestResult<V1ClubsRolesUsersRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsRolesUsersRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/{role_name}/users/",
-    ...options,
-  });
-
-/**
- * Get all permissions for a specific user in a club
- * requires: user_id
- */
-export const v1ClubsRolesPermissionsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsRolesPermissionsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ClubsRolesPermissionsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ClubsRolesPermissionsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/{user_id}/permissions/",
-    ...options,
-  });
-
-/**
- * Add a role to a member (without removing existing roles)
- */
-export const v1ClubsRolesAssignCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesAssignCreateData, ThrowOnError>,
-): RequestResult<V1ClubsRolesAssignCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsRolesAssignCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/assign/{user_id}/",
-    ...options,
-  });
-
-/**
- * Create a new role in a club
- */
-export const v1ClubsRolesCreateCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesCreateCreateData, ThrowOnError>,
-): RequestResult<V1ClubsRolesCreateCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsRolesCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/create/",
-    ...options,
-  });
-
-/**
- * Set a specific role as primary for a member
- */
-export const v1ClubsRolesSetPrimaryRoleCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsRolesSetPrimaryRoleCreateData, ThrowOnError>,
-): RequestResult<
-  V1ClubsRolesSetPrimaryRoleCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    V1ClubsRolesSetPrimaryRoleCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/set_primary_role/{user_id}/",
-    ...options,
-  });
-
-/**
- * Get all roles assigned to a specific user in a club
- */
-export const v1ClubsRolesUserRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsRolesUserRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsRolesUserRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsRolesUserRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/roles/user/{user_id}/",
-    ...options,
-  });
-
-/**
- * Get detailed statistics for a club
- */
-export const v1ClubsStatsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsStatsRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsStatsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsStatsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/stats/",
-    ...options,
-  });
-
-export const v1ClubsUploadMediaDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsUploadMediaDestroyData, ThrowOnError>,
-): RequestResult<V1ClubsUploadMediaDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ClubsUploadMediaDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/upload-media/",
-    ...options,
-  });
-
-export const v1ClubsUploadMediaPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsUploadMediaPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1ClubsUploadMediaPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    V1ClubsUploadMediaPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/upload-media/",
-    ...options,
-  });
-
-export const v1ClubsUploadMediaCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsUploadMediaCreateData, ThrowOnError>,
-): RequestResult<V1ClubsUploadMediaCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsUploadMediaCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/{id}/upload-media/",
-    ...options,
-  });
-
-export const v1ClubsCreateCreate = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ClubsCreateCreateData, ThrowOnError>,
-): RequestResult<V1ClubsCreateCreateResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).post<
-    V1ClubsCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/create/",
-    ...options,
-  });
-
-/**
- * Accept a club invitation
- */
-export const v1ClubsInvitesAcceptCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ClubsInvitesAcceptCreateData, ThrowOnError>,
-): RequestResult<V1ClubsInvitesAcceptCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ClubsInvitesAcceptCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/invites/accept/{invite_id}",
-    ...options,
-  });
-
-/**
- * Get all pending club invitations for the authenticated user
- */
-export const v1ClubsInvitesMeRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ClubsInvitesMeRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsInvitesMeRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsInvitesMeRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/invites/me/",
-    ...options,
-  });
-
-/**
- * Get all clubs from a specific origin
- */
-export const v1ClubsOriginRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1ClubsOriginRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsOriginRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ClubsOriginRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/origin/{origin}/",
-    ...options,
-  });
-
-/**
- * Get recommended clubs for the authenticated user based on:
- * - Clubs with similar origin/type
- * - Clubs with friends/mutual connections
- * - Popular clubs in user's location
- * - Clubs related to user's interests (if available)
- */
-export const v1ClubsRecommendedRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ClubsRecommendedRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsRecommendedRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsRecommendedRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/recommended/",
-    ...options,
-  });
-
-/**
- * Search clubs by name, origin, or description
- */
-export const v1ClubsSearchRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ClubsSearchRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsSearchRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsSearchRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/search/",
-    ...options,
-  });
-
-export const v1ClubsTestManagerRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ClubsTestManagerRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsTestManagerRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsTestManagerRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/test/manager/",
-    ...options,
-  });
-
-/**
- * Get trending clubs (most active/popular in last 7 days)
- */
-export const v1ClubsTrendingRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1ClubsTrendingRetrieveData, ThrowOnError>,
-): RequestResult<V1ClubsTrendingRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1ClubsTrendingRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/clubs/trending/",
-    ...options,
-  });
-
-/**
- * Block a user
- * - Removes any existing follow relationships
- * - Prevents future follows
- */
-export const v1ConnectionsBlockCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ConnectionsBlockCreateData, ThrowOnError>,
-): RequestResult<V1ConnectionsBlockCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ConnectionsBlockCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/block/",
-    ...options,
-  });
-
-/**
- * Get list of users following this user
- */
-export const v1ConnectionsFollowersRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsFollowersRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsFollowersRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ConnectionsFollowersRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/followers/",
-    ...options,
-  });
-
-/**
- * Get list of users this user is following
- */
-export const v1ConnectionsFollowingRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsFollowingRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsFollowingRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ConnectionsFollowingRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/following/",
-    ...options,
-  });
-
-/**
- * Get mutual followers between current user and target user
- */
-export const v1ConnectionsMutualRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsMutualRetrieveData, ThrowOnError>,
-): RequestResult<V1ConnectionsMutualRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ConnectionsMutualRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/mutual/",
-    ...options,
-  });
-
-/**
- * Get comprehensive relationship information between current user and target user
- * Returns:
- * - Follow status (is_following, is_followed_by, is_mutual, follow_status)
- * - Block status (is_blocked, is_blocking)
- * - Mutual followers count
- * - Privacy status
- */
-export const v1ConnectionsRelationshipRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsRelationshipRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRelationshipRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1ConnectionsRelationshipRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/relationship/",
-    ...options,
-  });
-
-/**
- * Remove a follower (they were following you, you remove them)
- */
-export const v1ConnectionsRemoveDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsRemoveDestroyData, ThrowOnError>,
-): RequestResult<V1ConnectionsRemoveDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1ConnectionsRemoveDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/remove/",
-    ...options,
-  });
-
-/**
- * Get follow status between current user and target user
- */
-export const v1ConnectionsStatusRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsStatusRetrieveData, ThrowOnError>,
-): RequestResult<V1ConnectionsStatusRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1ConnectionsStatusRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/status/",
-    ...options,
-  });
-
-/**
- * Follow or unfollow a user (toggle)
- * - If target user is private: creates pending request
- * - If target user is public: creates accepted follow
- * - If already following: unfollows
- */
-export const v1ConnectionsToggleCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1ConnectionsToggleCreateData, ThrowOnError>,
-): RequestResult<V1ConnectionsToggleCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ConnectionsToggleCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/toggle/",
-    ...options,
-  });
-
-/**
- * Unblock a user
- */
-export const v1ConnectionsUnblockCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsUnblockCreateData, ThrowOnError>,
-): RequestResult<V1ConnectionsUnblockCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1ConnectionsUnblockCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/{user_id}/unblock/",
-    ...options,
-  });
-
-/**
- * Get list of users current user has blocked
- */
-export const v1ConnectionsBlockedRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsBlockedRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsBlockedRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsBlockedRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/blocked/",
-    ...options,
-  });
-
-/**
- * Get comprehensive overview of current user's relationships
- * Categories:
- * - mutual: Users who follow each other
- * - followers_only: Users who follow you but you don't follow back
- * - following_only: Users you follow but don't follow you back
- * - pending_received: Follow requests you received (pending)
- * - pending_sent: Follow requests you sent (pending)
- */
-export const v1ConnectionsRelationsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsRelationsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRelationsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsRelationsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/relations/",
-    ...options,
-  });
-
-/**
- * Get only mutual followers (users who follow each other with current user)
- */
-export const v1ConnectionsRelationsConnectedRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsRelationsConnectedRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRelationsConnectedRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsRelationsConnectedRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/relations/connected/",
-    ...options,
-  });
-
-/**
- * Get only pending follow requests received by current user
- * (Others want to follow you, waiting for your approval)
- */
-export const v1ConnectionsRelationsPendingRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsRelationsPendingRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRelationsPendingRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsRelationsPendingRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/relations/pending/",
-    ...options,
-  });
-
-/**
- * Get only pending follow requests sent by current user
- * (You want to follow others, waiting for their approval)
- */
-export const v1ConnectionsRelationsSentRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsRelationsSentRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRelationsSentRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsRelationsSentRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/relations/sent/",
-    ...options,
-  });
-
-/**
- * Get all pending follow requests for current user
- */
-export const v1ConnectionsRequestsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsRequestsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRequestsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsRequestsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/requests/",
-    ...options,
-  });
-
-/**
- * Accept a pending follow request
- */
-export const v1ConnectionsRequestsAcceptCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsRequestsAcceptCreateData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRequestsAcceptCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    V1ConnectionsRequestsAcceptCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/requests/{user_id}/accept/",
-    ...options,
-  });
-
-/**
- * Reject/delete a pending follow request
- */
-export const v1ConnectionsRequestsRejectCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1ConnectionsRequestsRejectCreateData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsRequestsRejectCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    V1ConnectionsRequestsRejectCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/requests/{user_id}/reject/",
-    ...options,
-  });
-
-/**
- * Get suggested users to follow
- * Based on:
- * - Users with mutual followers
- * - Users in same clubs
- * - Popular users
- */
-export const v1ConnectionsSuggestionsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1ConnectionsSuggestionsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1ConnectionsSuggestionsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1ConnectionsSuggestionsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/connections/suggestions/",
-    ...options,
-  });
-
-export const v1InstitutesRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1InstitutesRetrieveData, ThrowOnError>,
-): RequestResult<V1InstitutesRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1InstitutesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/institutes/",
-    ...options,
-  });
-
-export const v1InstitutesRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1InstitutesRetrieve2Data, ThrowOnError>,
-): RequestResult<V1InstitutesRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1InstitutesRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/institutes/{id}/",
-    ...options,
-  });
-
-/**
- * Get all notifications for the current user.
- *
- * Query params:
- * - type: Filter by notification type (post, like, comment, follow_request, follow_accept)
- * - is_read: Filter by read status (true/false)
- * - is_seen: Filter by seen status (true/false)
- * - page: Page number for pagination
- */
-export const v1NotificationsRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1NotificationsRetrieveData, ThrowOnError>,
-): RequestResult<V1NotificationsRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1NotificationsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/",
-    ...options,
-  });
-
-/**
- * Get detailed information about a specific notification.
- * Automatically marks the notification as seen.
- */
-export const v1NotificationsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1NotificationsRetrieve2Data, ThrowOnError>,
-): RequestResult<V1NotificationsRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1NotificationsRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/{notification_id}/",
-    ...options,
-  });
-
-/**
- * Delete a specific notification.
- */
-export const v1NotificationsDeleteDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1NotificationsDeleteDestroyData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsDeleteDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    V1NotificationsDeleteDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/{notification_id}/delete/",
-    ...options,
-  });
-
-/**
- * Get delivery status for a specific notification.
- */
-export const v1NotificationsDeliveriesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1NotificationsDeliveriesRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsDeliveriesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1NotificationsDeliveriesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/{notification_id}/deliveries/",
-    ...options,
-  });
-
-/**
- * Mark a specific notification as read.
- */
-export const v1NotificationsReadCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1NotificationsReadCreateData, ThrowOnError>,
-): RequestResult<V1NotificationsReadCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1NotificationsReadCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/{notification_id}/read/",
-    ...options,
-  });
-
-/**
- * Mark a specific notification as seen.
- */
-export const v1NotificationsSeenCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1NotificationsSeenCreateData, ThrowOnError>,
-): RequestResult<V1NotificationsSeenCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1NotificationsSeenCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/{notification_id}/seen/",
-    ...options,
-  });
-
-/**
- * Delete all notifications for the current user.
- */
-export const v1NotificationsClearDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsClearDestroyData, ThrowOnError>,
-): RequestResult<V1NotificationsClearDestroyResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).delete<
-    V1NotificationsClearDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/clear/",
-    ...options,
-  });
-
-/**
- * Get all comment notifications.
- */
-export const v1NotificationsCommentsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsCommentsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsCommentsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsCommentsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/comments/",
-    ...options,
-  });
-
-/**
- * Get notification counts for the current user.
- * Returns total, unread, and unseen counts.
- */
-export const v1NotificationsCountsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsCountsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsCountsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsCountsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/counts/",
-    ...options,
-  });
-
-/**
- * Get all follow accept notifications.
- */
-export const v1NotificationsFollowAcceptsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsFollowAcceptsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsFollowAcceptsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsFollowAcceptsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/follow-accepts/",
-    ...options,
-  });
-
-/**
- * Get all follow request notifications.
- */
-export const v1NotificationsFollowRequestsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsFollowRequestsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsFollowRequestsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsFollowRequestsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/follow-requests/",
-    ...options,
-  });
-
-/**
- * Get all like notifications.
- */
-export const v1NotificationsLikesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsLikesRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsLikesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsLikesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/likes/",
-    ...options,
-  });
-
-/**
- * Mark all notifications as read for the current user.
- */
-export const v1NotificationsMarkAllReadCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsMarkAllReadCreateData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsMarkAllReadCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1NotificationsMarkAllReadCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/mark-all-read/",
-    ...options,
-  });
-
-/**
- * Mark all notifications as seen for the current user.
- */
-export const v1NotificationsMarkAllSeenCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsMarkAllSeenCreateData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsMarkAllSeenCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1NotificationsMarkAllSeenCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/mark-all-seen/",
-    ...options,
-  });
-
-/**
- * Get all post-related notifications (new posts from followed users/clubs).
- */
-export const v1NotificationsPostsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1NotificationsPostsRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1NotificationsPostsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    V1NotificationsPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/notifications/posts/",
-    ...options,
-  });
-
-/**
- * List all public posts (feed)
- * Query params:
- * - post_type: TEXT|IMAGE|VIDEO
- * - author: user_id
- * - search: search in content
- */
-export const v1PostsRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1PostsRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1PostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a post
- */
-export const v1PostsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsDestroyData, ThrowOnError>,
-): RequestResult<V1PostsDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1PostsDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a post
- */
-export const v1PostsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsRetrieve2Data, ThrowOnError>,
-): RequestResult<V1PostsRetrieve2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1PostsRetrieve2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/",
-    ...options,
-  });
-
-/**
- * Get, update, or delete a post
- */
-export const v1PostsPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsPartialUpdateData, ThrowOnError>,
-): RequestResult<V1PostsPartialUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).patch<
-    V1PostsPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/",
-    ...options,
-  });
-
-/**
- * Get all comments on a post
- */
-export const v1PostsCommentsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsCommentsRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsCommentsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1PostsCommentsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/",
-    ...options,
-  });
-
-/**
- * Update or delete a comment
- */
-export const v1PostsCommentsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsCommentsDestroyData, ThrowOnError>,
-): RequestResult<V1PostsCommentsDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    V1PostsCommentsDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/{comment_id}/",
-    ...options,
-  });
-
-/**
- * Update or delete a comment
- */
-export const v1PostsCommentsPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1PostsCommentsPartialUpdateData, ThrowOnError>,
-): RequestResult<
-  V1PostsCommentsPartialUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    V1PostsCommentsPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/{comment_id}/",
-    ...options,
-  });
-
-/**
- * Like or unlike a comment
- */
-export const v1PostsCommentsLikeCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsCommentsLikeCreateData, ThrowOnError>,
-): RequestResult<V1PostsCommentsLikeCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1PostsCommentsLikeCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/{comment_id}/like/",
-    ...options,
-  });
-
-/**
- * Get all replies to a specific comment
- */
-export const v1PostsCommentsRepliesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1PostsCommentsRepliesRetrieveData, ThrowOnError>,
-): RequestResult<
-  V1PostsCommentsRepliesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    V1PostsCommentsRepliesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/{comment_id}/replies/",
-    ...options,
-  });
-
-/**
- * Create a comment on a post
- * Body: { "content": "Great post!", "parent": null }
- */
-export const v1PostsCommentsCreateCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<V1PostsCommentsCreateCreateData, ThrowOnError>,
-): RequestResult<V1PostsCommentsCreateCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1PostsCommentsCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/comments/create/",
-    ...options,
-  });
-
-/**
- * Like or unlike a post (toggle)
- */
-export const v1PostsLikeCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsLikeCreateData, ThrowOnError>,
-): RequestResult<V1PostsLikeCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1PostsLikeCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/like/",
-    ...options,
-  });
-
-/**
- * Get all likes on a post
- */
-export const v1PostsLikesRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsLikesRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsLikesRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1PostsLikesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/likes/",
-    ...options,
-  });
-
-/**
- * Create a repost (share with optional message as new post)
- * Body: { "content": "Adding my thoughts..." }  // optional
- */
-export const v1PostsRepostCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsRepostCreateData, ThrowOnError>,
-): RequestResult<V1PostsRepostCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1PostsRepostCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/repost/",
-    ...options,
-  });
-
-/**
- * Share or unshare a post
- * Body: { "message": "Check this out!" }  // optional
- */
-export const v1PostsShareCreate = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsShareCreateData, ThrowOnError>,
-): RequestResult<V1PostsShareCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    V1PostsShareCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/share/",
-    ...options,
-  });
-
-/**
- * Get all shares of a post
- */
-export const v1PostsSharesRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<V1PostsSharesRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsSharesRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    V1PostsSharesRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/{post_id}/shares/",
-    ...options,
-  });
-
-/**
- * Create a new text post
- * Body: {
- * "content": "Post content",
- * "is_public": true,
- * "original_post": null  // for reposts
- * }
- */
-export const v1PostsCreateCreate = <ThrowOnError extends boolean = false>(
-  options?: Options<V1PostsCreateCreateData, ThrowOnError>,
-): RequestResult<V1PostsCreateCreateResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).post<
-    V1PostsCreateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/create/",
-    ...options,
-  });
-
-/**
- * Create a post with multiple mixed media files (images and/or videos)
- * Body (FormData):
- * "content": "Post content",
- * "is_public": true,
- * "media_files": [file1, file2, file3, ...]  // multiple files
- */
-export const v1PostsCreateMixedMediaCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1PostsCreateMixedMediaCreateData, ThrowOnError>,
-): RequestResult<
-  V1PostsCreateMixedMediaCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1PostsCreateMixedMediaCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/create-mixed-media/",
-    ...options,
-  });
-
-/**
- * Create a post with media file (image or video)
- * Body: {
- * "post_type": "IMAGE|VIDEO",
- * "content": "Post content",
- * "image_file": file,  // for IMAGE type (file upload)
- * "video_file": file,  // for VIDEO type (file upload)
- * "is_public": true,
- * "original_post": null  // for reposts
- * }
- */
-export const v1PostsCreateWithMediaCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<V1PostsCreateWithMediaCreateData, ThrowOnError>,
-): RequestResult<
-  V1PostsCreateWithMediaCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    V1PostsCreateWithMediaCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/create-with-media/",
-    ...options,
-  });
-
-/**
- * Get personalized feed for the current user
- *
- * Feed includes:
- * 1. Posts from users the current user follows (with accepted status)
- * 2. Public posts from public profiles (users with is_private=False)
- * 3. Excludes posts from blocked users (in both directions)
- *
- * Privacy rules:
- * - From followed users: Show all their public posts
- * - From public profiles: Only show public posts (is_public=True)
- * - Never show posts from blocked users
- */
-export const v1PostsFeedRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1PostsFeedRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsFeedRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1PostsFeedRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/feed/",
-    ...options,
-  });
-
-/**
- * Get trending posts (posts with most likes/comments in last 24 hours)
- */
-export const v1PostsTrendingRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<V1PostsTrendingRetrieveData, ThrowOnError>,
-): RequestResult<V1PostsTrendingRetrieveResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<
-    V1PostsTrendingRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/trending/",
-    ...options,
-  });
-
-/**
- * Upload media file (image/video) and return the file path
- * Usage:
- * - For images: POST /api/v1/posts/upload-media/?type=image
- * - For videos: POST /api/v1/posts/upload-media/?type=video
- */
-export const v1PostsUploadMediaCreate = <ThrowOnError extends boolean = false>(
-  options?: Options<V1PostsUploadMediaCreateData, ThrowOnError>,
-): RequestResult<V1PostsUploadMediaCreateResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).post<
-    V1PostsUploadMediaCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/posts/upload-media/",
-    ...options,
   });

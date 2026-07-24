@@ -1,6 +1,6 @@
 
 @baseUrl = http://127.0.0.1:8000/api/v1/accounts/auth/
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0NzQ3ODI5LCJpYXQiOjE3ODQ3NDQyMjksImp0aSI6ImVhYWY1ZmRiZTM2OTQ3ZjViMmViOGNlNTcxYzg2ZGRiIiwidXNlcl9pZCI6ImU4ZjU5ZjM1LWEzZmItNGQxNy04YmMxLTNmZGI3MjZjNmI2YSJ9.hhf1Zg29fO_NxRPJkM6Ek5Erai_e6jl4ReIUY5yo77I
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0NzcwNTY2LCJpYXQiOjE3ODQ3NjY5NjYsImp0aSI6ImQxZDdlZTc0Y2ExMTQ3ZTVhMWY3NDQ4ZTkyNzA3ZGZiIiwidXNlcl9pZCI6ImIwNTI1YjZhLWUxYzctNDI0OS1hNDhkLWJhNTI3MTUxZWI2OSJ9.n9CAmB25lJrhszKFeizsnGoh1RqYb2f-OqIaIyGcJNI
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzMzNjIyOSwiaWF0IjoxNzg0NzQ0MjI5LCJqdGkiOiI0OTliZThhMWI3OGM0ZjYwOWQzZTYxYzJkMWY3Nzg4YyIsInVzZXJfaWQiOiJlOGY1OWYzNS1hM2ZiLTRkMTctOGJjMS0zZmRiNzI2YzZiNmEifQ.M5nGUZIk1s_NlYdhZpeYf7FUyw2Rv8xHgi8H5Jux5jM
 @clubId = 9af7488b-98e3-4a93-a617-c35dc19a579d
 @postId = 7391907467086532608
@@ -60,10 +60,7 @@ POST {{baseUrl}}register/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "username" : "anotheruser",
-    "email" : "anotheruser@gmail.com",
-    "password" : "another@12345",
-    "re_password" : "another@12345"
+    "username" : "anotheruser"
 }
 ###
 GET {{baseUrl}}users/user/prottoy/ HTTP/1.1

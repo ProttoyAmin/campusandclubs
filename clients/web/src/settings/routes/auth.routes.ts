@@ -1,6 +1,6 @@
 export const authRoutes = {
     public: {
-        sign_in: '/sign-in',
-        sign_up: '/sign-up',
+        sign_in: '/@/auth/sign-in',
+        sign_up: '/@/auth/sign-up',
     },
 }

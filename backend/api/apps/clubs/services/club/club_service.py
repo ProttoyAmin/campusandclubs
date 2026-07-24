@@ -1,4 +1,5 @@
 import logging
+from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from django.contrib.auth.base_user import AbstractBaseUser
 from typing import Optional
@@ -38,7 +39,7 @@ class ClubService(BaseService[Club, ClubRepository]):
 
 
 
-    def list_clubs(self, viewer, filters: ClubListFilters) -> QuerySet[Club]:
+    def list_clubs(self, viewer: User | AnonymousUser, filters: ClubListFilters) -> QuerySet[Club]:
         clubs = (
             self.repository.joined_by(viewer)
             if filters.joined

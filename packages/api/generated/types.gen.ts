@@ -24,30 +24,11 @@ export type GenderEnum = "male" | "female" | "other";
 
 export type NullEnum = never;
 
-export type PaginatedUserProfileList = {
-  count: number;
-  next?: string | null;
-  previous?: string | null;
-  results: Array<UserProfile>;
-};
-
 export type PasswordResetConfirmRetype = {
   uid: string;
   token: string;
   new_password: string;
   re_new_password: string;
-};
-
-export type PatchedRegister = {
-  readonly id?: string;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  username?: string;
-  /**
-   * Email address
-   */
-  email?: string | string;
 };
 
 export type PatchedUser = {
@@ -118,8 +99,7 @@ export type PatchedUser = {
   is_private?: boolean;
   readonly created_at?: string;
   readonly updated_at?: string;
-  institute?: string | null;
-  department?: string | null;
+  deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
    */
@@ -135,6 +115,14 @@ export type PatchedUser = {
  */
 export type PatchedUserProfile = {
   readonly id?: string;
+  password?: string;
+  readonly last_login?: string | null;
+  /**
+   * Superuser status
+   *
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
    */
@@ -145,15 +133,32 @@ export type PatchedUserProfile = {
    * Email address
    */
   readonly email?: string;
+  /**
+   * Staff status
+   *
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Active
+   *
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
+  date_joined?: string;
   readonly professional_email?: string | null;
-  readonly url?: string;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  readonly institute?: string;
-  readonly institute_id?: string;
   student_id?: string | null;
-  readonly department?: string;
   year?: number | null;
   level?: number | null;
+  readonly email_verified?: boolean;
+  last_active?: string | null;
+  profile_picture?: string | null;
+  avatar?: string | string | null;
+  bio?: string | null;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
   type?: TypeEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
@@ -162,14 +167,6 @@ export type PatchedUserProfile = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
-  readonly profile_picture_url?: string;
-  readonly avatar?: string;
-  bio?: string | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  readonly email_verified?: boolean;
-  is_private?: boolean;
   /**
    * User's current online status
    *
@@ -182,31 +179,18 @@ export type PatchedUserProfile = {
    * Whether the status was set manually by the user
    */
   is_status_manual?: boolean;
-  readonly club_count?: string;
-  readonly clubs?: string;
-  readonly clubs_url?: string;
-  readonly user_post_count?: number;
-  readonly club_post_count?: string;
-  readonly total_posts_count?: number;
-  readonly posts_url?: string;
-  readonly follower_count?: number;
-  readonly following_count?: number;
-  readonly pending_requests_count?: number;
-  readonly followers_url?: string;
-  readonly following_url?: string;
-  readonly is_following?: string;
-  readonly is_followed_by?: string;
-  readonly is_mutual?: string;
-  readonly follow_status?: string;
-  readonly can_view_profile?: string;
-  readonly likes_given?: number;
-  readonly comments_made?: number;
-  readonly shares_made?: number;
-  readonly likes_received?: number;
-  last_active?: string | null;
+  is_private?: boolean;
   readonly created_at?: string;
   readonly updated_at?: string;
-  readonly last_login?: string | null;
+  deleted_at?: string | null;
+  /**
+   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
+   */
+  groups?: Array<number>;
+  /**
+   * Specific permissions for this user.
+   */
+  user_permissions?: Array<number>;
 };
 
 /**
@@ -215,16 +199,13 @@ export type PatchedUserProfile = {
  */
 export type PreferredEmailEnum = "email" | "professional_email";
 
+/**
+ * Serializer for user registration.
+ */
 export type Register = {
   readonly id: string;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
   username: string;
-  /**
-   * Email address
-   */
-  email: string | string;
+  email: string;
 };
 
 export type SendEmailReset = {
@@ -252,11 +233,6 @@ export type SetUsername = {
  * * `dnd` - Do Not Disturb
  */
 export type StatusEnum = "online" | "away" | "dnd";
-
-export type TokenCreate = {
-  password?: string;
-  username?: string;
-};
 
 export type TokenObtainPair = {
   username: string;
@@ -351,8 +327,7 @@ export type User = {
   is_private?: boolean;
   readonly created_at: string;
   readonly updated_at: string;
-  institute?: string | null;
-  department?: string | null;
+  deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
    */
@@ -368,6 +343,14 @@ export type User = {
  */
 export type UserProfile = {
   readonly id: string;
+  password: string;
+  readonly last_login: string | null;
+  /**
+   * Superuser status
+   *
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
    */
@@ -378,15 +361,32 @@ export type UserProfile = {
    * Email address
    */
   readonly email: string;
+  /**
+   * Staff status
+   *
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Active
+   *
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
+  date_joined?: string;
   readonly professional_email: string | null;
-  readonly url: string;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  readonly institute: string;
-  readonly institute_id: string;
   student_id?: string | null;
-  readonly department: string;
   year?: number | null;
   level?: number | null;
+  readonly email_verified: boolean;
+  last_active?: string | null;
+  profile_picture?: string | null;
+  avatar?: string | string | null;
+  bio?: string | null;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
   type?: TypeEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
@@ -395,14 +395,6 @@ export type UserProfile = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
-  readonly profile_picture_url: string;
-  readonly avatar: string;
-  bio?: string | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  readonly email_verified: boolean;
-  is_private?: boolean;
   /**
    * User's current online status
    *
@@ -415,37 +407,24 @@ export type UserProfile = {
    * Whether the status was set manually by the user
    */
   is_status_manual?: boolean;
-  readonly club_count: string;
-  readonly clubs: string;
-  readonly clubs_url: string;
-  readonly user_post_count: number;
-  readonly club_post_count: string;
-  readonly total_posts_count: number;
-  readonly posts_url: string;
-  readonly follower_count: number;
-  readonly following_count: number;
-  readonly pending_requests_count: number;
-  readonly followers_url: string;
-  readonly following_url: string;
-  readonly is_following: string;
-  readonly is_followed_by: string;
-  readonly is_mutual: string;
-  readonly follow_status: string;
-  readonly can_view_profile: string;
-  readonly likes_given: number;
-  readonly comments_made: number;
-  readonly shares_made: number;
-  readonly likes_received: number;
-  last_active?: string | null;
+  is_private?: boolean;
   readonly created_at: string;
   readonly updated_at: string;
-  readonly last_login: string | null;
+  deleted_at?: string | null;
+  /**
+   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
+   */
+  groups?: Array<number>;
+  /**
+   * Specific permissions for this user.
+   */
+  user_permissions?: Array<number>;
 };
 
 /**
  * Serializer for assigning a role to a user in a club
  */
-export type UserTypeAssignment = {
+export type UserType = {
   user_type: UserTypeEnum;
   institute: string;
   professional_email: string;
@@ -472,26 +451,6 @@ export type UsernameResetConfirm = {
 export type CustomTokenObtainPairWritable = {
   username_or_email: string;
   password: string;
-};
-
-export type PaginatedUserProfileListWritable = {
-  count: number;
-  next?: string | null;
-  previous?: string | null;
-  results: Array<UserProfileWritable>;
-};
-
-export type PatchedRegisterWritable = {
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  username?: string;
-  /**
-   * Email address
-   */
-  email?: string | string;
-  password?: string;
-  re_password?: string;
 };
 
 export type PatchedUserWritable = {
@@ -558,8 +517,7 @@ export type PatchedUserWritable = {
    */
   is_status_manual?: boolean;
   is_private?: boolean;
-  institute?: string | null;
-  department?: string | null;
+  deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
    */
@@ -574,16 +532,43 @@ export type PatchedUserWritable = {
  * Detailed user profile with club, post, and follow information
  */
 export type PatchedUserProfileWritable = {
+  password?: string;
+  /**
+   * Superuser status
+   *
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
    */
   username?: string;
   first_name?: string;
   last_name?: string;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  /**
+   * Staff status
+   *
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Active
+   *
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
+  date_joined?: string;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
+  last_active?: string | null;
+  profile_picture?: string | null;
+  avatar?: string | string | null;
+  bio?: string | null;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
   type?: TypeEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
@@ -592,11 +577,6 @@ export type PatchedUserProfileWritable = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
-  bio?: string | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  is_private?: boolean;
   /**
    * User's current online status
    *
@@ -609,18 +589,24 @@ export type PatchedUserProfileWritable = {
    * Whether the status was set manually by the user
    */
   is_status_manual?: boolean;
-  last_active?: string | null;
+  is_private?: boolean;
+  deleted_at?: string | null;
+  /**
+   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
+   */
+  groups?: Array<number>;
+  /**
+   * Specific permissions for this user.
+   */
+  user_permissions?: Array<number>;
 };
 
+/**
+ * Serializer for user registration.
+ */
 export type RegisterWritable = {
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
   username: string;
-  /**
-   * Email address
-   */
-  email: string | string;
+  email: string;
   password: string;
   re_password: string;
 };
@@ -693,8 +679,7 @@ export type UserWritable = {
    */
   is_status_manual?: boolean;
   is_private?: boolean;
-  institute?: string | null;
-  department?: string | null;
+  deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
    */
@@ -709,16 +694,43 @@ export type UserWritable = {
  * Detailed user profile with club, post, and follow information
  */
 export type UserProfileWritable = {
+  password: string;
+  /**
+   * Superuser status
+   *
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
    */
   username: string;
   first_name?: string;
   last_name?: string;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  /**
+   * Staff status
+   *
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Active
+   *
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
+  date_joined?: string;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
+  last_active?: string | null;
+  profile_picture?: string | null;
+  avatar?: string | string | null;
+  bio?: string | null;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
   type?: TypeEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
@@ -727,11 +739,6 @@ export type UserProfileWritable = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
-  bio?: string | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  is_private?: boolean;
   /**
    * User's current online status
    *
@@ -744,171 +751,29 @@ export type UserProfileWritable = {
    * Whether the status was set manually by the user
    */
   is_status_manual?: boolean;
-  last_active?: string | null;
+  is_private?: boolean;
+  deleted_at?: string | null;
+  /**
+   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
+   */
+  groups?: Array<number>;
+  /**
+   * Specific permissions for this user.
+   */
+  user_permissions?: Array<number>;
 };
 
 /**
  * Serializer for assigning a role to a user in a club
  */
-export type UserTypeAssignmentWritable = {
+export type UserTypeWritable = {
   user_type: UserTypeEnum;
   institute: string;
   professional_email: string;
   password: string;
 };
 
-export type SchemaRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: {
-    format?: "json" | "yaml";
-    lang?:
-      | "af"
-      | "ar"
-      | "ar-dz"
-      | "ast"
-      | "az"
-      | "be"
-      | "bg"
-      | "bn"
-      | "br"
-      | "bs"
-      | "ca"
-      | "ckb"
-      | "cs"
-      | "cy"
-      | "da"
-      | "de"
-      | "dsb"
-      | "el"
-      | "en"
-      | "en-au"
-      | "en-gb"
-      | "eo"
-      | "es"
-      | "es-ar"
-      | "es-co"
-      | "es-mx"
-      | "es-ni"
-      | "es-ve"
-      | "et"
-      | "eu"
-      | "fa"
-      | "fi"
-      | "fr"
-      | "fy"
-      | "ga"
-      | "gd"
-      | "gl"
-      | "he"
-      | "hi"
-      | "hr"
-      | "hsb"
-      | "ht"
-      | "hu"
-      | "hy"
-      | "ia"
-      | "id"
-      | "ig"
-      | "io"
-      | "is"
-      | "it"
-      | "ja"
-      | "ka"
-      | "kab"
-      | "kk"
-      | "km"
-      | "kn"
-      | "ko"
-      | "ky"
-      | "lb"
-      | "lt"
-      | "lv"
-      | "mk"
-      | "ml"
-      | "mn"
-      | "mr"
-      | "ms"
-      | "my"
-      | "nb"
-      | "ne"
-      | "nl"
-      | "nn"
-      | "os"
-      | "pa"
-      | "pl"
-      | "pt"
-      | "pt-br"
-      | "ro"
-      | "ru"
-      | "sk"
-      | "sl"
-      | "sq"
-      | "sr"
-      | "sr-latn"
-      | "sv"
-      | "sw"
-      | "ta"
-      | "te"
-      | "tg"
-      | "th"
-      | "tk"
-      | "tr"
-      | "tt"
-      | "udm"
-      | "ug"
-      | "uk"
-      | "ur"
-      | "uz"
-      | "vi"
-      | "zh-hans"
-      | "zh-hant";
-  };
-  url: "/api/schema/";
-};
-
-export type SchemaRetrieveResponses = {
-  200: {
-    [key: string]: unknown;
-  };
-};
-
-export type SchemaRetrieveResponse =
-  SchemaRetrieveResponses[keyof SchemaRetrieveResponses];
-
-export type V1AccountsAuthRetrieveData = {
-  body?: never;
-  path: {
-    user_id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/";
-};
-
-export type V1AccountsAuthRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthActivityRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/activity/";
-};
-
-export type V1AccountsAuthActivityRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthAllRetrieve2Data = {
+export type AllRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -917,14 +782,14 @@ export type V1AccountsAuthAllRetrieve2Data = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type V1AccountsAuthAllRetrieve2Responses = {
+export type AllRetrieveResponses = {
   200: User;
 };
 
-export type V1AccountsAuthAllRetrieve2Response =
-  V1AccountsAuthAllRetrieve2Responses[keyof V1AccountsAuthAllRetrieve2Responses];
+export type AllRetrieveResponse =
+  AllRetrieveResponses[keyof AllRetrieveResponses];
 
-export type V1AccountsAuthAllPartialUpdateData = {
+export type AllPartialUpdateData = {
   body?: PatchedUserWritable;
   path: {
     user_id: string;
@@ -933,14 +798,14 @@ export type V1AccountsAuthAllPartialUpdateData = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type V1AccountsAuthAllPartialUpdateResponses = {
+export type AllPartialUpdateResponses = {
   200: User;
 };
 
-export type V1AccountsAuthAllPartialUpdateResponse =
-  V1AccountsAuthAllPartialUpdateResponses[keyof V1AccountsAuthAllPartialUpdateResponses];
+export type AllPartialUpdateResponse =
+  AllPartialUpdateResponses[keyof AllPartialUpdateResponses];
 
-export type V1AccountsAuthAllUpdateData = {
+export type AllUpdateData = {
   body: UserWritable;
   path: {
     user_id: string;
@@ -949,488 +814,164 @@ export type V1AccountsAuthAllUpdateData = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type V1AccountsAuthAllUpdateResponses = {
+export type AllUpdateResponses = {
   200: User;
 };
 
-export type V1AccountsAuthAllUpdateResponse =
-  V1AccountsAuthAllUpdateResponses[keyof V1AccountsAuthAllUpdateResponses];
+export type AllUpdateResponse = AllUpdateResponses[keyof AllUpdateResponses];
 
-export type V1AccountsAuthClubsRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/clubs/";
-};
-
-export type V1AccountsAuthClubsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthPostsRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/posts/";
-};
-
-export type V1AccountsAuthPostsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthRolesRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/roles/";
-};
-
-export type V1AccountsAuthRolesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthRolesClubRetrieveData = {
-  body?: never;
-  path: {
-    club_id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/{user_id}/roles/club/{club_id}/";
-};
-
-export type V1AccountsAuthRolesClubRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthAllRetrieveData = {
+export type AllListData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/all/";
 };
 
-export type V1AccountsAuthAllRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
+export type AllListResponses = {
+  200: Array<UserProfile>;
 };
 
-export type V1AccountsAuthJwtCreateCreateData = {
+export type AllListResponse = AllListResponses[keyof AllListResponses];
+
+export type AllCreateData = {
+  body: UserProfileWritable;
+  path?: never;
+  query?: never;
+  url: "/api/v1/accounts/auth/all/";
+};
+
+export type AllCreateResponses = {
+  201: UserProfile;
+};
+
+export type AllCreateResponse = AllCreateResponses[keyof AllCreateResponses];
+
+export type JwtCreateCreateData = {
   body: TokenObtainPair;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/create/";
 };
 
-export type V1AccountsAuthJwtCreateCreateResponses = {
+export type JwtCreateCreateResponses = {
   200: TokenObtainPair;
 };
 
-export type V1AccountsAuthJwtCreateCreateResponse =
-  V1AccountsAuthJwtCreateCreateResponses[keyof V1AccountsAuthJwtCreateCreateResponses];
+export type JwtCreateCreateResponse =
+  JwtCreateCreateResponses[keyof JwtCreateCreateResponses];
 
-export type V1AccountsAuthJwtLogoutCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/jwt/logout/";
-};
-
-export type V1AccountsAuthJwtLogoutCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthJwtRefreshCreateData = {
+export type JwtRefreshCreateData = {
   body: TokenRefreshWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/refresh/";
 };
 
-export type V1AccountsAuthJwtRefreshCreateResponses = {
+export type JwtRefreshCreateResponses = {
   200: TokenRefresh;
 };
 
-export type V1AccountsAuthJwtRefreshCreateResponse =
-  V1AccountsAuthJwtRefreshCreateResponses[keyof V1AccountsAuthJwtRefreshCreateResponses];
+export type JwtRefreshCreateResponse =
+  JwtRefreshCreateResponses[keyof JwtRefreshCreateResponses];
 
-export type V1AccountsAuthJwtVerifyCreateData = {
+export type JwtVerifyCreateData = {
   body: TokenVerify;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/verify/";
 };
 
-export type V1AccountsAuthJwtVerifyCreateResponses = {
+export type JwtVerifyCreateResponses = {
   200: TokenVerify;
 };
 
-export type V1AccountsAuthJwtVerifyCreateResponse =
-  V1AccountsAuthJwtVerifyCreateResponses[keyof V1AccountsAuthJwtVerifyCreateResponses];
+export type JwtVerifyCreateResponse =
+  JwtVerifyCreateResponses[keyof JwtVerifyCreateResponses];
 
-export type V1AccountsAuthMainListData = {
-  body?: never;
-  path?: never;
-  query?: {
-    /**
-     * A page number within the paginated result set.
-     */
-    page?: number;
-    /**
-     * Number of results to return per page.
-     */
-    page_size?: number;
-  };
-  url: "/api/v1/accounts/auth/main/";
-};
-
-export type V1AccountsAuthMainListResponses = {
-  200: PaginatedUserProfileList;
-};
-
-export type V1AccountsAuthMainListResponse =
-  V1AccountsAuthMainListResponses[keyof V1AccountsAuthMainListResponses];
-
-export type V1AccountsAuthMainRetrieveData = {
-  body?: never;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/";
-};
-
-export type V1AccountsAuthMainRetrieveResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainRetrieveResponse =
-  V1AccountsAuthMainRetrieveResponses[keyof V1AccountsAuthMainRetrieveResponses];
-
-export type V1AccountsAuthMainPartialUpdateData = {
-  body?: PatchedUserProfileWritable;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/";
-};
-
-export type V1AccountsAuthMainPartialUpdateResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainPartialUpdateResponse =
-  V1AccountsAuthMainPartialUpdateResponses[keyof V1AccountsAuthMainPartialUpdateResponses];
-
-export type V1AccountsAuthMainUpdateData = {
-  body: UserProfileWritable;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/";
-};
-
-export type V1AccountsAuthMainUpdateResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainUpdateResponse =
-  V1AccountsAuthMainUpdateResponses[keyof V1AccountsAuthMainUpdateResponses];
-
-export type V1AccountsAuthMainClubsRetrieveData = {
-  body?: never;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/clubs/";
-};
-
-export type V1AccountsAuthMainClubsRetrieveResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainClubsRetrieveResponse =
-  V1AccountsAuthMainClubsRetrieveResponses[keyof V1AccountsAuthMainClubsRetrieveResponses];
-
-export type V1AccountsAuthMainPostsRetrieveData = {
-  body?: never;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/posts/";
-};
-
-export type V1AccountsAuthMainPostsRetrieveResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainPostsRetrieveResponse =
-  V1AccountsAuthMainPostsRetrieveResponses[keyof V1AccountsAuthMainPostsRetrieveResponses];
-
-export type V1AccountsAuthMainRolesRetrieveData = {
-  body?: never;
-  path: {
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/roles/";
-};
-
-export type V1AccountsAuthMainRolesRetrieveResponses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainRolesRetrieveResponse =
-  V1AccountsAuthMainRolesRetrieveResponses[keyof V1AccountsAuthMainRolesRetrieveResponses];
-
-export type V1AccountsAuthMainRolesRetrieve2Data = {
-  body?: never;
-  path: {
-    club_id: string;
-    /**
-     * A UUID string identifying this user.
-     */
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/main/{id}/roles/{club_id}/";
-};
-
-export type V1AccountsAuthMainRolesRetrieve2Responses = {
-  200: UserProfile;
-};
-
-export type V1AccountsAuthMainRolesRetrieve2Response =
-  V1AccountsAuthMainRolesRetrieve2Responses[keyof V1AccountsAuthMainRolesRetrieve2Responses];
-
-export type V1AccountsAuthMeRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/";
-};
-
-export type V1AccountsAuthMeRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeClearProfilePictureCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/clear-profile-picture/";
-};
-
-export type V1AccountsAuthMeClearProfilePictureCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeEmailPreferenceRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/email-preference/";
-};
-
-export type V1AccountsAuthMeEmailPreferenceRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeEmailPreferencePartialUpdateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/email-preference/";
-};
-
-export type V1AccountsAuthMeEmailPreferencePartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeProfileRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/profile/";
-};
-
-export type V1AccountsAuthMeProfileRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeProfilePartialUpdateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/profile/";
-};
-
-export type V1AccountsAuthMeProfilePartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthMeUploadProfilePictureCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/me/upload-profile-picture/";
-};
-
-export type V1AccountsAuthMeUploadProfilePictureCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsAuthObtainCreateData = {
+export type LoginCreateData = {
   body: CustomTokenObtainPairWritable;
   path?: never;
   query?: never;
-  url: "/api/v1/accounts/auth/obtain/";
+  url: "/api/v1/accounts/auth/login/";
 };
 
-export type V1AccountsAuthObtainCreateResponses = {
+export type LoginCreateResponses = {
   200: CustomTokenObtainPair;
 };
 
-export type V1AccountsAuthObtainCreateResponse =
-  V1AccountsAuthObtainCreateResponses[keyof V1AccountsAuthObtainCreateResponses];
+export type LoginCreateResponse =
+  LoginCreateResponses[keyof LoginCreateResponses];
 
-export type V1AccountsAuthRegisterCreateData = {
+export type LogoutCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/accounts/auth/logout/";
+};
+
+export type LogoutCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type RegisterCreateData = {
   body: RegisterWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/register/";
 };
 
-export type V1AccountsAuthRegisterCreateResponses = {
+export type RegisterCreateResponses = {
   201: Register;
 };
 
-export type V1AccountsAuthRegisterCreateResponse =
-  V1AccountsAuthRegisterCreateResponses[keyof V1AccountsAuthRegisterCreateResponses];
+export type RegisterCreateResponse =
+  RegisterCreateResponses[keyof RegisterCreateResponses];
 
-export type V1AccountsAuthTokenLoginCreateData = {
-  body?: TokenCreate;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/token/login/";
-};
-
-export type V1AccountsAuthTokenLoginCreateResponses = {
-  200: TokenCreate;
-};
-
-export type V1AccountsAuthTokenLoginCreateResponse =
-  V1AccountsAuthTokenLoginCreateResponses[keyof V1AccountsAuthTokenLoginCreateResponses];
-
-export type V1AccountsAuthTokenLogoutCreateData = {
+export type RequestInfoRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/v1/accounts/auth/token/logout/";
+  url: "/api/v1/accounts/auth/request-info/";
 };
 
-export type V1AccountsAuthTokenLogoutCreateResponses = {
+export type RequestInfoRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type V1AccountsAuthUsersListData = {
+export type UsersListData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/";
 };
 
-export type V1AccountsAuthUsersListResponses = {
+export type UsersListResponses = {
   200: Array<User>;
 };
 
-export type V1AccountsAuthUsersListResponse =
-  V1AccountsAuthUsersListResponses[keyof V1AccountsAuthUsersListResponses];
+export type UsersListResponse = UsersListResponses[keyof UsersListResponses];
 
-export type V1AccountsAuthUsersCreateData = {
+export type UsersCreateData = {
   body: RegisterWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/";
 };
 
-export type V1AccountsAuthUsersCreateResponses = {
+export type UsersCreateResponses = {
   201: Register;
 };
 
-export type V1AccountsAuthUsersCreateResponse =
-  V1AccountsAuthUsersCreateResponses[keyof V1AccountsAuthUsersCreateResponses];
+export type UsersCreateResponse =
+  UsersCreateResponses[keyof UsersCreateResponses];
 
-export type V1AccountsAuthUsersDestroyData = {
+export type UsersDestroyData = {
   body?: never;
   path: {
     /**
@@ -1442,17 +983,17 @@ export type V1AccountsAuthUsersDestroyData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type V1AccountsAuthUsersDestroyResponses = {
+export type UsersDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type V1AccountsAuthUsersDestroyResponse =
-  V1AccountsAuthUsersDestroyResponses[keyof V1AccountsAuthUsersDestroyResponses];
+export type UsersDestroyResponse =
+  UsersDestroyResponses[keyof UsersDestroyResponses];
 
-export type V1AccountsAuthUsersRetrieveData = {
+export type UsersRetrieveData = {
   body?: never;
   path: {
     /**
@@ -1464,14 +1005,14 @@ export type V1AccountsAuthUsersRetrieveData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type V1AccountsAuthUsersRetrieveResponses = {
+export type UsersRetrieveResponses = {
   200: User;
 };
 
-export type V1AccountsAuthUsersRetrieveResponse =
-  V1AccountsAuthUsersRetrieveResponses[keyof V1AccountsAuthUsersRetrieveResponses];
+export type UsersRetrieveResponse =
+  UsersRetrieveResponses[keyof UsersRetrieveResponses];
 
-export type V1AccountsAuthUsersPartialUpdateData = {
+export type UsersPartialUpdateData = {
   body?: PatchedUserWritable;
   path: {
     /**
@@ -1483,14 +1024,14 @@ export type V1AccountsAuthUsersPartialUpdateData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type V1AccountsAuthUsersPartialUpdateResponses = {
+export type UsersPartialUpdateResponses = {
   200: User;
 };
 
-export type V1AccountsAuthUsersPartialUpdateResponse =
-  V1AccountsAuthUsersPartialUpdateResponses[keyof V1AccountsAuthUsersPartialUpdateResponses];
+export type UsersPartialUpdateResponse =
+  UsersPartialUpdateResponses[keyof UsersPartialUpdateResponses];
 
-export type V1AccountsAuthUsersUpdateData = {
+export type UsersUpdateData = {
   body: UserWritable;
   path: {
     /**
@@ -1502,185 +1043,217 @@ export type V1AccountsAuthUsersUpdateData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type V1AccountsAuthUsersUpdateResponses = {
+export type UsersUpdateResponses = {
   200: User;
 };
 
-export type V1AccountsAuthUsersUpdateResponse =
-  V1AccountsAuthUsersUpdateResponses[keyof V1AccountsAuthUsersUpdateResponses];
+export type UsersUpdateResponse =
+  UsersUpdateResponses[keyof UsersUpdateResponses];
 
-export type V1AccountsAuthUsersActivationCreateData = {
+export type UsersActivityRetrieveData = {
+  body?: never;
+  path: {
+    user_id: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/{user_id}/activity/";
+};
+
+export type UsersActivityRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type UsersClubsRetrieveData = {
+  body?: never;
+  path: {
+    user_id: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/{user_id}/clubs/";
+};
+
+export type UsersClubsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type UsersActivationCreateData = {
   body: Activation;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/activation/";
 };
 
-export type V1AccountsAuthUsersActivationCreateResponses = {
+export type UsersActivationCreateResponses = {
   200: Activation;
 };
 
-export type V1AccountsAuthUsersActivationCreateResponse =
-  V1AccountsAuthUsersActivationCreateResponses[keyof V1AccountsAuthUsersActivationCreateResponses];
+export type UsersActivationCreateResponse =
+  UsersActivationCreateResponses[keyof UsersActivationCreateResponses];
 
-export type V1AccountsAuthUsersMeDestroyData = {
+export type UsersMeDestroyData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type V1AccountsAuthUsersMeDestroyResponses = {
+export type UsersMeDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type V1AccountsAuthUsersMeDestroyResponse =
-  V1AccountsAuthUsersMeDestroyResponses[keyof V1AccountsAuthUsersMeDestroyResponses];
+export type UsersMeDestroyResponse =
+  UsersMeDestroyResponses[keyof UsersMeDestroyResponses];
 
-export type V1AccountsAuthUsersMeRetrieveData = {
+export type UsersMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type V1AccountsAuthUsersMeRetrieveResponses = {
-  200: Register;
+export type UsersMeRetrieveResponses = {
+  200: User;
 };
 
-export type V1AccountsAuthUsersMeRetrieveResponse =
-  V1AccountsAuthUsersMeRetrieveResponses[keyof V1AccountsAuthUsersMeRetrieveResponses];
+export type UsersMeRetrieveResponse =
+  UsersMeRetrieveResponses[keyof UsersMeRetrieveResponses];
 
-export type V1AccountsAuthUsersMePartialUpdateData = {
-  body?: PatchedRegisterWritable;
+export type UsersMePartialUpdateData = {
+  body?: PatchedUserWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type V1AccountsAuthUsersMePartialUpdateResponses = {
-  200: Register;
+export type UsersMePartialUpdateResponses = {
+  200: User;
 };
 
-export type V1AccountsAuthUsersMePartialUpdateResponse =
-  V1AccountsAuthUsersMePartialUpdateResponses[keyof V1AccountsAuthUsersMePartialUpdateResponses];
+export type UsersMePartialUpdateResponse =
+  UsersMePartialUpdateResponses[keyof UsersMePartialUpdateResponses];
 
-export type V1AccountsAuthUsersMeUpdateData = {
-  body: RegisterWritable;
+export type UsersMeUpdateData = {
+  body: UserWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type V1AccountsAuthUsersMeUpdateResponses = {
-  200: Register;
+export type UsersMeUpdateResponses = {
+  200: User;
 };
 
-export type V1AccountsAuthUsersMeUpdateResponse =
-  V1AccountsAuthUsersMeUpdateResponses[keyof V1AccountsAuthUsersMeUpdateResponses];
+export type UsersMeUpdateResponse =
+  UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
 
-export type V1AccountsAuthUsersResendActivationCreateData = {
+export type UsersResendActivationCreateData = {
   body: SendEmailReset;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/resend_activation/";
 };
 
-export type V1AccountsAuthUsersResendActivationCreateResponses = {
+export type UsersResendActivationCreateResponses = {
   200: SendEmailReset;
 };
 
-export type V1AccountsAuthUsersResendActivationCreateResponse =
-  V1AccountsAuthUsersResendActivationCreateResponses[keyof V1AccountsAuthUsersResendActivationCreateResponses];
+export type UsersResendActivationCreateResponse =
+  UsersResendActivationCreateResponses[keyof UsersResendActivationCreateResponses];
 
-export type V1AccountsAuthUsersResetPasswordCreateData = {
+export type UsersResetPasswordCreateData = {
   body: SendEmailReset;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_password/";
 };
 
-export type V1AccountsAuthUsersResetPasswordCreateResponses = {
+export type UsersResetPasswordCreateResponses = {
   200: SendEmailReset;
 };
 
-export type V1AccountsAuthUsersResetPasswordCreateResponse =
-  V1AccountsAuthUsersResetPasswordCreateResponses[keyof V1AccountsAuthUsersResetPasswordCreateResponses];
+export type UsersResetPasswordCreateResponse =
+  UsersResetPasswordCreateResponses[keyof UsersResetPasswordCreateResponses];
 
-export type V1AccountsAuthUsersResetPasswordConfirmCreateData = {
+export type UsersResetPasswordConfirmCreateData = {
   body: PasswordResetConfirmRetype;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_password_confirm/";
 };
 
-export type V1AccountsAuthUsersResetPasswordConfirmCreateResponses = {
+export type UsersResetPasswordConfirmCreateResponses = {
   200: PasswordResetConfirmRetype;
 };
 
-export type V1AccountsAuthUsersResetPasswordConfirmCreateResponse =
-  V1AccountsAuthUsersResetPasswordConfirmCreateResponses[keyof V1AccountsAuthUsersResetPasswordConfirmCreateResponses];
+export type UsersResetPasswordConfirmCreateResponse =
+  UsersResetPasswordConfirmCreateResponses[keyof UsersResetPasswordConfirmCreateResponses];
 
-export type V1AccountsAuthUsersResetUsernameCreateData = {
+export type UsersResetUsernameCreateData = {
   body: SendEmailReset;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_username/";
 };
 
-export type V1AccountsAuthUsersResetUsernameCreateResponses = {
+export type UsersResetUsernameCreateResponses = {
   200: SendEmailReset;
 };
 
-export type V1AccountsAuthUsersResetUsernameCreateResponse =
-  V1AccountsAuthUsersResetUsernameCreateResponses[keyof V1AccountsAuthUsersResetUsernameCreateResponses];
+export type UsersResetUsernameCreateResponse =
+  UsersResetUsernameCreateResponses[keyof UsersResetUsernameCreateResponses];
 
-export type V1AccountsAuthUsersResetUsernameConfirmCreateData = {
+export type UsersResetUsernameConfirmCreateData = {
   body: UsernameResetConfirm;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_username_confirm/";
 };
 
-export type V1AccountsAuthUsersResetUsernameConfirmCreateResponses = {
+export type UsersResetUsernameConfirmCreateResponses = {
   200: UsernameResetConfirm;
 };
 
-export type V1AccountsAuthUsersResetUsernameConfirmCreateResponse =
-  V1AccountsAuthUsersResetUsernameConfirmCreateResponses[keyof V1AccountsAuthUsersResetUsernameConfirmCreateResponses];
+export type UsersResetUsernameConfirmCreateResponse =
+  UsersResetUsernameConfirmCreateResponses[keyof UsersResetUsernameConfirmCreateResponses];
 
-export type V1AccountsAuthUsersSetPasswordCreateData = {
+export type UsersSetPasswordCreateData = {
   body: SetPassword;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/set_password/";
 };
 
-export type V1AccountsAuthUsersSetPasswordCreateResponses = {
+export type UsersSetPasswordCreateResponses = {
   200: SetPassword;
 };
 
-export type V1AccountsAuthUsersSetPasswordCreateResponse =
-  V1AccountsAuthUsersSetPasswordCreateResponses[keyof V1AccountsAuthUsersSetPasswordCreateResponses];
+export type UsersSetPasswordCreateResponse =
+  UsersSetPasswordCreateResponses[keyof UsersSetPasswordCreateResponses];
 
-export type V1AccountsAuthUsersSetUsernameCreateData = {
+export type UsersSetUsernameCreateData = {
   body: SetUsername;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/set_username/";
 };
 
-export type V1AccountsAuthUsersSetUsernameCreateResponses = {
+export type UsersSetUsernameCreateResponses = {
   200: SetUsername;
 };
 
-export type V1AccountsAuthUsersSetUsernameCreateResponse =
-  V1AccountsAuthUsersSetUsernameCreateResponses[keyof V1AccountsAuthUsersSetUsernameCreateResponses];
+export type UsersSetUsernameCreateResponse =
+  UsersSetUsernameCreateResponses[keyof UsersSetUsernameCreateResponses];
 
-export type V1AccountsAuthUsersUserRetrieveData = {
+export type UsersUserDestroyData = {
   body?: never;
   path: {
     username: string;
@@ -1689,1909 +1262,88 @@ export type V1AccountsAuthUsersUserRetrieveData = {
   url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
-export type V1AccountsAuthUsersUserRetrieveResponses = {
+export type UsersUserDestroyResponses = {
   /**
    * No response body
    */
-  200: unknown;
+  204: void;
 };
 
-export type V1AccountsAuthValidateRetrieveData = {
+export type UsersUserDestroyResponse =
+  UsersUserDestroyResponses[keyof UsersUserDestroyResponses];
+
+export type UsersUserRetrieveData = {
+  body?: never;
+  path: {
+    username: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/user/{username}/";
+};
+
+export type UsersUserRetrieveResponses = {
+  200: UserProfile;
+};
+
+export type UsersUserRetrieveResponse =
+  UsersUserRetrieveResponses[keyof UsersUserRetrieveResponses];
+
+export type UsersUserPartialUpdateData = {
+  body?: PatchedUserProfileWritable;
+  path: {
+    username: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/user/{username}/";
+};
+
+export type UsersUserPartialUpdateResponses = {
+  200: UserProfile;
+};
+
+export type UsersUserPartialUpdateResponse =
+  UsersUserPartialUpdateResponses[keyof UsersUserPartialUpdateResponses];
+
+export type UsersUserUpdateData = {
+  body: UserProfileWritable;
+  path: {
+    username: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/user/{username}/";
+};
+
+export type UsersUserUpdateResponses = {
+  200: UserProfile;
+};
+
+export type UsersUserUpdateResponse =
+  UsersUserUpdateResponses[keyof UsersUserUpdateResponses];
+
+export type ValidateRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/validate/";
 };
 
-export type V1AccountsAuthValidateRetrieveResponses = {
-  200: UserTypeAssignment;
+export type ValidateRetrieveResponses = {
+  200: UserType;
 };
 
-export type V1AccountsAuthValidateRetrieveResponse =
-  V1AccountsAuthValidateRetrieveResponses[keyof V1AccountsAuthValidateRetrieveResponses];
+export type ValidateRetrieveResponse =
+  ValidateRetrieveResponses[keyof ValidateRetrieveResponses];
 
-export type V1AccountsAuthValidateCreateData = {
-  body: UserTypeAssignmentWritable;
+export type ValidateCreateData = {
+  body: UserTypeWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/validate/";
 };
 
-export type V1AccountsAuthValidateCreateResponses = {
-  200: UserTypeAssignment;
+export type ValidateCreateResponses = {
+  200: UserType;
 };
 
-export type V1AccountsAuthValidateCreateResponse =
-  V1AccountsAuthValidateCreateResponses[keyof V1AccountsAuthValidateCreateResponses];
-
-export type V1AccountsClubsRolesUsersRetrieveData = {
-  body?: never;
-  path: {
-    club_id: number;
-    role_name: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/clubs/{club_id}/roles/{role_name}/users/";
-};
-
-export type V1AccountsClubsRolesUsersRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsClubsUsersAssignRoleCreateData = {
-  body?: never;
-  path: {
-    club_id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/assign-role/";
-};
-
-export type V1AccountsClubsUsersAssignRoleCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsClubsUsersCheckPermissionRetrieveData = {
-  body?: never;
-  path: {
-    club_id: number;
-    permission: string;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/check-permission/{permission}/";
-};
-
-export type V1AccountsClubsUsersCheckPermissionRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsClubsUsersRemoveRoleCreateData = {
-  body?: never;
-  path: {
-    club_id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/accounts/clubs/{club_id}/users/{user_id}/remove-role/";
-};
-
-export type V1AccountsClubsUsersRemoveRoleCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1AccountsSearchRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/search/";
-};
-
-export type V1AccountsSearchRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesCommentsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/activities/comments/";
-};
-
-export type V1ActivitiesCommentsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesCommentsDestroyData = {
-  body?: never;
-  path: {
-    comment_id: number;
-  };
-  query?: never;
-  url: "/api/v1/activities/comments/{comment_id}/";
-};
-
-export type V1ActivitiesCommentsDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ActivitiesCommentsDestroyResponse =
-  V1ActivitiesCommentsDestroyResponses[keyof V1ActivitiesCommentsDestroyResponses];
-
-export type V1ActivitiesCommentsRetrieve2Data = {
-  body?: never;
-  path: {
-    comment_id: number;
-  };
-  query?: never;
-  url: "/api/v1/activities/comments/{comment_id}/";
-};
-
-export type V1ActivitiesCommentsRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesCommentsPartialUpdateData = {
-  body?: never;
-  path: {
-    comment_id: number;
-  };
-  query?: never;
-  url: "/api/v1/activities/comments/{comment_id}/";
-};
-
-export type V1ActivitiesCommentsPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesCommentsRepliesRetrieveData = {
-  body?: never;
-  path: {
-    comment_id: number;
-  };
-  query?: never;
-  url: "/api/v1/activities/comments/{comment_id}/replies/";
-};
-
-export type V1ActivitiesCommentsRepliesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesCommentsCreateCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/activities/comments/create/";
-};
-
-export type V1ActivitiesCommentsCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesLikesRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/activities/likes/";
-};
-
-export type V1ActivitiesLikesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesLikesCheckRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/activities/likes/check/";
-};
-
-export type V1ActivitiesLikesCheckRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ActivitiesLikesToggleCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/activities/likes/toggle/";
-};
-
-export type V1ActivitiesLikesToggleCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/";
-};
-
-export type V1ClubsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsDestroyData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/";
-};
-
-export type V1ClubsDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ClubsDestroyResponse =
-  V1ClubsDestroyResponses[keyof V1ClubsDestroyResponses];
-
-export type V1ClubsRetrieve2Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/";
-};
-
-export type V1ClubsRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsPartialUpdateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/";
-};
-
-export type V1ClubsPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/";
-};
-
-export type V1ClubsEventsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsDestroyData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/";
-};
-
-export type V1ClubsEventsDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ClubsEventsDestroyResponse =
-  V1ClubsEventsDestroyResponses[keyof V1ClubsEventsDestroyResponses];
-
-export type V1ClubsEventsRetrieve2Data = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/";
-};
-
-export type V1ClubsEventsRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsPartialUpdateData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/";
-};
-
-export type V1ClubsEventsPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsJoinCreateData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/join/";
-};
-
-export type V1ClubsEventsJoinCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsLeaveCreateData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/leave/";
-};
-
-export type V1ClubsEventsLeaveCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsParticipantsRetrieveData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/participants/";
-};
-
-export type V1ClubsEventsParticipantsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsStatusCreateData = {
-  body?: never;
-  path: {
-    event_id: number;
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/{event_id}/status/";
-};
-
-export type V1ClubsEventsStatusCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsCreateCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/create/";
-};
-
-export type V1ClubsEventsCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsMyRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/my/";
-};
-
-export type V1ClubsEventsMyRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsEventsPublicRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/events/public/";
-};
-
-export type V1ClubsEventsPublicRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsInvitesRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/invites/";
-};
-
-export type V1ClubsInvitesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsJoinCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/join/";
-};
-
-export type V1ClubsJoinCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsLeaveCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/leave/";
-};
-
-export type V1ClubsLeaveCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsMembersRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/";
-};
-
-export type V1ClubsMembersRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsMembersRetrieve2Data = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/{user_id}/";
-};
-
-export type V1ClubsMembersRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsMembersRemoveDestroyData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/{user_id}/remove/";
-};
-
-export type V1ClubsMembersRemoveDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ClubsMembersRemoveDestroyResponse =
-  V1ClubsMembersRemoveDestroyResponses[keyof V1ClubsMembersRemoveDestroyResponses];
-
-export type V1ClubsMembersRolePartialUpdateData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/{user_id}/role/";
-};
-
-export type V1ClubsMembersRolePartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsMembersInviteCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/invite/";
-};
-
-export type V1ClubsMembersInviteCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsMembersSearchRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/members/search/";
-};
-
-export type V1ClubsMembersSearchRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsPermissionsRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/permissions/";
-};
-
-export type V1ClubsPermissionsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsPostsRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/posts/";
-};
-
-export type V1ClubsPostsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/";
-};
-
-export type V1ClubsRolesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesDestroyData = {
-  body?: never;
-  path: {
-    id: number;
-    role_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/{role_id}/";
-};
-
-export type V1ClubsRolesDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ClubsRolesDestroyResponse =
-  V1ClubsRolesDestroyResponses[keyof V1ClubsRolesDestroyResponses];
-
-export type V1ClubsRolesPartialUpdateData = {
-  body?: never;
-  path: {
-    id: number;
-    role_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/{role_id}/";
-};
-
-export type V1ClubsRolesPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesUsersRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-    role_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/{role_id}/users/";
-};
-
-export type V1ClubsRolesUsersRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesUsersRetrieve2Data = {
-  body?: never;
-  path: {
-    id: number;
-    role_name: string;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/{role_name}/users/";
-};
-
-export type V1ClubsRolesUsersRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesPermissionsRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/{user_id}/permissions/";
-};
-
-export type V1ClubsRolesPermissionsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesAssignCreateData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/assign/{user_id}/";
-};
-
-export type V1ClubsRolesAssignCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesCreateCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/create/";
-};
-
-export type V1ClubsRolesCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesSetPrimaryRoleCreateData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/set_primary_role/{user_id}/";
-};
-
-export type V1ClubsRolesSetPrimaryRoleCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRolesUserRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/roles/user/{user_id}/";
-};
-
-export type V1ClubsRolesUserRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsStatsRetrieveData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/stats/";
-};
-
-export type V1ClubsStatsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsUploadMediaDestroyData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/upload-media/";
-};
-
-export type V1ClubsUploadMediaDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ClubsUploadMediaDestroyResponse =
-  V1ClubsUploadMediaDestroyResponses[keyof V1ClubsUploadMediaDestroyResponses];
-
-export type V1ClubsUploadMediaPartialUpdateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/upload-media/";
-};
-
-export type V1ClubsUploadMediaPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsUploadMediaCreateData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/{id}/upload-media/";
-};
-
-export type V1ClubsUploadMediaCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsCreateCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/create/";
-};
-
-export type V1ClubsCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsInvitesAcceptCreateData = {
-  body?: never;
-  path: {
-    invite_id: number;
-  };
-  query?: never;
-  url: "/api/v1/clubs/invites/accept/{invite_id}";
-};
-
-export type V1ClubsInvitesAcceptCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsInvitesMeRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/invites/me/";
-};
-
-export type V1ClubsInvitesMeRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsOriginRetrieveData = {
-  body?: never;
-  path: {
-    origin: string;
-  };
-  query?: never;
-  url: "/api/v1/clubs/origin/{origin}/";
-};
-
-export type V1ClubsOriginRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsRecommendedRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/recommended/";
-};
-
-export type V1ClubsRecommendedRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsSearchRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/search/";
-};
-
-export type V1ClubsSearchRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsTestManagerRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/test/manager/";
-};
-
-export type V1ClubsTestManagerRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ClubsTrendingRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/clubs/trending/";
-};
-
-export type V1ClubsTrendingRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsBlockCreateData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/block/";
-};
-
-export type V1ConnectionsBlockCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsFollowersRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/followers/";
-};
-
-export type V1ConnectionsFollowersRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsFollowingRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/following/";
-};
-
-export type V1ConnectionsFollowingRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsMutualRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/mutual/";
-};
-
-export type V1ConnectionsMutualRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRelationshipRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/relationship/";
-};
-
-export type V1ConnectionsRelationshipRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRemoveDestroyData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/remove/";
-};
-
-export type V1ConnectionsRemoveDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1ConnectionsRemoveDestroyResponse =
-  V1ConnectionsRemoveDestroyResponses[keyof V1ConnectionsRemoveDestroyResponses];
-
-export type V1ConnectionsStatusRetrieveData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/status/";
-};
-
-export type V1ConnectionsStatusRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsToggleCreateData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/toggle/";
-};
-
-export type V1ConnectionsToggleCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsUnblockCreateData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/{user_id}/unblock/";
-};
-
-export type V1ConnectionsUnblockCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsBlockedRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/blocked/";
-};
-
-export type V1ConnectionsBlockedRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRelationsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/relations/";
-};
-
-export type V1ConnectionsRelationsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRelationsConnectedRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/relations/connected/";
-};
-
-export type V1ConnectionsRelationsConnectedRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRelationsPendingRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/relations/pending/";
-};
-
-export type V1ConnectionsRelationsPendingRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRelationsSentRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/relations/sent/";
-};
-
-export type V1ConnectionsRelationsSentRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRequestsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/requests/";
-};
-
-export type V1ConnectionsRequestsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRequestsAcceptCreateData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/requests/{user_id}/accept/";
-};
-
-export type V1ConnectionsRequestsAcceptCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsRequestsRejectCreateData = {
-  body?: never;
-  path: {
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/v1/connections/requests/{user_id}/reject/";
-};
-
-export type V1ConnectionsRequestsRejectCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1ConnectionsSuggestionsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/connections/suggestions/";
-};
-
-export type V1ConnectionsSuggestionsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1InstitutesRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/institutes/";
-};
-
-export type V1InstitutesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1InstitutesRetrieve2Data = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: "/api/v1/institutes/{id}/";
-};
-
-export type V1InstitutesRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/";
-};
-
-export type V1NotificationsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsRetrieve2Data = {
-  body?: never;
-  path: {
-    notification_id: number;
-  };
-  query?: never;
-  url: "/api/v1/notifications/{notification_id}/";
-};
-
-export type V1NotificationsRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsDeleteDestroyData = {
-  body?: never;
-  path: {
-    notification_id: number;
-  };
-  query?: never;
-  url: "/api/v1/notifications/{notification_id}/delete/";
-};
-
-export type V1NotificationsDeleteDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1NotificationsDeleteDestroyResponse =
-  V1NotificationsDeleteDestroyResponses[keyof V1NotificationsDeleteDestroyResponses];
-
-export type V1NotificationsDeliveriesRetrieveData = {
-  body?: never;
-  path: {
-    notification_id: number;
-  };
-  query?: never;
-  url: "/api/v1/notifications/{notification_id}/deliveries/";
-};
-
-export type V1NotificationsDeliveriesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsReadCreateData = {
-  body?: never;
-  path: {
-    notification_id: number;
-  };
-  query?: never;
-  url: "/api/v1/notifications/{notification_id}/read/";
-};
-
-export type V1NotificationsReadCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsSeenCreateData = {
-  body?: never;
-  path: {
-    notification_id: number;
-  };
-  query?: never;
-  url: "/api/v1/notifications/{notification_id}/seen/";
-};
-
-export type V1NotificationsSeenCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsClearDestroyData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/clear/";
-};
-
-export type V1NotificationsClearDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1NotificationsClearDestroyResponse =
-  V1NotificationsClearDestroyResponses[keyof V1NotificationsClearDestroyResponses];
-
-export type V1NotificationsCommentsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/comments/";
-};
-
-export type V1NotificationsCommentsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsCountsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/counts/";
-};
-
-export type V1NotificationsCountsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsFollowAcceptsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/follow-accepts/";
-};
-
-export type V1NotificationsFollowAcceptsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsFollowRequestsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/follow-requests/";
-};
-
-export type V1NotificationsFollowRequestsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsLikesRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/likes/";
-};
-
-export type V1NotificationsLikesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsMarkAllReadCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/mark-all-read/";
-};
-
-export type V1NotificationsMarkAllReadCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsMarkAllSeenCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/mark-all-seen/";
-};
-
-export type V1NotificationsMarkAllSeenCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1NotificationsPostsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/notifications/posts/";
-};
-
-export type V1NotificationsPostsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/";
-};
-
-export type V1PostsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsDestroyData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/";
-};
-
-export type V1PostsDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1PostsDestroyResponse =
-  V1PostsDestroyResponses[keyof V1PostsDestroyResponses];
-
-export type V1PostsRetrieve2Data = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/";
-};
-
-export type V1PostsRetrieve2Responses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsPartialUpdateData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/";
-};
-
-export type V1PostsPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCommentsRetrieveData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/";
-};
-
-export type V1PostsCommentsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCommentsDestroyData = {
-  body?: never;
-  path: {
-    comment_id: number;
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/{comment_id}/";
-};
-
-export type V1PostsCommentsDestroyResponses = {
-  /**
-   * No response body
-   */
-  204: void;
-};
-
-export type V1PostsCommentsDestroyResponse =
-  V1PostsCommentsDestroyResponses[keyof V1PostsCommentsDestroyResponses];
-
-export type V1PostsCommentsPartialUpdateData = {
-  body?: never;
-  path: {
-    comment_id: number;
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/{comment_id}/";
-};
-
-export type V1PostsCommentsPartialUpdateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCommentsLikeCreateData = {
-  body?: never;
-  path: {
-    comment_id: number;
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/{comment_id}/like/";
-};
-
-export type V1PostsCommentsLikeCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCommentsRepliesRetrieveData = {
-  body?: never;
-  path: {
-    comment_id: number;
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/{comment_id}/replies/";
-};
-
-export type V1PostsCommentsRepliesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCommentsCreateCreateData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/comments/create/";
-};
-
-export type V1PostsCommentsCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsLikeCreateData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/like/";
-};
-
-export type V1PostsLikeCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsLikesRetrieveData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/likes/";
-};
-
-export type V1PostsLikesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsRepostCreateData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/repost/";
-};
-
-export type V1PostsRepostCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsShareCreateData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/share/";
-};
-
-export type V1PostsShareCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsSharesRetrieveData = {
-  body?: never;
-  path: {
-    post_id: number;
-  };
-  query?: never;
-  url: "/api/v1/posts/{post_id}/shares/";
-};
-
-export type V1PostsSharesRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCreateCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/create/";
-};
-
-export type V1PostsCreateCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCreateMixedMediaCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/create-mixed-media/";
-};
-
-export type V1PostsCreateMixedMediaCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsCreateWithMediaCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/create-with-media/";
-};
-
-export type V1PostsCreateWithMediaCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsFeedRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/feed/";
-};
-
-export type V1PostsFeedRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsTrendingRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/trending/";
-};
-
-export type V1PostsTrendingRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type V1PostsUploadMediaCreateData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/posts/upload-media/";
-};
-
-export type V1PostsUploadMediaCreateResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
+export type ValidateCreateResponse =
+  ValidateCreateResponses[keyof ValidateCreateResponses];

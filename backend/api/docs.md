@@ -1,6 +1,6 @@
 on every endpoint change run:
 
-services/api
+backend/api
 python manage.py spectacular --file ../../packages/api/schema/openapi.yaml
 
 from the root

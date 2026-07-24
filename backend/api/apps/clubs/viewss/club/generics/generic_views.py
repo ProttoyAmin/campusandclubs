@@ -37,7 +37,7 @@ class ClubListCreateView(
         """
     # serializer_class = ClubSerializer
     service_class = ClubService
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
 
     def get_serializer_class(self) -> type[ClubDetailSerializer] | type[ClubSerializer]:
@@ -47,7 +47,7 @@ class ClubListCreateView(
             return ClubSerializer
 
     def get_queryset(self) -> QuerySet[Club]:
-        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=self.request.user)
+        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
     @club_list_schema
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -59,7 +59,7 @@ class ClubListCreateView(
         )
 
         clubs = self.get_service(request).list_clubs(
-            viewer=request.user, filters=filters)
+            viewer=current_user(request), filters=filters)  # type: ignore
 
         page = self.paginate_queryset(clubs)
         serializer = self.get_serializer(page, many=True)
@@ -90,10 +90,10 @@ class ClubRetrieveUpdateDestroyAPIView(
     serializer_class = ClubDetailSerializer
     service_class = ClubService
     policy_class = ClubPolicy
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[Club]:
-        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=self.request.user)
+        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         policy = self.get_policy(request, self.get_object())

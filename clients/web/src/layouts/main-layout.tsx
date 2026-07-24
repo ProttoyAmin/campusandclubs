@@ -1,5 +1,7 @@
 import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+// import { ProtectedRoute } from '@/guards';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 export type MainLayoutContext = {
   user: {
@@ -18,7 +20,9 @@ export type MainLayoutContext = {
 const MainLayout: React.FC = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <Outlet />
+      {/* <ProtectedRoute children={<Outlet />} /> */}
     </Suspense>
   );
 };
