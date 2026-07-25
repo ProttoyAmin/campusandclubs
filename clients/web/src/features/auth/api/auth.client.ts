@@ -7,6 +7,7 @@ import type {
   CustomTokenObtainPairWritable,
   TokenVerify,
   TokenRefresh,
+  registerCreate,
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";
@@ -24,7 +25,7 @@ export class AuthClient extends BaseClient<
     data: RegisterWritable,
   ): Promise<AxiosResponse<RegisterCreateResponse>> {
     try {
-      const response = await this.client.post<
+      const response = await this.client.v1.post<
         RegisterCreateResponse>
       (`${this.endpoint}register/`, data);
       return response;
@@ -38,7 +39,7 @@ export class AuthClient extends BaseClient<
     data: CustomTokenObtainPairWritable,
   ): Promise<AxiosResponse<JwtRefreshCreateResponse>> {
     try {
-      const response = await this.client.post(`${this.endpoint}login/`, data);
+      const response = await this.client.v1.post(`${this.endpoint}login/`, data);
       return response;
     } catch (err) {
       console.error("Login error:", (err as AxiosError).response?.data);
@@ -48,7 +49,7 @@ export class AuthClient extends BaseClient<
 
   async logout(): Promise<ApiResponse> {
     try {
-      const response = await this.client.post<ApiResponse>(
+      const response = await this.client.v1.post<ApiResponse>(
         `${this.endpoint}logout/`,
       );
       return response.data;
@@ -60,7 +61,7 @@ export class AuthClient extends BaseClient<
 
   async refresh(refreshToken: string): Promise<AxiosResponse<TokenRefresh>> {
     try {
-      const response = await this.client.post<TokenRefresh>(
+      const response = await this.client.v1.post<TokenRefresh>(
         `${this.endpoint}jwt/refresh/`,
         { refresh: refreshToken },
       );
@@ -73,7 +74,7 @@ export class AuthClient extends BaseClient<
 
   async verify(token: string): Promise<boolean> {
     try {
-      await this.client.post<TokenVerify>(`${this.endpoint}jwt/verify/`, {
+      await this.client.v1.post<TokenVerify>(`${this.endpoint}jwt/verify/`, {
         token,
       });
       return true;

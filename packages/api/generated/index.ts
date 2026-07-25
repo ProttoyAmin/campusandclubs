@@ -9,7 +9,7 @@ export {
   jwtCreateCreate,
   jwtRefreshCreate,
   jwtVerifyCreate,
-  loginCreate,
+  login,
   logoutCreate,
   type Options,
   registerCreate,
@@ -72,9 +72,10 @@ export type {
   JwtVerifyCreateData,
   JwtVerifyCreateResponse,
   JwtVerifyCreateResponses,
-  LoginCreateData,
-  LoginCreateResponse,
-  LoginCreateResponses,
+  LoginData,
+  LoginErrors,
+  LoginResponse,
+  LoginResponses,
   LogoutCreateData,
   LogoutCreateResponses,
   NullEnum,
@@ -185,6 +186,3 @@ export type {
   ValidateRetrieveResponse,
   ValidateRetrieveResponses,
 } from "./types.gen";
-
-
-export * from './client.gen'

@@ -3,10 +3,13 @@ import type { CustomTokenObtainPairWritable } from "@campus/api";
 import type { RegisterWritable } from "@campus/api";
 import { storage } from "@/settings/storage/";
 import { api } from "@/settings/api";
+import { v1Client } from "@/settings/api/v1/client";
+import { login } from "@campus/api";
 
 export class Authentication {
   private authClient = authClient;
   public authenticated: boolean = false;
+  private client = v1Client.client;
 
   constructor() {
     // Wire up the API client at construction time so every request
@@ -22,14 +25,27 @@ export class Authentication {
   }
 
   async login(data: CustomTokenObtainPairWritable) {
-    const response = await this.authClient.login(data);
-    if (response.status === 200) {
+    const res = await login({
+      client: this.client,
+      body: data,
+    });
+
+    if (res.status === 200) {
       this.authenticated = true;
-      storage.token.setAccessToken(response.data.access);
-      storage.token.setRefreshToken(response.data.refresh);
-      return response;
+      this.authenticated = true;
+      storage.token.setAccessToken(res.data.access);
+      storage.token.setRefreshToken(res.data.refresh);
+      return res;
     }
-    return response;
+
+    // const response = await this.authClient.login(data);
+    // if (response.status === 200) {
+    //   this.authenticated = true;
+    //   storage.token.setAccessToken(response.data.access);
+    //   storage.token.setRefreshToken(response.data.refresh);
+    //   return response;
+    // }
+    // return response;
   }
 
   async register(data: RegisterWritable) {
@@ -82,7 +98,7 @@ export class Authentication {
       this.authenticated = true;
       return true;
     }
-    
+
     const newToken = await this.refresh();
     this.authenticated = !!newToken;
     return this.authenticated;

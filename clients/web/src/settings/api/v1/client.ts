@@ -1,5 +1,7 @@
-import axios, { type AxiosInstance, type AxiosError } from "axios";
 import { config } from "@/settings/app";
+import type { Client } from "@campus/api/client";
+import { createClient } from "@campus/api/client";
+import type { AxiosError } from "axios";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -10,45 +12,50 @@ declare module "axios" {
 type TokenGetter = () => Promise<string | null>;
 type UnauthorizedHandler = (error: AxiosError) => Promise<string | null>;
 
-
-// API Client for making HTTP requests to the backend API
-export class Client {
-  private static instance: Client;
-  public v1: AxiosInstance;
+export class V1Client {
+  private static instance: V1Client;
+  public client: Client;
   private getToken: TokenGetter | null = null;
   private onUnauthorized: UnauthorizedHandler | null = null;
   private isRefreshing = false;
   private refreshSubscribers: ((token: string) => void)[] = [];
 
-
   private constructor() {
-    this.v1 = axios.create({
-      baseURL: config.api.v1.baseUrl,
-      withCredentials: true,
+    this.client = createClient({
+      baseURL: config.api.v1.raw,
     });
 
-    this.v1.interceptors.request.use(async (config) => {
+    this.client.instance.interceptors.request.use(async (config) => {
+      console.log("interceptor", config);
       if (this.getToken) {
         const token = await this.getToken();
-        if (token) config.headers.Authorization = `Bearer ${token}`;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
       return config;
     });
 
-    this.v1.interceptors.response.use(
-      (response) => response,
+    this.client.instance.interceptors.response.use(
+      (response) => {
+        console.log("response interceptor", response);
+        return response;
+      },
       async (error: AxiosError) => {
+        console.log("response error interceptor", error.config);
         const originalRequest = error.config;
+        console.log("original request: ", originalRequest);
         if (
           error.response?.status === 401 &&
           !originalRequest._retry &&
           this.onUnauthorized
         ) {
+          console.log("retry", originalRequest);
           if (this.isRefreshing) {
             return new Promise((resolve) => {
               this.refreshSubscribers.push((token: string) => {
                 originalRequest.headers.Authorization = `Bearer ${token}`;
-                resolve(this.v1(originalRequest));
+                resolve(this.client.instance(originalRequest));
               });
             });
           }
@@ -57,15 +64,15 @@ export class Client {
           this.isRefreshing = true;
 
           try {
-            console.log("refreshing token...");
             const newToken = await this.onUnauthorized(error);
+            console.log(newToken)
             if (!newToken) throw error;
 
             this.refreshSubscribers.forEach((cb) => cb(newToken));
             this.refreshSubscribers = [];
 
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return this.v1(originalRequest);
+            return this.client.instance(originalRequest);
           } catch (refreshError) {
             this.refreshSubscribers = [];
             return Promise.reject(refreshError);
@@ -73,25 +80,25 @@ export class Client {
             this.isRefreshing = false;
           }
         }
-
-        console.error("[API Error]:", error.response?.data || error.message);
         return Promise.reject(error);
       },
     );
   }
 
-  public static getInstance(): Client {
-    if (!Client.instance) Client.instance = new Client();
-    return Client.instance;
+  public static getInstance(): V1Client {
+    if (!V1Client.instance) {
+      V1Client.instance = new V1Client();
+    }
+    return V1Client.instance;
   }
 
-  public setTokenGetter(fn: TokenGetter) {
-    this.getToken = fn;
+  public setTokenGetter(getToken: TokenGetter): void {
+    this.getToken = getToken;
   }
 
-  public setUnauthorizedHandler(fn: UnauthorizedHandler) {
-    this.onUnauthorized = fn;
+  public setUnauthorizedHandler(handler: UnauthorizedHandler): void {
+    this.onUnauthorized = handler;
   }
 }
 
-export const api = Client.getInstance();
+export const v1Client = V1Client.getInstance();

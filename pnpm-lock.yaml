@@ -282,6 +282,9 @@ importers:
       '@hey-api/client-fetch':
         specifier: ^0.13.1
         version: 0.13.1(@hey-api/openapi-ts@0.99.0(typescript@6.0.3))
+      axios:
+        specifier: ^1.18.1
+        version: 1.18.1
     devDependencies:
       '@hey-api/openapi-ts':
         specifier: ^0.99.0

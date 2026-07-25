@@ -15,13 +15,13 @@ export const config = {
         v1: {
             name: 'v1',
             raw: VITE_PUBLIC_API_URL,
-            baseUrl: VITE_PUBLIC_API_URL + '/api/v1/',
+            baseUrl: VITE_PUBLIC_API_URL + 'api/v1/',
             version: "1.0.0",
             account: {
-                base: '/accounts/auth/',
-                login: '/login/',
-                register: '/register/',
-                logout: '/logout/'
+                base: 'accounts/auth/',
+                login: 'login/',
+                register: 'register/',
+                logout: 'logout/'
             },
             clubs: {
                 base: '/clubs/',

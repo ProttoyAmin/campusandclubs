@@ -219,17 +219,22 @@ paths:
           description: ''
   /api/v1/accounts/auth/login/:
     post:
-      operationId: login_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
+      operationId: login
+      description: Authenticates a user with email or username and returns tokens.
+      summary: Log in
       tags:
-      - login
+      - Authentication
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CustomTokenObtainPair'
+            examples:
+              BasicLogin:
+                value:
+                  username_or_email: asha@example.com
+                  password: s3cret!
+                summary: Basic login
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/CustomTokenObtainPair'
@@ -242,8 +247,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomTokenObtainPair'
-          description: ''
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: Login succeeded.
+        '401':
+          description: Invalid credentials.
   /api/v1/accounts/auth/logout/:
     post:
       operationId: logout_create

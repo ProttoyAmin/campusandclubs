@@ -5,6 +5,9 @@ import { account } from "../services/user.service";
 export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],
-    queryFn: () => account.getUsers(),
+    queryFn: () => {
+      console.log(account.getUsers());
+      return account.getUsers();
+    },
   });
 };

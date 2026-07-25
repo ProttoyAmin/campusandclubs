@@ -25,8 +25,9 @@ import type {
   JwtRefreshCreateResponses,
   JwtVerifyCreateData,
   JwtVerifyCreateResponses,
-  LoginCreateData,
-  LoginCreateResponses,
+  LoginData,
+  LoginErrors,
+  LoginResponses,
   LogoutCreateData,
   LogoutCreateResponses,
   RegisterCreateData,
@@ -109,6 +110,7 @@ export const allRetrieve = <ThrowOnError extends boolean = false>(
   options: Options<AllRetrieveData, ThrowOnError>,
 ): RequestResult<AllRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<AllRetrieveResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -129,6 +131,7 @@ export const allPartialUpdate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -149,6 +152,7 @@ export const allUpdate = <ThrowOnError extends boolean = false>(
   options: Options<AllUpdateData, ThrowOnError>,
 ): RequestResult<AllUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<AllUpdateResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -172,6 +176,7 @@ export const allList = <ThrowOnError extends boolean = false>(
   options?: Options<AllListData, ThrowOnError>,
 ): RequestResult<AllListResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<AllListResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -191,6 +196,7 @@ export const allCreate = <ThrowOnError extends boolean = false>(
   options: Options<AllCreateData, ThrowOnError>,
 ): RequestResult<AllCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<AllCreateResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -219,6 +225,7 @@ export const jwtCreateCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     url: "/api/v1/accounts/auth/jwt/create/",
     ...options,
     headers: {
@@ -239,6 +246,7 @@ export const jwtRefreshCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     url: "/api/v1/accounts/auth/jwt/refresh/",
     ...options,
     headers: {
@@ -259,6 +267,7 @@ export const jwtVerifyCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     url: "/api/v1/accounts/auth/jwt/verify/",
     ...options,
     headers: {
@@ -268,13 +277,15 @@ export const jwtVerifyCreate = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * Takes a set of user credentials and returns an access and refresh JSON web
- * token pair to prove the authentication of those credentials.
+ * Log in
+ *
+ * Authenticates a user with email or username and returns tokens.
  */
-export const loginCreate = <ThrowOnError extends boolean = false>(
-  options: Options<LoginCreateData, ThrowOnError>,
-): RequestResult<LoginCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<LoginCreateResponses, unknown, ThrowOnError>({
+export const login = <ThrowOnError extends boolean = false>(
+  options: Options<LoginData, ThrowOnError>,
+): RequestResult<LoginResponses, LoginErrors, ThrowOnError> =>
+  (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
+    responseType: "json",
     url: "/api/v1/accounts/auth/login/",
     ...options,
     headers: {
@@ -311,6 +322,7 @@ export const registerCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -351,6 +363,7 @@ export const usersList = <ThrowOnError extends boolean = false>(
   options?: Options<UsersListData, ThrowOnError>,
 ): RequestResult<UsersListResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<UsersListResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -367,6 +380,7 @@ export const usersCreate = <ThrowOnError extends boolean = false>(
   options: Options<UsersCreateData, ThrowOnError>,
 ): RequestResult<UsersCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<UsersCreateResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -408,6 +422,7 @@ export const usersRetrieve = <ThrowOnError extends boolean = false>(
 ): RequestResult<UsersRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<UsersRetrieveResponses, unknown, ThrowOnError>(
     {
+      responseType: "json",
       security: [
         { scheme: "bearer", type: "http" },
         {
@@ -429,6 +444,7 @@ export const usersPartialUpdate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -449,6 +465,7 @@ export const usersUpdate = <ThrowOnError extends boolean = false>(
   options: Options<UsersUpdateData, ThrowOnError>,
 ): RequestResult<UsersUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<UsersUpdateResponses, unknown, ThrowOnError>({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -519,6 +536,7 @@ export const usersActivationCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -563,6 +581,7 @@ export const usersMeRetrieve = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -583,6 +602,7 @@ export const usersMePartialUpdate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -604,6 +624,7 @@ export const usersMeUpdate = <ThrowOnError extends boolean = false>(
 ): RequestResult<UsersMeUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<UsersMeUpdateResponses, unknown, ThrowOnError>(
     {
+      responseType: "json",
       security: [
         { scheme: "bearer", type: "http" },
         {
@@ -631,6 +652,7 @@ export const usersResendActivationCreate = <
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -655,6 +677,7 @@ export const usersResetPasswordCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -685,6 +708,7 @@ export const usersResetPasswordConfirmCreate = <
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -709,6 +733,7 @@ export const usersResetUsernameCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -739,6 +764,7 @@ export const usersResetUsernameConfirmCreate = <
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -763,6 +789,7 @@ export const usersSetPasswordCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -787,6 +814,7 @@ export const usersSetUsernameCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -837,6 +865,7 @@ export const usersUserRetrieve = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -860,6 +889,7 @@ export const usersUserPartialUpdate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -887,6 +917,7 @@ export const usersUserUpdate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -911,6 +942,7 @@ export const validateRetrieve = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -931,6 +963,7 @@ export const validateCreate = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
