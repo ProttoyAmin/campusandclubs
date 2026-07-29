@@ -1,8 +1,6 @@
 import uuid
 from django.db import models
 
-# Create your models here.
-
 
 class Institute(models.Model):
     """Model representing an institute. (universitites, colleges, orgs, companies etc)"""
@@ -34,68 +32,18 @@ class Institute(models.Model):
         verbose_name_plural = "Institutes"
         db_table = "institute"
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=['name', 'code']),
+            models.Index(fields=['country']),
+        ]
         
-        
-    # @property
-        
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-    
+        
+    @property
     def get_active_email_domains(self):
         """Get all active email domains associated with the institute"""
         return self.email_domains.filter(is_active=True)
     
     
 
-
-
-
-class InstituteEmailDomain(models.Model):
-    STUDENT = "student"
-    FACULTY = "faculty"
-    ALUMNI = "alumni"
-    STAFF = "staff"
-
-    DOMAIN_TYPE_CHOICES = [
-        (STUDENT, "Student"),
-        (FACULTY, "Faculty"),
-        (ALUMNI, "Alumni"),
-        (STAFF, "Staff"),
-    ]
-
-    institute = models.ForeignKey(
-        "Institute",
-        on_delete=models.CASCADE,
-        related_name="email_domains"
-    )
-    domain = models.CharField(max_length=255)
-    domain_type = models.CharField(
-        max_length=20,
-        choices=DOMAIN_TYPE_CHOICES
-    )
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ("institute", "domain")
-        
-        
-    def __str__(self):
-        return f"Email Domain for {self.institute.name}: {self.domain} ({self.domain_type})"
-
-
-class Department(models.Model):
-    """Model representing a department within an institute (e.g., Computer Science, Mathematics) --- Optional"""
-    id = models.UUIDField(
-        primary_key=True, unique=True, editable=False, default=uuid.uuid4
-    )
-    institute = models.ForeignKey('Institute', on_delete=models.CASCADE, null=True, related_name='departments')
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=50, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    
-    def __str__(self):
-        return f"{self.institute.name} - {self.name} ({self.code})"
-    

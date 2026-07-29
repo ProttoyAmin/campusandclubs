@@ -1,7 +1,9 @@
 # apps/clubs/permissions.py
 from rest_framework import permissions
+from rest_framework.request import Request
 from .models import Membership
 
+from core.policies.utils import current_user
 
 def get_club_from_obj(obj):
     if hasattr(obj, "members"):
@@ -16,13 +18,14 @@ class IsSuperUserOnly(permissions.BasePermission):
     """
     message = "You must be a Superuser to access this endpoint."
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view):
         # 1. Check if the user is authenticated (set by the JWT).
-        if not request.user.is_authenticated:
+        user = current_user(request)
+        if not user.is_authenticated:
             return False
 
         # 2. The core check: Is the user a superuser?
-        return request.user.is_superuser
+        return user.is_superuser
 
 
 class IsClubMember(permissions.BasePermission):
@@ -30,8 +33,9 @@ class IsClubMember(permissions.BasePermission):
     Allow access only to club members
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view, obj):
         # obj can be Club or a related model (Post, Event)
+        club = get_club_from_obj(obj)
         if club.owner == request.user:
             return True
         club = get_club_from_obj(obj)
@@ -43,7 +47,7 @@ class IsClubAdminOrModerator(permissions.BasePermission):
     Allow access only to users with can_manage_members permission or club owner
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view, obj) -> bool:
         club = obj if hasattr(obj, 'members') else obj.club
 
         # Check if user is the club owner
@@ -53,7 +57,7 @@ class IsClubAdminOrModerator(permissions.BasePermission):
         # Check if user has can_manage_members permission through any role
         membership = Membership.objects.filter(
             user=request.user, club=club).prefetch_related('roles').first()
-        return membership and membership.has_permission('can_manage_members')
+        return membership and membership.has_permission('can_manage_members') if membership else False
 
 
 class IsClubAdmin(permissions.BasePermission):
@@ -61,7 +65,7 @@ class IsClubAdmin(permissions.BasePermission):
     Allow access only to club owner or users with can_manage_settings permission
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view, obj) -> bool:
         club = obj if hasattr(obj, 'members') else obj.club
 
         # Check if user is the club owner
@@ -71,7 +75,7 @@ class IsClubAdmin(permissions.BasePermission):
         # Check if user has can_manage_settings permission through any role
         membership = Membership.objects.filter(
             user=request.user, club=club).prefetch_related('roles').first()
-        return membership and membership.has_permission('can_manage_settings')
+        return membership and membership.has_permission('can_manage_settings') if membership else False
 
 
 class IsAuthorOrClubMod(permissions.BasePermission):
@@ -79,10 +83,10 @@ class IsAuthorOrClubMod(permissions.BasePermission):
     Allow edit access to content author, club owner, or users with can_manage_posts permission
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view, obj) -> bool:
         # Safe methods allowed for all club members
         if request.method in permissions.SAFE_METHODS:
-            return Membership.objects.filter(user=request.user, club=club).exists()
+            return Membership.objects.filter(user=request.user, club=obj.club).exists()
 
         # Author can edit their own content
         if hasattr(obj, 'author') and obj.author == request.user:
@@ -101,7 +105,7 @@ class IsAuthorOrClubMod(permissions.BasePermission):
         # Check if user has can_manage_posts permission through any role
         membership = Membership.objects.filter(
             user=request.user, club=club).prefetch_related('roles').first()
-        return membership and membership.has_permission('can_manage_posts')
+        return membership and membership.has_permission('can_manage_posts') if membership else False
 
 
 
@@ -110,9 +114,10 @@ class HasRolePermission(permissions.BasePermission):
     Checks if a user has a specific permission in a club
     Works with standard role permissions + custom_permissions
     """
+    from apps.clubs.models import Club
     permission_name = None  # e.g., 'can_manage_events'
     
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view, obj: Club) -> bool:
         if not request.user.is_authenticated:
             return False
         

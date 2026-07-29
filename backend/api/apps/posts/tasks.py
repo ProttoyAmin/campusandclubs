@@ -1,6 +1,6 @@
 # apps/posts/tasks.py
 from celery import shared_task
-from .models import Post
+from apps.posts.models import Post
 
 @shared_task
 def delete_post_task(post_id):

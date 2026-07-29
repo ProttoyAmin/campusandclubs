@@ -12,7 +12,14 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+dotenv_file = BASE_DIR / '.env.local'
 
+if path.isfile(dotenv_file):
+    load_dotenv(dotenv_file)
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
 # In production this MUST be overridden via DJANGO_SECRET_KEY (see prod.py).
 SECRET_KEY = os.environ.get(
@@ -53,7 +60,7 @@ INSTALLED_APPS = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your React/Next.js dev server
+    "http://localhost:4000",  # Your React/Next.js dev server
     "http://localhost:5173",  # Vite default port
     "http://127.0.0.1:3000",
     # Add your production domain here
@@ -68,6 +75,23 @@ CSRF_TRUSTED_ORIGINS = [
 
 AUTH_USER_MODEL = "accounts.User"
 
+
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
+
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -81,6 +105,9 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Campus & Clubs API",
     "DESCRIPTION": "Campus & Clubs Backend API",
     "VERSION": "1.0.0",
+    "PREPROCESSING_HOOKS": [
+        "core.openapi.hook.accounts_only",
+    ],
 }
 
 SIMPLE_JWT = {
@@ -103,12 +130,12 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': '/username-reset/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
-    'TOKEN_MODEL': None,  # We are using JWT instead of default token model
+    # 'TOKEN_MODEL': None,  # We are using JWT instead of default token model
     'SERIALIZERS': {
-        'user_create_password_retype': 'apps.accounts.serializers.RegisterSerializer',
-        'user_create': 'apps.accounts.serializers.RegisterSerializer',
-        'user': 'apps.accounts.serializers.UserSerializer',
-        'current_user': 'apps.accounts.serializers.RegisterSerializer',
+        'user_create_password_retype': 'apps.accounts.serialize.auth.register.RegisterSerializer',
+        'user_create': 'apps.accounts.serialize.auth.register.RegisterSerializer',
+        'user': 'apps.accounts.serialize.user.profile.UserSerializer',
+        'current_user': 'apps.accounts.serialize.user.profile.UserSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
     'EMAIL': {

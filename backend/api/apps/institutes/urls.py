@@ -1,8 +1,11 @@
 from django.urls import path, re_path, include
 
-from . import views
+from apps.institutes.views.generics import (
+    InstituteListCreateView,
+    InstituteDetailUpdateDeleteView
+)
 
 urlpatterns = [
-    path('', views.institute_list, name='institute_list'),
-    path('<uuid:pk>/', views.institute_info, name='institute_info'),
+    path('', InstituteListCreateView.as_view(), name='institute_list'),
+    path('<uuid:pk>/', InstituteDetailUpdateDeleteView.as_view(), name='institute_info'),
 ]

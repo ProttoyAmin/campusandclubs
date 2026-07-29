@@ -33,7 +33,7 @@ class MembershipSerializer(rest_serializers.ModelSerializer):
     username = rest_serializers.CharField(
         source='user.username', read_only=True)
     email = rest_serializers.EmailField(source='user.email', read_only=True)
-    user_id = rest_serializers.IntegerField(source='user.id', read_only=True)
+    user_id = rest_serializers.UUIDField(source='user.id', read_only=True)
     profile_picture_url = rest_serializers.SerializerMethodField()
 
     # CHANGE: roles is now a list
@@ -286,209 +286,6 @@ class DemoSerializer(rest_serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ClubDetailSerializer(rest_serializers.ModelSerializer):
-    id = rest_serializers.CharField(read_only=True)
-    origin = rest_serializers.CharField()
-    owner_details = rest_serializers.SerializerMethodField()
-    member_count = rest_serializers.SerializerMethodField()
-    post_count = rest_serializers.SerializerMethodField()
-    event_count = rest_serializers.SerializerMethodField()
-    user_role = rest_serializers.SerializerMethodField()
-    is_member = rest_serializers.SerializerMethodField()
-    is_owner = rest_serializers.SerializerMethodField()
-    avatar = rest_serializers.SerializerMethodField()
-    banner = rest_serializers.SerializerMethodField()
-
-    url = rest_serializers.SerializerMethodField()
-    members_url = rest_serializers.SerializerMethodField()
-    posts_url = rest_serializers.SerializerMethodField()
-    events_url = rest_serializers.SerializerMethodField()
-    leave_url = rest_serializers.SerializerMethodField()
-    join_url = rest_serializers.SerializerMethodField()
-
-    class Meta:
-        model = models.Club
-        fields = [
-            'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'privacy',
-            'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
-            'member_count', 'post_count', 'event_count',
-            'user_role', 'is_member', 'is_owner',
-            'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
-            'created_at', 'updated_at'
-        ]
-
-    def get_owner_details(self, obj):
-        request = self.context.get('request')
-        if obj.owner.profile_picture:
-            profile_picture_url = request.build_absolute_uri(
-                obj.owner.profile_picture.url)
-        else:
-            profile_picture_url = None
-        return {
-            'id': obj.owner.id,
-            'username': obj.owner.username,
-            'profile_picture': profile_picture_url
-        }
-
-    def get_is_owner(self, obj):
-        request = self.context.get('request')
-        if not (request and request.user.is_authenticated):
-            return False
-        return obj.owner == request.user
-
-    def get_avatar(self, obj):
-        return obj.avatar
-
-    def get_banner(self, obj):
-        return obj.banner
-
-    def get_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))
-
-    def get_members_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:list_members', kwargs={'pk': obj.pk}))
-
-    def get_posts_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:list_posts', kwargs={'pk': obj.pk}))
-
-    def get_events_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:list_events', kwargs={'pk': obj.pk}))
-
-    def get_leave_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:leave_club', kwargs={'pk': obj.pk}))
-
-    def get_join_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(reverse('clubs:join_club', kwargs={'pk': obj.pk}))
-
-    def get_member_count(self, obj):
-        return getattr(obj, 'member_count', obj.members.count())
-
-    def get_post_count(self, obj):
-        return getattr(obj, 'post_count', obj.club_posts.count())
-
-    def get_event_count(self, obj):
-        return getattr(obj, 'event_count', obj.events.count())
-
-    def get_user_role(self, obj):
-        request = self.context.get('request')
-        if not (request and request.user.is_authenticated):
-            return None
-
-        if hasattr(obj, 'user_memberships'):
-            memberships = obj.user_memberships
-        else:
-            memberships = models.Membership.objects.filter(
-                user=request.user, club=obj
-            ).prefetch_related('roles')
-
-        membership = memberships[0] if memberships else None
-        if membership and membership.roles.exists():
-            role = membership.roles.first()
-            return {
-                'id': str(role.id),
-                'name': role.name,
-                'permissions': role.get_all_permissions()
-            }
-        return None
-
-    def get_is_member(self, obj):
-        request = self.context.get('request')
-        if not (request and request.user.is_authenticated):
-            return False
-        if hasattr(obj, 'user_memberships'):
-            return bool(obj.user_memberships)
-        return models.Membership.objects.filter(user=request.user, club=obj).exists()
-
-
-class ClubSerializer(rest_serializers.ModelSerializer):
-    """For create/update — requires name, origin, and optional fields"""
-    id = rest_serializers.CharField(read_only=True)
-    origin = rest_serializers.PrimaryKeyRelatedField(
-        queryset=Institute.objects.all(),
-        required=False,
-        allow_null=True,
-        help_text="Select an institute or leave empty for a global club."
-    )
-    allow_public_posts = rest_serializers.BooleanField(
-        default=False,
-        help_text="Allow anyone to see posts from this club even if they are not members."
-    )
-    # rules = rest_serializers.CharField(
-    #     required=True,
-    #     help_text="Rules for the club (e.g., 'No hate speech', 'No spam', 'No harassment')"
-    # )
-
-    class Meta:
-        model = models.Club
-        fields = ['id', 'name', 'origin', 'about',
-                  'avatar', 'banner', 'privacy', 'is_public', 'allow_public_posts']
-        read_only_fields = ['id']
-
-    def get_validators(self):
-        """
-        Remove the default UniqueTogetherValidator that DRF adds automatically
-        for the UniqueConstraint in the model. We'll handle this validation ourselves.
-        """
-        validators = super().get_validators()
-        validators = [
-            v for v in validators
-            if not (
-                hasattr(v, 'fields') and
-                set(getattr(v, 'fields', [])) == {'name', 'origin'}
-            )
-        ]
-        return validators
-
-    def validate(self, data):
-        """Check for duplicate club name + origin combination (robust)"""
-        name = data.get('name')
-        origin = data.get('origin')
-
-        instance = self.instance
-
-        if name:
-            # Normalize the input name for comparison
-            normalized_name = name.strip().replace(" ", "").lower()
-
-            # Check for existing clubs with same normalized name and origin
-            # We use Replace to remove spaces and Lower for case-insensitivity on the DB side
-            queryset = models.Club.objects.annotate(
-                normalized_name_db=Lower(
-                    Replace('name', Value(' '), Value('')))
-            ).filter(
-                normalized_name_db=normalized_name,
-                origin=origin
-            )
-
-            if instance:
-                queryset = queryset.exclude(pk=instance.pk)
-
-            if queryset.exists():
-                origin_name = origin.name if origin else "Global"
-                raise rest_serializers.ValidationError({
-                    'name': f'A club with a very similar name already exists for "{origin_name}". Please choose a more distinct name.'
-                })
-        return data
-
-    def update(self, instance, validated_data):
-        """Handle Slug update on name/origin change"""
-        if 'name' in validated_data or 'origin' in validated_data:
-            name = validated_data.get('name', instance.name)
-            origin = validated_data.get('origin', instance.origin)
-            origin_str = str(origin.id) if origin else "global"
-            instance.slug = slugify(f"{name.strip()}-{origin_str}")
-        return super().update(instance, validated_data)
-
-    def get_origin(self, obj):
-        return obj.origin
-
-
 class ClubAvatarUploadSerializer(rest_serializers.Serializer):
     avatar = rest_serializers.FileField(
         required=True,
@@ -680,9 +477,9 @@ class ClubMemberUpdateSerializer(rest_serializers.Serializer):
     role_id = rest_serializers.IntegerField(required=False)
     role_name = rest_serializers.CharField(required=False)
 
-    def validate(self, data):
-        role_id = data.get('role_id')
-        role_name = data.get('role_name')
+    def validate(self, attrs):
+        role_id = attrs.get('role_id')
+        role_name = attrs.get('role_name')
 
         if not role_id and not role_name:
             raise rest_serializers.ValidationError(
@@ -694,4 +491,4 @@ class ClubMemberUpdateSerializer(rest_serializers.Serializer):
                 "Provide either role_id or role_name, not both"
             )
 
-        return data
+        return attrs

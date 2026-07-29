@@ -1,7 +1,10 @@
 # apps/posts/serializers.py
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
-from .models import Post, PostMedia
+from apps.posts.models import (
+    Post,
+    PostMedia
+)
 from apps.interactions.models import Like, Comment, Share
 from apps.clubs.models import Role
 import os
@@ -22,7 +25,7 @@ class PostMediaSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Detailed serializer for user posts with interaction data"""
     id = serializers.CharField()
-    author_id = serializers.IntegerField(source='author.id', read_only=True)
+    author_id = serializers.UUIDField(source='author.id', read_only=True)
     author_username = serializers.CharField(
         source='author.username', read_only=True)
     author_avatar = serializers.SerializerMethodField()
@@ -364,15 +367,15 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
         fields = ['post_type', 'content', 'title', 'club', 'is_pinned', 'image_file', 'video_file',
                   'image_url', 'video_url', 'is_public', 'original_post']
 
-    def validate(self, data):
+    def validate(self, attrs):
         """Validate based on post type"""
-        post_type = data.get('post_type', 'TEXT')
+        post_type = attrs.get('post_type', 'TEXT')
 
         # Check file uploads
-        image_file = data.get('image_file')
-        video_file = data.get('video_file')
-        image_url = data.get('image_url')
-        video_url = data.get('video_url')
+        image_file = attrs.get('image_file')
+        video_file = attrs.get('video_file')
+        image_url = attrs.get('image_url')
+        video_url = attrs.get('video_url')
 
         if post_type == 'IMAGE' and not image_file and not image_url:
             raise serializers.ValidationError({
@@ -386,12 +389,12 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
                 'video_url': 'Either video_file or video_url is required for VIDEO posts.'
             })
 
-        if post_type == 'TEXT' and not data.get('content'):
+        if post_type == 'TEXT' and not attrs.get('content'):
             raise serializers.ValidationError({
                 'content': 'Content is required for TEXT posts.'
             })
 
-        return data
+        return attrs
 
 
 class FileUploadSerializer(serializers.Serializer):
