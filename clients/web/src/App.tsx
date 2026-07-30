@@ -1,9 +1,9 @@
-import './App.css'
+import './App.css';
+import '@campus/styles/globals.css';
 import { useUsers } from '@/features/user/hooks/user.hooks';
 import { useSession } from './features/auth/hooks';
 import { useGetClubs } from './features/club/hooks/club.hooks';
-
-
+import { Button } from '@campus/styles/components/ui/button';
 
 function App() {
   // const { getToken } = useAuth()
@@ -17,6 +17,7 @@ function App() {
      <div>
       <pre>{JSON.stringify(sessionData, null, 2)}</pre>
       <pre>{JSON.stringify(data, null, 2)}</pre>
+      <Button variant='destructive'>Click me</Button>
     </div>
   )
 }

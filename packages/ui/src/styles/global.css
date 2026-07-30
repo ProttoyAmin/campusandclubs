@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@source "../../src/**/*.{ts,tsx}";
+@source "../../../../clients/*/src/**/*.{ts,tsx}";
+
+@theme {
+  /* design tokens */
+}
