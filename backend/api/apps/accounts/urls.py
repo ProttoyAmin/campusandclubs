@@ -23,7 +23,7 @@ from apps.accounts.view.user.common import (
     get_user_clubs,
     UserRetrieveUpdateDestroyView,
     UserListCreateView
-    
+
 )
 
 app_name = 'accounts'
@@ -45,17 +45,22 @@ urlpatterns = [
     
     # Authentication endpoints
     path("auth/logout/", LogoutView.as_view(), name="jwt_logout"),
-    path("auth/login/", LoginView.as_view(), name="jwt_obtain_token"),
-    path("auth/register/", RegisterView.as_view(), name="register"),
+    path("auth/login/", LoginView.as_view(), name="jwt_obtain_token"),      # ---- DONE
+    path("auth/register/", RegisterView.as_view(), name="register"),        # ---- DONE
     path("auth/validate/", ValidateUserTypeView.as_view(), name="validate_type"),
     
     # # User lookup
-    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(), name="user_details_by_username"),
-    path('auth/all/', UserListCreateView.as_view(), name="all_users"),
+    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(), name="user_details_by_username"),  # DONE
+    path('auth/all/', UserListCreateView.as_view(), name="all_users"),  # ---- DONE
     path('auth/<uuid:user_id>/all/', CompleteUserInfoView.as_view(), name="all_users_by_id"),
+
+
+    # user lookups with username:
+    path('auth/users/user/<str:username>/clubs/', get_user_clubs, name='user_clubs'),
+    
     
     # # Current user endpoints
-    # path('auth/me/', get_current_user, name='current_user'),
+    path('auth/me/', get_current_user, name='current_user'),
     # path('auth/me/profile/', views.update_profile, name='update_profile'),
     # path("auth/me/upload-profile-picture/", views.upload_profile_picture, name="upload_profile_picture"),
     # path('auth/me/clear-profile-picture/', views.clear_profile_picture, name='clear_profile_picture'),
@@ -63,9 +68,9 @@ urlpatterns = [
     
     # # User profiles
     # path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
-    path('auth/users/<uuid:user_id>/clubs/', get_user_clubs, name='user_clubs'),
-    # path('auth/<uuid:user_id>/posts/', views.get_user_posts, name='user_posts'),
-    path('auth/users/<uuid:user_id>/activity/', get_user_activity, name='user_activity'),
+    # path('auth/users/<uuid:user_id>/clubs/', get_user_clubs, name='user_clubs'),
+    path('auth/<uuid:user_id>/posts/', views.get_user_posts, name='user_posts'),
+    path('auth/users/user/<str:username>/activity/', get_user_activity, name='user_activity'),
     
     # # User roles and permissions
     # path('auth/<uuid:user_id>/roles/', views.get_all_user_roles, name='user_all_roles'),

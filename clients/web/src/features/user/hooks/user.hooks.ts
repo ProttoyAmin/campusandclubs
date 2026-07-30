@@ -11,3 +11,22 @@ export const useUsers = () => {
     },
   });
 };
+
+export const useUser = (username: string) => {
+  return useQuery({
+    queryKey: ["users", username],
+    queryFn: () => {
+      return account.getUserByUsername(username)
+    }
+  })
+}
+
+
+export const useMe = () => {
+  return useQuery({
+    queryKey: ["users", "me"],
+    queryFn: () => {
+      return account.getMe()
+    }
+  })
+}

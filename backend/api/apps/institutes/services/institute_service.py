@@ -1,7 +1,9 @@
+import uuid
 from core.services import BaseService
 from apps.institutes.repositories import InstituteRepository
 from apps.institutes.models import Institute
 from django.db.models import QuerySet
+from apps.accounts.models import User
 
 class InstituteService(BaseService[Institute, InstituteRepository]):
     """Institute service class"""
@@ -12,4 +14,6 @@ class InstituteService(BaseService[Institute, InstituteRepository]):
 
     def get_institute(self, id: int) -> Institute:
         return self.repository.get(id=id)
-    
+
+    def get_distinct_affiliate_institutes(self, user: User) -> QuerySet[Institute]:
+        return self.repository.get_distinct(user=user)

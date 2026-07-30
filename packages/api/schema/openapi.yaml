@@ -6,7 +6,7 @@ info:
 paths:
   /api/v1/accounts/auth/{user_id}/all/:
     get:
-      operationId: all_retrieve
+      operationId: accounts_auth_all_retrieve
       parameters:
       - in: path
         name: user_id
@@ -15,7 +15,7 @@ paths:
           format: uuid
         required: true
       tags:
-      - all
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -27,7 +27,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: all_update
+      operationId: accounts_auth_all_update
       parameters:
       - in: path
         name: user_id
@@ -36,18 +36,18 @@ paths:
           format: uuid
         required: true
       tags:
-      - all
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
         required: true
       security:
       - jwtAuth: []
@@ -60,7 +60,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     patch:
-      operationId: all_partial_update
+      operationId: accounts_auth_all_partial_update
       parameters:
       - in: path
         name: user_id
@@ -69,18 +69,18 @@ paths:
           format: uuid
         required: true
       tags:
-      - all
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -93,68 +93,112 @@ paths:
           description: ''
   /api/v1/accounts/auth/all/:
     get:
-      operationId: all_list
-      description: User List and Create View
+      operationId: list_users
+      description: Returns a paginated list of users.
+      summary: List users
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Sort field, e.g. `-date_joined`, `username`.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by username, first name, or last name.
       tags:
-      - all
+      - Users
       security:
       - jwtAuth: []
       - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserProfile'
-          description: ''
+                $ref: '#/components/schemas/PaginatedUserProfileList'
+          description: Paginated list of users.
+        '401':
+          description: Unauthorized.
     post:
-      operationId: all_create
-      description: User List and Create View
+      operationId: list_users_2
+      description: Returns a paginated list of users.
+      summary: List users
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Sort field, e.g. `-date_joined`, `username`.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by username, first name, or last name.
       tags:
-      - all
+      - Users
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
         required: true
       security:
       - jwtAuth: []
       - cookieAuth: []
+      - {}
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
+                $ref: '#/components/schemas/PaginatedUserProfileList'
+          description: Paginated list of users.
+        '401':
+          description: Unauthorized.
   /api/v1/accounts/auth/jwt/create/:
     post:
-      operationId: jwt_create_create
+      operationId: accounts_auth_jwt_create_create
       description: |-
         Takes a set of user credentials and returns an access and refresh JSON web
         token pair to prove the authentication of those credentials.
       tags:
-      - jwt
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenObtainPairRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenObtainPairRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenObtainPair'
+              $ref: '#/components/schemas/TokenObtainPairRequest'
         required: true
       responses:
         '200':
@@ -165,23 +209,23 @@ paths:
           description: ''
   /api/v1/accounts/auth/jwt/refresh/:
     post:
-      operationId: jwt_refresh_create
+      operationId: accounts_auth_jwt_refresh_create
       description: |-
         Takes a refresh type JSON web token and returns an access type JSON web
         token if the refresh token is valid.
       tags:
-      - jwt
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
         required: true
       responses:
         '200':
@@ -192,31 +236,27 @@ paths:
           description: ''
   /api/v1/accounts/auth/jwt/verify/:
     post:
-      operationId: jwt_verify_create
+      operationId: accounts_auth_jwt_verify_create
       description: |-
         Takes a token and indicates if it is valid.  This view provides no
         information about a token's fitness for a particular use.
       tags:
-      - jwt
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
         required: true
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenVerify'
-          description: ''
+          description: No response body
   /api/v1/accounts/auth/login/:
     post:
       operationId: login
@@ -228,7 +268,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomTokenObtainPair'
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
             examples:
               BasicLogin:
                 value:
@@ -237,10 +277,10 @@ paths:
                 summary: Basic login
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomTokenObtainPair'
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomTokenObtainPair'
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
         required: true
       responses:
         '200':
@@ -253,9 +293,9 @@ paths:
           description: Invalid credentials.
   /api/v1/accounts/auth/logout/:
     post:
-      operationId: logout_create
+      operationId: accounts_auth_logout_create
       tags:
-      - logout
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -264,20 +304,22 @@ paths:
           description: No response body
   /api/v1/accounts/auth/register/:
     post:
-      operationId: register_create
+      operationId: register
+      description: Creates a new user account.
+      summary: Register
       tags:
-      - register
+      - Authentication
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
         required: true
       security:
       - jwtAuth: []
@@ -288,13 +330,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Register'
+                $ref: '#/components/schemas/RegisterResponse'
           description: ''
+        '400':
+          description: Validation failed (duplicate email, weak password, etc.).
   /api/v1/accounts/auth/request-info/:
     get:
-      operationId: request_info_retrieve
+      operationId: accounts_auth_request_info_retrieve
       tags:
-      - request-info
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -303,9 +347,9 @@ paths:
           description: No response body
   /api/v1/accounts/auth/users/:
     get:
-      operationId: users_list
+      operationId: accounts_auth_users_list
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -319,20 +363,20 @@ paths:
                   $ref: '#/components/schemas/User'
           description: ''
     post:
-      operationId: users_create
+      operationId: accounts_auth_users_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Register'
+              $ref: '#/components/schemas/RegisterRequest'
         required: true
       security:
       - jwtAuth: []
@@ -347,7 +391,7 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/{id}/:
     get:
-      operationId: users_retrieve
+      operationId: accounts_auth_users_retrieve
       parameters:
       - in: path
         name: id
@@ -357,7 +401,7 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -369,7 +413,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: users_update
+      operationId: accounts_auth_users_update
       parameters:
       - in: path
         name: id
@@ -379,18 +423,18 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
         required: true
       security:
       - jwtAuth: []
@@ -403,7 +447,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     patch:
-      operationId: users_partial_update
+      operationId: accounts_auth_users_partial_update
       parameters:
       - in: path
         name: id
@@ -413,18 +457,18 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -436,7 +480,7 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     delete:
-      operationId: users_destroy
+      operationId: accounts_auth_users_destroy
       parameters:
       - in: path
         name: id
@@ -446,67 +490,29 @@ paths:
         description: A UUID string identifying this user.
         required: true
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
           description: No response body
-  /api/v1/accounts/auth/users/{user_id}/activity/:
-    get:
-      operationId: users_activity_retrieve
-      description: Get user's recent activity (likes, comments, shares)
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - users
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/users/{user_id}/clubs/:
-    get:
-      operationId: users_clubs_retrieve
-      description: Get all clubs a user has joined
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - users
-      security:
-      - jwtAuth: []
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
   /api/v1/accounts/auth/users/activation/:
     post:
-      operationId: users_activation_create
+      operationId: accounts_auth_users_activation_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Activation'
+              $ref: '#/components/schemas/ActivationRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Activation'
+              $ref: '#/components/schemas/ActivationRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Activation'
+              $ref: '#/components/schemas/ActivationRequest'
         required: true
       security:
       - jwtAuth: []
@@ -521,9 +527,9 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/me/:
     get:
-      operationId: users_me_retrieve
+      operationId: accounts_auth_users_me_retrieve
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -535,20 +541,20 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     put:
-      operationId: users_me_update
+      operationId: accounts_auth_users_me_update
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
         required: true
       security:
       - jwtAuth: []
@@ -561,20 +567,20 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     patch:
-      operationId: users_me_partial_update
+      operationId: accounts_auth_users_me_partial_update
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUser'
+              $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -586,9 +592,9 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     delete:
-      operationId: users_me_destroy
+      operationId: accounts_auth_users_me_destroy
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -597,20 +603,20 @@ paths:
           description: No response body
   /api/v1/accounts/auth/users/resend_activation/:
     post:
-      operationId: users_resend_activation_create
+      operationId: accounts_auth_users_resend_activation_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
       - jwtAuth: []
@@ -625,20 +631,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/reset_password/:
     post:
-      operationId: users_reset_password_create
+      operationId: accounts_auth_users_reset_password_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
       - jwtAuth: []
@@ -653,20 +659,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/reset_password_confirm/:
     post:
-      operationId: users_reset_password_confirm_create
+      operationId: accounts_auth_users_reset_password_confirm_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetype'
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetype'
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetype'
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
         required: true
       security:
       - jwtAuth: []
@@ -681,20 +687,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/reset_username/:
     post:
-      operationId: users_reset_username_create
+      operationId: accounts_auth_users_reset_username_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SendEmailReset'
+              $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
       - jwtAuth: []
@@ -709,20 +715,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/reset_username_confirm/:
     post:
-      operationId: users_reset_username_confirm_create
+      operationId: accounts_auth_users_reset_username_confirm_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UsernameResetConfirm'
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UsernameResetConfirm'
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UsernameResetConfirm'
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
         required: true
       security:
       - jwtAuth: []
@@ -737,20 +743,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/set_password/:
     post:
-      operationId: users_set_password_create
+      operationId: accounts_auth_users_set_password_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetPassword'
+              $ref: '#/components/schemas/SetPasswordRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SetPassword'
+              $ref: '#/components/schemas/SetPasswordRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetPassword'
+              $ref: '#/components/schemas/SetPasswordRequest'
         required: true
       security:
       - jwtAuth: []
@@ -764,20 +770,20 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/set_username/:
     post:
-      operationId: users_set_username_create
+      operationId: accounts_auth_users_set_username_create
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SetUsername'
+              $ref: '#/components/schemas/SetUsernameRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/SetUsername'
+              $ref: '#/components/schemas/SetUsernameRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SetUsername'
+              $ref: '#/components/schemas/SetUsernameRequest'
         required: true
       security:
       - jwtAuth: []
@@ -791,7 +797,7 @@ paths:
           description: ''
   /api/v1/accounts/auth/users/user/{username}/:
     get:
-      operationId: users_user_retrieve
+      operationId: accounts_auth_users_user_retrieve
       description: User Detail View
       parameters:
       - in: path
@@ -800,10 +806,11 @@ paths:
           type: string
         required: true
       tags:
-      - users
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -812,7 +819,7 @@ paths:
                 $ref: '#/components/schemas/UserProfile'
           description: ''
     put:
-      operationId: users_user_update
+      operationId: accounts_auth_users_user_update
       description: User Detail View
       parameters:
       - in: path
@@ -821,22 +828,23 @@ paths:
           type: string
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserProfile'
+              $ref: '#/components/schemas/UserProfileRequest'
         required: true
       security:
       - jwtAuth: []
       - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -845,7 +853,7 @@ paths:
                 $ref: '#/components/schemas/UserProfile'
           description: ''
     patch:
-      operationId: users_user_partial_update
+      operationId: accounts_auth_users_user_partial_update
       description: User Detail View
       parameters:
       - in: path
@@ -854,21 +862,22 @@ paths:
           type: string
         required: true
       tags:
-      - users
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUserProfile'
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUserProfile'
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUserProfile'
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
       security:
       - jwtAuth: []
       - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -877,7 +886,7 @@ paths:
                 $ref: '#/components/schemas/UserProfile'
           description: ''
     delete:
-      operationId: users_user_destroy
+      operationId: accounts_auth_users_user_destroy
       description: User Detail View
       parameters:
       - in: path
@@ -886,18 +895,55 @@ paths:
           type: string
         required: true
       tags:
-      - users
+      - accounts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/accounts/auth/users/user/{username}/activity/:
+    get:
+      operationId: accounts_auth_users_user_activity_retrieve
+      description: Get user's recent activity (likes, comments, shares)
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
       responses:
-        '204':
+        '200':
+          description: No response body
+  /api/v1/accounts/auth/users/user/{username}/clubs/:
+    get:
+      operationId: accounts_auth_users_user_clubs_retrieve
+      description: Get all clubs a user has joined
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
           description: No response body
   /api/v1/accounts/auth/validate/:
     get:
-      operationId: validate_retrieve
+      operationId: accounts_auth_validate_retrieve
       tags:
-      - validate
+      - accounts
       security:
       - jwtAuth: []
       - cookieAuth: []
@@ -909,20 +955,20 @@ paths:
                 $ref: '#/components/schemas/UserType'
           description: ''
     post:
-      operationId: validate_create
+      operationId: accounts_auth_validate_create
       tags:
-      - validate
+      - accounts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserType'
+              $ref: '#/components/schemas/UserTypeRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserType'
+              $ref: '#/components/schemas/UserTypeRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserType'
+              $ref: '#/components/schemas/UserTypeRequest'
         required: true
       security:
       - jwtAuth: []
@@ -946,17 +992,31 @@ components:
       required:
       - token
       - uid
+    ActivationRequest:
+      type: object
+      properties:
+        uid:
+          type: string
+          minLength: 1
+        token:
+          type: string
+          minLength: 1
+      required:
+      - token
+      - uid
     BlankEnum:
       enum:
       - ''
-    CustomTokenObtainPair:
+    CustomTokenObtainPairRequest:
       type: object
       properties:
         username_or_email:
           type: string
+          minLength: 1
         password:
           type: string
           writeOnly: true
+          minLength: 1
       required:
       - password
       - username_or_email
@@ -973,6 +1033,29 @@ components:
     NullEnum:
       enum:
       - null
+    PaginatedUserProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
     PasswordResetConfirmRetype:
       type: object
       properties:
@@ -989,187 +1072,121 @@ components:
       - re_new_password
       - token
       - uid
-    PatchedUser:
+    PasswordResetConfirmRetypeRequest:
       type: object
       properties:
-        id:
+        uid:
           type: string
-          format: uuid
-          readOnly: true
-        last_login:
+          minLength: 1
+        token:
           type: string
-          format: date-time
-          nullable: true
-        is_superuser:
-          type: boolean
-          title: Superuser status
-          description: Designates that this user has all permissions without explicitly
-            assigning them.
-        username:
+          minLength: 1
+        new_password:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        first_name:
+          minLength: 1
+        re_new_password:
           type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          title: Email address
-          oneOf:
-          - type: string
-            format: email
-            maxLength: 254
-          - type: string
-            maxLength: 0
-        is_staff:
-          type: boolean
-          title: Staff status
-          description: Designates whether the user can log into this admin site.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        date_joined:
-          type: string
-          format: date-time
-        professional_email:
-          nullable: true
-          oneOf:
-          - type: string
-            format: email
-            maxLength: 254
-          - type: string
-            maxLength: 0
-        student_id:
-          type: string
-          nullable: true
-        year:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-          nullable: true
-        level:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-          nullable: true
-        email_verified:
-          type: boolean
-        last_active:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        profile_picture:
-          type: string
-          format: uri
-          nullable: true
-        avatar:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        bio:
-          type: string
-          nullable: true
-        gender:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/GenderEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        location:
-          type: string
-          nullable: true
-          maxLength: 255
-        website:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        date_of_birth:
-          type: string
-          format: date
-          nullable: true
-        type:
-          nullable: true
-          oneOf:
-          - $ref: '#/components/schemas/TypeEnum'
-          - $ref: '#/components/schemas/BlankEnum'
-          - $ref: '#/components/schemas/NullEnum'
-        preferred_email:
-          allOf:
-          - $ref: '#/components/schemas/PreferredEmailEnum'
-          description: |-
-            Which email address to use for notifications
-
-            * `email` - Personal Email
-            * `professional_email` - Professional Email
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          description: |-
-            User's current online status
-
-            * `online` - Online
-            * `away` - Away
-            * `dnd` - Do Not Disturb
-        is_status_manual:
-          type: boolean
-          description: Whether the status was set manually by the user
-        is_private:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted_at:
-          type: string
-          format: date-time
-          nullable: true
-        groups:
-          type: array
-          items:
-            type: integer
-          description: The groups this user belongs to. A user will get all permissions
-            granted to each of their groups.
-        user_permissions:
-          type: array
-          items:
-            type: integer
-          description: Specific permissions for this user.
-    PatchedUserProfile:
+          minLength: 1
+      required:
+      - new_password
+      - re_new_password
+      - token
+      - uid
+    PatchedUserProfileRequest:
       type: object
       description: Detailed user profile with club, post, and follow information
       properties:
-        id:
+        username:
           type: string
-          format: uuid
-          readOnly: true
-        password:
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
           type: string
-          maxLength: 128
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        student_id:
+          type: string
+          nullable: true
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        level:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        preferred_email:
+          allOf:
+          - $ref: '#/components/schemas/PreferredEmailEnum'
+          description: |-
+            Which email address to use for notifications
+
+            * `email` - Personal Email
+            * `professional_email` - Professional Email
+        bio:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+          maxLength: 255
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        is_private:
+          type: boolean
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            User's current online status
+
+            * `online` - Online
+            * `away` - Away
+            * `dnd` - Do Not Disturb
+        is_status_manual:
+          type: boolean
+          description: Whether the status was set manually by the user
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
+    PatchedUserRequest:
+      type: object
+      properties:
         last_login:
           type: string
           format: date-time
-          readOnly: true
           nullable: true
         is_superuser:
           type: boolean
@@ -1178,6 +1195,7 @@ components:
             assigning them.
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
@@ -1189,10 +1207,13 @@ components:
           type: string
           maxLength: 150
         email:
-          type: string
-          format: email
-          readOnly: true
           title: Email address
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         is_staff:
           type: boolean
           title: Staff status
@@ -1206,10 +1227,13 @@ components:
           type: string
           format: date-time
         professional_email:
-          type: string
-          format: email
-          readOnly: true
           nullable: true
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         student_id:
           type: string
           nullable: true
@@ -1227,14 +1251,9 @@ components:
           nullable: true
         email_verified:
           type: boolean
-          readOnly: true
-        last_active:
-          type: string
-          format: date-time
-          nullable: true
         profile_picture:
           type: string
-          format: uri
+          format: binary
           nullable: true
         avatar:
           nullable: true
@@ -1297,14 +1316,6 @@ components:
           description: Whether the status was set manually by the user
         is_private:
           type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         deleted_at:
           type: string
           format: date-time
@@ -1342,18 +1353,63 @@ components:
         email:
           type: string
           format: email
+      required:
+      - email
+      - id
+      - username
+    RegisterRequest:
+      type: object
+      description: Serializer for user registration.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          pattern: ^[\w.@+-]+$
+        email:
+          type: string
+          format: email
+          minLength: 1
         password:
           type: string
           writeOnly: true
+          minLength: 1
           maxLength: 128
         re_password:
           type: string
           writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+      - re_password
+      - username
+    RegisterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        is_active:
+          type: boolean
+          readOnly: true
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
       required:
       - email
       - id
-      - password
-      - re_password
+      - is_active
       - username
     SendEmailReset:
       type: object
@@ -1361,6 +1417,15 @@ components:
         email:
           type: string
           format: email
+      required:
+      - email
+    SendEmailResetRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
       required:
       - email
     SetPassword:
@@ -1373,6 +1438,18 @@ components:
       required:
       - current_password
       - new_password
+    SetPasswordRequest:
+      type: object
+      properties:
+        new_password:
+          type: string
+          minLength: 1
+        current_password:
+          type: string
+          minLength: 1
+      required:
+      - current_password
+      - new_password
     SetUsername:
       type: object
       properties:
@@ -1380,6 +1457,23 @@ components:
           type: string
         new_username:
           type: string
+          title: Username
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - current_password
+      - new_username
+    SetUsernameRequest:
+      type: object
+      properties:
+        current_password:
+          type: string
+          minLength: 1
+        new_username:
+          type: string
+          minLength: 1
           title: Username
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
@@ -1401,12 +1495,6 @@ components:
     TokenObtainPair:
       type: object
       properties:
-        username:
-          type: string
-          writeOnly: true
-        password:
-          type: string
-          writeOnly: true
         access:
           type: string
           readOnly: true
@@ -1415,8 +1503,20 @@ components:
           readOnly: true
       required:
       - access
-      - password
       - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
       - username
     TokenRefresh:
       type: object
@@ -1429,12 +1529,21 @@ components:
       required:
       - access
       - refresh
-    TokenVerify:
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    TokenVerifyRequest:
       type: object
       properties:
         token:
           type: string
           writeOnly: true
+          minLength: 1
       required:
       - token
     TypeEnum:
@@ -1631,19 +1740,6 @@ components:
           type: string
           format: uuid
           readOnly: true
-        password:
-          type: string
-          maxLength: 128
-        last_login:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        is_superuser:
-          type: boolean
-          title: Superuser status
-          description: Designates that this user has all permissions without explicitly
-            assigning them.
         username:
           type: string
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
@@ -1661,6 +1757,341 @@ components:
           format: email
           readOnly: true
           title: Email address
+        professional_email:
+          type: string
+          format: email
+          readOnly: true
+          nullable: true
+        institute:
+          type: string
+          readOnly: true
+        institute_id:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        student_id:
+          type: string
+          nullable: true
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        level:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        preferred_email:
+          allOf:
+          - $ref: '#/components/schemas/PreferredEmailEnum'
+          description: |-
+            Which email address to use for notifications
+
+            * `email` - Personal Email
+            * `professional_email` - Professional Email
+        profile_picture_url:
+          type: string
+          readOnly: true
+        avatar:
+          type: string
+          readOnly: true
+        bio:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+          maxLength: 255
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        email_verified:
+          type: boolean
+          readOnly: true
+        is_private:
+          type: boolean
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            User's current online status
+
+            * `online` - Online
+            * `away` - Away
+            * `dnd` - Do Not Disturb
+        is_status_manual:
+          type: boolean
+          description: Whether the status was set manually by the user
+        club_count:
+          type: integer
+          description: Get club count from property
+          readOnly: true
+        clubs:
+          type: string
+          readOnly: true
+        clubs_url:
+          type: string
+          readOnly: true
+        user_post_count:
+          type: integer
+          readOnly: true
+        total_posts_count:
+          type: integer
+          readOnly: true
+        posts_url:
+          type: string
+          readOnly: true
+        follower_count:
+          type: integer
+          readOnly: true
+        following_count:
+          type: integer
+          readOnly: true
+        pending_requests_count:
+          type: integer
+          readOnly: true
+        followers_url:
+          type: string
+          readOnly: true
+        following_url:
+          type: string
+          readOnly: true
+        is_following:
+          type: boolean
+          nullable: true
+          description: Is current user following this user?
+          readOnly: true
+        is_followed_by:
+          type: boolean
+          nullable: true
+          description: Is this user following current user?
+          readOnly: true
+        is_mutual:
+          type: boolean
+          nullable: true
+          description: Are they mutual followers?
+          readOnly: true
+        follow_status:
+          nullable: true
+          description: Get follow status (pending, accepted, None)
+          readOnly: true
+        can_view_profile:
+          type: boolean
+          description: Can current user view this profile?
+          readOnly: true
+        likes_given:
+          type: integer
+          readOnly: true
+        comments_made:
+          type: integer
+          readOnly: true
+        shares_made:
+          type: integer
+          readOnly: true
+        likes_received:
+          type: integer
+          readOnly: true
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - avatar
+      - can_view_profile
+      - club_count
+      - clubs
+      - clubs_url
+      - comments_made
+      - created_at
+      - email
+      - email_verified
+      - follow_status
+      - follower_count
+      - followers_url
+      - following_count
+      - following_url
+      - id
+      - institute
+      - institute_id
+      - is_followed_by
+      - is_following
+      - is_mutual
+      - last_login
+      - likes_given
+      - likes_received
+      - pending_requests_count
+      - posts_url
+      - professional_email
+      - profile_picture_url
+      - shares_made
+      - total_posts_count
+      - updated_at
+      - url
+      - user_post_count
+      - username
+    UserProfileRequest:
+      type: object
+      description: Detailed user profile with club, post, and follow information
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        gender:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        student_id:
+          type: string
+          nullable: true
+        year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        level:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        type:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        preferred_email:
+          allOf:
+          - $ref: '#/components/schemas/PreferredEmailEnum'
+          description: |-
+            Which email address to use for notifications
+
+            * `email` - Personal Email
+            * `professional_email` - Professional Email
+        bio:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+          maxLength: 255
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        is_private:
+          type: boolean
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            User's current online status
+
+            * `online` - Online
+            * `away` - Away
+            * `dnd` - Do Not Disturb
+        is_status_manual:
+          type: boolean
+          description: Whether the status was set manually by the user
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - username
+    UserRequest:
+      type: object
+      properties:
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          title: Email address
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         is_staff:
           type: boolean
           title: Staff status
@@ -1674,10 +2105,13 @@ components:
           type: string
           format: date-time
         professional_email:
-          type: string
-          format: email
-          readOnly: true
           nullable: true
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
         student_id:
           type: string
           nullable: true
@@ -1695,14 +2129,9 @@ components:
           nullable: true
         email_verified:
           type: boolean
-          readOnly: true
-        last_active:
-          type: string
-          format: date-time
-          nullable: true
         profile_picture:
           type: string
-          format: uri
+          format: binary
           nullable: true
         avatar:
           nullable: true
@@ -1765,14 +2194,6 @@ components:
           description: Whether the status was set manually by the user
         is_private:
           type: boolean
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         deleted_at:
           type: string
           format: date-time
@@ -1789,14 +2210,6 @@ components:
             type: integer
           description: Specific permissions for this user.
       required:
-      - created_at
-      - email
-      - email_verified
-      - id
-      - last_login
-      - password
-      - professional_email
-      - updated_at
       - username
     UserType:
       type: object
@@ -1810,12 +2223,8 @@ components:
         professional_email:
           type: string
           format: email
-        password:
-          type: string
-          writeOnly: true
       required:
       - institute
-      - password
       - professional_email
       - user_type
     UserTypeEnum:
@@ -1832,11 +2241,46 @@ components:
         * `staff` - Staff
         * `alumni` - Alumni
         * `other` - Other
+    UserTypeRequest:
+      type: object
+      description: Serializer for assigning a role to a user in a club
+      properties:
+        user_type:
+          $ref: '#/components/schemas/UserTypeEnum'
+        institute:
+          type: string
+          format: uuid
+        professional_email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - institute
+      - password
+      - professional_email
+      - user_type
     UsernameResetConfirm:
       type: object
       properties:
         new_username:
           type: string
+          title: Username
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - new_username
+    UsernameResetConfirmRequest:
+      type: object
+      properties:
+        new_username:
+          type: string
+          minLength: 1
           title: Username
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.

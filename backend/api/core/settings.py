@@ -124,6 +124,8 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Campus & Clubs API",
     "DESCRIPTION": "Campus & Clubs Backend API",
+    "SCHEMA_PATH_PREFIX": r"/api/v1",
+    "COMPONENT_SPLIT_REQUEST": True,
     "VERSION": "1.0.0",
     "PREPROCESSING_HOOKS": [
         "core.openapi.hook.accounts_only",

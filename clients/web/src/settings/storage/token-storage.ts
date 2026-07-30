@@ -5,6 +5,7 @@ import { cookie } from "./cookie";
 
 export class TokenStorage {
     public setAccessToken(accessToken: string) {
+        this.removeAccessToken()
         cookie.set(config.cookie.access, accessToken);
     }
 
@@ -18,6 +19,7 @@ export class TokenStorage {
 
 
     public setRefreshToken(refreshToken: string) {
+        this.removeRefreshToken()
         cookie.set(config.cookie.refresh, refreshToken);
     }
 

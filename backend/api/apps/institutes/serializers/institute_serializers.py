@@ -1,15 +1,7 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
-from django.utils import timezone
-from djoser.serializers import TokenCreateSerializer
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from apps.clubs.models import Club, Membership, Role
-from apps.interactions.models import Like, Comment, Share
-from djoser.serializers import UserCreateSerializer
+from apps.clubs.models import Club
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from apps.institutes.models import Institute
@@ -27,21 +19,12 @@ class InstituteSerializer(serializers.ModelSerializer):
             "name",
             "code",
             "country",
-            "address",
-            "website",
-            "portal",
-            "courses",
-            "is_active",
             "is_verified",
             "logo",
-            "description",
             "established_year",
             "accreditation",
-            "contact_number",
             "social_links",
             "url",
-            "created_at",
-            "updated_at",
         ]
         
     def to_representation(self, instance):
@@ -72,9 +55,12 @@ class InstituteSerializer(serializers.ModelSerializer):
 
 
 class InstituteDetailSerializer(serializers.ModelSerializer):
+    from apps.institutes.serializers.affiliates.affiliates_serializer import InstituteAffiliateForInstituteSerializer
     id = serializers.CharField(read_only=True)
     clubs = serializers.SerializerMethodField()
     email_domains = serializers.SerializerMethodField()
+    affiliates = InstituteAffiliateForInstituteSerializer(many=True)
+
     class Meta:
         model = Institute
         fields = [
@@ -86,6 +72,7 @@ class InstituteDetailSerializer(serializers.ModelSerializer):
             "website",
             "portal",
             "courses",
+            "affiliates",
             "email_domains",
             "clubs",
             "is_active",

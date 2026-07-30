@@ -8,6 +8,8 @@ from django.db.models import (
 from core.repositories import BaseRepository
 from apps.clubs.models import Club, Membership, Visibility
 from apps.clubs.repositories.role.role_repo import RoleRepository
+from apps.clubs.dtos.club_create import ClubDuplicateCheckDTO
+
 
 class ClubRepository(BaseRepository[Club]):
     model = Club
@@ -48,3 +50,21 @@ class ClubRepository(BaseRepository[Club]):
             .select_related("owner")
             .order_by("-created_at")
         )
+
+    def exists_similar_name(self, data: ClubDuplicateCheckDTO) -> bool:
+        from django.db.models import Value
+        from django.db.models.functions import Lower, Replace
+        
+        normalized_name = data.name.strip().replace(" ", "").lower()
+
+        queryset = self.get_queryset().annotate(
+            normalized_name_db=Lower(Replace("name", Value(" "), Value("")))
+        ).filter(
+            normalized_name_db=normalized_name,
+            origin=data.origin,
+        )
+
+        if data.exclude_pk:
+            queryset = queryset.exclude(pk=data.exclude_pk)
+
+        return queryset.exists()

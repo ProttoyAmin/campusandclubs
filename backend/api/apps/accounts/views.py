@@ -1,25 +1,30 @@
-# from django.shortcuts import render, get_object_or_404
-# from django.utils import timezone
-# from django.contrib.contenttypes.models import ContentType
-# from django.db.models import Count, Q
-# from rest_framework import status, viewsets, permissions
-# from rest_framework.views import APIView
-# from rest_framework.decorators import api_view, permission_classes, action
-# from rest_framework_simplejwt.tokens import RefreshToken
-# from rest_framework_simplejwt.exceptions import TokenError
-# from rest_framework_simplejwt.views import TokenObtainPairView
-# from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
-# from rest_framework.response import Response
-# from rest_framework.parsers import MultiPartParser, FormParser
-# from rest_framework import generics, mixins
-# from django.conf import settings
-# from . import serializers, models
-# from core.pagination import PageNumberPagination
-# from apps.posts.serializers import PostSerializer, PostListSerializer
-# from apps.clubs.models import Membership, Club, Role
-# from apps.connections.models import Follow
-# from apps.posts.models import Post
-# import logging
+from rest_framework.response import Response
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count, Q
+from rest_framework import status, viewsets, permissions
+from rest_framework.request import Request
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import generics, mixins
+from django.conf import settings
+
+from apps.accounts.models.user import User
+from core.policies.utils import current_user
+from . import serializers, models
+from core.pagination import PageNumberPagination, StandardResultsSetPagination
+from apps.posts.serializers import PostSerializer, PostListSerializer
+from apps.clubs.models import Membership, Club, Role
+from apps.connections.models import Follow
+from apps.posts.models import Post
+import logging
 
 # logger = logging.getLogger(__name__)
 
@@ -63,48 +68,48 @@
 #     lookup_url_kwarg = 'user_id'
 
 
-# @api_view(['POST'])
-# @permission_classes([permissions.IsAuthenticated])
-# def upload_profile_picture(request):
-#     """
-#     Upload a new profile picture for the authenticated user
-#     """
-#     user = request.user
-#     profile_picture = request.FILES.get('profile_picture')
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def upload_profile_picture(request: Request):
+    """
+    Upload a new profile picture for the authenticated user
+    """
+    user: User = current_user(request)
+    profile_picture = request.FILES.get('profile_picture')
 
-#     if not profile_picture:
-#         return Response({
-#             'message': 'No image file provided'
-#         }, status=status.HTTP_400_BAD_REQUEST)
+    if not profile_picture:
+        return Response({
+            'message': 'No image file provided'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-#     # Validate file type
-#     allowed_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
-#     file_extension = profile_picture.name.lower().split('.')[-1]
+    # Validate file type
+    allowed_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
+    file_extension = profile_picture.name.lower().split('.')[-1]
 
-#     if f'.{file_extension}' not in allowed_extensions:
-#         return Response({
-#             'message': f'Invalid file type. Allowed extensions: {", ".join(allowed_extensions)}'
-#         }, status=status.HTTP_400_BAD_REQUEST)
+    if f'.{file_extension}' not in allowed_extensions:
+        return Response({
+            'message': f'Invalid file type. Allowed extensions: {", ".join(allowed_extensions)}'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-#     # Validate file size (5MB max)
-#     max_size = 5 * 1024 * 1024
-#     if profile_picture.size > max_size:
-#         return Response({
-#             'message': 'File size too large. Maximum size is 5MB'
-#         }, status=status.HTTP_400_BAD_REQUEST)
+    # Validate file size (5MB max)
+    max_size = 5 * 1024 * 1024
+    if profile_picture.size > max_size:
+        return Response({
+            'message': 'File size too large. Maximum size is 5MB'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-#     # Delete old profile picture if exists
-#     if user.profile_picture:
-#         user.profile_picture.delete(save=False)
+    # Delete old profile picture if exists
+    if user.profile_picture:
+        user.profile_picture.delete(save=False)
 
-#     # Set new profile picture
-#     user.profile_picture = profile_picture
-#     user.save(update_fields=['profile_picture'])
+    # Set new profile picture
+    user.profile_picture = profile_picture
+    user.save(update_fields=['profile_picture'])
 
-#     return Response({
-#         'message': 'Profile picture updated successfully',
-#         'profile_picture_url': user.profile_picture.url if user.profile_picture else None
-#     }, status=status.HTTP_200_OK)
+    return Response({
+        'message': 'Profile picture updated successfully',
+        'profile_picture_url': user.profile_picture.url if user.profile_picture else None
+    }, status=status.HTTP_200_OK)
 
 
 # class StandardResultsSetPagination(PageNumberPagination):
@@ -333,66 +338,71 @@
 #     })
 
 
-# @api_view(['GET'])
-# @permission_classes([permissions.AllowAny])
-# def get_user_posts(request, user_id):
-#     """
-#     Get all posts created by a user (both user posts and club posts)
-#     Query params:
-#     - source: all|user|club (default: all)
-#     - post_type: TEXT|IMAGE|VIDEO (default: all)
-#     """
-#     user = get_object_or_404(models.User, pk=user_id)
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def get_user_posts(request, user_id) -> Response:
+    """
+    Get all posts created by a user (both user posts and club posts)
+    Query params:
+    - source: all|user|club (default: all)
+    - post_type: TEXT|IMAGE|VIDEO (default: all)
+    """
+    from apps.accounts.policies.user import UserPolicy
+    user = get_object_or_404(models.User, pk=user_id)
 
-#     if request.user.is_authenticated:
-#         if not user.can_view_posts(request.user):
-#             return Response(
-#                 {'detail': 'You do not have permission to view this user\'s posts.'},
-#                 status=status.HTTP_403_FORBIDDEN
-#             )
+    user_policy = UserPolicy(actor=user, record=request.user)
 
-#     # Get query parameters
-#     post_type = request.query_params.get('post_type')
-#     post_source = request.query_params.get('source', 'all')
 
-#     # Validate post_type if provided
-#     valid_post_types = ['TEXT', 'IMAGE', 'VIDEO', "MIXED"]
-#     if post_type and post_type not in valid_post_types:
-#         return Response(
-#             {'detail': f'post_type must be one of: {", ".join(valid_post_types)}'},
-#             status=status.HTTP_400_BAD_REQUEST
-#         )
 
-#     # Base query
-#     posts = Post.objects.filter(
-#         author=user,
-#         original_post__isnull=True,
-#         is_deleted=False
-#     ).select_related('author')
+    if request.user.is_authenticated:
+        if not user_policy.can_view_posts(viewer=request.user):
+            return Response(
+                {'detail': 'You do not have permission to view this user\'s posts.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+    
+    # Get query parameters
+    post_type = request.query_params.get('post_type')
+    post_source = request.query_params.get('source', 'all')
 
-#     # Filter by source
-#     if post_source == 'user':
-#         posts = posts.filter(club__isnull=True)
-#     elif post_source == 'club':
-#         posts = posts.filter(club__isnull=False)
+    # Validate post_type if provided
+    valid_post_types = ['TEXT', 'IMAGE', 'VIDEO', "MIXED"]
+    if post_type and post_type not in valid_post_types:
+        return Response(
+            {'detail': f'post_type must be one of: {", ".join(valid_post_types)}'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-#     # Filter by post type
-#     if post_type:
-#         posts = posts.filter(post_type=post_type)
+    # Base query
+    posts = Post.objects.filter(
+        author=user,
+        original_post__isnull=True,
+        is_deleted=False
+    ).select_related('author')
 
-#     # Order by creation date descending
-#     posts = posts.order_by('-created_at')
+    # Filter by source
+    if post_source == 'user':
+        posts = posts.filter(club__isnull=True)
+    elif post_source == 'club':
+        posts = posts.filter(club__isnull=False)
 
-#     paginator = StandardResultsSetPagination()
-#     paginated_posts = paginator.paginate_queryset(posts, request)
+    # Filter by post type
+    if post_type:
+        posts = posts.filter(post_type=post_type)
 
-#     serializer = PostSerializer(
-#         paginated_posts,
-#         many=True,
-#         context={'request': request}
-#     )
+    # Order by creation date descending
+    posts = posts.order_by('-created_at')
 
-#     return paginator.get_paginated_response(serializer.data)
+    paginator = StandardResultsSetPagination()
+    paginated_posts = paginator.paginate_queryset(posts, request)
+
+    serializer = PostSerializer(
+        paginated_posts,
+        many=True,
+        context={'request': request}
+    )
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 # @api_view(['GET'])

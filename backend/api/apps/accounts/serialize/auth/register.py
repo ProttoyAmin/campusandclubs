@@ -95,3 +95,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
+class RegisterResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        fields = ["id", "username", "email", "is_active"]
+        read_only_fields = fields

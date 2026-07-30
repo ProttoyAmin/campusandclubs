@@ -18,6 +18,8 @@ export abstract class TestBaseClient<
 
   constructor(protected readonly endpoint: string) {}
 
+  
+
   async getAll(params?: Record<string, unknown>): Promise<TResult[]> {
     const { data, error } = await this.testClient.client.get<
       Envelope<ApiResponse<TResult[]>>

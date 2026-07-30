@@ -9,9 +9,14 @@ export type Activation = {
   token: string;
 };
 
+export type ActivationRequest = {
+  uid: string;
+  token: string;
+};
+
 export type BlankEnum = "";
 
-export type CustomTokenObtainPair = {
+export type CustomTokenObtainPairRequest = {
   username_or_email: string;
 };
 
@@ -24,6 +29,13 @@ export type GenderEnum = "male" | "female" | "other";
 
 export type NullEnum = never;
 
+export type PaginatedUserProfileList = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<UserProfile>;
+};
+
 export type PasswordResetConfirmRetype = {
   uid: string;
   token: string;
@@ -31,8 +43,56 @@ export type PasswordResetConfirmRetype = {
   re_new_password: string;
 };
 
-export type PatchedUser = {
-  readonly id?: string;
+export type PasswordResetConfirmRetypeRequest = {
+  uid: string;
+  token: string;
+  new_password: string;
+  re_new_password: string;
+};
+
+/**
+ * Detailed user profile with club, post, and follow information
+ */
+export type PatchedUserProfileRequest = {
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  student_id?: string | null;
+  year?: number | null;
+  level?: number | null;
+  type?: TypeEnum | BlankEnum | NullEnum | null;
+  /**
+   * Which email address to use for notifications
+   *
+   * * `email` - Personal Email
+   * * `professional_email` - Professional Email
+   */
+  preferred_email?: PreferredEmailEnum;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
+  is_private?: boolean;
+  /**
+   * User's current online status
+   *
+   * * `online` - Online
+   * * `away` - Away
+   * * `dnd` - Do Not Disturb
+   */
+  status?: StatusEnum;
+  /**
+   * Whether the status was set manually by the user
+   */
+  is_status_manual?: boolean;
+  last_active?: string | null;
+};
+
+export type PatchedUserRequest = {
   last_login?: string | null;
   /**
    * Superuser status
@@ -68,8 +128,7 @@ export type PatchedUser = {
   year?: number | null;
   level?: number | null;
   email_verified?: boolean;
-  readonly last_active?: string | null;
-  profile_picture?: string | null;
+  profile_picture?: Blob | File | null;
   avatar?: string | string | null;
   bio?: string | null;
   gender?: GenderEnum | BlankEnum | NullEnum | null;
@@ -97,91 +156,6 @@ export type PatchedUser = {
    */
   is_status_manual?: boolean;
   is_private?: boolean;
-  readonly created_at?: string;
-  readonly updated_at?: string;
-  deleted_at?: string | null;
-  /**
-   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
-   */
-  groups?: Array<number>;
-  /**
-   * Specific permissions for this user.
-   */
-  user_permissions?: Array<number>;
-};
-
-/**
- * Detailed user profile with club, post, and follow information
- */
-export type PatchedUserProfile = {
-  readonly id?: string;
-  password?: string;
-  readonly last_login?: string | null;
-  /**
-   * Superuser status
-   *
-   * Designates that this user has all permissions without explicitly assigning them.
-   */
-  is_superuser?: boolean;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  /**
-   * Email address
-   */
-  readonly email?: string;
-  /**
-   * Staff status
-   *
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /**
-   * Active
-   *
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  is_active?: boolean;
-  date_joined?: string;
-  readonly professional_email?: string | null;
-  student_id?: string | null;
-  year?: number | null;
-  level?: number | null;
-  readonly email_verified?: boolean;
-  last_active?: string | null;
-  profile_picture?: string | null;
-  avatar?: string | string | null;
-  bio?: string | null;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
-  /**
-   * Which email address to use for notifications
-   *
-   * * `email` - Personal Email
-   * * `professional_email` - Professional Email
-   */
-  preferred_email?: PreferredEmailEnum;
-  /**
-   * User's current online status
-   *
-   * * `online` - Online
-   * * `away` - Away
-   * * `dnd` - Do Not Disturb
-   */
-  status?: StatusEnum;
-  /**
-   * Whether the status was set manually by the user
-   */
-  is_status_manual?: boolean;
-  is_private?: boolean;
-  readonly created_at?: string;
-  readonly updated_at?: string;
   deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
@@ -208,7 +182,37 @@ export type Register = {
   email: string;
 };
 
+/**
+ * Serializer for user registration.
+ */
+export type RegisterRequest = {
+  username: string;
+  email: string;
+};
+
+export type RegisterResponse = {
+  readonly id: string;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  readonly username: string;
+  /**
+   * Email address
+   */
+  readonly email: string;
+  /**
+   * Active
+   *
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  readonly is_active: boolean;
+};
+
 export type SendEmailReset = {
+  email: string;
+};
+
+export type SendEmailResetRequest = {
   email: string;
 };
 
@@ -217,7 +221,22 @@ export type SetPassword = {
   current_password: string;
 };
 
+export type SetPasswordRequest = {
+  new_password: string;
+  current_password: string;
+};
+
 export type SetUsername = {
+  current_password: string;
+  /**
+   * Username
+   *
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  new_username: string;
+};
+
+export type SetUsernameRequest = {
   current_password: string;
   /**
    * Username
@@ -235,10 +254,13 @@ export type SetUsername = {
 export type StatusEnum = "online" | "away" | "dnd";
 
 export type TokenObtainPair = {
-  username: string;
-  password: string;
   readonly access: string;
   readonly refresh: string;
+};
+
+export type TokenObtainPairRequest = {
+  username: string;
+  password: string;
 };
 
 export type TokenRefresh = {
@@ -246,7 +268,11 @@ export type TokenRefresh = {
   refresh: string;
 };
 
-export type TokenVerify = {
+export type TokenRefreshRequest = {
+  refresh: string;
+};
+
+export type TokenVerifyRequest = {
   token: string;
 };
 
@@ -343,8 +369,140 @@ export type User = {
  */
 export type UserProfile = {
   readonly id: string;
-  password: string;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username: string;
+  first_name?: string;
+  last_name?: string;
+  /**
+   * Email address
+   */
+  readonly email: string;
+  readonly professional_email: string | null;
+  readonly institute: string;
+  readonly institute_id: string;
+  readonly url: string;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  student_id?: string | null;
+  year?: number | null;
+  level?: number | null;
+  type?: TypeEnum | BlankEnum | NullEnum | null;
+  /**
+   * Which email address to use for notifications
+   *
+   * * `email` - Personal Email
+   * * `professional_email` - Professional Email
+   */
+  preferred_email?: PreferredEmailEnum;
+  readonly profile_picture_url: string;
+  readonly avatar: string;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
+  readonly email_verified: boolean;
+  is_private?: boolean;
+  /**
+   * User's current online status
+   *
+   * * `online` - Online
+   * * `away` - Away
+   * * `dnd` - Do Not Disturb
+   */
+  status?: StatusEnum;
+  /**
+   * Whether the status was set manually by the user
+   */
+  is_status_manual?: boolean;
+  /**
+   * Get club count from property
+   */
+  readonly club_count: number;
+  readonly clubs: string;
+  readonly clubs_url: string;
+  readonly user_post_count: number;
+  readonly total_posts_count: number;
+  readonly posts_url: string;
+  readonly follower_count: number;
+  readonly following_count: number;
+  readonly pending_requests_count: number;
+  readonly followers_url: string;
+  readonly following_url: string;
+  /**
+   * Is current user following this user?
+   */
+  readonly is_following: boolean | null;
+  /**
+   * Is this user following current user?
+   */
+  readonly is_followed_by: boolean | null;
+  /**
+   * Are they mutual followers?
+   */
+  readonly is_mutual: boolean | null;
+  /**
+   * Get follow status (pending, accepted, None)
+   */
+  readonly follow_status: unknown;
+  /**
+   * Can current user view this profile?
+   */
+  readonly can_view_profile: boolean;
+  readonly likes_given: number;
+  readonly comments_made: number;
+  readonly shares_made: number;
+  readonly likes_received: number;
+  last_active?: string | null;
+  readonly created_at: string;
+  readonly updated_at: string;
   readonly last_login: string | null;
+};
+
+/**
+ * Detailed user profile with club, post, and follow information
+ */
+export type UserProfileRequest = {
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username: string;
+  first_name?: string;
+  last_name?: string;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
+  student_id?: string | null;
+  year?: number | null;
+  level?: number | null;
+  type?: TypeEnum | BlankEnum | NullEnum | null;
+  /**
+   * Which email address to use for notifications
+   *
+   * * `email` - Personal Email
+   * * `professional_email` - Professional Email
+   */
+  preferred_email?: PreferredEmailEnum;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
+  is_private?: boolean;
+  /**
+   * User's current online status
+   *
+   * * `online` - Online
+   * * `away` - Away
+   * * `dnd` - Do Not Disturb
+   */
+  status?: StatusEnum;
+  /**
+   * Whether the status was set manually by the user
+   */
+  is_status_manual?: boolean;
+  last_active?: string | null;
+};
+
+export type UserRequest = {
+  last_login?: string | null;
   /**
    * Superuser status
    *
@@ -360,7 +518,7 @@ export type UserProfile = {
   /**
    * Email address
    */
-  readonly email: string;
+  email?: string | string;
   /**
    * Staff status
    *
@@ -374,13 +532,12 @@ export type UserProfile = {
    */
   is_active?: boolean;
   date_joined?: string;
-  readonly professional_email: string | null;
+  professional_email?: string | string | null;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  readonly email_verified: boolean;
-  last_active?: string | null;
-  profile_picture?: string | null;
+  email_verified?: boolean;
+  profile_picture?: Blob | File | null;
   avatar?: string | string | null;
   bio?: string | null;
   gender?: GenderEnum | BlankEnum | NullEnum | null;
@@ -408,8 +565,6 @@ export type UserProfile = {
    */
   is_status_manual?: boolean;
   is_private?: boolean;
-  readonly created_at: string;
-  readonly updated_at: string;
   deleted_at?: string | null;
   /**
    * The groups this user belongs to. A user will get all permissions granted to each of their groups.
@@ -439,6 +594,15 @@ export type UserType = {
  */
 export type UserTypeEnum = "student" | "faculty" | "staff" | "alumni" | "other";
 
+/**
+ * Serializer for assigning a role to a user in a club
+ */
+export type UserTypeRequest = {
+  user_type: UserTypeEnum;
+  institute: string;
+  professional_email: string;
+};
+
 export type UsernameResetConfirm = {
   /**
    * Username
@@ -448,163 +612,39 @@ export type UsernameResetConfirm = {
   new_username: string;
 };
 
-export type CustomTokenObtainPairWritable = {
+export type UsernameResetConfirmRequest = {
+  /**
+   * Username
+   *
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  new_username: string;
+};
+
+export type CustomTokenObtainPairRequestWritable = {
   username_or_email: string;
   password: string;
 };
 
-export type PatchedUserWritable = {
-  last_login?: string | null;
-  /**
-   * Superuser status
-   *
-   * Designates that this user has all permissions without explicitly assigning them.
-   */
-  is_superuser?: boolean;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  /**
-   * Email address
-   */
-  email?: string | string;
-  /**
-   * Staff status
-   *
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /**
-   * Active
-   *
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  is_active?: boolean;
-  date_joined?: string;
-  professional_email?: string | string | null;
-  student_id?: string | null;
-  year?: number | null;
-  level?: number | null;
-  email_verified?: boolean;
-  profile_picture?: string | null;
-  avatar?: string | string | null;
-  bio?: string | null;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
-  /**
-   * Which email address to use for notifications
-   *
-   * * `email` - Personal Email
-   * * `professional_email` - Professional Email
-   */
-  preferred_email?: PreferredEmailEnum;
-  /**
-   * User's current online status
-   *
-   * * `online` - Online
-   * * `away` - Away
-   * * `dnd` - Do Not Disturb
-   */
-  status?: StatusEnum;
-  /**
-   * Whether the status was set manually by the user
-   */
-  is_status_manual?: boolean;
-  is_private?: boolean;
-  deleted_at?: string | null;
-  /**
-   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
-   */
-  groups?: Array<number>;
-  /**
-   * Specific permissions for this user.
-   */
-  user_permissions?: Array<number>;
-};
-
-/**
- * Detailed user profile with club, post, and follow information
- */
-export type PatchedUserProfileWritable = {
-  password?: string;
-  /**
-   * Superuser status
-   *
-   * Designates that this user has all permissions without explicitly assigning them.
-   */
-  is_superuser?: boolean;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  /**
-   * Staff status
-   *
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /**
-   * Active
-   *
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  is_active?: boolean;
-  date_joined?: string;
-  student_id?: string | null;
-  year?: number | null;
-  level?: number | null;
-  last_active?: string | null;
-  profile_picture?: string | null;
-  avatar?: string | string | null;
-  bio?: string | null;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
-  /**
-   * Which email address to use for notifications
-   *
-   * * `email` - Personal Email
-   * * `professional_email` - Professional Email
-   */
-  preferred_email?: PreferredEmailEnum;
-  /**
-   * User's current online status
-   *
-   * * `online` - Online
-   * * `away` - Away
-   * * `dnd` - Do Not Disturb
-   */
-  status?: StatusEnum;
-  /**
-   * Whether the status was set manually by the user
-   */
-  is_status_manual?: boolean;
-  is_private?: boolean;
-  deleted_at?: string | null;
-  /**
-   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
-   */
-  groups?: Array<number>;
-  /**
-   * Specific permissions for this user.
-   */
-  user_permissions?: Array<number>;
+export type PaginatedUserProfileListWritable = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<UserProfileWritable>;
 };
 
 /**
  * Serializer for user registration.
  */
 export type RegisterWritable = {
+  username: string;
+  email: string;
+};
+
+/**
+ * Serializer for user registration.
+ */
+export type RegisterRequestWritable = {
   username: string;
   email: string;
   password: string;
@@ -694,43 +734,16 @@ export type UserWritable = {
  * Detailed user profile with club, post, and follow information
  */
 export type UserProfileWritable = {
-  password: string;
-  /**
-   * Superuser status
-   *
-   * Designates that this user has all permissions without explicitly assigning them.
-   */
-  is_superuser?: boolean;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
    */
   username: string;
   first_name?: string;
   last_name?: string;
-  /**
-   * Staff status
-   *
-   * Designates whether the user can log into this admin site.
-   */
-  is_staff?: boolean;
-  /**
-   * Active
-   *
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  is_active?: boolean;
-  date_joined?: string;
+  gender?: GenderEnum | BlankEnum | NullEnum | null;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  last_active?: string | null;
-  profile_picture?: string | null;
-  avatar?: string | string | null;
-  bio?: string | null;
-  gender?: GenderEnum | BlankEnum | NullEnum | null;
-  location?: string | null;
-  website?: string | string | null;
-  date_of_birth?: string | null;
   type?: TypeEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
@@ -739,6 +752,11 @@ export type UserProfileWritable = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | string | null;
+  date_of_birth?: string | null;
+  is_private?: boolean;
   /**
    * User's current online status
    *
@@ -751,29 +769,20 @@ export type UserProfileWritable = {
    * Whether the status was set manually by the user
    */
   is_status_manual?: boolean;
-  is_private?: boolean;
-  deleted_at?: string | null;
-  /**
-   * The groups this user belongs to. A user will get all permissions granted to each of their groups.
-   */
-  groups?: Array<number>;
-  /**
-   * Specific permissions for this user.
-   */
-  user_permissions?: Array<number>;
+  last_active?: string | null;
 };
 
 /**
  * Serializer for assigning a role to a user in a club
  */
-export type UserTypeWritable = {
+export type UserTypeRequestWritable = {
   user_type: UserTypeEnum;
   institute: string;
   professional_email: string;
   password: string;
 };
 
-export type AllRetrieveData = {
+export type AccountsAuthAllRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -782,15 +791,15 @@ export type AllRetrieveData = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type AllRetrieveResponses = {
+export type AccountsAuthAllRetrieveResponses = {
   200: User;
 };
 
-export type AllRetrieveResponse =
-  AllRetrieveResponses[keyof AllRetrieveResponses];
+export type AccountsAuthAllRetrieveResponse =
+  AccountsAuthAllRetrieveResponses[keyof AccountsAuthAllRetrieveResponses];
 
-export type AllPartialUpdateData = {
-  body?: PatchedUserWritable;
+export type AccountsAuthAllPartialUpdateData = {
+  body?: PatchedUserRequest;
   path: {
     user_id: string;
   };
@@ -798,15 +807,15 @@ export type AllPartialUpdateData = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type AllPartialUpdateResponses = {
+export type AccountsAuthAllPartialUpdateResponses = {
   200: User;
 };
 
-export type AllPartialUpdateResponse =
-  AllPartialUpdateResponses[keyof AllPartialUpdateResponses];
+export type AccountsAuthAllPartialUpdateResponse =
+  AccountsAuthAllPartialUpdateResponses[keyof AccountsAuthAllPartialUpdateResponses];
 
-export type AllUpdateData = {
-  body: UserWritable;
+export type AccountsAuthAllUpdateData = {
+  body: UserRequest;
   path: {
     user_id: string;
   };
@@ -814,82 +823,133 @@ export type AllUpdateData = {
   url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
-export type AllUpdateResponses = {
+export type AccountsAuthAllUpdateResponses = {
   200: User;
 };
 
-export type AllUpdateResponse = AllUpdateResponses[keyof AllUpdateResponses];
+export type AccountsAuthAllUpdateResponse =
+  AccountsAuthAllUpdateResponses[keyof AccountsAuthAllUpdateResponses];
 
-export type AllListData = {
+export type ListUsersData = {
   body?: never;
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Sort field, e.g. `-date_joined`, `username`.
+     */
+    ordering?: string;
+    /**
+     * Page number.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    page_size?: number;
+    /**
+     * Search by username, first name, or last name.
+     */
+    search?: string;
+  };
   url: "/api/v1/accounts/auth/all/";
 };
 
-export type AllListResponses = {
-  200: Array<UserProfile>;
+export type ListUsersErrors = {
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
 };
 
-export type AllListResponse = AllListResponses[keyof AllListResponses];
+export type ListUsersResponses = {
+  /**
+   * Paginated list of users.
+   */
+  200: PaginatedUserProfileList;
+};
 
-export type AllCreateData = {
-  body: UserProfileWritable;
+export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
+
+export type ListUsers2Data = {
+  body: UserProfileRequest;
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Sort field, e.g. `-date_joined`, `username`.
+     */
+    ordering?: string;
+    /**
+     * Page number.
+     */
+    page?: number;
+    /**
+     * Search by username, first name, or last name.
+     */
+    search?: string;
+  };
   url: "/api/v1/accounts/auth/all/";
 };
 
-export type AllCreateResponses = {
-  201: UserProfile;
+export type ListUsers2Errors = {
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
 };
 
-export type AllCreateResponse = AllCreateResponses[keyof AllCreateResponses];
+export type ListUsers2Responses = {
+  /**
+   * Paginated list of users.
+   */
+  200: PaginatedUserProfileList;
+};
 
-export type JwtCreateCreateData = {
-  body: TokenObtainPair;
+export type ListUsers2Response = ListUsers2Responses[keyof ListUsers2Responses];
+
+export type AccountsAuthJwtCreateCreateData = {
+  body: TokenObtainPairRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/create/";
 };
 
-export type JwtCreateCreateResponses = {
+export type AccountsAuthJwtCreateCreateResponses = {
   200: TokenObtainPair;
 };
 
-export type JwtCreateCreateResponse =
-  JwtCreateCreateResponses[keyof JwtCreateCreateResponses];
+export type AccountsAuthJwtCreateCreateResponse =
+  AccountsAuthJwtCreateCreateResponses[keyof AccountsAuthJwtCreateCreateResponses];
 
-export type JwtRefreshCreateData = {
-  body: TokenRefreshWritable;
+export type AccountsAuthJwtRefreshCreateData = {
+  body: TokenRefreshRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/refresh/";
 };
 
-export type JwtRefreshCreateResponses = {
+export type AccountsAuthJwtRefreshCreateResponses = {
   200: TokenRefresh;
 };
 
-export type JwtRefreshCreateResponse =
-  JwtRefreshCreateResponses[keyof JwtRefreshCreateResponses];
+export type AccountsAuthJwtRefreshCreateResponse =
+  AccountsAuthJwtRefreshCreateResponses[keyof AccountsAuthJwtRefreshCreateResponses];
 
-export type JwtVerifyCreateData = {
-  body: TokenVerify;
+export type AccountsAuthJwtVerifyCreateData = {
+  body: TokenVerifyRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/verify/";
 };
 
-export type JwtVerifyCreateResponses = {
-  200: TokenVerify;
+export type AccountsAuthJwtVerifyCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
 };
 
-export type JwtVerifyCreateResponse =
-  JwtVerifyCreateResponses[keyof JwtVerifyCreateResponses];
-
 export type LoginData = {
-  body: CustomTokenObtainPairWritable;
+  body: CustomTokenObtainPairRequestWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/login/";
@@ -911,76 +971,83 @@ export type LoginResponses = {
 
 export type LoginResponse = LoginResponses[keyof LoginResponses];
 
-export type LogoutCreateData = {
+export type AccountsAuthLogoutCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/logout/";
 };
 
-export type LogoutCreateResponses = {
+export type AccountsAuthLogoutCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type RegisterCreateData = {
-  body: RegisterWritable;
+export type RegisterData = {
+  body: RegisterRequestWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/register/";
 };
 
-export type RegisterCreateResponses = {
-  201: Register;
+export type RegisterErrors = {
+  /**
+   * Validation failed (duplicate email, weak password, etc.).
+   */
+  400: unknown;
 };
 
-export type RegisterCreateResponse =
-  RegisterCreateResponses[keyof RegisterCreateResponses];
+export type RegisterResponses = {
+  201: RegisterResponse;
+};
 
-export type RequestInfoRetrieveData = {
+export type RegisterResponse2 = RegisterResponses[keyof RegisterResponses];
+
+export type AccountsAuthRequestInfoRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/request-info/";
 };
 
-export type RequestInfoRetrieveResponses = {
+export type AccountsAuthRequestInfoRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type UsersListData = {
+export type AccountsAuthUsersListData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/";
 };
 
-export type UsersListResponses = {
+export type AccountsAuthUsersListResponses = {
   200: Array<User>;
 };
 
-export type UsersListResponse = UsersListResponses[keyof UsersListResponses];
+export type AccountsAuthUsersListResponse =
+  AccountsAuthUsersListResponses[keyof AccountsAuthUsersListResponses];
 
-export type UsersCreateData = {
-  body: RegisterWritable;
+export type AccountsAuthUsersCreateData = {
+  body: RegisterRequestWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/";
 };
 
-export type UsersCreateResponses = {
+export type AccountsAuthUsersCreateResponses = {
   201: Register;
 };
 
-export type UsersCreateResponse =
-  UsersCreateResponses[keyof UsersCreateResponses];
+export type AccountsAuthUsersCreateResponse =
+  AccountsAuthUsersCreateResponses[keyof AccountsAuthUsersCreateResponses];
 
-export type UsersDestroyData = {
+export type AccountsAuthUsersDestroyData = {
   body?: never;
   path: {
     /**
@@ -992,17 +1059,17 @@ export type UsersDestroyData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type UsersDestroyResponses = {
+export type AccountsAuthUsersDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type UsersDestroyResponse =
-  UsersDestroyResponses[keyof UsersDestroyResponses];
+export type AccountsAuthUsersDestroyResponse =
+  AccountsAuthUsersDestroyResponses[keyof AccountsAuthUsersDestroyResponses];
 
-export type UsersRetrieveData = {
+export type AccountsAuthUsersRetrieveData = {
   body?: never;
   path: {
     /**
@@ -1014,15 +1081,15 @@ export type UsersRetrieveData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type UsersRetrieveResponses = {
+export type AccountsAuthUsersRetrieveResponses = {
   200: User;
 };
 
-export type UsersRetrieveResponse =
-  UsersRetrieveResponses[keyof UsersRetrieveResponses];
+export type AccountsAuthUsersRetrieveResponse =
+  AccountsAuthUsersRetrieveResponses[keyof AccountsAuthUsersRetrieveResponses];
 
-export type UsersPartialUpdateData = {
-  body?: PatchedUserWritable;
+export type AccountsAuthUsersPartialUpdateData = {
+  body?: PatchedUserRequest;
   path: {
     /**
      * A UUID string identifying this user.
@@ -1033,15 +1100,15 @@ export type UsersPartialUpdateData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type UsersPartialUpdateResponses = {
+export type AccountsAuthUsersPartialUpdateResponses = {
   200: User;
 };
 
-export type UsersPartialUpdateResponse =
-  UsersPartialUpdateResponses[keyof UsersPartialUpdateResponses];
+export type AccountsAuthUsersPartialUpdateResponse =
+  AccountsAuthUsersPartialUpdateResponses[keyof AccountsAuthUsersPartialUpdateResponses];
 
-export type UsersUpdateData = {
-  body: UserWritable;
+export type AccountsAuthUsersUpdateData = {
+  body: UserRequest;
   path: {
     /**
      * A UUID string identifying this user.
@@ -1052,217 +1119,185 @@ export type UsersUpdateData = {
   url: "/api/v1/accounts/auth/users/{id}/";
 };
 
-export type UsersUpdateResponses = {
+export type AccountsAuthUsersUpdateResponses = {
   200: User;
 };
 
-export type UsersUpdateResponse =
-  UsersUpdateResponses[keyof UsersUpdateResponses];
+export type AccountsAuthUsersUpdateResponse =
+  AccountsAuthUsersUpdateResponses[keyof AccountsAuthUsersUpdateResponses];
 
-export type UsersActivityRetrieveData = {
-  body?: never;
-  path: {
-    user_id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/users/{user_id}/activity/";
-};
-
-export type UsersActivityRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type UsersClubsRetrieveData = {
-  body?: never;
-  path: {
-    user_id: string;
-  };
-  query?: never;
-  url: "/api/v1/accounts/auth/users/{user_id}/clubs/";
-};
-
-export type UsersClubsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
-
-export type UsersActivationCreateData = {
-  body: Activation;
+export type AccountsAuthUsersActivationCreateData = {
+  body: ActivationRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/activation/";
 };
 
-export type UsersActivationCreateResponses = {
+export type AccountsAuthUsersActivationCreateResponses = {
   200: Activation;
 };
 
-export type UsersActivationCreateResponse =
-  UsersActivationCreateResponses[keyof UsersActivationCreateResponses];
+export type AccountsAuthUsersActivationCreateResponse =
+  AccountsAuthUsersActivationCreateResponses[keyof AccountsAuthUsersActivationCreateResponses];
 
-export type UsersMeDestroyData = {
+export type AccountsAuthUsersMeDestroyData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type UsersMeDestroyResponses = {
+export type AccountsAuthUsersMeDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type UsersMeDestroyResponse =
-  UsersMeDestroyResponses[keyof UsersMeDestroyResponses];
+export type AccountsAuthUsersMeDestroyResponse =
+  AccountsAuthUsersMeDestroyResponses[keyof AccountsAuthUsersMeDestroyResponses];
 
-export type UsersMeRetrieveData = {
+export type AccountsAuthUsersMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type UsersMeRetrieveResponses = {
+export type AccountsAuthUsersMeRetrieveResponses = {
   200: User;
 };
 
-export type UsersMeRetrieveResponse =
-  UsersMeRetrieveResponses[keyof UsersMeRetrieveResponses];
+export type AccountsAuthUsersMeRetrieveResponse =
+  AccountsAuthUsersMeRetrieveResponses[keyof AccountsAuthUsersMeRetrieveResponses];
 
-export type UsersMePartialUpdateData = {
-  body?: PatchedUserWritable;
+export type AccountsAuthUsersMePartialUpdateData = {
+  body?: PatchedUserRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type UsersMePartialUpdateResponses = {
+export type AccountsAuthUsersMePartialUpdateResponses = {
   200: User;
 };
 
-export type UsersMePartialUpdateResponse =
-  UsersMePartialUpdateResponses[keyof UsersMePartialUpdateResponses];
+export type AccountsAuthUsersMePartialUpdateResponse =
+  AccountsAuthUsersMePartialUpdateResponses[keyof AccountsAuthUsersMePartialUpdateResponses];
 
-export type UsersMeUpdateData = {
-  body: UserWritable;
+export type AccountsAuthUsersMeUpdateData = {
+  body: UserRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
-export type UsersMeUpdateResponses = {
+export type AccountsAuthUsersMeUpdateResponses = {
   200: User;
 };
 
-export type UsersMeUpdateResponse =
-  UsersMeUpdateResponses[keyof UsersMeUpdateResponses];
+export type AccountsAuthUsersMeUpdateResponse =
+  AccountsAuthUsersMeUpdateResponses[keyof AccountsAuthUsersMeUpdateResponses];
 
-export type UsersResendActivationCreateData = {
-  body: SendEmailReset;
+export type AccountsAuthUsersResendActivationCreateData = {
+  body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/resend_activation/";
 };
 
-export type UsersResendActivationCreateResponses = {
+export type AccountsAuthUsersResendActivationCreateResponses = {
   200: SendEmailReset;
 };
 
-export type UsersResendActivationCreateResponse =
-  UsersResendActivationCreateResponses[keyof UsersResendActivationCreateResponses];
+export type AccountsAuthUsersResendActivationCreateResponse =
+  AccountsAuthUsersResendActivationCreateResponses[keyof AccountsAuthUsersResendActivationCreateResponses];
 
-export type UsersResetPasswordCreateData = {
-  body: SendEmailReset;
+export type AccountsAuthUsersResetPasswordCreateData = {
+  body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_password/";
 };
 
-export type UsersResetPasswordCreateResponses = {
+export type AccountsAuthUsersResetPasswordCreateResponses = {
   200: SendEmailReset;
 };
 
-export type UsersResetPasswordCreateResponse =
-  UsersResetPasswordCreateResponses[keyof UsersResetPasswordCreateResponses];
+export type AccountsAuthUsersResetPasswordCreateResponse =
+  AccountsAuthUsersResetPasswordCreateResponses[keyof AccountsAuthUsersResetPasswordCreateResponses];
 
-export type UsersResetPasswordConfirmCreateData = {
-  body: PasswordResetConfirmRetype;
+export type AccountsAuthUsersResetPasswordConfirmCreateData = {
+  body: PasswordResetConfirmRetypeRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_password_confirm/";
 };
 
-export type UsersResetPasswordConfirmCreateResponses = {
+export type AccountsAuthUsersResetPasswordConfirmCreateResponses = {
   200: PasswordResetConfirmRetype;
 };
 
-export type UsersResetPasswordConfirmCreateResponse =
-  UsersResetPasswordConfirmCreateResponses[keyof UsersResetPasswordConfirmCreateResponses];
+export type AccountsAuthUsersResetPasswordConfirmCreateResponse =
+  AccountsAuthUsersResetPasswordConfirmCreateResponses[keyof AccountsAuthUsersResetPasswordConfirmCreateResponses];
 
-export type UsersResetUsernameCreateData = {
-  body: SendEmailReset;
+export type AccountsAuthUsersResetUsernameCreateData = {
+  body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_username/";
 };
 
-export type UsersResetUsernameCreateResponses = {
+export type AccountsAuthUsersResetUsernameCreateResponses = {
   200: SendEmailReset;
 };
 
-export type UsersResetUsernameCreateResponse =
-  UsersResetUsernameCreateResponses[keyof UsersResetUsernameCreateResponses];
+export type AccountsAuthUsersResetUsernameCreateResponse =
+  AccountsAuthUsersResetUsernameCreateResponses[keyof AccountsAuthUsersResetUsernameCreateResponses];
 
-export type UsersResetUsernameConfirmCreateData = {
-  body: UsernameResetConfirm;
+export type AccountsAuthUsersResetUsernameConfirmCreateData = {
+  body: UsernameResetConfirmRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/reset_username_confirm/";
 };
 
-export type UsersResetUsernameConfirmCreateResponses = {
+export type AccountsAuthUsersResetUsernameConfirmCreateResponses = {
   200: UsernameResetConfirm;
 };
 
-export type UsersResetUsernameConfirmCreateResponse =
-  UsersResetUsernameConfirmCreateResponses[keyof UsersResetUsernameConfirmCreateResponses];
+export type AccountsAuthUsersResetUsernameConfirmCreateResponse =
+  AccountsAuthUsersResetUsernameConfirmCreateResponses[keyof AccountsAuthUsersResetUsernameConfirmCreateResponses];
 
-export type UsersSetPasswordCreateData = {
-  body: SetPassword;
+export type AccountsAuthUsersSetPasswordCreateData = {
+  body: SetPasswordRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/set_password/";
 };
 
-export type UsersSetPasswordCreateResponses = {
+export type AccountsAuthUsersSetPasswordCreateResponses = {
   200: SetPassword;
 };
 
-export type UsersSetPasswordCreateResponse =
-  UsersSetPasswordCreateResponses[keyof UsersSetPasswordCreateResponses];
+export type AccountsAuthUsersSetPasswordCreateResponse =
+  AccountsAuthUsersSetPasswordCreateResponses[keyof AccountsAuthUsersSetPasswordCreateResponses];
 
-export type UsersSetUsernameCreateData = {
-  body: SetUsername;
+export type AccountsAuthUsersSetUsernameCreateData = {
+  body: SetUsernameRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/set_username/";
 };
 
-export type UsersSetUsernameCreateResponses = {
+export type AccountsAuthUsersSetUsernameCreateResponses = {
   200: SetUsername;
 };
 
-export type UsersSetUsernameCreateResponse =
-  UsersSetUsernameCreateResponses[keyof UsersSetUsernameCreateResponses];
+export type AccountsAuthUsersSetUsernameCreateResponse =
+  AccountsAuthUsersSetUsernameCreateResponses[keyof AccountsAuthUsersSetUsernameCreateResponses];
 
-export type UsersUserDestroyData = {
+export type AccountsAuthUsersUserDestroyData = {
   body?: never;
   path: {
     username: string;
@@ -1271,17 +1306,17 @@ export type UsersUserDestroyData = {
   url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
-export type UsersUserDestroyResponses = {
+export type AccountsAuthUsersUserDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type UsersUserDestroyResponse =
-  UsersUserDestroyResponses[keyof UsersUserDestroyResponses];
+export type AccountsAuthUsersUserDestroyResponse =
+  AccountsAuthUsersUserDestroyResponses[keyof AccountsAuthUsersUserDestroyResponses];
 
-export type UsersUserRetrieveData = {
+export type AccountsAuthUsersUserRetrieveData = {
   body?: never;
   path: {
     username: string;
@@ -1290,15 +1325,15 @@ export type UsersUserRetrieveData = {
   url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
-export type UsersUserRetrieveResponses = {
+export type AccountsAuthUsersUserRetrieveResponses = {
   200: UserProfile;
 };
 
-export type UsersUserRetrieveResponse =
-  UsersUserRetrieveResponses[keyof UsersUserRetrieveResponses];
+export type AccountsAuthUsersUserRetrieveResponse =
+  AccountsAuthUsersUserRetrieveResponses[keyof AccountsAuthUsersUserRetrieveResponses];
 
-export type UsersUserPartialUpdateData = {
-  body?: PatchedUserProfileWritable;
+export type AccountsAuthUsersUserPartialUpdateData = {
+  body?: PatchedUserProfileRequest;
   path: {
     username: string;
   };
@@ -1306,15 +1341,15 @@ export type UsersUserPartialUpdateData = {
   url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
-export type UsersUserPartialUpdateResponses = {
+export type AccountsAuthUsersUserPartialUpdateResponses = {
   200: UserProfile;
 };
 
-export type UsersUserPartialUpdateResponse =
-  UsersUserPartialUpdateResponses[keyof UsersUserPartialUpdateResponses];
+export type AccountsAuthUsersUserPartialUpdateResponse =
+  AccountsAuthUsersUserPartialUpdateResponses[keyof AccountsAuthUsersUserPartialUpdateResponses];
 
-export type UsersUserUpdateData = {
-  body: UserProfileWritable;
+export type AccountsAuthUsersUserUpdateData = {
+  body: UserProfileRequest;
   path: {
     username: string;
   };
@@ -1322,37 +1357,69 @@ export type UsersUserUpdateData = {
   url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
-export type UsersUserUpdateResponses = {
+export type AccountsAuthUsersUserUpdateResponses = {
   200: UserProfile;
 };
 
-export type UsersUserUpdateResponse =
-  UsersUserUpdateResponses[keyof UsersUserUpdateResponses];
+export type AccountsAuthUsersUserUpdateResponse =
+  AccountsAuthUsersUserUpdateResponses[keyof AccountsAuthUsersUserUpdateResponses];
 
-export type ValidateRetrieveData = {
+export type AccountsAuthUsersUserActivityRetrieveData = {
+  body?: never;
+  path: {
+    username: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/user/{username}/activity/";
+};
+
+export type AccountsAuthUsersUserActivityRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type AccountsAuthUsersUserClubsRetrieveData = {
+  body?: never;
+  path: {
+    username: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/user/{username}/clubs/";
+};
+
+export type AccountsAuthUsersUserClubsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type AccountsAuthValidateRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/validate/";
 };
 
-export type ValidateRetrieveResponses = {
+export type AccountsAuthValidateRetrieveResponses = {
   200: UserType;
 };
 
-export type ValidateRetrieveResponse =
-  ValidateRetrieveResponses[keyof ValidateRetrieveResponses];
+export type AccountsAuthValidateRetrieveResponse =
+  AccountsAuthValidateRetrieveResponses[keyof AccountsAuthValidateRetrieveResponses];
 
-export type ValidateCreateData = {
-  body: UserTypeWritable;
+export type AccountsAuthValidateCreateData = {
+  body: UserTypeRequestWritable;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/validate/";
 };
 
-export type ValidateCreateResponses = {
+export type AccountsAuthValidateCreateResponses = {
   200: UserType;
 };
 
-export type ValidateCreateResponse =
-  ValidateCreateResponses[keyof ValidateCreateResponses];
+export type AccountsAuthValidateCreateResponse =
+  AccountsAuthValidateCreateResponses[keyof AccountsAuthValidateCreateResponses];

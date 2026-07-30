@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from rest_framework.request import Request
 
-from apps.clubs.models import Membership
+from apps.clubs.models import Membership, Visibility, Club, ClubStatus
 
 
 class UserClubMembershipSerializer(serializers.ModelSerializer):
@@ -11,12 +12,10 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
     club_name = serializers.CharField(source='club.name', read_only=True)
     club_slug = serializers.CharField(source='club.slug', read_only=True)
     # club_avatar = serializers.URLField(source='club.avatar', read_only=True)
-    is_public = serializers.BooleanField(
-        source='club.is_public', read_only=True)
+    is_public = serializers.SerializerMethodField()
     is_visible = serializers.BooleanField(
         source='club.is_visible', read_only=True)
-    is_active = serializers.BooleanField(
-        source='club.is_active', read_only=True)
+    is_active = serializers.SerializerMethodField()
     role_name = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     role_permissions = serializers.SerializerMethodField()
@@ -26,38 +25,51 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Membership
-        fields = ['club_id', 'club_name', 'club_slug', 'club_avatar', 'club_banner', 'is_public',
-                  'is_visible', 'is_active', 'club_url', 'is_owner', 'role_name', 'role_permissions', 'joined_at']
+        fields = ['club_id', 'club_name', 'club_slug', 'club_avatar', 'club_banner', 'is_public', 'is_active',
+                  'is_visible', 'club_url', 'is_owner', 'role_name', 'role_permissions', 'joined_at']
 
-    def get_club_url(self, obj):
-        request = self.context.get('request')
+    def _get_request(self) -> Request | None:
+        return self.context.get('request')
+
+    def get_is_active(self, obj: Membership):
+        status = obj.club.status
+        if status == ClubStatus.ACTIVE: return True
+        return False
+
+    def get_is_public(self, obj: Membership) -> bool:
+        privacy = obj.club.privacy
+        if privacy == Visibility.PUBLIC: return True
+        return False
+
+    def get_club_url(self, obj: Membership):
+        request = self._get_request()
         if request:
             return request.build_absolute_uri(f'/api/v1/clubs/{obj.club.id}/')
         return None
 
-    def get_club_avatar(self, obj):
-        request = self.context.get('request')
+    def get_club_avatar(self, obj: Membership):
+        request = self._get_request()
         if obj.club.avatar:
             if request:
                 return request.build_absolute_uri(obj.club.avatar)
         else:
             return None
 
-    def get_club_banner(self, obj):
-        request = self.context.get('request')
+    def get_club_banner(self, obj: Membership):
+        request = self._get_request()
         if obj.club.banner:
             if request:
                 return request.build_absolute_uri(obj.club.banner)
         else:
             return None
 
-    def get_is_owner(self, obj):
-        request = self.context.get('request')
+    def get_is_owner(self, obj: Membership):
+        request = self._get_request()
         if not (request and request.user.is_authenticated):
             return False
         return obj.club.owner == request.user
 
-    def get_role_name(self, obj):
+    def get_role_name(self, obj: Membership):
         """Get role name for this membership"""
         if obj.primary_role:
             return obj.primary_role.name
@@ -66,7 +78,7 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
             return roles[0].name
         return "Member"
 
-    def get_role_permissions(self, obj):
+    def get_role_permissions(self, obj: Membership):
         """Get combined role permissions for this membership"""
         permissions = {
             'can_manage_members': False,

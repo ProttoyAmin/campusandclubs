@@ -2,6 +2,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
 
 from apps.accounts.serialize.auth.login import CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from core.schema import api_response
 
 login_response = extend_schema(
     operation_id="login",

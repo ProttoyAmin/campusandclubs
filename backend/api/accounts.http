@@ -1,7 +1,8 @@
 
 @baseUrl = http://127.0.0.1:8000/api/v1/accounts/auth/
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0OTU0ODk0LCJpYXQiOjE3ODQ5NTEyOTQsImp0aSI6IjFmMzUyZjNiNjNiMTQzODBiMGMwOTU4ZjY2Njc0MTQ5IiwidXNlcl9pZCI6ImIwNTI1YjZhLWUxYzctNDI0OS1hNDhkLWJhNTI3MTUxZWI2OSJ9.8SXD4MEviieA8-sCDd-s3KkwtGIcpSPfZ0931Cje6Mk
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4NzU0MzI5NCwiaWF0IjoxNzg0OTUxMjk0LCJqdGkiOiI0MzIyZTljYWIyNmU0MGE0Yjg4YmU3OGJmNmYzN2U4NyIsInVzZXJfaWQiOiJiMDUyNWI2YS1lMWM3LTQyNDktYTQ4ZC1iYTUyNzE1MWViNjkifQ.ASQjsMZN_dyi0TJ4a3oiI25EcZ1bKDPM9h-ZczYIsUs
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzgzODU5LCJpYXQiOjE3ODUzODAyNTksImp0aSI6IjZiZmZkMzgzNDNhYjRmNDU4YWJkYTYzNjgzMzBjMTE3IiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.iLwDO2_zX4OT5pwhAgO-lXKosSjPDcCpK-O5EwZLKgQ
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4Nzk3MjI1OSwiaWF0IjoxNzg1MzgwMjU5LCJqdGkiOiI2YzI3Mjk4MWNjYzI0NTU1YWExNjU2NTM2ODM3ODc1OCIsInVzZXJfaWQiOiJiMGFlYzc1NC01MjAxLTQ2YTEtOWU3OS1kNGFlMjgzZjRiZTkifQ.cbF-UwP4zTvonYa4Jn4ZjGBx3al3ao7S4ZZS5gz41MU
+
 @clubId = 9af7488b-98e3-4a93-a617-c35dc19a579d
 @postId = 7391907467086532608
 @eventId = 7392190347431907328
@@ -88,3 +89,16 @@ Authorization: Bearer {{accessToken}}
 GET {{baseUrl}}clubs/{{clubId}}/members/ HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+
+###
+POST {{baseUrl}}validate/ HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+    "user_type": "student",
+    "institute": "e19bf0c3-b011-45d2-abd0-dc44f4d9d76f",
+    "professional_email": "anotheruserr@g.bracu.ac.bd",
+    "password": "12345"
+}

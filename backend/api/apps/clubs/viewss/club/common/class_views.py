@@ -18,8 +18,9 @@ from apps.clubs.models import Club, MembershipApplication
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.policies.club import ClubPolicy
 
-from apps.clubs.serializers import DemoSerializer, MembershipSerializer
+from apps.clubs.serializers import DemoSerializer
 from apps.clubs.serializer import MembershipApplicationCreateSerializer, ClubJoinSerializer
+from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
 
 
 class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
@@ -29,9 +30,9 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[Club]:
-        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=self.request.user)
+        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
         club: Club = self.get_object()
         
@@ -43,7 +44,6 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
         if decision.requires_application:
             return Response({
                 "detail": decision.reason,
-                # "requires_application": True,
                 "application_url" : request.build_absolute_uri(reverse("clubs:application", args=[club.pk]))
             }, status=status.HTTP_303_SEE_OTHER)
 

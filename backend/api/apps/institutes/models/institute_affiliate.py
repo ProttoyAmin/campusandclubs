@@ -13,7 +13,7 @@ class InstituteAffiliate(models.Model):
     user = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
-        related_name="institute_affiliations",
+        related_name="affiliations",
     )
 
     role = models.CharField(

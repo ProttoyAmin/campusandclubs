@@ -17,7 +17,8 @@ from apps.clubs.models import Club, MembershipApplication
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.policies.club import ClubPolicy
 
-from apps.clubs.serializers import DemoSerializer, MembershipSerializer
+from apps.clubs.serializers import DemoSerializer
+from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
 from apps.clubs.serializer import MembershipApplicationCreateSerializer, ClubJoinSerializer
 
 # COME BACK TO THIS LATER

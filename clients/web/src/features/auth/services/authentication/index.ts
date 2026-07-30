@@ -1,63 +1,59 @@
-import { authClient } from "@/features/auth/api/auth.client";
-import type { CustomTokenObtainPairWritable } from "@campus/api";
-import type { RegisterWritable } from "@campus/api";
+import type { CustomTokenObtainPairRequestWritable } from "@campus/api";
+import type { RegisterRequestWritable } from "@campus/api";
 import { storage } from "@/settings/storage/";
-import { api } from "@/settings/api";
 import { v1Client } from "@/settings/api/v1/client";
-import { login } from "@campus/api";
+import {
+  login, register, accountsAuthLogoutCreate,
+  accountsAuthJwtVerifyCreate,
+  accountsAuthJwtRefreshCreate,
+} from "@campus/api";
 
 export class Authentication {
-  private authClient = authClient;
   public authenticated: boolean = false;
-  private client = v1Client.client;
+  private api = v1Client;
 
   constructor() {
     // Wire up the API client at construction time so every request
     // gets the stored access token and 401s trigger refresh automatically.
     // This runs once when the module-level singleton is created.
-    api.setTokenGetter(async () => {
+    this.api.setTokenGetter(async () => {
       return storage.token.getAccessToken() ?? null;
     });
 
-    api.setUnauthorizedHandler(async () => {
+    this.api.setUnauthorizedHandler(async () => {
       return this.refresh();
     });
   }
 
-  async login(data: CustomTokenObtainPairWritable) {
+  async login(data: CustomTokenObtainPairRequestWritable) {
     const res = await login({
-      client: this.client,
+      client: this.api.client,
       body: data,
     });
 
+    console.log("res: ", res.data.access)
+
     if (res.status === 200) {
-      this.authenticated = true;
       this.authenticated = true;
       storage.token.setAccessToken(res.data.access);
       storage.token.setRefreshToken(res.data.refresh);
       return res;
     }
-
-    // const response = await this.authClient.login(data);
-    // if (response.status === 200) {
-    //   this.authenticated = true;
-    //   storage.token.setAccessToken(response.data.access);
-    //   storage.token.setRefreshToken(response.data.refresh);
-    //   return response;
-    // }
-    // return response;
   }
 
-  async register(data: RegisterWritable) {
-    console.log(await this.authClient.register(data));
-    return await this.authClient.register(data);
+  async register(data: RegisterRequestWritable) {
+    const response = await register({
+      client: this.api.client,
+      body: data
+    })
+    return response.data
   }
 
   async logout() {
     storage.token.removeAccessToken();
     storage.token.removeRefreshToken();
     this.authenticated = false;
-    return await this.authClient.logout();
+    return await accountsAuthLogoutCreate();
   }
 
   /**
@@ -73,7 +69,12 @@ export class Authentication {
     if (!refreshToken) return null;
 
     try {
-      const response = await authClient.refresh(refreshToken);
+      const response = await accountsAuthJwtRefreshCreate({
+        client: this.api.client,
+        body: {
+          refresh: refreshToken
+        }
+      });
       storage.token.setAccessToken(response.data.access);
       storage.token.setRefreshToken(response.data.refresh);
       this.authenticated = true;
@@ -93,7 +94,12 @@ export class Authentication {
       return false;
     }
 
-    const isValid = await authClient.verify(accessToken);
+    const isValid = await accountsAuthJwtVerifyCreate({
+      client: this.api.client,
+      body: {
+        token: accessToken
+      }
+    });
     if (isValid) {
       this.authenticated = true;
       return true;

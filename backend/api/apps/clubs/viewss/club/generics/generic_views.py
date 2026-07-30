@@ -7,7 +7,7 @@ from typing import Any
 
 from core.pagination import StandardResultsSetPagination
 from core.views import PolicyMixin, ServiceMixin
-from apps.clubs.serializer import ClubDetailSerializer, ClubSerializer
+from apps.clubs.serializer import ClubDetailSerializer, ClubSerializer, ClubCreateSerializer
 from apps.clubs.models import Club
 from apps.clubs.schema import club_list_schema
 from apps.clubs.services.club.club_service import ClubService
@@ -40,9 +40,9 @@ class ClubListCreateView(
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
 
-    def get_serializer_class(self) -> type[ClubDetailSerializer] | type[ClubSerializer]:
+    def get_serializer_class(self) -> type[ClubCreateSerializer] | type[ClubSerializer]:
         if self.request.method == "POST":
-            return ClubDetailSerializer
+            return ClubCreateSerializer
         else:
             return ClubSerializer
 
@@ -59,14 +59,14 @@ class ClubListCreateView(
         )
 
         clubs = self.get_service(request).list_clubs(
-            viewer=current_user(request), filters=filters)  # type: ignore
+            viewer=current_user(request), filters=filters)
 
         page = self.paginate_queryset(clubs)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
     def create(self, request: Request, *args, **kwargs) -> Response:
-        serializer = ClubSerializer(data=request.data)
+        serializer = ClubCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         service = self.get_service(request)

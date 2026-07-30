@@ -1,7 +1,11 @@
 import { config } from "@/settings/app";
+import { storage } from "@/settings/storage";
 import type { Client } from "@campus/api/client";
 import { createClient } from "@campus/api/client";
 import type { AxiosError } from "axios";
+import {
+  accountsAuthJwtRefreshCreate
+} from '@campus/api'
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -29,6 +33,7 @@ export class V1Client {
       console.log("interceptor", config);
       if (this.getToken) {
         const token = await this.getToken();
+        console.log('request interceptor got the token')
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -38,7 +43,6 @@ export class V1Client {
 
     this.client.instance.interceptors.response.use(
       (response) => {
-        console.log("response interceptor", response);
         return response;
       },
       async (error: AxiosError) => {
@@ -64,14 +68,22 @@ export class V1Client {
           this.isRefreshing = true;
 
           try {
-            const newToken = await this.onUnauthorized(error);
-            console.log(newToken)
+            console.log('Trying...')
+            const refreshToken = storage.token.getRefreshToken();
+            console.log('got the refresh token...', refreshToken)
+            const newToken = await accountsAuthJwtRefreshCreate({
+              client: this.client,
+              body: {
+                refresh: refreshToken
+              }
+            })
+            console.log("new token: ", newToken.data.access)  
             if (!newToken) throw error;
 
-            this.refreshSubscribers.forEach((cb) => cb(newToken));
+            this.refreshSubscribers.forEach((cb) => cb(newToken.data.access));
             this.refreshSubscribers = [];
 
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            originalRequest.headers.Authorization = `Bearer ${newToken.data.access}`;
             return this.client.instance(originalRequest);
           } catch (refreshError) {
             this.refreshSubscribers = [];

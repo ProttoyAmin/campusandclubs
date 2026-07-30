@@ -2,19 +2,19 @@ import { BaseClient } from "@/settings/api/";
 import type { ApiResponse } from "@/settings/api/";
 import type {
   RegisterWritable,
-  RegisterCreateResponse,
+  RegisterResponse,
   JwtRefreshCreateResponse,
   CustomTokenObtainPairWritable,
   TokenVerify,
   TokenRefresh,
-  registerCreate,
+  register,
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";
 
 export class AuthClient extends BaseClient<
   AxiosResponse,
-  RegisterCreateResponse,
+  RegisterResponse,
   JwtRefreshCreateResponse
 > {
   constructor() {
@@ -23,10 +23,10 @@ export class AuthClient extends BaseClient<
 
   async register(
     data: RegisterWritable,
-  ): Promise<AxiosResponse<RegisterCreateResponse>> {
+  ): Promise<AxiosResponse<RegisterResponse>> {
     try {
       const response = await this.client.v1.post<
-        RegisterCreateResponse>
+        RegisterResponse>
       (`${this.endpoint}register/`, data);
       return response;
     } catch (err) {

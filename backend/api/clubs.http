@@ -2,7 +2,7 @@
 # REST Client file for testing Club API endpoints
 ### Variables
 @baseUrl = http://127.0.0.1:8000/api/v1/clubs/
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg0NzQ3ODI5LCJpYXQiOjE3ODQ3NDQyMjksImp0aSI6ImVhYWY1ZmRiZTM2OTQ3ZjViMmViOGNlNTcxYzg2ZGRiIiwidXNlcl9pZCI6ImU4ZjU5ZjM1LWEzZmItNGQxNy04YmMxLTNmZGI3MjZjNmI2YSJ9.hhf1Zg29fO_NxRPJkM6Ek5Erai_e6jl4ReIUY5yo77I
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzgzODU5LCJpYXQiOjE3ODUzODAyNTksImp0aSI6IjZiZmZkMzgzNDNhYjRmNDU4YWJkYTYzNjgzMzBjMTE3IiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.iLwDO2_zX4OT5pwhAgO-lXKosSjPDcCpK-O5EwZLKgQ
 @clubId = 8f9ed101-cbf8-4b34-9e6d-6c6973cb2236
 @postId = 7391907467086532608
 @eventId = 7392190347431907328
@@ -27,8 +27,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name" : "New Club Name",
-  "about": "This is a new club for testing purposes.",
+  "name" : "Film Club",
+  "about": "This is a film club for discussing movies and sharing recommendations.",
   "privacy": "private",
   "scope": "exclusive",
   "origin": "e19bf0c3-b011-45d2-abd0-dc44f4d9d76f"

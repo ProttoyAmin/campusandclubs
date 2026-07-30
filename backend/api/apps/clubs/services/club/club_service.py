@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from apps.clubs.models import Membership, ApplicationStatus
 from apps.clubs.repositories.form import FormRepository
 from core.services import BaseService
-from apps.clubs.models import Club, Visibility, MembershipApplication
+from apps.clubs.models import Club, Visibility, MembershipApplication, JoinMode
 from apps.clubs.repositories.club.club_repo import ClubRepository
 from apps.clubs.dtos import ClubListFilters
 from apps.clubs.repositories.role.role_repo import RoleRepository
@@ -58,10 +58,18 @@ class ClubService(BaseService[Club, ClubRepository]):
         return self.repository.with_list_annotations(clubs, viewer)
 
     def create_club(self, owner: User, **validated_data) -> Club:
+
         with transaction.atomic():
+            join_mode = JoinMode.INSTANT
+            
+            if validated_data.get("privacy") == Visibility.PRIVATE:
+                join_mode = JoinMode.INVITE_ONLY
+
+
             club = self.repository.create(
                 owner=owner,
-                **validated_data
+                **validated_data,
+                join_mode=join_mode
             )
 
             role = self.role_repository.get_or_create_default_owner_role(club)

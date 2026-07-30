@@ -1,13 +1,17 @@
 import { userClient } from "../api/user.client";
 import { api } from "@/settings/api";
 import { config } from "@/settings/app";
-import { usersList } from "@campus/api";
-import type { UsersListResponse } from "@campus/api";
+import type { ListUsersResponse } from "@campus/api";
 import { useAuth } from "@/features/auth/hooks/session.hook";
 // import { client } from "@campus/api/client";
 import { createClient } from "@campus/api/client";
 import { v1Client } from "@/settings/api/v1/client";
-import { jwtRefreshCreate } from "@campus/api";
+import { accountsAuthJwtRefreshCreate, accountsAuthUsersUserRetrieve } from "@campus/api";
+import {
+  listUsers,
+  accountsAuthUsersMeRetrieve,
+  
+} from '@campus/api'
 
 // export const client: Client = new Client();
 
@@ -44,29 +48,33 @@ export class UserService {
     });
 
     this.api.setUnauthorizedHandler(async () => {
-      return "token refresh";
+      return storage.token.getAccessToken();
     });
   }
 
-  async getUsers(): Promise<any> {
-    // const response = await usersList({
-    //   client: this.api.client,
-    // });
+  async getUsers(): Promise<ListUsersResponse> {
+    const response = await listUsers({
+      client: this.api.client
+    })
+    return response.data;
+  }
 
-    console.log("REFRESH FROM COOKIE: ", storage.token.getRefreshToken())
+  async getMe() {
+    const response = await accountsAuthUsersMeRetrieve({
+      client: this.api.client,
+    })
+    return response
+  }
 
-    const refreshResponse = await jwtRefreshCreate({
-        client: this.api.client,
-        body: {
-          refresh: storage.token.getRefreshToken(),
-        },
-      });
-
-      console.log('refresh response: ', refreshResponse)
-
-    // console.log("raw", response.data);
-    console.log("api: ", await authClient.verify(useAuth().getToken()));
-    return null;
+  async getUserByUsername(username: string) {
+    const response = await accountsAuthUsersUserRetrieve({
+      client: this.api.client,
+      path: {
+        username: username
+      }
+    })
+    console.log(response)
+    return response.data
   }
 }
 

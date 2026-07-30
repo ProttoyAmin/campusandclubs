@@ -1,5 +1,11 @@
 import uuid
 from django.db import models
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from apps.institutes.models import InstituteEmailDomain, InstituteAffiliate
+    from apps.clubs.models import Club
+    from django.db.models.fields.related_descriptors import RelatedManager
 
 
 class Institute(models.Model):
@@ -36,9 +42,14 @@ class Institute(models.Model):
             models.Index(fields=['name', 'code']),
             models.Index(fields=['country']),
         ]
-        
+
+    if TYPE_CHECKING:
+        email_domains: RelatedManager['InstituteEmailDomain']
+        clubs: RelatedManager['Club']
+        affiliates: RelatedManager['InstituteAffiliate']
+
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} - {self.code}"
         
     @property
     def get_active_email_domains(self):

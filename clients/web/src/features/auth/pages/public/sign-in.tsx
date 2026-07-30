@@ -14,7 +14,8 @@ const SignIn: React.FC = () => {
     const handleSignIn = async () => {
         mutate({ username_or_email: "prottoy", password: "12345" }, {
           onSuccess: () => {
-            navigate("/");
+            // navigate("/");
+            console.log('success')
           },
           onError: (error) => {
             console.log("Error:", error.response);

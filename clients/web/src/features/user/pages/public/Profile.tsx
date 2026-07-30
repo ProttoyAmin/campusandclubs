@@ -1,14 +1,20 @@
 import type { UserProfileLayoutProps } from "@/layouts/user";
 import { useOutletContext } from "react-router-dom";
-import { useUsers } from "../../hooks/user.hooks";
+import { useUser } from "../../hooks/user.hooks";
+import { useParams } from "react-router-dom";
 
 
 const Profile: React.FC = () => {
-  const { username } = useOutletContext<UserProfileLayoutProps>();
-  const { data } = useUsers();
+  const params = useParams()
+  const username = useOutletContext<UserProfileLayoutProps>();
+  console.log("params", params)
+  const { data } = useUser(params.username);
   console.log("DATA: ", data)
 
-  return <div>{username}</div>;
+  return <div>
+    {params.username}
+    <pre>{JSON.stringify(data, null, 4)}</pre>
+  </div>;
 };
 
 export default Profile;

@@ -1,18 +1,9 @@
 from rest_framework.response import Response
-from rest_framework.response import Response
-from rest_framework.response import Response
-
-
-from rest_framework.response import Response
-
-
-from django.shortcuts import get_object_or_404
-
-from rest_framework import status, permissions
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 
+from django.shortcuts import get_object_or_404
 
 from apps.accounts.models import User
 from apps.connections.models import Follow
@@ -29,7 +20,7 @@ def get_user_by_username(request: Request, username: str) -> Response:
 
     policy = UserPolicy(current_user(request), user)
 
-    can_view = policy.view(viewer=current_user(request))
+    can_view = policy.can_view_profile(viewer=current_user(request))
 
     if not can_view:
         return Response(
@@ -97,9 +88,9 @@ def get_current_user(request) -> Response:
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def get_user_activity(request: Request, user_id: str) -> Response:
+def get_user_activity(request: Request, username: str) -> Response:
     """Get user's recent activity (likes, comments, shares)"""
-    user = get_object_or_404(User, pk=user_id)
+    user = get_object_or_404(User, username=username)
 
     # Only user themselves can see their full activity
     if request.user != user:
@@ -126,15 +117,13 @@ def get_user_activity(request: Request, user_id: str) -> Response:
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def get_user_clubs(request, user_id) -> Response:
+def get_user_clubs(request, username) -> Response:
     """Get all clubs a user has joined"""
-    from apps.clubs.serializers import ClubListSerializer
+    from apps.clubs.serializer.club.club import ClubListSerializer
     from apps.accounts.serialize.user import UserClubMembershipSerializer
     from apps.clubs.models import Membership
 
-    
-    user = get_object_or_404(User, pk=user_id)
-    print("user", user)
+    user = get_object_or_404(User, username=username)
 
     if user.is_private and request.user != user:
         if not request.user.is_authenticated:

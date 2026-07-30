@@ -1,8 +1,17 @@
 # apps/accounts/models.py
 import uuid
+from typing import TYPE_CHECKING
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
+
+
+
+if TYPE_CHECKING:
+    from apps.posts.models import Post
+    from apps.clubs.models import Club, Event
+    from django.db.models.fields.related_descriptors import RelatedManager
+    from apps.institutes.models import InstituteAffiliate
 
 
 class User(AbstractUser):
@@ -101,6 +110,12 @@ class User(AbstractUser):
             models.Index(fields=['email']),
         ]
 
+    if TYPE_CHECKING:
+        posts: RelatedManager["Club"]
+        events: RelatedManager["Event"]
+        memberships: RelatedManager["Post"]
+        affiliations: RelatedManager["InstituteAffiliate"]
+
     def __str__(self):
         return f'{self.username} - {self.id}'
     
@@ -125,8 +140,8 @@ class User(AbstractUser):
     @property
     def owned_clubs(self):
         """Get clubs where user is the owner"""
-        from apps.clubs.models import Club
-        return Club.objects.filter(owner=self, is_active=True)
+        from apps.clubs.models import Club, ClubStatus
+        return Club.objects.filter(owner=self, status=ClubStatus.ACTIVE)
 
     @property
     def member_clubs(self):

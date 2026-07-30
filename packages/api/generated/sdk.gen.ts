@@ -9,83 +9,86 @@ import type {
 } from "./client";
 import { client } from "./client.gen";
 import type {
-  AllCreateData,
-  AllCreateResponses,
-  AllListData,
-  AllListResponses,
-  AllPartialUpdateData,
-  AllPartialUpdateResponses,
-  AllRetrieveData,
-  AllRetrieveResponses,
-  AllUpdateData,
-  AllUpdateResponses,
-  JwtCreateCreateData,
-  JwtCreateCreateResponses,
-  JwtRefreshCreateData,
-  JwtRefreshCreateResponses,
-  JwtVerifyCreateData,
-  JwtVerifyCreateResponses,
+  AccountsAuthAllPartialUpdateData,
+  AccountsAuthAllPartialUpdateResponses,
+  AccountsAuthAllRetrieveData,
+  AccountsAuthAllRetrieveResponses,
+  AccountsAuthAllUpdateData,
+  AccountsAuthAllUpdateResponses,
+  AccountsAuthJwtCreateCreateData,
+  AccountsAuthJwtCreateCreateResponses,
+  AccountsAuthJwtRefreshCreateData,
+  AccountsAuthJwtRefreshCreateResponses,
+  AccountsAuthJwtVerifyCreateData,
+  AccountsAuthJwtVerifyCreateResponses,
+  AccountsAuthLogoutCreateData,
+  AccountsAuthLogoutCreateResponses,
+  AccountsAuthRequestInfoRetrieveData,
+  AccountsAuthRequestInfoRetrieveResponses,
+  AccountsAuthUsersActivationCreateData,
+  AccountsAuthUsersActivationCreateResponses,
+  AccountsAuthUsersCreateData,
+  AccountsAuthUsersCreateResponses,
+  AccountsAuthUsersDestroyData,
+  AccountsAuthUsersDestroyResponses,
+  AccountsAuthUsersListData,
+  AccountsAuthUsersListResponses,
+  AccountsAuthUsersMeDestroyData,
+  AccountsAuthUsersMeDestroyResponses,
+  AccountsAuthUsersMePartialUpdateData,
+  AccountsAuthUsersMePartialUpdateResponses,
+  AccountsAuthUsersMeRetrieveData,
+  AccountsAuthUsersMeRetrieveResponses,
+  AccountsAuthUsersMeUpdateData,
+  AccountsAuthUsersMeUpdateResponses,
+  AccountsAuthUsersPartialUpdateData,
+  AccountsAuthUsersPartialUpdateResponses,
+  AccountsAuthUsersResendActivationCreateData,
+  AccountsAuthUsersResendActivationCreateResponses,
+  AccountsAuthUsersResetPasswordConfirmCreateData,
+  AccountsAuthUsersResetPasswordConfirmCreateResponses,
+  AccountsAuthUsersResetPasswordCreateData,
+  AccountsAuthUsersResetPasswordCreateResponses,
+  AccountsAuthUsersResetUsernameConfirmCreateData,
+  AccountsAuthUsersResetUsernameConfirmCreateResponses,
+  AccountsAuthUsersResetUsernameCreateData,
+  AccountsAuthUsersResetUsernameCreateResponses,
+  AccountsAuthUsersRetrieveData,
+  AccountsAuthUsersRetrieveResponses,
+  AccountsAuthUsersSetPasswordCreateData,
+  AccountsAuthUsersSetPasswordCreateResponses,
+  AccountsAuthUsersSetUsernameCreateData,
+  AccountsAuthUsersSetUsernameCreateResponses,
+  AccountsAuthUsersUpdateData,
+  AccountsAuthUsersUpdateResponses,
+  AccountsAuthUsersUserActivityRetrieveData,
+  AccountsAuthUsersUserActivityRetrieveResponses,
+  AccountsAuthUsersUserClubsRetrieveData,
+  AccountsAuthUsersUserClubsRetrieveResponses,
+  AccountsAuthUsersUserDestroyData,
+  AccountsAuthUsersUserDestroyResponses,
+  AccountsAuthUsersUserPartialUpdateData,
+  AccountsAuthUsersUserPartialUpdateResponses,
+  AccountsAuthUsersUserRetrieveData,
+  AccountsAuthUsersUserRetrieveResponses,
+  AccountsAuthUsersUserUpdateData,
+  AccountsAuthUsersUserUpdateResponses,
+  AccountsAuthValidateCreateData,
+  AccountsAuthValidateCreateResponses,
+  AccountsAuthValidateRetrieveData,
+  AccountsAuthValidateRetrieveResponses,
+  ListUsers2Data,
+  ListUsers2Errors,
+  ListUsers2Responses,
+  ListUsersData,
+  ListUsersErrors,
+  ListUsersResponses,
   LoginData,
   LoginErrors,
   LoginResponses,
-  LogoutCreateData,
-  LogoutCreateResponses,
-  RegisterCreateData,
-  RegisterCreateResponses,
-  RequestInfoRetrieveData,
-  RequestInfoRetrieveResponses,
-  UsersActivationCreateData,
-  UsersActivationCreateResponses,
-  UsersActivityRetrieveData,
-  UsersActivityRetrieveResponses,
-  UsersClubsRetrieveData,
-  UsersClubsRetrieveResponses,
-  UsersCreateData,
-  UsersCreateResponses,
-  UsersDestroyData,
-  UsersDestroyResponses,
-  UsersListData,
-  UsersListResponses,
-  UsersMeDestroyData,
-  UsersMeDestroyResponses,
-  UsersMePartialUpdateData,
-  UsersMePartialUpdateResponses,
-  UsersMeRetrieveData,
-  UsersMeRetrieveResponses,
-  UsersMeUpdateData,
-  UsersMeUpdateResponses,
-  UsersPartialUpdateData,
-  UsersPartialUpdateResponses,
-  UsersResendActivationCreateData,
-  UsersResendActivationCreateResponses,
-  UsersResetPasswordConfirmCreateData,
-  UsersResetPasswordConfirmCreateResponses,
-  UsersResetPasswordCreateData,
-  UsersResetPasswordCreateResponses,
-  UsersResetUsernameConfirmCreateData,
-  UsersResetUsernameConfirmCreateResponses,
-  UsersResetUsernameCreateData,
-  UsersResetUsernameCreateResponses,
-  UsersRetrieveData,
-  UsersRetrieveResponses,
-  UsersSetPasswordCreateData,
-  UsersSetPasswordCreateResponses,
-  UsersSetUsernameCreateData,
-  UsersSetUsernameCreateResponses,
-  UsersUpdateData,
-  UsersUpdateResponses,
-  UsersUserDestroyData,
-  UsersUserDestroyResponses,
-  UsersUserPartialUpdateData,
-  UsersUserPartialUpdateResponses,
-  UsersUserRetrieveData,
-  UsersUserRetrieveResponses,
-  UsersUserUpdateData,
-  UsersUserUpdateResponses,
-  ValidateCreateData,
-  ValidateCreateResponses,
-  ValidateRetrieveData,
-  ValidateRetrieveResponses,
+  RegisterData,
+  RegisterErrors,
+  RegisterResponses,
 } from "./types.gen";
 
 export type Options<
@@ -106,10 +109,14 @@ export type Options<
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-export const allRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<AllRetrieveData, ThrowOnError>,
-): RequestResult<AllRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<AllRetrieveResponses, unknown, ThrowOnError>({
+export const accountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthAllRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthAllRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    AccountsAuthAllRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
     responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
@@ -123,11 +130,17 @@ export const allRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const allPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<AllPartialUpdateData, ThrowOnError>,
-): RequestResult<AllPartialUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthAllPartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthAllPartialUpdateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthAllPartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).patch<
-    AllPartialUpdateResponses,
+    AccountsAuthAllPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -148,10 +161,14 @@ export const allPartialUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const allUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<AllUpdateData, ThrowOnError>,
-): RequestResult<AllUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<AllUpdateResponses, unknown, ThrowOnError>({
+export const accountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthAllUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthAllUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<
+    AccountsAuthAllUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
     responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
@@ -170,12 +187,18 @@ export const allUpdate = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * User List and Create View
+ * List users
+ *
+ * Returns a paginated list of users.
  */
-export const allList = <ThrowOnError extends boolean = false>(
-  options?: Options<AllListData, ThrowOnError>,
-): RequestResult<AllListResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<AllListResponses, unknown, ThrowOnError>({
+export const listUsers = <ThrowOnError extends boolean = false>(
+  options?: Options<ListUsersData, ThrowOnError>,
+): RequestResult<ListUsersResponses, ListUsersErrors, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ListUsersResponses,
+    ListUsersErrors,
+    ThrowOnError
+  >({
     responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
@@ -190,12 +213,18 @@ export const allList = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * User List and Create View
+ * List users
+ *
+ * Returns a paginated list of users.
  */
-export const allCreate = <ThrowOnError extends boolean = false>(
-  options: Options<AllCreateData, ThrowOnError>,
-): RequestResult<AllCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<AllCreateResponses, unknown, ThrowOnError>({
+export const listUsers2 = <ThrowOnError extends boolean = false>(
+  options: Options<ListUsers2Data, ThrowOnError>,
+): RequestResult<ListUsers2Responses, ListUsers2Errors, ThrowOnError> =>
+  (options.client ?? client).post<
+    ListUsers2Responses,
+    ListUsers2Errors,
+    ThrowOnError
+  >({
     responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
@@ -217,11 +246,13 @@ export const allCreate = <ThrowOnError extends boolean = false>(
  * Takes a set of user credentials and returns an access and refresh JSON web
  * token pair to prove the authentication of those credentials.
  */
-export const jwtCreateCreate = <ThrowOnError extends boolean = false>(
-  options: Options<JwtCreateCreateData, ThrowOnError>,
-): RequestResult<JwtCreateCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthJwtCreateCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthJwtCreateCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthJwtCreateCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    JwtCreateCreateResponses,
+    AccountsAuthJwtCreateCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -238,11 +269,17 @@ export const jwtCreateCreate = <ThrowOnError extends boolean = false>(
  * Takes a refresh type JSON web token and returns an access type JSON web
  * token if the refresh token is valid.
  */
-export const jwtRefreshCreate = <ThrowOnError extends boolean = false>(
-  options: Options<JwtRefreshCreateData, ThrowOnError>,
-): RequestResult<JwtRefreshCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthJwtRefreshCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthJwtRefreshCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthJwtRefreshCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    JwtRefreshCreateResponses,
+    AccountsAuthJwtRefreshCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -259,15 +296,16 @@ export const jwtRefreshCreate = <ThrowOnError extends boolean = false>(
  * Takes a token and indicates if it is valid.  This view provides no
  * information about a token's fitness for a particular use.
  */
-export const jwtVerifyCreate = <ThrowOnError extends boolean = false>(
-  options: Options<JwtVerifyCreateData, ThrowOnError>,
-): RequestResult<JwtVerifyCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthJwtVerifyCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthJwtVerifyCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthJwtVerifyCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    JwtVerifyCreateResponses,
+    AccountsAuthJwtVerifyCreateResponses,
     unknown,
     ThrowOnError
   >({
-    responseType: "json",
     url: "/api/v1/accounts/auth/jwt/verify/",
     ...options,
     headers: {
@@ -294,11 +332,11 @@ export const login = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const logoutCreate = <ThrowOnError extends boolean = false>(
-  options?: Options<LogoutCreateData, ThrowOnError>,
-): RequestResult<LogoutCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthLogoutCreate = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthLogoutCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthLogoutCreateResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).post<
-    LogoutCreateResponses,
+    AccountsAuthLogoutCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -314,12 +352,17 @@ export const logoutCreate = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const registerCreate = <ThrowOnError extends boolean = false>(
-  options: Options<RegisterCreateData, ThrowOnError>,
-): RequestResult<RegisterCreateResponses, unknown, ThrowOnError> =>
+/**
+ * Register
+ *
+ * Creates a new user account.
+ */
+export const register = <ThrowOnError extends boolean = false>(
+  options: Options<RegisterData, ThrowOnError>,
+): RequestResult<RegisterResponses, RegisterErrors, ThrowOnError> =>
   (options.client ?? client).post<
-    RegisterCreateResponses,
-    unknown,
+    RegisterResponses,
+    RegisterErrors,
     ThrowOnError
   >({
     responseType: "json",
@@ -339,11 +382,17 @@ export const registerCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const requestInfoRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<RequestInfoRetrieveData, ThrowOnError>,
-): RequestResult<RequestInfoRetrieveResponses, unknown, ThrowOnError> =>
+export const accountsAuthRequestInfoRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthRequestInfoRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthRequestInfoRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options?.client ?? client).get<
-    RequestInfoRetrieveResponses,
+    AccountsAuthRequestInfoRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -359,10 +408,14 @@ export const requestInfoRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const usersList = <ThrowOnError extends boolean = false>(
-  options?: Options<UsersListData, ThrowOnError>,
-): RequestResult<UsersListResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<UsersListResponses, unknown, ThrowOnError>({
+export const accountsAuthUsersList = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthUsersListData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    AccountsAuthUsersListResponses,
+    unknown,
+    ThrowOnError
+  >({
     responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
@@ -376,163 +429,139 @@ export const usersList = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const usersCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersCreateData, ThrowOnError>,
-): RequestResult<UsersCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<UsersCreateResponses, unknown, ThrowOnError>({
-    responseType: "json",
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-export const usersDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<UsersDestroyData, ThrowOnError>,
-): RequestResult<UsersDestroyResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    UsersDestroyResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{id}/",
-    ...options,
-  });
-
-export const usersRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<UsersRetrieveData, ThrowOnError>,
-): RequestResult<UsersRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<UsersRetrieveResponses, unknown, ThrowOnError>(
-    {
-      responseType: "json",
-      security: [
-        { scheme: "bearer", type: "http" },
-        {
-          in: "cookie",
-          name: "sessionid",
-          type: "apiKey",
-        },
-      ],
-      url: "/api/v1/accounts/auth/users/{id}/",
-      ...options,
-    },
-  );
-
-export const usersPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersPartialUpdateData, ThrowOnError>,
-): RequestResult<UsersPartialUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).patch<
-    UsersPartialUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: "json",
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{id}/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-export const usersUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersUpdateData, ThrowOnError>,
-): RequestResult<UsersUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<UsersUpdateResponses, unknown, ThrowOnError>({
-    responseType: "json",
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{id}/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-/**
- * Get user's recent activity (likes, comments, shares)
- */
-export const usersActivityRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<UsersActivityRetrieveData, ThrowOnError>,
-): RequestResult<UsersActivityRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    UsersActivityRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{user_id}/activity/",
-    ...options,
-  });
-
-/**
- * Get all clubs a user has joined
- */
-export const usersClubsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<UsersClubsRetrieveData, ThrowOnError>,
-): RequestResult<UsersClubsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    UsersClubsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/users/{user_id}/clubs/",
-    ...options,
-  });
-
-export const usersActivationCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersActivationCreateData, ThrowOnError>,
-): RequestResult<UsersActivationCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    UsersActivationCreateResponses,
+    AccountsAuthUsersCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const accountsAuthUsersDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersDestroyData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    AccountsAuthUsersDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{id}/",
+    ...options,
+  });
+
+export const accountsAuthUsersRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    AccountsAuthUsersRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{id}/",
+    ...options,
+  });
+
+export const accountsAuthUsersPartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersPartialUpdateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersPartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    AccountsAuthUsersPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const accountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<
+    AccountsAuthUsersUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const accountsAuthUsersActivationCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersActivationCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersActivationCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    AccountsAuthUsersActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -553,11 +582,13 @@ export const usersActivationCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const usersMeDestroy = <ThrowOnError extends boolean = false>(
-  options?: Options<UsersMeDestroyData, ThrowOnError>,
-): RequestResult<UsersMeDestroyResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersMeDestroy = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthUsersMeDestroyData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeDestroyResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).delete<
-    UsersMeDestroyResponses,
+    AccountsAuthUsersMeDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -573,11 +604,13 @@ export const usersMeDestroy = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const usersMeRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<UsersMeRetrieveData, ThrowOnError>,
-): RequestResult<UsersMeRetrieveResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersMeRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthUsersMeRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    UsersMeRetrieveResponses,
+    AccountsAuthUsersMeRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -594,11 +627,17 @@ export const usersMeRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const usersMePartialUpdate = <ThrowOnError extends boolean = false>(
-  options?: Options<UsersMePartialUpdateData, ThrowOnError>,
-): RequestResult<UsersMePartialUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersMePartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthUsersMePartialUpdateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersMePartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options?.client ?? client).patch<
-    UsersMePartialUpdateResponses,
+    AccountsAuthUsersMePartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -619,36 +658,42 @@ export const usersMePartialUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const usersMeUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersMeUpdateData, ThrowOnError>,
-): RequestResult<UsersMeUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<UsersMeUpdateResponses, unknown, ThrowOnError>(
-    {
-      responseType: "json",
-      security: [
-        { scheme: "bearer", type: "http" },
-        {
-          in: "cookie",
-          name: "sessionid",
-          type: "apiKey",
-        },
-      ],
-      url: "/api/v1/accounts/auth/users/me/",
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
+export const accountsAuthUsersMeUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersMeUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<
+    AccountsAuthUsersMeUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
       },
+    ],
+    url: "/api/v1/accounts/auth/users/me/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
     },
-  );
+  });
 
-export const usersResendActivationCreate = <
+export const accountsAuthUsersResendActivationCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<UsersResendActivationCreateData, ThrowOnError>,
-): RequestResult<UsersResendActivationCreateResponses, unknown, ThrowOnError> =>
+  options: Options<AccountsAuthUsersResendActivationCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersResendActivationCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    UsersResendActivationCreateResponses,
+    AccountsAuthUsersResendActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -669,11 +714,17 @@ export const usersResendActivationCreate = <
     },
   });
 
-export const usersResetPasswordCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersResetPasswordCreateData, ThrowOnError>,
-): RequestResult<UsersResetPasswordCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersResetPasswordCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersResetPasswordCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersResetPasswordCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    UsersResetPasswordCreateResponses,
+    AccountsAuthUsersResetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -694,17 +745,20 @@ export const usersResetPasswordCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const usersResetPasswordConfirmCreate = <
+export const accountsAuthUsersResetPasswordConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<UsersResetPasswordConfirmCreateData, ThrowOnError>,
+  options: Options<
+    AccountsAuthUsersResetPasswordConfirmCreateData,
+    ThrowOnError
+  >,
 ): RequestResult<
-  UsersResetPasswordConfirmCreateResponses,
+  AccountsAuthUsersResetPasswordConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    UsersResetPasswordConfirmCreateResponses,
+    AccountsAuthUsersResetPasswordConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -725,11 +779,17 @@ export const usersResetPasswordConfirmCreate = <
     },
   });
 
-export const usersResetUsernameCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersResetUsernameCreateData, ThrowOnError>,
-): RequestResult<UsersResetUsernameCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersResetUsernameCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersResetUsernameCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersResetUsernameCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    UsersResetUsernameCreateResponses,
+    AccountsAuthUsersResetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -750,17 +810,20 @@ export const usersResetUsernameCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const usersResetUsernameConfirmCreate = <
+export const accountsAuthUsersResetUsernameConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<UsersResetUsernameConfirmCreateData, ThrowOnError>,
+  options: Options<
+    AccountsAuthUsersResetUsernameConfirmCreateData,
+    ThrowOnError
+  >,
 ): RequestResult<
-  UsersResetUsernameConfirmCreateResponses,
+  AccountsAuthUsersResetUsernameConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    UsersResetUsernameConfirmCreateResponses,
+    AccountsAuthUsersResetUsernameConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -781,11 +844,17 @@ export const usersResetUsernameConfirmCreate = <
     },
   });
 
-export const usersSetPasswordCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersSetPasswordCreateData, ThrowOnError>,
-): RequestResult<UsersSetPasswordCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersSetPasswordCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersSetPasswordCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersSetPasswordCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    UsersSetPasswordCreateResponses,
+    AccountsAuthUsersSetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -806,11 +875,17 @@ export const usersSetPasswordCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const usersSetUsernameCreate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersSetUsernameCreateData, ThrowOnError>,
-): RequestResult<UsersSetUsernameCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersSetUsernameCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersSetUsernameCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersSetUsernameCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).post<
-    UsersSetUsernameCreateResponses,
+    AccountsAuthUsersSetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -834,11 +909,17 @@ export const usersSetUsernameCreate = <ThrowOnError extends boolean = false>(
 /**
  * User Detail View
  */
-export const usersUserDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<UsersUserDestroyData, ThrowOnError>,
-): RequestResult<UsersUserDestroyResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersUserDestroy = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserDestroyData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersUserDestroyResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).delete<
-    UsersUserDestroyResponses,
+    AccountsAuthUsersUserDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -857,11 +938,17 @@ export const usersUserDestroy = <ThrowOnError extends boolean = false>(
 /**
  * User Detail View
  */
-export const usersUserRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<UsersUserRetrieveData, ThrowOnError>,
-): RequestResult<UsersUserRetrieveResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersUserRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersUserRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).get<
-    UsersUserRetrieveResponses,
+    AccountsAuthUsersUserRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -881,11 +968,17 @@ export const usersUserRetrieve = <ThrowOnError extends boolean = false>(
 /**
  * User Detail View
  */
-export const usersUserPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersUserPartialUpdateData, ThrowOnError>,
-): RequestResult<UsersUserPartialUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersUserPartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserPartialUpdateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersUserPartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options.client ?? client).patch<
-    UsersUserPartialUpdateResponses,
+    AccountsAuthUsersUserPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -909,11 +1002,13 @@ export const usersUserPartialUpdate = <ThrowOnError extends boolean = false>(
 /**
  * User Detail View
  */
-export const usersUserUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<UsersUserUpdateData, ThrowOnError>,
-): RequestResult<UsersUserUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersUserUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersUserUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    UsersUserUpdateResponses,
+    AccountsAuthUsersUserUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -934,11 +1029,75 @@ export const usersUserUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const validateRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<ValidateRetrieveData, ThrowOnError>,
-): RequestResult<ValidateRetrieveResponses, unknown, ThrowOnError> =>
+/**
+ * Get user's recent activity (likes, comments, shares)
+ */
+export const accountsAuthUsersUserActivityRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserActivityRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersUserActivityRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    AccountsAuthUsersUserActivityRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/user/{username}/activity/",
+    ...options,
+  });
+
+/**
+ * Get all clubs a user has joined
+ */
+export const accountsAuthUsersUserClubsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersUserClubsRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersUserClubsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    AccountsAuthUsersUserClubsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/user/{username}/clubs/",
+    ...options,
+  });
+
+export const accountsAuthValidateRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthValidateRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthValidateRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
   (options?.client ?? client).get<
-    ValidateRetrieveResponses,
+    AccountsAuthValidateRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -955,11 +1114,13 @@ export const validateRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const validateCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ValidateCreateData, ThrowOnError>,
-): RequestResult<ValidateCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthValidateCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthValidateCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthValidateCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ValidateCreateResponses,
+    AccountsAuthValidateCreateResponses,
     unknown,
     ThrowOnError
   >({
