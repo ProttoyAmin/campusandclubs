@@ -3,4 +3,7 @@ export const authRoutes = {
         sign_in: '/@/auth/sign-in',
         sign_up: '/@/auth/sign-up',
     },
+    private: {
+        activation: '/activate/:uuid/:token',
+    }
 }

@@ -23,6 +23,10 @@ import type {
   AccountsAuthJwtVerifyCreateResponses,
   AccountsAuthLogoutCreateData,
   AccountsAuthLogoutCreateResponses,
+  AccountsAuthMeRetrieveData,
+  AccountsAuthMeRetrieveResponses,
+  AccountsAuthPostsRetrieveData,
+  AccountsAuthPostsRetrieveResponses,
   AccountsAuthRequestInfoRetrieveData,
   AccountsAuthRequestInfoRetrieveResponses,
   AccountsAuthUsersActivationCreateData,
@@ -75,8 +79,6 @@ import type {
   AccountsAuthUsersUserUpdateResponses,
   AccountsAuthValidateCreateData,
   AccountsAuthValidateCreateResponses,
-  AccountsAuthValidateRetrieveData,
-  AccountsAuthValidateRetrieveResponses,
   ListUsers2Data,
   ListUsers2Errors,
   ListUsers2Responses,
@@ -86,9 +88,6 @@ import type {
   LoginData,
   LoginErrors,
   LoginResponses,
-  RegisterData,
-  RegisterErrors,
-  RegisterResponses,
 } from "./types.gen";
 
 export type Options<
@@ -184,6 +183,32 @@ export const accountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
       "Content-Type": "application/json",
       ...options.headers,
     },
+  });
+
+/**
+ * Get all posts created by a user (both user posts and club posts)
+ * Query params:
+ * - source: all|user|club (default: all)
+ * - post_type: TEXT|IMAGE|VIDEO (default: all)
+ */
+export const accountsAuthPostsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthPostsRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthPostsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    AccountsAuthPostsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      { scheme: "bearer", type: "http" },
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/{user_id}/posts/",
+    ...options,
   });
 
 /**
@@ -353,19 +378,16 @@ export const accountsAuthLogoutCreate = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * Register
- *
- * Creates a new user account.
+ * Get current authenticated user's profile
  */
-export const register = <ThrowOnError extends boolean = false>(
-  options: Options<RegisterData, ThrowOnError>,
-): RequestResult<RegisterResponses, RegisterErrors, ThrowOnError> =>
-  (options.client ?? client).post<
-    RegisterResponses,
-    RegisterErrors,
+export const accountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthMeRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthMeRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    AccountsAuthMeRetrieveResponses,
+    unknown,
     ThrowOnError
   >({
-    responseType: "json",
     security: [
       { scheme: "bearer", type: "http" },
       {
@@ -374,12 +396,8 @@ export const register = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/v1/accounts/auth/register/",
+    url: "/api/v1/accounts/auth/me/",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
   });
 
 export const accountsAuthRequestInfoRetrieve = <
@@ -1087,33 +1105,9 @@ export const accountsAuthUsersUserClubsRetrieve = <
     ...options,
   });
 
-export const accountsAuthValidateRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<AccountsAuthValidateRetrieveData, ThrowOnError>,
-): RequestResult<
-  AccountsAuthValidateRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    AccountsAuthValidateRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: "json",
-    security: [
-      { scheme: "bearer", type: "http" },
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/v1/accounts/auth/validate/",
-    ...options,
-  });
-
+/**
+ * Validate user type and institute.
+ */
 export const accountsAuthValidateCreate = <
   ThrowOnError extends boolean = false,
 >(

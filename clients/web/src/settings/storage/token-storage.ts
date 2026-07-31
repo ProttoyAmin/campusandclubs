@@ -6,7 +6,11 @@ import { cookie } from "./cookie";
 export class TokenStorage {
     public setAccessToken(accessToken: string) {
         this.removeAccessToken()
-        cookie.set(config.cookie.access, accessToken);
+        cookie.set(config.cookie.access, accessToken, {
+            secure: true,
+            sameSite: 'strict' as const,
+            httpOnly: true,
+        });
     }
 
     public getAccessToken() {
@@ -20,7 +24,11 @@ export class TokenStorage {
 
     public setRefreshToken(refreshToken: string) {
         this.removeRefreshToken()
-        cookie.set(config.cookie.refresh, refreshToken);
+        cookie.set(config.cookie.refresh, refreshToken, {
+            secure: true,
+            sameSite: 'strict' as const,
+            httpOnly: true,
+        });
     }
 
     public getRefreshToken() {

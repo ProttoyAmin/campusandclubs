@@ -2,20 +2,20 @@ import { BaseClient } from "@/settings/api/";
 import type { ApiResponse } from "@/settings/api/";
 import type {
   RegisterWritable,
-  RegisterResponse,
-  JwtRefreshCreateResponse,
-  CustomTokenObtainPairWritable,
-  TokenVerify,
+  RegisterRequestWritable,
+  AccountsAuthJwtRefreshCreateResponse,
+  CustomTokenObtainPairRequestWritable,
+  TokenVerifyRequest,
   TokenRefresh,
-  register,
+  ActivationRequest,
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";
 
 export class AuthClient extends BaseClient<
   AxiosResponse,
-  RegisterResponse,
-  JwtRefreshCreateResponse
+  RegisterRequestWritable,
+  AccountsAuthJwtRefreshCreateResponse
 > {
   constructor() {
     super(config.api.v1.account.base);
@@ -23,11 +23,11 @@ export class AuthClient extends BaseClient<
 
   async register(
     data: RegisterWritable,
-  ): Promise<AxiosResponse<RegisterResponse>> {
+  ): Promise<AxiosResponse<RegisterRequestWritable>> {
     try {
       const response = await this.client.v1.post<
-        RegisterResponse>
-      (`${this.endpoint}register/`, data);
+        RegisterRequestWritable>
+      (`${this.endpoint}users/`, data);
       return response;
     } catch (err) {
       console.error("Register error:", (err as AxiosError).response?.data);
@@ -35,9 +35,22 @@ export class AuthClient extends BaseClient<
     }
   }
 
+  async activate({ uid, token }: ActivationRequest): Promise<AxiosResponse> {
+    try {
+      const response = await this.client.v1.post<AxiosResponse>(`${this.endpoint}users/activation/`, {
+        uid,
+        token,
+      });
+      return response;
+    } catch (err) {
+      console.error("Activate error:", (err as AxiosError).response?.data);
+      throw err;
+    }
+  }
+
   async login(
-    data: CustomTokenObtainPairWritable,
-  ): Promise<AxiosResponse<JwtRefreshCreateResponse>> {
+    data: CustomTokenObtainPairRequestWritable,
+  ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
     try {
       const response = await this.client.v1.post(`${this.endpoint}login/`, data);
       return response;
@@ -74,7 +87,7 @@ export class AuthClient extends BaseClient<
 
   async verify(token: string): Promise<boolean> {
     try {
-      await this.client.v1.post<TokenVerify>(`${this.endpoint}jwt/verify/`, {
+      await this.client.v1.post<TokenVerifyRequest>(`${this.endpoint}jwt/verify/`, {
         token,
       });
       return true;

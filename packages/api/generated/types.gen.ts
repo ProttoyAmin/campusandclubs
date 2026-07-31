@@ -27,6 +27,52 @@ export type CustomTokenObtainPairRequest = {
  */
 export type GenderEnum = "male" | "female" | "other";
 
+export type Institute = {
+  readonly id: string;
+  name: string;
+  code?: string | null;
+  country: string;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+  readonly url: string;
+};
+
+/**
+ * Used in User details — shows which institute the user belongs to.
+ */
+export type InstituteAffiliateForUser = {
+  readonly id: number;
+  institute: Institute;
+  role?: RoleEnum;
+};
+
+/**
+ * Used in User details — shows which institute the user belongs to.
+ */
+export type InstituteAffiliateForUserRequest = {
+  role?: RoleEnum;
+};
+
+export type InstituteRequest = {
+  name: string;
+  code?: string | null;
+  country: string;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+};
+
 export type NullEnum = never;
 
 export type PaginatedUserProfileList = {
@@ -48,6 +94,20 @@ export type PasswordResetConfirmRetypeRequest = {
   token: string;
   new_password: string;
   re_new_password: string;
+};
+
+export type PatchedUserMinimalRequest = {
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username?: string;
+  /**
+   * Email address
+   */
+  email?: string | string;
+  avatar?: string | string | null;
+  professional_email?: string | string | null;
+  profile_picture?: Blob | File | null;
 };
 
 /**
@@ -190,23 +250,13 @@ export type RegisterRequest = {
   email: string;
 };
 
-export type RegisterResponse = {
-  readonly id: string;
-  /**
-   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   */
-  readonly username: string;
-  /**
-   * Email address
-   */
-  readonly email: string;
-  /**
-   * Active
-   *
-   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-   */
-  readonly is_active: boolean;
-};
+/**
+ * * `student` - Student
+ * * `faculty` - Faculty
+ * * `staff` - Staff
+ * * `alumni` - Alumni
+ */
+export type RoleEnum = "student" | "faculty" | "staff" | "alumni";
 
 export type SendEmailReset = {
   email: string;
@@ -364,6 +414,35 @@ export type User = {
   user_permissions?: Array<number>;
 };
 
+export type UserMinimal = {
+  readonly id: string;
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username: string;
+  /**
+   * Email address
+   */
+  email?: string | string;
+  avatar?: string | string | null;
+  professional_email?: string | string | null;
+  profile_picture?: string | null;
+};
+
+export type UserMinimalRequest = {
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username: string;
+  /**
+   * Email address
+   */
+  email?: string | string;
+  avatar?: string | string | null;
+  professional_email?: string | string | null;
+  profile_picture?: Blob | File | null;
+};
+
 /**
  * Detailed user profile with club, post, and follow information
  */
@@ -384,6 +463,7 @@ export type UserProfile = {
   readonly institute_id: string;
   readonly url: string;
   gender?: GenderEnum | BlankEnum | NullEnum | null;
+  readonly affiliations: Array<InstituteAffiliateForUser>;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
@@ -626,6 +706,27 @@ export type CustomTokenObtainPairRequestWritable = {
   password: string;
 };
 
+export type InstituteWritable = {
+  name: string;
+  code?: string | null;
+  country: string;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+};
+
+/**
+ * Used in User details — shows which institute the user belongs to.
+ */
+export type InstituteAffiliateForUserWritable = {
+  role?: RoleEnum;
+};
+
 export type PaginatedUserProfileListWritable = {
   count: number;
   next?: string | null;
@@ -730,6 +831,20 @@ export type UserWritable = {
   user_permissions?: Array<number>;
 };
 
+export type UserMinimalWritable = {
+  /**
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   */
+  username: string;
+  /**
+   * Email address
+   */
+  email?: string | string;
+  avatar?: string | string | null;
+  professional_email?: string | string | null;
+  profile_picture?: string | null;
+};
+
 /**
  * Detailed user profile with club, post, and follow information
  */
@@ -830,6 +945,22 @@ export type AccountsAuthAllUpdateResponses = {
 export type AccountsAuthAllUpdateResponse =
   AccountsAuthAllUpdateResponses[keyof AccountsAuthAllUpdateResponses];
 
+export type AccountsAuthPostsRetrieveData = {
+  body?: never;
+  path: {
+    user_id: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/{user_id}/posts/";
+};
+
+export type AccountsAuthPostsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
 export type ListUsersData = {
   body?: never;
   path?: never;
@@ -871,7 +1002,7 @@ export type ListUsersResponses = {
 export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
 
 export type ListUsers2Data = {
-  body: UserProfileRequest;
+  body: UserMinimalRequest;
   path?: never;
   query?: {
     /**
@@ -985,25 +1116,19 @@ export type AccountsAuthLogoutCreateResponses = {
   200: unknown;
 };
 
-export type RegisterData = {
-  body: RegisterRequestWritable;
+export type AccountsAuthMeRetrieveData = {
+  body?: never;
   path?: never;
   query?: never;
-  url: "/api/v1/accounts/auth/register/";
+  url: "/api/v1/accounts/auth/me/";
 };
 
-export type RegisterErrors = {
+export type AccountsAuthMeRetrieveResponses = {
   /**
-   * Validation failed (duplicate email, weak password, etc.).
+   * No response body
    */
-  400: unknown;
+  200: unknown;
 };
-
-export type RegisterResponses = {
-  201: RegisterResponse;
-};
-
-export type RegisterResponse2 = RegisterResponses[keyof RegisterResponses];
 
 export type AccountsAuthRequestInfoRetrieveData = {
   body?: never;
@@ -1027,7 +1152,7 @@ export type AccountsAuthUsersListData = {
 };
 
 export type AccountsAuthUsersListResponses = {
-  200: Array<User>;
+  200: Array<UserMinimal>;
 };
 
 export type AccountsAuthUsersListResponse =
@@ -1082,14 +1207,14 @@ export type AccountsAuthUsersRetrieveData = {
 };
 
 export type AccountsAuthUsersRetrieveResponses = {
-  200: User;
+  200: UserMinimal;
 };
 
 export type AccountsAuthUsersRetrieveResponse =
   AccountsAuthUsersRetrieveResponses[keyof AccountsAuthUsersRetrieveResponses];
 
 export type AccountsAuthUsersPartialUpdateData = {
-  body?: PatchedUserRequest;
+  body?: PatchedUserMinimalRequest;
   path: {
     /**
      * A UUID string identifying this user.
@@ -1101,14 +1226,14 @@ export type AccountsAuthUsersPartialUpdateData = {
 };
 
 export type AccountsAuthUsersPartialUpdateResponses = {
-  200: User;
+  200: UserMinimal;
 };
 
 export type AccountsAuthUsersPartialUpdateResponse =
   AccountsAuthUsersPartialUpdateResponses[keyof AccountsAuthUsersPartialUpdateResponses];
 
 export type AccountsAuthUsersUpdateData = {
-  body: UserRequest;
+  body: UserMinimalRequest;
   path: {
     /**
      * A UUID string identifying this user.
@@ -1120,7 +1245,7 @@ export type AccountsAuthUsersUpdateData = {
 };
 
 export type AccountsAuthUsersUpdateResponses = {
-  200: User;
+  200: UserMinimal;
 };
 
 export type AccountsAuthUsersUpdateResponse =
@@ -1165,35 +1290,35 @@ export type AccountsAuthUsersMeRetrieveData = {
 };
 
 export type AccountsAuthUsersMeRetrieveResponses = {
-  200: User;
+  200: UserProfile;
 };
 
 export type AccountsAuthUsersMeRetrieveResponse =
   AccountsAuthUsersMeRetrieveResponses[keyof AccountsAuthUsersMeRetrieveResponses];
 
 export type AccountsAuthUsersMePartialUpdateData = {
-  body?: PatchedUserRequest;
+  body?: PatchedUserProfileRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMePartialUpdateResponses = {
-  200: User;
+  200: UserProfile;
 };
 
 export type AccountsAuthUsersMePartialUpdateResponse =
   AccountsAuthUsersMePartialUpdateResponses[keyof AccountsAuthUsersMePartialUpdateResponses];
 
 export type AccountsAuthUsersMeUpdateData = {
-  body: UserRequest;
+  body: UserProfileRequest;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMeUpdateResponses = {
-  200: User;
+  200: UserProfile;
 };
 
 export type AccountsAuthUsersMeUpdateResponse =
@@ -1395,20 +1520,6 @@ export type AccountsAuthUsersUserClubsRetrieveResponses = {
    */
   200: unknown;
 };
-
-export type AccountsAuthValidateRetrieveData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/accounts/auth/validate/";
-};
-
-export type AccountsAuthValidateRetrieveResponses = {
-  200: UserType;
-};
-
-export type AccountsAuthValidateRetrieveResponse =
-  AccountsAuthValidateRetrieveResponses[keyof AccountsAuthValidateRetrieveResponses];
 
 export type AccountsAuthValidateCreateData = {
   body: UserTypeRequestWritable;

@@ -46,7 +46,7 @@ urlpatterns = [
     # Authentication endpoints
     path("auth/logout/", LogoutView.as_view(), name="jwt_logout"),
     path("auth/login/", LoginView.as_view(), name="jwt_obtain_token"),      # ---- DONE
-    path("auth/register/", RegisterView.as_view(), name="register"),        # ---- DONE
+    # path("auth/register/", RegisterView.as_view(), name="register"),        # ---- HANDLED BY DJOSER
     path("auth/validate/", ValidateUserTypeView.as_view(), name="validate_type"),
     
     # # User lookup

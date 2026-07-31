@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { authentication } from "../services/authentication";
-import type { RegisterWritable, CustomTokenObtainPairWritable } from "@campus/api";
+import type { RegisterRequestWritable, CustomTokenObtainPairRequestWritable } from "@campus/api";
 import { queryClient } from "@/config/query-client";
 import { authKeys } from "./session.hook";
 
 
 export const useLogin = () => {
   return useMutation({
-    mutationFn: (data: CustomTokenObtainPairWritable) => authentication.login(data),
+    mutationFn: (data: CustomTokenObtainPairRequestWritable) => authentication.login(data),
     onSuccess: () => {
       queryClient.setQueryData(authKeys.session, true);
     },
@@ -23,7 +23,7 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: (data: RegisterWritable) => authentication.register(data),
+    mutationFn: (data: RegisterRequestWritable) => authentication.register(data),
     onSuccess: (data) => {
       console.log("Registration successful:", data);
     },

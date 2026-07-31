@@ -17,6 +17,10 @@ export const paths = {
           username,
         }),
     },
+
+    // auth: {
+    //   activation: routes.auth.private.activation,
+    // }
     
   },
 

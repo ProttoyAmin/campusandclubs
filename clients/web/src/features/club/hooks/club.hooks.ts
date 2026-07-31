@@ -6,8 +6,6 @@ export const useGetClubs = () => {
   return useQuery({
     queryKey: ["clubs"],
     queryFn: () => {
-      console.log("Getting clubs...")
-      console.log("openapai client: ", )
       const response = club.getClubs()
       return response
     },

@@ -6,14 +6,13 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
+# checked and working
 class CustomActivationEmail(email.ActivationEmail):
 
     def send(self, to, *args, **kwargs):
         user = self.context.get("user")
         
         to = [get_user_email(user)]
-        print("Sending activation email to: ", to[0])
 
         super().send(to, *args, **kwargs)
 

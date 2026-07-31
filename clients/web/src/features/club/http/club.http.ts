@@ -1,5 +1,5 @@
 import { BaseClient } from "@/settings/api";
-
+import type {  } from '@campus/api'
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
@@ -13,8 +13,8 @@ export class ClubClient extends BaseClient<AxiosResponse, any, any> {
 
     async retrieve(): Promise<AxiosResponse> {
         try {
-            const response = await this.client.get<AxiosResponse>(config.api.v1.clubs.base);
-            return response;
+            const response = await this.client.v1.get<AxiosResponse>(config.api.v1.clubs.base);
+            return response.data;
         } catch (error) {
             console.error("Retrieve error:", (error as AxiosError).response?.data);
             throw error;

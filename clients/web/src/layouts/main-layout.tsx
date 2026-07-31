@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 // import { ProtectedRoute } from '@/guards';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import AuthorizeRequest from "@/guards/authorize-token";
 
 export type MainLayoutContext = {
   user: {
@@ -21,7 +22,9 @@ const MainLayout: React.FC = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ReactQueryDevtools initialIsOpen={false} />
+      <AuthorizeRequest>
       <Outlet />
+      </AuthorizeRequest>
       {/* <ProtectedRoute children={<Outlet />} /> */}
     </Suspense>
   );

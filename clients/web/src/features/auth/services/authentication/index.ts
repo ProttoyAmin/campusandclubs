@@ -1,52 +1,64 @@
-import type { CustomTokenObtainPairRequestWritable } from "@campus/api";
+import type {
+  ActivationRequest,
+  CustomTokenObtainPairRequestWritable,
+} from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { storage } from "@/settings/storage/";
-import { v1Client } from "@/settings/api/v1/client";
-import {
-  login, register, accountsAuthLogoutCreate,
-  accountsAuthJwtVerifyCreate,
-  accountsAuthJwtRefreshCreate,
-} from "@campus/api";
+// import { v1Client } from "@/settings/api/v1/client";
+import { accountsAuthLogoutCreate } from "@campus/api";
+import { authClient } from "../../api/auth.client";
+import { api } from "@/settings/api";
 
 export class Authentication {
   public authenticated: boolean = false;
-  private api = v1Client;
+
+  private apiClient = authClient;
+  private api = api;
 
   constructor() {
     // Wire up the API client at construction time so every request
     // gets the stored access token and 401s trigger refresh automatically.
     // This runs once when the module-level singleton is created.
-    this.api.setTokenGetter(async () => {
-      return storage.token.getAccessToken() ?? null;
-    });
+    // this.api.setTokenGetter(async () => {
+    //   return storage.token.getAccessToken() ?? null;
+    // });
 
-    this.api.setUnauthorizedHandler(async () => {
-      return this.refresh();
-    });
+    // this.api.setUnauthorizedHandler(async () => {
+    //   return this.refresh();
+    // });
+  }
+
+  init() {
+    this.api.setTokenGetter(async () => storage.token.getAccessToken() ?? null);
+    this.api.setUnauthorizedHandler(async () => this.refresh());
   }
 
   async login(data: CustomTokenObtainPairRequestWritable) {
-    const res = await login({
-      client: this.api.client,
-      body: data,
-    });
+    const response = await this.apiClient.login(data);
 
-    console.log("res: ", res.data.access)
+    // const res = await login({
+    //   client: this.api.client,
+    //   body: data,
+    // });
 
-    if (res.status === 200) {
+    if (response.status === 200) {
       this.authenticated = true;
-      storage.token.setAccessToken(res.data.access);
-      storage.token.setRefreshToken(res.data.refresh);
-      return res;
+      storage.token.setAccessToken(response.data.access);
+      storage.token.setRefreshToken(response.data.refresh);
     }
+
+    return response.status;
   }
 
   async register(data: RegisterRequestWritable) {
-    const response = await register({
-      client: this.api.client,
-      body: data
-    })
-    return response.data
+    return await this.apiClient.register(data);
+  }
+
+  async activate(data: ActivationRequest) {
+    return await this.apiClient.activate({
+      uid: data.uid,
+      token: data.token,
+    });
   }
 
   async logout() {
@@ -69,12 +81,7 @@ export class Authentication {
     if (!refreshToken) return null;
 
     try {
-      const response = await accountsAuthJwtRefreshCreate({
-        client: this.api.client,
-        body: {
-          refresh: refreshToken
-        }
-      });
+      const response = await this.apiClient.refresh(refreshToken);
       storage.token.setAccessToken(response.data.access);
       storage.token.setRefreshToken(response.data.refresh);
       this.authenticated = true;
@@ -94,12 +101,7 @@ export class Authentication {
       return false;
     }
 
-    const isValid = await accountsAuthJwtVerifyCreate({
-      client: this.api.client,
-      body: {
-        token: accessToken
-      }
-    });
+    const isValid = await this.apiClient.verify(accessToken);
     if (isValid) {
       this.authenticated = true;
       return true;

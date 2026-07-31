@@ -1,28 +1,39 @@
 import { BaseClient } from "@/settings/api/";
-import type { ApiResponse } from "@/settings/api/";
 import type {
-  AllRetrieveResponses,
-  UsersActivationCreateResponse,
+  AccountsAuthUsersRetrieveResponse,
+  AccountsAuthUsersUserRetrieveResponse
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 
 export class UserClient extends BaseClient<
-  ApiResponse,
-  AllRetrieveResponses,
-  UsersActivationCreateResponse
+  AxiosResponse,
+  AccountsAuthUsersRetrieveResponse,
+  any
 > {
   constructor() {
     super("/accounts/auth/");
   }
 
-  async grabUsers(): Promise<AllRetrieveResponses> {
+  async grabUsers(): Promise<AxiosResponse<AccountsAuthUsersRetrieveResponse[]>> {
     try {
       const response = await this.client.v1.get<
-        AllRetrieveResponses>
-      (this.endpoint + "all/");
-      return response as AllRetrieveResponses | any;     // TODO: Handle the response data type properly
+        AccountsAuthUsersRetrieveResponse[]>
+      (this.endpoint + "users/");
+      return response;
     } catch (err) {
       console.error("Grab users error:", (err as AxiosError).response?.data);
+      throw err;
+    }
+  }
+
+  async getUser(username: string): Promise<AxiosResponse<AccountsAuthUsersUserRetrieveResponse>> {
+    try {
+      const response = await this.client.v1.get<
+        AccountsAuthUsersUserRetrieveResponse
+      >(this.endpoint + "users/user/" + username + "/");
+      return response;
+    } catch (err) {
+      console.error("Get user error:", (err as AxiosError).response?.data);
       throw err;
     }
   }

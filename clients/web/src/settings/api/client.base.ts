@@ -6,7 +6,6 @@ import type { ApiResponse } from "./types";
 export abstract class BaseClient<TResult, TCreateDTO, TUpdateDTO = Partial<TCreateDTO>> {
     protected client: Client = api;
     protected authorized: boolean = false;
-    protected accounts = '/accounts/auth/'
 
     constructor(
         protected readonly endpoint: string

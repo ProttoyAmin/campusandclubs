@@ -15,23 +15,23 @@ export const config = {
         v1: {
             name: 'v1',
             raw: VITE_PUBLIC_API_URL,
-            baseUrl: VITE_PUBLIC_API_URL + 'api/v1/',
+            baseUrl: VITE_PUBLIC_API_URL,
             version: "1.0.0",
             account: {
-                base: 'accounts/auth/',
-                login: 'login/',
-                register: 'register/',
-                logout: 'logout/'
+                base: `${VITE_PUBLIC_API_URL}accounts/auth/`,
+                login: `${VITE_PUBLIC_API_URL}accounts/auth/login/`,
+                register: `${VITE_PUBLIC_API_URL}accounts/auth/register/`,
+                logout: `${VITE_PUBLIC_API_URL}accounts/auth/logout/`
             },
             clubs: {
-                base: '/clubs/',
-                create: '/create/',
-                retrieve: '/retrieve/'
+                base: `${VITE_PUBLIC_API_URL}clubs/`,
+                create: `${VITE_PUBLIC_API_URL}clubs/create/`,
+                retrieve: `${VITE_PUBLIC_API_URL}clubs/retrieve/`
             },
             events: {
-                base: '/events/',
-                create: '/create/',
-                retrieve: '/retrieve/'
+                base: `${VITE_PUBLIC_API_URL}events/`,
+                create: `${VITE_PUBLIC_API_URL}events/create/`,
+                retrieve: `${VITE_PUBLIC_API_URL}events/retrieve/`
             }
         }
     },

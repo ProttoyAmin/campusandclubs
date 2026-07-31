@@ -156,8 +156,8 @@ DJOSER = {
     'SERIALIZERS': {
         'user_create_password_retype': 'apps.accounts.serialize.auth.register.RegisterSerializer',
         'user_create': 'apps.accounts.serialize.auth.register.RegisterSerializer',
-        'user': 'apps.accounts.serialize.user.profile.UserSerializer',
-        'current_user': 'apps.accounts.serialize.user.profile.UserSerializer',
+        'user': 'apps.accounts.serialize.user.profile.UserMinimalSerializer',
+        'current_user': 'apps.accounts.serialize.user.profile.UserProfileSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
     'EMAIL': {

@@ -9,6 +9,12 @@ const SignIn = React.lazy(
 const SignUp = React.lazy(
     () => import("./pages/public/sign-up")
 )
+
+const Activation = React.lazy(
+    () => import("./pages/private/activation")
+)
+
+
 export const authRoutes = [
     {
         path: routes.auth.public.sign_in,
@@ -17,5 +23,9 @@ export const authRoutes = [
     {
         path: routes.auth.public.sign_up,
         element: <SignUp />
+    },
+    {
+        path: routes.auth.private.activation,
+        element: <Activation />
     }
 ]
