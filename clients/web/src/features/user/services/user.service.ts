@@ -1,19 +1,10 @@
 import { userClient } from "../api/user.client";
-import { api } from "@/settings/api";
-import { config } from "@/settings/app";
-import type { AccountsAuthUsersRetrieveResponse, ListUsersResponse } from "@campus/api";
-import { useAuth } from "@/features/auth/hooks/session.hook";
-// import { client } from "@campus/api/client";
-import { createClient } from "@campus/api/client";
 import { v1Client } from "@/settings/api/v1/client";
-import { accountsAuthJwtRefreshCreate, accountsAuthUsersUserRetrieve } from "@campus/api";
 import {
-  listUsers,
   accountsAuthUsersMeRetrieve,
   
 } from '@campus/api'
 
-import { storage } from "@/settings/storage";
 
 export class UserService {
   private userClient = userClient;

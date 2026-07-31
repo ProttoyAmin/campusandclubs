@@ -1,19 +1,14 @@
 import './App.css'
 import { useUsers } from '@/features/user/hooks/user.hooks';
 import { useSession } from './features/auth/hooks';
-import { useGetClubs } from './features/club/hooks/club.hooks';
 import { Link } from 'react-router-dom';
 import { paths } from './settings/routes';
 
 
 
 function App() {
-  // const { getToken } = useAuth()
   const { data: users } = useUsers()
   const { data: sessionData } = useSession()
-
-  // console.log(data)
-  // console.log(getToken())
 
   return (
      <div>
