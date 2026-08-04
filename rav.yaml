@@ -1,6 +1,7 @@
 scripts:
   server: cd backend/api && uv run python manage.py runserver
   web: pnpm --filter web dev
+  apps:web: pnpm --filter @apps/web dev
   migrations: cd backend/api && uv run python manage.py makemigrations
   migrate: cd backend/api && uv run python manage.py migrate
   build: pnpm -r build

@@ -4,16 +4,17 @@
   "rsc": false,
   "tsx": true,
   "tailwind": {
-    "css": "src/styles/global.css",
+    "config": "",
+    "css": "src/styles/globals.css",
     "baseColor": "neutral",
     "cssVariables": true
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@campus/styles/components",
-    "utils": "@campus/styles/lib/utils",
-    "ui": "@campus/styles/components/ui",
-    "lib": "@campus/styles/lib",
-    "hooks": "@campus/styles/hooks"
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
   }
 }

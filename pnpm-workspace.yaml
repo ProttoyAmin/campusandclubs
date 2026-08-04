@@ -1,5 +1,6 @@
 packages:
   - clients/*
+  - apps/*
   - packages/*
 allowBuilds:
   core-js: set this to true or false

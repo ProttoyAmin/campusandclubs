@@ -1,11 +1,11 @@
 import React from "react";
 import { useRegister } from "@/features/auth/hooks";
-import type { RegisterWritable } from "@campus/api";
+import type { RegisterRequestWritable } from "@campus/api";
 
 const SignUp: React.FC = () => {
   const { mutate, isPending, isError, error } = useRegister();
 
-  const handleSubmit = (formData: RegisterWritable) => {
+  const handleSubmit = (formData: RegisterRequestWritable) => {
     console.log("CLICKED")
     mutate(formData);
   };
