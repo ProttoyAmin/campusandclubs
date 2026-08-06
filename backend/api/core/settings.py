@@ -115,7 +115,7 @@ LOGGING = {
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "apps.accounts.config.authentication.CookieJWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -139,6 +139,9 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     "ALGORITHM": "HS256",
     'AUTH_HEADER_TYPES': ('Bearer',),
+
+
+    "TOKEN_REFRESH_SERIALIZER": "apps.accounts.serialize.auth.token.RefreshTokenSerializer",
 }
 
 

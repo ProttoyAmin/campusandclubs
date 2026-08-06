@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { authentication } from "../services/authentication";
-import { storage } from "@/settings/storage/";
 
 export const authKeys = {
   session: ["auth", "session"] as const,
@@ -23,7 +22,5 @@ export const useSession = () => {
  * so they work regardless of whether this hook is called.
  */
 export const useAuth = () => {
-  const getToken = () => storage.token.getAccessToken() ?? null;
-
-  return { getToken };
+  return {};
 };

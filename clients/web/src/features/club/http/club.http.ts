@@ -11,12 +11,13 @@ export class ClubClient extends BaseClient<AxiosResponse, any, any> {
         super(config.api.v1.clubs.base);
     }
 
-    async retrieve(): Promise<AxiosResponse> {
+    async getClubs(): Promise<AxiosResponse> {
         try {
-            const response = await this.client.v1.get<AxiosResponse>(config.api.v1.clubs.base);
-            return response.data;
+            const response = await this.client.get<AxiosResponse>(config.api.v1.clubs.base);
+            console.log("response: ", response)
+            return response;
         } catch (error) {
-            console.error("Retrieve error:", (error as AxiosError).response?.data);
+            console.error("Get Clubs error:", (error as AxiosError).response?.data);
             throw error;
         }
     }

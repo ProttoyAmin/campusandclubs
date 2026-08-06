@@ -1,10 +1,10 @@
-import './App.css'
+
 import { useUsers } from '@/features/user/hooks/user.hooks';
 import { useSession } from './features/auth/hooks';
 import { Link } from 'react-router-dom';
 import { paths } from './settings/routes';
-
-
+import { Button } from 'design/components/ui/button';
+import { ModeToggle } from './shared/components/mode-toggle';
 
 function App() {
   const { data: users } = useUsers()
@@ -17,6 +17,7 @@ function App() {
       {users?.data.map((user) => (
         <Link key={user?.id} to={paths.private.user.profile(user.username)}>{user.username}</Link>
       ))}
+      <Button>Click me</Button>
     </div>
   )
 }

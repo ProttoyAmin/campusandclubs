@@ -1,11 +1,6 @@
 import { config } from "@/settings/app";
-import { storage } from "@/settings/storage";
-import type { Client } from "@campus/api/client";
-import { createClient } from "@campus/api/client";
-import type { AxiosError } from "axios";
-import {
-  accountsAuthJwtRefreshCreate
-} from '@campus/api'
+import type { AxiosError, AxiosInstance } from "axios";
+import axios from "axios";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -13,53 +8,38 @@ declare module "axios" {
   }
 }
 
-type TokenGetter = () => Promise<string | null>;
-type UnauthorizedHandler = (error: AxiosError) => Promise<string | null>;
-
 export class V1Client {
   private static instance: V1Client;
-  public client: Client;
-  private getToken: TokenGetter | null = null;
-  private onUnauthorized: UnauthorizedHandler | null = null;
+  public client: AxiosInstance;
   private isRefreshing = false;
-  private refreshSubscribers: ((token: string) => void)[] = [];
+  private refreshSubscribers: ((success: boolean) => void)[] = [];
 
   private constructor() {
-    this.client = createClient({
-      baseURL: config.api.v1.raw,
+    this.client = axios.create({
+      baseURL: config.api.v1.suffix,
+      withCredentials: true
     });
 
-    this.client.instance.interceptors.request.use(async (config) => {
-      console.log("interceptor", config);
-      if (this.getToken) {
-        const token = await this.getToken();
-        console.log('request interceptor got the token')
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-      }
-      return config;
-    });
-
-    this.client.instance.interceptors.response.use(
+    this.client.interceptors.response.use(
       (response) => {
         return response;
       },
       async (error: AxiosError) => {
-        console.log("response error interceptor", error.config);
         const originalRequest = error.config;
-        console.log("original request: ", originalRequest);
         if (
           error.response?.status === 401 &&
-          !originalRequest._retry &&
-          this.onUnauthorized
+          originalRequest &&
+          !originalRequest._retry
         ) {
           console.log("retry", originalRequest);
           if (this.isRefreshing) {
-            return new Promise((resolve) => {
-              this.refreshSubscribers.push((token: string) => {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                resolve(this.client.instance(originalRequest));
+            return new Promise((resolve, reject) => {
+              this.refreshSubscribers.push((success: boolean) => {
+                if (success) {
+                   resolve(this.client(originalRequest));
+                } else {
+                   reject(error);
+                }
               });
             });
           }
@@ -68,25 +48,25 @@ export class V1Client {
           this.isRefreshing = true;
 
           try {
-            console.log('Trying...')
-            const refreshToken = storage.token.getRefreshToken();
-            console.log('got the refresh token...', refreshToken)
-            const newToken = await accountsAuthJwtRefreshCreate({
-              client: this.client,
-              body: {
-                refresh: refreshToken
-              }
-            })
-            console.log("new token: ", newToken.data.access)  
-            if (!newToken) throw error;
-
-            this.refreshSubscribers.forEach((cb) => cb(newToken.data.access));
+            console.log('Trying silent refresh...')
+            // Call the refresh endpoint directly
+            await axios.post(
+               `${config.api.v1.suffix}${config.api.v1.account.base}refresh/`,
+               {},
+               { withCredentials: true }
+            );
+            
+            this.refreshSubscribers.forEach((cb) => cb(true));
             this.refreshSubscribers = [];
 
-            originalRequest.headers.Authorization = `Bearer ${newToken.data.access}`;
-            return this.client.instance(originalRequest);
+            return this.client(originalRequest);
           } catch (refreshError) {
+            this.refreshSubscribers.forEach((cb) => cb(false));
             this.refreshSubscribers = [];
+            
+            // Dispatch event to clear auth state
+            window.dispatchEvent(new Event("auth:logout"));
+            
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;
@@ -102,14 +82,6 @@ export class V1Client {
       V1Client.instance = new V1Client();
     }
     return V1Client.instance;
-  }
-
-  public setTokenGetter(getToken: TokenGetter): void {
-    this.getToken = getToken;
-  }
-
-  public setUnauthorizedHandler(handler: UnauthorizedHandler): void {
-    this.onUnauthorized = handler;
   }
 }
 

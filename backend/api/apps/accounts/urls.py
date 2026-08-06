@@ -7,7 +7,8 @@ from apps.accounts.view.auth import (
     LoginView,
     LogoutView,
     RegisterView,
-    get_request_info
+    get_request_info,
+    RefreshTokenView
 )
 
 from apps.accounts.view.user.generics import (
@@ -37,6 +38,7 @@ urlpatterns = [
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
 
+    path("auth/refresh/", RefreshTokenView.as_view(), name="refresh"),
     path("auth/request-info/", get_request_info, name="request_info"),
 
 

@@ -45,7 +45,7 @@ class UserRetrieveUpdateDestroyView(
     service_class = AccountService
     private_serializer_class = PrivateUserSerializer
     private_detail_message = "This profile is private"
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     # DRF class attributes
     serializer_class = UserProfileSerializer
@@ -56,6 +56,7 @@ class UserRetrieveUpdateDestroyView(
         return self.get_service(self.request).get_by_username(username=self.kwargs['username'])
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        print(request.COOKIES)
         user: User = self.get_object()
         policy = self.get_policy(request, user)
 

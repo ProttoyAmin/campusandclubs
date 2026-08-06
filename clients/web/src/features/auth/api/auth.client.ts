@@ -25,7 +25,7 @@ export class AuthClient extends BaseClient<
     data: RegisterWritable,
   ): Promise<AxiosResponse<RegisterRequestWritable>> {
     try {
-      const response = await this.client.v1.post<
+      const response = await this.client.post<
         RegisterRequestWritable>
       (`${this.endpoint}users/`, data);
       return response;
@@ -37,7 +37,7 @@ export class AuthClient extends BaseClient<
 
   async activate({ uid, token }: ActivationRequest): Promise<AxiosResponse> {
     try {
-      const response = await this.client.v1.post<AxiosResponse>(`${this.endpoint}users/activation/`, {
+      const response = await this.client.post<AxiosResponse>(`${this.endpoint}users/activation/`, {
         uid,
         token,
       });
@@ -52,7 +52,8 @@ export class AuthClient extends BaseClient<
     data: CustomTokenObtainPairRequestWritable,
   ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
     try {
-      const response = await this.client.v1.post(`${this.endpoint}login/`, data);
+      const response = await this.client.post<AccountsAuthJwtRefreshCreateResponse>(`${this.endpoint}login/`, data);
+      console.log("response", response)
       return response;
     } catch (err) {
       console.error("Login error:", (err as AxiosError).response?.data);
@@ -62,7 +63,7 @@ export class AuthClient extends BaseClient<
 
   async logout(): Promise<ApiResponse> {
     try {
-      const response = await this.client.v1.post<ApiResponse>(
+      const response = await this.client.post<ApiResponse>(
         `${this.endpoint}logout/`,
       );
       return response.data;
@@ -72,27 +73,15 @@ export class AuthClient extends BaseClient<
     }
   }
 
-  async refresh(refreshToken: string): Promise<AxiosResponse<TokenRefresh>> {
+  async refresh(): Promise<AxiosResponse<TokenRefresh>> {
     try {
-      const response = await this.client.v1.post<TokenRefresh>(
-        `${this.endpoint}jwt/refresh/`,
-        { refresh: refreshToken },
+      const response = await this.client.post<TokenRefresh>(
+        `${this.endpoint}refresh/`,
       );
       return response;
     } catch (err) {
       console.error("Refresh error:", (err as AxiosError).response?.data);
       throw err;
-    }
-  }
-
-  async verify(token: string): Promise<boolean> {
-    try {
-      await this.client.v1.post<TokenVerifyRequest>(`${this.endpoint}jwt/verify/`, {
-        token,
-      });
-      return true;
-    } catch {
-      return false;
     }
   }
 }

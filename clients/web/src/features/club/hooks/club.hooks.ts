@@ -6,7 +6,7 @@ export const useGetClubs = () => {
   return useQuery({
     queryKey: ["clubs"],
     queryFn: () => {
-      const response = club.getClubs()
+      const response = club.clubs()
       return response
     },
   });

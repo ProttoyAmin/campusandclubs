@@ -15,13 +15,14 @@ export const config = {
         v1: {
             name: 'v1',
             raw: VITE_PUBLIC_API_URL,
-            baseUrl: VITE_PUBLIC_API_URL,
+            suffix: "/api/v1/",
+            baseUrl: VITE_PUBLIC_API_URL + "/api/v1/",
             version: "1.0.0",
             account: {
-                base: `${VITE_PUBLIC_API_URL}accounts/auth/`,
-                login: `${VITE_PUBLIC_API_URL}accounts/auth/login/`,
-                register: `${VITE_PUBLIC_API_URL}accounts/auth/register/`,
-                logout: `${VITE_PUBLIC_API_URL}accounts/auth/logout/`
+                base: `accounts/auth/`,
+                login: `accounts/auth/login/`,
+                register: `accounts/auth/register/`,
+                logout: `accounts/auth/logout/`
             },
             clubs: {
                 base: `${VITE_PUBLIC_API_URL}clubs/`,
@@ -39,5 +40,10 @@ export const config = {
     cookie: {
         access: ACCESS_TOKEN,
         refresh: REFRESH_TOKEN
+    },
+    theme: {
+        default: "system",
+        options: ["dark", "light", "system"],
+        key: "theme"
     }
 } as const;

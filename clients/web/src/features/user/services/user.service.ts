@@ -27,21 +27,15 @@ export class UserService {
   }
 
   async me() {
-    const response = await accountsAuthUsersMeRetrieve({
-      client: this.api.client,
-    })
-    return response
+    // const response = await accountsAuthUsersMeRetrieve({
+    //   client: this.api.client,
+    // })
+    // return response
   }
 
   async userByUsername(username: string) {
     const response = await this.userClient.getUser(username)
-    // const response = await accountsAuthUsersUserRetrieve({
-    //   client: this.api.client,
-    //   path: {
-    //     username: username
-    //   }
-    // })
-    // console.log(response)
+    if (response.status === 404) return null;
     return response.data
   }
 }

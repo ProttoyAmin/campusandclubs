@@ -1,4 +1,5 @@
 import { BaseClient } from "@/settings/api/";
+import { config } from "@/settings/app";
 import type {
   AccountsAuthUsersRetrieveResponse,
   AccountsAuthUsersUserRetrieveResponse
@@ -11,12 +12,12 @@ export class UserClient extends BaseClient<
   any
 > {
   constructor() {
-    super("/accounts/auth/");
+    super(config.api.v1.account.base);
   }
 
   async grabUsers(): Promise<AxiosResponse<AccountsAuthUsersRetrieveResponse[]>> {
     try {
-      const response = await this.client.v1.get<
+      const response = await this.client.get<
         AccountsAuthUsersRetrieveResponse[]>
       (this.endpoint + "users/");
       return response;
@@ -28,13 +29,13 @@ export class UserClient extends BaseClient<
 
   async getUser(username: string): Promise<AxiosResponse<AccountsAuthUsersUserRetrieveResponse>> {
     try {
-      const response = await this.client.v1.get<
+      const response = await this.client.get<
         AccountsAuthUsersUserRetrieveResponse
       >(this.endpoint + "users/user/" + username + "/");
       return response;
     } catch (err) {
       console.error("Get user error:", (err as AxiosError).response?.data);
-      throw err;
+      return (err as AxiosError).response?.data as AxiosResponse<AccountsAuthUsersUserRetrieveResponse>;
     }
   }
 
