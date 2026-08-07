@@ -1,14 +1,7 @@
 import { userClient } from "../api/user.client";
-import { v1Client } from "@/settings/api/v1/client";
-import {
-  accountsAuthUsersMeRetrieve,
-  
-} from '@campus/api'
-
 
 export class UserService {
   private userClient = userClient;
-  private api = v1Client;
   public authenticated: boolean = false;
 
   // constructor() {
@@ -36,7 +29,12 @@ export class UserService {
   async userByUsername(username: string) {
     const response = await this.userClient.getUser(username)
     if (response.status === 404) return null;
-    return response.data
+    return response.data;
+  }
+
+  async feed() {
+    const response = await this.userClient.fetchFeed()
+    return response.data;
   }
 }
 

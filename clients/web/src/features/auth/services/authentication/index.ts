@@ -1,6 +1,8 @@
 import type {
   ActivationRequest,
   CustomTokenObtainPairRequestWritable,
+  UserProfile,
+  AccountsAuthUsersMeRetrieveResponse
 } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
@@ -44,19 +46,19 @@ export class Authentication {
     return await this.apiClient.logout();
   }
   
-  async checkSession(): Promise<boolean> {
+  async checkSession(): Promise<AccountsAuthUsersMeRetrieveResponse | null> {
     // Lightweight check: try to fetch user info. If cookies are missing or invalid,
     // the 401 interceptor will catch it and attempt a silent refresh.
     try {
-      const response = await api.v1.client.get('/accounts/auth/me/');
+      const response = await api.v1.client.get<AccountsAuthUsersMeRetrieveResponse>('/accounts/auth/me/');
       if (response.status === 200) {
         this.authenticated = true;
-        return true;
+        return response.data;
       }
-      return false;
+      return null;
     } catch {
       this.authenticated = false;
-      return false;
+      return null;
     }
   }
 }

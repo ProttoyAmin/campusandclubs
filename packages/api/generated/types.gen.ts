@@ -233,6 +233,11 @@ export type PatchedUserRequest = {
  */
 export type PreferredEmailEnum = "email" | "professional_email";
 
+export type RefreshToken = {
+  readonly refresh: string;
+  readonly access: string;
+};
+
 /**
  * Serializer for user registration.
  */
@@ -311,15 +316,6 @@ export type TokenObtainPair = {
 export type TokenObtainPairRequest = {
   username: string;
   password: string;
-};
-
-export type TokenRefresh = {
-  readonly access: string;
-  refresh: string;
-};
-
-export type TokenRefreshRequest = {
-  refresh: string;
 };
 
 export type TokenVerifyRequest = {
@@ -752,10 +748,6 @@ export type RegisterRequestWritable = {
   re_password: string;
 };
 
-export type TokenRefreshWritable = {
-  refresh: string;
-};
-
 export type UserWritable = {
   last_login?: string | null;
   /**
@@ -1052,14 +1044,14 @@ export type AccountsAuthJwtCreateCreateResponse =
   AccountsAuthJwtCreateCreateResponses[keyof AccountsAuthJwtCreateCreateResponses];
 
 export type AccountsAuthJwtRefreshCreateData = {
-  body: TokenRefreshRequest;
+  body?: never;
   path?: never;
   query?: never;
   url: "/api/v1/accounts/auth/jwt/refresh/";
 };
 
 export type AccountsAuthJwtRefreshCreateResponses = {
-  200: TokenRefresh;
+  200: RefreshToken;
 };
 
 export type AccountsAuthJwtRefreshCreateResponse =
@@ -1129,6 +1121,20 @@ export type AccountsAuthMeRetrieveResponses = {
    */
   200: unknown;
 };
+
+export type AccountsAuthRefreshCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/accounts/auth/refresh/";
+};
+
+export type AccountsAuthRefreshCreateResponses = {
+  200: RefreshToken;
+};
+
+export type AccountsAuthRefreshCreateResponse =
+  AccountsAuthRefreshCreateResponses[keyof AccountsAuthRefreshCreateResponses];
 
 export type AccountsAuthRequestInfoRetrieveData = {
   body?: never;

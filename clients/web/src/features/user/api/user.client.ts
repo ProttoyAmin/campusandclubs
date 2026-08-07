@@ -2,9 +2,12 @@ import { BaseClient } from "@/settings/api/";
 import { config } from "@/settings/app";
 import type {
   AccountsAuthUsersRetrieveResponse,
-  AccountsAuthUsersUserRetrieveResponse
+  AccountsAuthUsersUserRetrieveResponse,
+  PrivateUserResponse,
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
+
+type UserResponse = AccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
 
 export class UserClient extends BaseClient<
   AxiosResponse,
@@ -15,11 +18,13 @@ export class UserClient extends BaseClient<
     super(config.api.v1.account.base);
   }
 
-  async grabUsers(): Promise<AxiosResponse<AccountsAuthUsersRetrieveResponse[]>> {
+  async grabUsers(): Promise<
+    AxiosResponse<AccountsAuthUsersRetrieveResponse[]>
+  > {
     try {
       const response = await this.client.get<
-        AccountsAuthUsersRetrieveResponse[]>
-      (this.endpoint + "users/");
+        AccountsAuthUsersRetrieveResponse[]
+      >(this.endpoint + "users/");
       return response;
     } catch (err) {
       console.error("Grab users error:", (err as AxiosError).response?.data);
@@ -27,18 +32,33 @@ export class UserClient extends BaseClient<
     }
   }
 
-  async getUser(username: string): Promise<AxiosResponse<AccountsAuthUsersUserRetrieveResponse>> {
+  async getUser(
+    username: string,
+  ): Promise<AxiosResponse<UserResponse>> {
     try {
-      const response = await this.client.get<
-        AccountsAuthUsersUserRetrieveResponse
-      >(this.endpoint + "users/user/" + username + "/");
+      const response =
+        await this.client.get<UserResponse>(
+          this.endpoint + "users/user/" + username + "/",
+        );
       return response;
-    } catch (err) {
-      console.error("Get user error:", (err as AxiosError).response?.data);
-      return (err as AxiosError).response?.data as AxiosResponse<AccountsAuthUsersUserRetrieveResponse>;
+    } catch (error) {
+      const axiosError = error as AxiosError<UserResponse>;
+      if (axiosError.response && (axiosError.response.status === 403 || axiosError.response.status === 404)) {
+        return axiosError.response;
+      }
+      throw error;
     }
   }
 
+  async fetchFeed(): Promise<AxiosResponse> {
+    try {
+      const response = await this.client.get(this.endpoint + "feed/");
+      return response;
+    } catch (err) {
+      console.error("Feed error:", (err as AxiosError).response?.data);
+      throw err;
+    }
+  }
 }
 
 export const userClient = new UserClient();

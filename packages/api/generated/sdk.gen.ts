@@ -27,6 +27,8 @@ import type {
   AccountsAuthMeRetrieveResponses,
   AccountsAuthPostsRetrieveData,
   AccountsAuthPostsRetrieveResponses,
+  AccountsAuthRefreshCreateData,
+  AccountsAuthRefreshCreateResponses,
   AccountsAuthRequestInfoRetrieveData,
   AccountsAuthRequestInfoRetrieveResponses,
   AccountsAuthUsersActivationCreateData,
@@ -118,7 +120,6 @@ export const accountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -145,7 +146,6 @@ export const accountsAuthAllPartialUpdate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -170,7 +170,6 @@ export const accountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -200,7 +199,6 @@ export const accountsAuthPostsRetrieve = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -226,7 +224,6 @@ export const listUsers = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -252,7 +249,6 @@ export const listUsers2 = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -297,13 +293,13 @@ export const accountsAuthJwtCreateCreate = <
 export const accountsAuthJwtRefreshCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<AccountsAuthJwtRefreshCreateData, ThrowOnError>,
+  options?: Options<AccountsAuthJwtRefreshCreateData, ThrowOnError>,
 ): RequestResult<
   AccountsAuthJwtRefreshCreateResponses,
   unknown,
   ThrowOnError
 > =>
-  (options.client ?? client).post<
+  (options?.client ?? client).post<
     AccountsAuthJwtRefreshCreateResponses,
     unknown,
     ThrowOnError
@@ -311,10 +307,6 @@ export const accountsAuthJwtRefreshCreate = <
     responseType: "json",
     url: "/api/v1/accounts/auth/jwt/refresh/",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
   });
 
 /**
@@ -366,7 +358,6 @@ export const accountsAuthLogoutCreate = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -389,7 +380,6 @@ export const accountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -397,6 +387,23 @@ export const accountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
       },
     ],
     url: "/api/v1/accounts/auth/me/",
+    ...options,
+  });
+
+/**
+ * Takes a refresh type JSON web token and returns an access type JSON web
+ * token if the refresh token is valid.
+ */
+export const accountsAuthRefreshCreate = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthRefreshCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthRefreshCreateResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).post<
+    AccountsAuthRefreshCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    url: "/api/v1/accounts/auth/refresh/",
     ...options,
   });
 
@@ -415,7 +422,6 @@ export const accountsAuthRequestInfoRetrieve = <
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -436,7 +442,6 @@ export const accountsAuthUsersList = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -457,7 +462,6 @@ export const accountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -481,7 +485,6 @@ export const accountsAuthUsersDestroy = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -502,7 +505,6 @@ export const accountsAuthUsersRetrieve = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -529,7 +531,6 @@ export const accountsAuthUsersPartialUpdate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -554,7 +555,6 @@ export const accountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -585,7 +585,6 @@ export const accountsAuthUsersActivationCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -611,7 +610,6 @@ export const accountsAuthUsersMeDestroy = <
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -634,7 +632,6 @@ export const accountsAuthUsersMeRetrieve = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -661,7 +658,6 @@ export const accountsAuthUsersMePartialUpdate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -686,7 +682,6 @@ export const accountsAuthUsersMeUpdate = <ThrowOnError extends boolean = false>(
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -717,7 +712,6 @@ export const accountsAuthUsersResendActivationCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -748,7 +742,6 @@ export const accountsAuthUsersResetPasswordCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -782,7 +775,6 @@ export const accountsAuthUsersResetPasswordConfirmCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -813,7 +805,6 @@ export const accountsAuthUsersResetUsernameCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -847,7 +838,6 @@ export const accountsAuthUsersResetUsernameConfirmCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -878,7 +868,6 @@ export const accountsAuthUsersSetPasswordCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -909,7 +898,6 @@ export const accountsAuthUsersSetUsernameCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -942,7 +930,6 @@ export const accountsAuthUsersUserDestroy = <
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -972,7 +959,6 @@ export const accountsAuthUsersUserRetrieve = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -1002,7 +988,6 @@ export const accountsAuthUsersUserPartialUpdate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -1032,7 +1017,6 @@ export const accountsAuthUsersUserUpdate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -1065,7 +1049,6 @@ export const accountsAuthUsersUserActivityRetrieve = <
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -1094,7 +1077,6 @@ export const accountsAuthUsersUserClubsRetrieve = <
     ThrowOnError
   >({
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",
@@ -1120,7 +1102,6 @@ export const accountsAuthValidateCreate = <
   >({
     responseType: "json",
     security: [
-      { scheme: "bearer", type: "http" },
       {
         in: "cookie",
         name: "sessionid",

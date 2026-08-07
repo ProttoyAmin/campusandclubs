@@ -3,7 +3,7 @@ import React from "react";
 
 
 const Profile = React.lazy(
-    () => import("./pages/public/profile")
+    () => import("./pages/public/Profile")
 )
 
 export const userRoutes = [

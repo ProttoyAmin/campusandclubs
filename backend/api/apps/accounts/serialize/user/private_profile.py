@@ -23,8 +23,8 @@ class PrivateUserSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj: models.User) -> str | None:
         request = self.context.get("request")
-        if request and obj.profile_picture:
-            return request.build_absolute_uri(obj.profile_picture.url)
+        if request and obj.avatar:
+            return request.build_absolute_uri(obj.avatar)
         return None
 
     def get_is_following(self, obj: models.User) -> bool:

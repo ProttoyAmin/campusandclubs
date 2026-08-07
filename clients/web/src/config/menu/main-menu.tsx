@@ -4,7 +4,7 @@ import { House, LayoutList } from "lucide-react";
 import { matchPath } from "react-router-dom";
 
 export type MenuItemType = {
-    id: number;
+    id: number | string;
     label: string;
     icon?: React.ReactNode | ((icon: string) => React.ReactNode);
     iconActive?: React.ReactNode | ((icon: string) => React.ReactNode);
@@ -16,8 +16,8 @@ export function isRouteActive(pattern: string, pathname: string) {
   return !!matchPath(pattern, pathname);
 }
 
-export const userMenu: (userId: string) => MenuItemType[] = (
-  userId: string,
+export const userMenu: (username: string) => MenuItemType[] = (
+  username: string
 ) => [
   {
     id: 1,
@@ -35,8 +35,8 @@ export const userMenu: (userId: string) => MenuItemType[] = (
     iconActive: (
       <LayoutList size={18} fill="currentColor" stroke="currentColor" />
     ),
-    link: () => paths.private.user.profile(userId),
+    link: () => paths.private.user.profile(username),
     isActive: (currentPath) =>
-      isRouteActive(routes.user.public.profile, currentPath)
+      isRouteActive(routes.user.public.profile, currentPath) && currentPath.includes(username)
   },
 ];

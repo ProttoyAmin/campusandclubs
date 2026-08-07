@@ -19,7 +19,7 @@ urlpatterns = [
 
     # path('create-with-media/', views.create_post_with_media, name='create_post_with_media'),  # POST create post with media
     # path('create-mixed-media/', views.create_mixed_media_post, name='create_mixed_media_post'),  # POST create post with multiple media
-    # path('feed/', views.get_feed, name='feed'),  # GET personalized feed
+    path('feed/', views.get_feed, name='feed'),  # GET personalized feed
     # path('trending/', views.trending_posts, name='trending_posts'),  # GET trending
     # path('<int:post_id>/repost/', views.repost, name='repost'),  # POST repost
     

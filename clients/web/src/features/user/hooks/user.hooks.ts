@@ -11,11 +11,20 @@ export const useUsers = () => {
   });
 };
 
+export const useFeed = () => {
+  return useQuery({
+    queryKey: ["feed"],
+    queryFn: () => {
+      return account.feed();
+    },
+  });
+};
+
 export const useUser = (username: string) => {
   return useQuery({
     queryKey: ["users", username],
     queryFn: () => {
-      return account.userByUsername(username)
+      return account.userByUsername(username);
     }
   })
 }

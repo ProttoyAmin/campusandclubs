@@ -32,5 +32,12 @@ export const paths = {
       signIn: routes.auth.public.sign_in,
       signUp: routes.auth.public.sign_up,
     },
+
+    club: {
+      slug: (slug: string) =>
+        generateRouteFromPath(routes.club.public.slug, {
+          slug,
+        }),
+    },
   },
 } as const;

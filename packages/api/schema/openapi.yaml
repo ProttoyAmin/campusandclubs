@@ -17,7 +17,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -50,7 +49,6 @@ paths:
               $ref: '#/components/schemas/UserRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -82,7 +80,6 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -109,7 +106,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -145,7 +141,6 @@ paths:
       tags:
       - Users
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -192,7 +187,6 @@ paths:
               $ref: '#/components/schemas/UserMinimalRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -239,24 +233,12 @@ paths:
         token if the refresh token is valid.
       tags:
       - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-        required: true
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRefresh'
+                $ref: '#/components/schemas/RefreshToken'
           description: ''
   /api/v1/accounts/auth/jwt/verify/:
     post:
@@ -321,7 +303,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -333,18 +314,31 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
           description: No response body
+  /api/v1/accounts/auth/refresh/:
+    post:
+      operationId: accounts_auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - accounts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+          description: ''
   /api/v1/accounts/auth/request-info/:
     get:
       operationId: accounts_auth_request_info_retrieve
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -355,7 +349,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -383,7 +376,6 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -407,7 +399,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -441,7 +432,6 @@ paths:
               $ref: '#/components/schemas/UserMinimalRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -474,7 +464,6 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserMinimalRequest'
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -496,7 +485,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
@@ -519,7 +507,6 @@ paths:
               $ref: '#/components/schemas/ActivationRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -535,7 +522,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -561,7 +547,6 @@ paths:
               $ref: '#/components/schemas/UserProfileRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -586,7 +571,6 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserProfileRequest'
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -600,7 +584,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '204':
@@ -623,7 +606,6 @@ paths:
               $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -651,7 +633,6 @@ paths:
               $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -679,7 +660,6 @@ paths:
               $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -707,7 +687,6 @@ paths:
               $ref: '#/components/schemas/SendEmailResetRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -735,7 +714,6 @@ paths:
               $ref: '#/components/schemas/UsernameResetConfirmRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       - {}
       responses:
@@ -763,7 +741,6 @@ paths:
               $ref: '#/components/schemas/SetPasswordRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -790,7 +767,6 @@ paths:
               $ref: '#/components/schemas/SetUsernameRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -812,9 +788,7 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -846,9 +820,7 @@ paths:
               $ref: '#/components/schemas/UserProfileRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -879,9 +851,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserProfileRequest'
       security:
-      - jwtAuth: []
       - cookieAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -901,9 +871,7 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
-      - {}
       responses:
         '204':
           description: No response body
@@ -920,7 +888,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -938,7 +905,6 @@ paths:
       tags:
       - accounts
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -962,7 +928,6 @@ paths:
               $ref: '#/components/schemas/UserTypeRequest'
         required: true
       security:
-      - jwtAuth: []
       - cookieAuth: []
       responses:
         '200':
@@ -1478,6 +1443,18 @@ components:
       description: |-
         * `email` - Personal Email
         * `professional_email` - Professional Email
+    RefreshToken:
+      type: object
+      properties:
+        refresh:
+          type: string
+          readOnly: true
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
     Register:
       type: object
       description: Serializer for user registration.
@@ -1641,25 +1618,6 @@ components:
       required:
       - password
       - username
-    TokenRefresh:
-      type: object
-      properties:
-        access:
-          type: string
-          readOnly: true
-        refresh:
-          type: string
-      required:
-      - access
-      - refresh
-    TokenRefreshRequest:
-      type: object
-      properties:
-        refresh:
-          type: string
-          minLength: 1
-      required:
-      - refresh
     TokenVerifyRequest:
       type: object
       properties:
@@ -2506,7 +2464,3 @@ components:
       type: apiKey
       in: cookie
       name: sessionid
-    jwtAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT

@@ -8,6 +8,7 @@ import { ClubMainLayout } from "./layouts/club";
 import AuthLayout from "./layouts/auth/auth-layout";
 import { clubRoutes } from "./features/club/router";
 import { authRoutes } from "./features/auth/router";
+import NotFound from "./shared/pages/not-found";
 
 export const router = createBrowserRouter([
   {
@@ -32,5 +33,10 @@ export const router = createBrowserRouter([
         children: [...clubRoutes],
       },
     ],
+  },
+
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
