@@ -1,22 +1,33 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React from "react";
+import { useOutletContext } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "design/components/ui/card";
 
-import { useGetClubs } from '@/features/club/hooks/club.hooks';
+import { useClub } from "@/features/club/hooks/club.hooks";
 
 const ClubPage: React.FC = () => {
   const slug = useOutletContext<string>();
-  
 
-  console.log("RENDERED")
-  const { data } = useGetClubs();
-  console.log('data', data)
+  const { data } = useClub(slug);
+
   return (
-    <>
-    
-    <div>{slug}</div>
-    {/* <div>{clubs?.name || 'No club found'}</div> */}
-    </>
-  )
-}
+    <Card className="bg-background">
+      <CardHeader>
+        <CardTitle className="flex justify-between ">{slug}</CardTitle>
+        <div className="flex gap-2 items-center">
+          <CardDescription>{data?.about}</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </CardContent>
+    </Card>
+  );
+};
 
-export default ClubPage
+export default ClubPage;

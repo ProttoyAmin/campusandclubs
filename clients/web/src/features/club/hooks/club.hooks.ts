@@ -11,3 +11,13 @@ export const useGetClubs = () => {
     },
   });
 };
+
+export const useClub = (slug: string) => {
+  return useQuery({
+    queryKey: ["club", slug],
+    queryFn: () => {
+      const response = club.club(slug)
+      return response
+    },
+  });
+};

@@ -25,14 +25,14 @@ export const config = {
                 logout: `accounts/auth/logout/`
             },
             clubs: {
-                base: `${VITE_PUBLIC_API_URL}clubs/`,
-                create: `${VITE_PUBLIC_API_URL}clubs/create/`,
-                retrieve: `${VITE_PUBLIC_API_URL}clubs/retrieve/`
+                base: `clubs/`,
+                create: `clubs/create/`,
+                retrieve: `clubs/retrieve/`
             },
             events: {
-                base: `${VITE_PUBLIC_API_URL}events/`,
-                create: `${VITE_PUBLIC_API_URL}events/create/`,
-                retrieve: `${VITE_PUBLIC_API_URL}events/retrieve/`
+                base: `events/`,
+                create: `events/create/`,
+                retrieve: `events/retrieve/`
             }
         }
     },

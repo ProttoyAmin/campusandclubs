@@ -173,7 +173,7 @@ class ClubSerializer(serializers.ModelSerializer):
                 'id': obj.owner.id,
                 'username': obj.owner.username,
                 'email': obj.owner.email,
-                'avatar': obj.owner.avatar.url if obj.owner.avatar else None
+                'avatar': obj.owner.avatar if obj.owner.avatar else None
             }
 
     
@@ -218,19 +218,19 @@ class ClubListSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj):
         request = self._get_request()
-        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))
+        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))    # type: ignore
 
     def get_members_url(self, obj):
         request = self._get_request()
-        return request.build_absolute_uri(reverse('clubs:list_members', kwargs={'pk': obj.pk}))
+        return request.build_absolute_uri(reverse('clubs:list_members', kwargs={'pk': obj.pk}))    # type: ignore
 
     def get_posts_url(self, obj):
         request = self._get_request()
-        return request.build_absolute_uri(reverse('clubs:list_posts', kwargs={'pk': obj.pk}))
+        return request.build_absolute_uri(reverse('clubs:list_posts', kwargs={'pk': obj.pk}))    # type: ignore
 
     def get_events_url(self, obj):
         request = self._get_request()
-        return request.build_absolute_uri(reverse('clubs:list_events', kwargs={'pk': obj.pk}))
+        return request.build_absolute_uri(reverse('clubs:list_events', kwargs={'pk': obj.pk}))    # type: ignore
 
     def get_user_role(self, obj):
         user_memberships = getattr(obj, 'user_memberships', [])

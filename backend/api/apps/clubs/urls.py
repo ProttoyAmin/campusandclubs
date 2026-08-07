@@ -31,6 +31,8 @@ urlpatterns = [
     # path('<uuid:pk>/', club_info, name='club_info'),    #
     path('<uuid:pk>/', ClubRetrieveUpdateDestroyAPIView.as_view(),
          name='club_info'),    #
+    path('<str:slug>/', ClubRetrieveUpdateDestroyAPIView.as_view(lookup_field='slug'),
+         name='club_info_slug'),    #
 
     #     path('create/', views.create_club, name='create_club'),    # ---- checked
 
