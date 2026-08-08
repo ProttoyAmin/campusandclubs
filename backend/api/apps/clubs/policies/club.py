@@ -55,9 +55,6 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
     def can_join(self) -> JoinDecision:
         club, actor = self.record, self.actor
 
-        if not actor.is_authenticated:
-            return JoinDecision(False, False, "You must be logged in to join a club.")
-
         if self._is_member(actor, club):
             return JoinDecision(False, False, "You are already a member of this club.")
 

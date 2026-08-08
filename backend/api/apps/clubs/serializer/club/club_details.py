@@ -6,6 +6,7 @@ from rest_framework.request import Request
 
 from apps.clubs.models import Club, Membership, Role
 from apps.accounts.models import User
+from apps.clubs.serializer.membership.m_serializers import MembershipApplicationSerializer
 
 
 class OwnerDetails(TypedDict):
@@ -36,6 +37,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     banner = serializers.SerializerMethodField()
 
     is_public = serializers.SerializerMethodField()
+    application_status = serializers.SerializerMethodField()
 
     url = serializers.SerializerMethodField()
     members_url = serializers.SerializerMethodField()
@@ -49,7 +51,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
-            'member_count', 'join_mode', 'status', 'scope', 'category', 
+            'member_count', 'join_mode', 'status', 'scope', 'category', 'application_status',
             'user_role', 'is_member', 'is_owner',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
@@ -153,3 +155,13 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         if hasattr(obj, 'user_memberships'):
             return bool(obj.user_memberships)  # type: ignore[attr-defined]
         return Membership.objects.filter(user=request.user, club=obj).exists()
+    
+    def get_application_status(self, obj: Club) -> str | None:
+        from apps.clubs.models import MembershipApplication
+        request = self._get_request()
+        if not (request and request.user.is_authenticated):
+            return None
+        applications = MembershipApplication.objects.filter(applicant=request.user, club=obj).first()
+        if applications:
+            return applications.status
+        return None

@@ -38,5 +38,5 @@ export const userMenu: (username: string) => MenuItemType[] = (
     link: () => paths.private.user.profile(username),
     isActive: (currentPath) =>
       isRouteActive(routes.user.public.profile, currentPath) && currentPath.includes(username)
-  },
+  }
 ];

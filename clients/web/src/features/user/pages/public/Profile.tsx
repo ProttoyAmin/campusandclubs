@@ -24,7 +24,8 @@ import { Button } from "design/components/ui/button";
 import { EditProfileDialog } from "../../components/profile/edit-profile-dialog";
 import { useSession } from "@/features/auth/hooks";
 
-import type { UserProfile, PrivateUserResponse } from "@campus/api";
+import type { UserProfile } from "@campus/api";
+import type { PrivateUserResponse } from "../../api/user.client";
 
 function isPrivateUser(
   data: UserProfile | PrivateUserResponse,
@@ -40,7 +41,7 @@ const PrivateProfile: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
           <div>
             <div className="flex items-center gap-4">
               <h1 className="text-3xl">
-                {data.firstName} {data.lastName}
+                {data.first_name} {data.last_name}
               </h1>
             </div>
             <CardDescription>{data.username}</CardDescription>
@@ -73,10 +74,10 @@ const PrivateProfile: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
   );
 };
 
-const PublicProfile: React.FC<{ data: UserProfile; currentUser: any }> = ({
-  data,
-  currentUser,
-}) => {
+const PublicProfile: React.FC<{
+  data: UserProfile;
+  currentUser: UserProfile;
+}> = ({ data, currentUser }) => {
   return (
     <Card className="bg-background">
       <CardHeader>
@@ -92,13 +93,19 @@ const PublicProfile: React.FC<{ data: UserProfile; currentUser: any }> = ({
               {data.id === currentUser?.id ? (
                 <EditProfileDialog
                   trigger={<Button variant={"outline"}>Edit</Button>}
+                  title="Edit Profile"
+                  data={data}
                 />
               ) : (
                 <Button variant={"outline"}>Follow</Button>
               )}
             </div>
             <CardDescription>{data.username}</CardDescription>
-            {data.bio && <CardDescription><pre>{data.bio}</pre></CardDescription>}
+            {data.bio && (
+              <CardDescription className="whitespace-pre-wrap mt-2">
+                {data.bio}
+              </CardDescription>
+            )}
           </div>
           <Avatar size="3xl">
             <AvatarImage src={data.avatar || undefined} alt={data.username} />
@@ -122,7 +129,7 @@ const PublicProfile: React.FC<{ data: UserProfile; currentUser: any }> = ({
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="posts">
-          <TabsList variant="line" className={'w-full'}>
+          <TabsList variant="line" className={"w-full"}>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="reels">Reels</TabsTrigger>
             <TabsTrigger value="reposts">Reposts</TabsTrigger>

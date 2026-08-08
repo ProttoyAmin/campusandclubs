@@ -23,7 +23,7 @@ from apps.clubs.serializer import MembershipApplicationCreateSerializer, ClubJoi
 from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
 
 
-class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
+class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.CreateAPIView):
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = ClubJoinSerializer
@@ -35,6 +35,10 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
         club: Club = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         decision = self.get_policy(request, club).can_join()
 
@@ -47,6 +51,7 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
                 "application_url" : request.build_absolute_uri(reverse("clubs:application", args=[club.pk]))
             }, status=status.HTTP_303_SEE_OTHER)
 
+        
         membership = self.get_service(request).join_club(
             club, user=current_user(request))
         return Response(ClubJoinSerializer(membership).data, status=status.HTTP_201_CREATED)

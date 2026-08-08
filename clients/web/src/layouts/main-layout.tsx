@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 // import { ProtectedRoute } from '@/guards';
 import SideBar from "@/components/sidebar";
 import PageHeaderProvider from "@/providers/page-header-provider";
+import Create from "@/components/create";
 
 export type MainLayoutContext = {
   user: {
@@ -21,12 +22,15 @@ const MainLayout: React.FC = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <PageHeaderProvider>
-          <div className="flex">
+          <div className="flex relative">
             <div className="w-1/6 container">
               <SideBar />
             </div>
             <div className="w-5/6 ps-50 container pt-2">
               <Outlet />
+            </div>
+            <div className="absolute bottom-6 right-20">
+              <Create />
             </div>
           </div>
       </PageHeaderProvider>

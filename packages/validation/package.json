@@ -1,0 +1,15 @@
+{
+  "name": "validation",
+  "version": "1.0.0",
+  "private": true,
+  "license": "ISC",
+  "type": "module",
+  "exports": {
+    "./user": "./src/user/index.ts",
+    "./club": "./src/club/index.ts"
+  },
+  "dependencies": {
+    "@campus/api": "workspace:*",
+    "zod": "^4.4.3"
+  }
+}

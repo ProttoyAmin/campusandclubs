@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { account } from "../services/user.service";
-
+import type { PatchedUserProfileRequest } from "@campus/api";
+import { queryClient } from "@/config/query-client";
 
 export const useUsers = () => {
   return useQuery({
@@ -25,16 +26,30 @@ export const useUser = (username: string) => {
     queryKey: ["users", username],
     queryFn: () => {
       return account.userByUsername(username);
-    }
-  })
-}
-
+    },
+  });
+};
 
 export const useMe = () => {
   return useQuery({
     queryKey: ["users", "me"],
     queryFn: () => {
-      return account.me()
-    }
-  })
-}
+      return account.me();
+    },
+  });
+};
+
+export const useUpdateProfile = (username: string) => {
+  return useMutation({
+    mutationFn: (data: PatchedUserProfileRequest) => {
+      return account.update(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users", username] });
+      console.log("Profile updated successfully");
+    },
+    onError: (error) => {
+      console.error("Update profile error:", error);
+    },
+  });
+};

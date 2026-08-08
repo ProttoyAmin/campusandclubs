@@ -2,8 +2,8 @@
 # REST Client file for testing Club API endpoints
 ### Variables
 @baseUrl = http://127.0.0.1:8000/api/v1/clubs/
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1MzgzODU5LCJpYXQiOjE3ODUzODAyNTksImp0aSI6IjZiZmZkMzgzNDNhYjRmNDU4YWJkYTYzNjgzMzBjMTE3IiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.iLwDO2_zX4OT5pwhAgO-lXKosSjPDcCpK-O5EwZLKgQ
-@clubId = 8f9ed101-cbf8-4b34-9e6d-6c6973cb2236
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MTU4MDg3LCJpYXQiOjE3ODYxNTQ0ODcsImp0aSI6IjExNDVjYmI2Mzc2ZTRhYWNhYWUyOGE0ZTExMmU5NmMwIiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.yYqhB6UV_kUL20flJHqre-9N16nD5cmuY8t8nfmaCOc
+@clubId = b4779dfd-22ed-4ed6-a19a-e623eb78bf31
 @postId = 7391907467086532608
 @eventId = 7392190347431907328
 @userId = 3
@@ -54,10 +54,6 @@ Authorization: Bearer {{accessToken}}
 POST {{baseUrl}}{{clubId}}/applications/
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
-
-{
-  "message": "Hey there, I'm interested in your club!"
-}
 
 
 ### Update Club (Admin Only) ___WORKS---

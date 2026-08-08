@@ -1,3 +1,4 @@
+import type { MembershipApplicationCreateRequest } from "@campus/api";
 import { clubClient } from "../../http/club.http";
 // import type { CustomTokenObtainPairWritable  } from "@campus/api";
 // import type { RegisterWritable } from "@campus/api";
@@ -17,9 +18,22 @@ class ClubService {
         return res.data;
     }
 
-    async club(slug: string): Promise<any> {
+    async club(slug: string) {
         const res = await this.clubClient.fetchClub(slug);
-        console.log(res.data)
+        return res.data;
+    }
+
+
+    async join(clubId: string) {
+        const res = await this.clubClient.joinClub(clubId);
+        if (res.status !== 200) {
+            console.log("Error joining club:", res.data);
+        }
+        return res.data;
+    }
+
+    async apply(clubId: string, data: MembershipApplicationCreateRequest) {
+        const res = await this.clubClient.applyToClub(clubId, data);
         return res.data;
     }
 }

@@ -18,7 +18,7 @@ const SideBar: React.FC = () => {
       <div className="">
         <NavTabs
           menu={userMenu(currentUser?.username || "")}
-          className="flex flex-col space-y-2"
+          className="flex flex-col space-y-2 w-5/6"
         />
       </div>
       <div className="flex flex-col space-y-2">

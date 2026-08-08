@@ -1,5 +1,5 @@
 from rest_framework.request import Request
-from apps.clubs.models import Membership, ApplicationStatus, Role
+from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication
 from rest_framework import serializers
 
 from apps.clubs.serializers import RoleSerializer
@@ -7,7 +7,7 @@ from apps.clubs.serializers import RoleSerializer
 
 class MembershipApplicationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Membership
+        model = MembershipApplication
         fields = "__all__"
 
 

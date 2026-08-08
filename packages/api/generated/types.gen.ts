@@ -16,6 +16,177 @@ export type ActivationRequest = {
 
 export type BlankEnum = "";
 
+/**
+ * List clubs serializer
+ *
+ * Used for listing clubs, includes fields like name, owner, origin, about, avatar, banner, privacy, allow_public_posts, is_member, total_members, total_events, total_posts, is_public, club_url, join_url, leave_url, and members_url.
+ */
+export type Club = {
+  readonly id: string;
+  name: string;
+  readonly owner: string;
+  readonly origin: string;
+  about?: string | null;
+  avatar?: string | string | null;
+  banner?: string | string | null;
+  privacy?: PrivacyEnum;
+  allow_public_posts?: boolean;
+  readonly is_member: boolean;
+  readonly total_members: number;
+  readonly total_events: number;
+  readonly total_posts: number;
+  readonly is_public: boolean;
+  readonly club_url: string;
+  readonly join_url: string;
+  readonly leave_url: string;
+  readonly members_url: string;
+};
+
+/**
+ * Create club serializer
+ */
+export type ClubCreate = {
+  readonly id: string;
+  name: string;
+  about: string;
+  privacy: PrivacyEnum;
+  scope: ScopeEnum;
+  origin?: string | null;
+};
+
+/**
+ * Create club serializer
+ */
+export type ClubCreateRequest = {
+  name: string;
+  about: string;
+  privacy: PrivacyEnum;
+  scope: ScopeEnum;
+  origin?: string | null;
+};
+
+export type ClubDetail = {
+  readonly id: string;
+  name: string;
+  origin?: string | null;
+  slug?: string | string;
+  about?: string | null;
+  readonly avatar: string | null;
+  readonly banner: string | null;
+  privacy?: PrivacyEnum;
+  readonly is_public: boolean;
+  allow_public_posts?: boolean;
+  /**
+   * Club rules and guidelines
+   */
+  rules?: string | null;
+  readonly owner: string;
+  readonly owner_details: {
+    id: number;
+    username: string;
+    profile_picture: string | null;
+  };
+  readonly member_count: number;
+  /**
+   * How users join. Constrained by `privacy` — see clean().
+   *
+   * * `instant` - Instant
+   * * `application` - Application Required
+   * * `invite_only` - Invite Only
+   */
+  join_mode?: JoinModeEnum;
+  status?: ClubDetailStatusEnum;
+  scope?: ScopeEnum;
+  category?: number | null;
+  readonly application_status: string | null;
+  readonly user_role: {
+    id: number;
+    name: string;
+    permissions: Array<string>;
+  } | null;
+  readonly is_member: boolean;
+  readonly is_owner: boolean;
+  readonly url: string;
+  readonly members_url: string;
+  readonly posts_url: string;
+  readonly events_url: string;
+  readonly leave_url: string;
+  readonly join_url: string;
+  readonly created_at: string;
+  readonly updated_at: string;
+};
+
+export type ClubDetailRequest = {
+  name: string;
+  origin?: string | null;
+  slug?: string | string;
+  about?: string | null;
+  privacy?: PrivacyEnum;
+  allow_public_posts?: boolean;
+  /**
+   * Club rules and guidelines
+   */
+  rules?: string | null;
+  /**
+   * How users join. Constrained by `privacy` — see clean().
+   *
+   * * `instant` - Instant
+   * * `application` - Application Required
+   * * `invite_only` - Invite Only
+   */
+  join_mode?: JoinModeEnum;
+  status?: ClubDetailStatusEnum;
+  scope?: ScopeEnum;
+  category?: number | null;
+};
+
+/**
+ * * `active` - Active
+ * * `paused` - Paused
+ * * `archived` - Archived
+ * * `suspended` - Suspended
+ */
+export type ClubDetailStatusEnum =
+  "active" | "paused" | "archived" | "suspended";
+
+/**
+ * Club join serializer
+ *
+ * Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+ */
+export type ClubJoin = {
+  readonly id: number;
+  readonly joined_at: string;
+  readonly user: string;
+  readonly club: string;
+  application?: string | null;
+  /**
+   * Primary/display role for this membership
+   */
+  primary_role?: string | null;
+  /**
+   * User's roles in the club
+   */
+  roles?: Array<string>;
+};
+
+/**
+ * Club join serializer
+ *
+ * Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+ */
+export type ClubJoinRequest = {
+  application?: string | null;
+  /**
+   * Primary/display role for this membership
+   */
+  primary_role?: string | null;
+  /**
+   * User's roles in the club
+   */
+  roles?: Array<string>;
+};
+
 export type CustomTokenObtainPairRequest = {
   username_or_email: string;
 };
@@ -44,6 +215,22 @@ export type Institute = {
 };
 
 /**
+ * Used in Institute details — shows which users (students) belong to it.
+ */
+export type InstituteAffiliateForInstitute = {
+  readonly id: number;
+  user: UserMinimal;
+  role?: RoleEnum;
+};
+
+/**
+ * Used in Institute details — shows which users (students) belong to it.
+ */
+export type InstituteAffiliateForInstituteRequest = {
+  role?: RoleEnum;
+};
+
+/**
  * Used in User details — shows which institute the user belongs to.
  */
 export type InstituteAffiliateForUser = {
@@ -57,6 +244,61 @@ export type InstituteAffiliateForUser = {
  */
 export type InstituteAffiliateForUserRequest = {
   role?: RoleEnum;
+};
+
+export type InstituteDetail = {
+  readonly id: string;
+  name: string;
+  code?: string | null;
+  country: string;
+  address: string;
+  website?: string | string | null;
+  portal?: string | string | null;
+  /**
+   * Dictionary of courses offered by the institute
+   */
+  courses?: unknown;
+  affiliates: Array<InstituteAffiliateForInstitute>;
+  readonly email_domains: string;
+  readonly clubs: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  description?: string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  contact_number?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+  readonly created_at: string;
+  readonly updated_at: string;
+};
+
+export type InstituteDetailRequest = {
+  name: string;
+  code?: string | null;
+  country: string;
+  address: string;
+  website?: string | string | null;
+  portal?: string | string | null;
+  /**
+   * Dictionary of courses offered by the institute
+   */
+  courses?: unknown;
+  affiliates: Array<InstituteAffiliateForInstituteRequest>;
+  is_active?: boolean;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  description?: string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  contact_number?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
 };
 
 export type InstituteRequest = {
@@ -73,7 +315,76 @@ export type InstituteRequest = {
   social_links?: unknown;
 };
 
+/**
+ * * `instant` - Instant
+ * * `application` - Application Required
+ * * `invite_only` - Invite Only
+ */
+export type JoinModeEnum = "instant" | "application" | "invite_only";
+
+/**
+ * * `IMAGE` - Image
+ * * `VIDEO` - Video
+ */
+export type MediaTypeEnum = "IMAGE" | "VIDEO";
+
+export type MembershipApplication = {
+  readonly id: string;
+  status?: Status99fEnum;
+  /**
+   * Optional note from the applicant, especially useful when the club has no form.
+   */
+  message?: string | null;
+  reviewed_at?: string | null;
+  readonly created_at: string;
+  readonly updated_at: string;
+  club: string;
+  applicant: string;
+  form?: number | null;
+  reviewed_by?: string | null;
+};
+
+/**
+ * Serializer for creating a membership application.
+ */
+export type MembershipApplicationCreate = {
+  readonly id: string;
+  readonly applicant: string;
+  readonly club: string;
+  status: Status99fEnum;
+  readonly reviewed_by: string | null;
+  readonly reviewed_at: string | null;
+  message: string | null;
+};
+
+/**
+ * Serializer for creating a membership application.
+ */
+export type MembershipApplicationCreateRequest = {
+  message: string | null;
+};
+
+export type MembershipApplicationRequest = {
+  status?: Status99fEnum;
+  /**
+   * Optional note from the applicant, especially useful when the club has no form.
+   */
+  message?: string | null;
+  reviewed_at?: string | null;
+  club: string;
+  applicant: string;
+  form?: number | null;
+  reviewed_by?: string | null;
+};
+
 export type NullEnum = never;
+
+export type PaginatedClubList = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<Club>;
+};
 
 export type PaginatedUserProfileList = {
   count: number;
@@ -94,6 +405,78 @@ export type PasswordResetConfirmRetypeRequest = {
   token: string;
   new_password: string;
   re_new_password: string;
+};
+
+export type PatchedClubDetailRequest = {
+  name?: string;
+  origin?: string | null;
+  slug?: string | string;
+  about?: string | null;
+  privacy?: PrivacyEnum;
+  allow_public_posts?: boolean;
+  /**
+   * Club rules and guidelines
+   */
+  rules?: string | null;
+  /**
+   * How users join. Constrained by `privacy` — see clean().
+   *
+   * * `instant` - Instant
+   * * `application` - Application Required
+   * * `invite_only` - Invite Only
+   */
+  join_mode?: JoinModeEnum;
+  status?: ClubDetailStatusEnum;
+  scope?: ScopeEnum;
+  category?: number | null;
+};
+
+export type PatchedInstituteDetailRequest = {
+  name?: string;
+  code?: string | null;
+  country?: string;
+  address?: string;
+  website?: string | string | null;
+  portal?: string | string | null;
+  /**
+   * Dictionary of courses offered by the institute
+   */
+  courses?: unknown;
+  affiliates?: Array<InstituteAffiliateForInstituteRequest>;
+  is_active?: boolean;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  description?: string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  contact_number?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+};
+
+/**
+ * Detailed serializer for user posts with interaction data
+ */
+export type PatchedPostRequest = {
+  id?: string;
+  /**
+   * Optional title (commonly used for club posts)
+   */
+  title?: string | null;
+  /**
+   * For club posts: whether the post is pinned in the club
+   */
+  is_pinned?: boolean;
+  post_type?: PostTypeEnum;
+  content?: string | null;
+  image_file?: Blob | File | null;
+  video_file?: Blob | File | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  original_post?: string | null;
+  is_public?: boolean;
 };
 
 export type PatchedUserMinimalRequest = {
@@ -144,7 +527,7 @@ export type PatchedUserProfileRequest = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -210,7 +593,7 @@ export type PatchedUserRequest = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -228,10 +611,127 @@ export type PatchedUserRequest = {
 };
 
 /**
+ * Detailed serializer for user posts with interaction data
+ */
+export type Post = {
+  id: string;
+  readonly url: string;
+  readonly author_id: string;
+  readonly author_username: string;
+  readonly author_avatar: string;
+  readonly author_url: string;
+  readonly club_id: string | null;
+  readonly club_name: string | null;
+  readonly club_url: string;
+  /**
+   * Optional title (commonly used for club posts)
+   */
+  title?: string | null;
+  /**
+   * For club posts: whether the post is pinned in the club
+   */
+  is_pinned?: boolean;
+  post_type?: PostTypeEnum;
+  content?: string | null;
+  readonly image: string;
+  readonly video: string;
+  image_file?: string | null;
+  video_file?: string | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  readonly images: string;
+  readonly videos: string;
+  readonly media_files: Array<PostMedia>;
+  original_post?: string | null;
+  readonly original_post_data: string;
+  readonly like_count: string;
+  readonly comment_count: string;
+  readonly share_count: string;
+  readonly repost_count: number;
+  readonly is_liked: string;
+  readonly is_shared: string;
+  readonly can_edit: string;
+  readonly likes_url: string;
+  readonly comments_url: string;
+  readonly shares_url: string;
+  readonly like_toggle_url: string;
+  readonly share_toggle_url: string;
+  readonly repost_url: string;
+  is_public?: boolean;
+  readonly created_at: string;
+  readonly updated_at: string;
+};
+
+/**
+ * Serializer for PostMedia model
+ */
+export type PostMedia = {
+  id: string;
+  media_type: MediaTypeEnum;
+  image_file?: string | null;
+  video_file?: string | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  readonly media_url: string;
+  order?: number;
+};
+
+/**
+ * Serializer for PostMedia model
+ */
+export type PostMediaRequest = {
+  id: string;
+  media_type: MediaTypeEnum;
+  image_file?: Blob | File | null;
+  video_file?: Blob | File | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  order?: number;
+};
+
+/**
+ * Detailed serializer for user posts with interaction data
+ */
+export type PostRequest = {
+  id: string;
+  /**
+   * Optional title (commonly used for club posts)
+   */
+  title?: string | null;
+  /**
+   * For club posts: whether the post is pinned in the club
+   */
+  is_pinned?: boolean;
+  post_type?: PostTypeEnum;
+  content?: string | null;
+  image_file?: Blob | File | null;
+  video_file?: Blob | File | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  original_post?: string | null;
+  is_public?: boolean;
+};
+
+/**
+ * * `TEXT` - Text/Status
+ * * `IMAGE` - Image
+ * * `VIDEO` - Video/Reel
+ * * `MIXED` - Mixed Media
+ */
+export type PostTypeEnum = "TEXT" | "IMAGE" | "VIDEO" | "MIXED";
+
+/**
  * * `email` - Personal Email
  * * `professional_email` - Professional Email
  */
 export type PreferredEmailEnum = "email" | "professional_email";
+
+/**
+ * * `public` - Public
+ * * `private` - Private
+ * * `secret` - Secret
+ */
+export type PrivacyEnum = "public" | "private" | "secret";
 
 export type RefreshToken = {
   readonly refresh: string;
@@ -262,6 +762,13 @@ export type RegisterRequest = {
  * * `alumni` - Alumni
  */
 export type RoleEnum = "student" | "faculty" | "staff" | "alumni";
+
+/**
+ * * `global` - Global
+ * * `exclusive` - Exclusive
+ * * `cross_institute` - Cross Institute
+ */
+export type ScopeEnum = "global" | "exclusive" | "cross_institute";
 
 export type SendEmailReset = {
   email: string;
@@ -306,7 +813,15 @@ export type SetUsernameRequest = {
  * * `away` - Away
  * * `dnd` - Do Not Disturb
  */
-export type StatusEnum = "online" | "away" | "dnd";
+export type Status1A5Enum = "online" | "away" | "dnd";
+
+/**
+ * * `pending` - Pending
+ * * `approved` - Approved
+ * * `rejected` - Rejected
+ * * `withdrawn` - Withdrawn
+ */
+export type Status99fEnum = "pending" | "approved" | "rejected" | "withdrawn";
 
 export type TokenObtainPair = {
   readonly access: string;
@@ -391,7 +906,7 @@ export type User = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -486,7 +1001,7 @@ export type UserProfile = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -569,7 +1084,7 @@ export type UserProfileRequest = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -635,7 +1150,7 @@ export type UserRequest = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -697,6 +1212,72 @@ export type UsernameResetConfirmRequest = {
   new_username: string;
 };
 
+/**
+ * List clubs serializer
+ *
+ * Used for listing clubs, includes fields like name, owner, origin, about, avatar, banner, privacy, allow_public_posts, is_member, total_members, total_events, total_posts, is_public, club_url, join_url, leave_url, and members_url.
+ */
+export type ClubWritable = {
+  name: string;
+  about?: string | null;
+  avatar?: string | string | null;
+  banner?: string | string | null;
+  privacy?: PrivacyEnum;
+  allow_public_posts?: boolean;
+};
+
+/**
+ * Create club serializer
+ */
+export type ClubCreateWritable = {
+  name: string;
+  about: string;
+  privacy: PrivacyEnum;
+  scope: ScopeEnum;
+  origin?: string | null;
+};
+
+export type ClubDetailWritable = {
+  name: string;
+  origin?: string | null;
+  slug?: string | string;
+  about?: string | null;
+  privacy?: PrivacyEnum;
+  allow_public_posts?: boolean;
+  /**
+   * Club rules and guidelines
+   */
+  rules?: string | null;
+  /**
+   * How users join. Constrained by `privacy` — see clean().
+   *
+   * * `instant` - Instant
+   * * `application` - Application Required
+   * * `invite_only` - Invite Only
+   */
+  join_mode?: JoinModeEnum;
+  status?: ClubDetailStatusEnum;
+  scope?: ScopeEnum;
+  category?: number | null;
+};
+
+/**
+ * Club join serializer
+ *
+ * Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+ */
+export type ClubJoinWritable = {
+  application?: string | null;
+  /**
+   * Primary/display role for this membership
+   */
+  primary_role?: string | null;
+  /**
+   * User's roles in the club
+   */
+  roles?: Array<string>;
+};
+
 export type CustomTokenObtainPairRequestWritable = {
   username_or_email: string;
   password: string;
@@ -717,10 +1298,69 @@ export type InstituteWritable = {
 };
 
 /**
+ * Used in Institute details — shows which users (students) belong to it.
+ */
+export type InstituteAffiliateForInstituteWritable = {
+  role?: RoleEnum;
+};
+
+/**
  * Used in User details — shows which institute the user belongs to.
  */
 export type InstituteAffiliateForUserWritable = {
   role?: RoleEnum;
+};
+
+export type InstituteDetailWritable = {
+  name: string;
+  code?: string | null;
+  country: string;
+  address: string;
+  website?: string | string | null;
+  portal?: string | string | null;
+  /**
+   * Dictionary of courses offered by the institute
+   */
+  courses?: unknown;
+  affiliates: Array<InstituteAffiliateForInstituteWritable>;
+  is_active?: boolean;
+  is_verified?: boolean;
+  logo?: string | string | null;
+  description?: string | null;
+  established_year?: number | null;
+  accreditation?: string | null;
+  contact_number?: string | null;
+  /**
+   * Dictionary of social media links
+   */
+  social_links?: unknown;
+};
+
+export type MembershipApplicationWritable = {
+  status?: Status99fEnum;
+  /**
+   * Optional note from the applicant, especially useful when the club has no form.
+   */
+  message?: string | null;
+  reviewed_at?: string | null;
+  club: string;
+  applicant: string;
+  form?: number | null;
+  reviewed_by?: string | null;
+};
+
+/**
+ * Serializer for creating a membership application.
+ */
+export type MembershipApplicationCreateWritable = {
+  message: string | null;
+};
+
+export type PaginatedClubListWritable = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<ClubWritable>;
 };
 
 export type PaginatedUserProfileListWritable = {
@@ -728,6 +1368,42 @@ export type PaginatedUserProfileListWritable = {
   next?: string | null;
   previous?: string | null;
   results: Array<UserProfileWritable>;
+};
+
+/**
+ * Detailed serializer for user posts with interaction data
+ */
+export type PostWritable = {
+  id: string;
+  /**
+   * Optional title (commonly used for club posts)
+   */
+  title?: string | null;
+  /**
+   * For club posts: whether the post is pinned in the club
+   */
+  is_pinned?: boolean;
+  post_type?: PostTypeEnum;
+  content?: string | null;
+  image_file?: string | null;
+  video_file?: string | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  original_post?: string | null;
+  is_public?: boolean;
+};
+
+/**
+ * Serializer for PostMedia model
+ */
+export type PostMediaWritable = {
+  id: string;
+  media_type: MediaTypeEnum;
+  image_file?: string | null;
+  video_file?: string | null;
+  image_url?: string | string | null;
+  video_url?: string | string | null;
+  order?: number;
 };
 
 /**
@@ -806,7 +1482,7 @@ export type UserWritable = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -871,7 +1547,7 @@ export type UserProfileWritable = {
    * * `away` - Away
    * * `dnd` - Do Not Disturb
    */
-  status?: StatusEnum;
+  status?: Status1A5Enum;
   /**
    * Whether the status was set manually by the user
    */
@@ -888,6 +1564,125 @@ export type UserTypeRequestWritable = {
   professional_email: string;
   password: string;
 };
+
+export type ApiSchemaRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: {
+    format?: "json" | "yaml";
+    lang?:
+      | "af"
+      | "ar"
+      | "ar-dz"
+      | "ast"
+      | "az"
+      | "be"
+      | "bg"
+      | "bn"
+      | "br"
+      | "bs"
+      | "ca"
+      | "ckb"
+      | "cs"
+      | "cy"
+      | "da"
+      | "de"
+      | "dsb"
+      | "el"
+      | "en"
+      | "en-au"
+      | "en-gb"
+      | "eo"
+      | "es"
+      | "es-ar"
+      | "es-co"
+      | "es-mx"
+      | "es-ni"
+      | "es-ve"
+      | "et"
+      | "eu"
+      | "fa"
+      | "fi"
+      | "fr"
+      | "fy"
+      | "ga"
+      | "gd"
+      | "gl"
+      | "he"
+      | "hi"
+      | "hr"
+      | "hsb"
+      | "ht"
+      | "hu"
+      | "hy"
+      | "ia"
+      | "id"
+      | "ig"
+      | "io"
+      | "is"
+      | "it"
+      | "ja"
+      | "ka"
+      | "kab"
+      | "kk"
+      | "km"
+      | "kn"
+      | "ko"
+      | "ky"
+      | "lb"
+      | "lt"
+      | "lv"
+      | "mk"
+      | "ml"
+      | "mn"
+      | "mr"
+      | "ms"
+      | "my"
+      | "nb"
+      | "ne"
+      | "nl"
+      | "nn"
+      | "os"
+      | "pa"
+      | "pl"
+      | "pt"
+      | "pt-br"
+      | "ro"
+      | "ru"
+      | "sk"
+      | "sl"
+      | "sq"
+      | "sr"
+      | "sr-latn"
+      | "sv"
+      | "sw"
+      | "ta"
+      | "te"
+      | "tg"
+      | "th"
+      | "tk"
+      | "tr"
+      | "tt"
+      | "udm"
+      | "ug"
+      | "uk"
+      | "ur"
+      | "uz"
+      | "vi"
+      | "zh-hans"
+      | "zh-hant";
+  };
+  url: "/api/schema/";
+};
+
+export type ApiSchemaRetrieveResponses = {
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type ApiSchemaRetrieveResponse =
+  ApiSchemaRetrieveResponses[keyof ApiSchemaRetrieveResponses];
 
 export type AccountsAuthAllRetrieveData = {
   body?: never;
@@ -1540,3 +2335,1225 @@ export type AccountsAuthValidateCreateResponses = {
 
 export type AccountsAuthValidateCreateResponse =
   AccountsAuthValidateCreateResponses[keyof AccountsAuthValidateCreateResponses];
+
+export type ActivitiesCommentsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/activities/comments/";
+};
+
+export type ActivitiesCommentsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesCommentsDestroyData = {
+  body?: never;
+  path: {
+    comment_id: number;
+  };
+  query?: never;
+  url: "/api/v1/activities/comments/{comment_id}/";
+};
+
+export type ActivitiesCommentsDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type ActivitiesCommentsDestroyResponse =
+  ActivitiesCommentsDestroyResponses[keyof ActivitiesCommentsDestroyResponses];
+
+export type ActivitiesCommentsRetrieve2Data = {
+  body?: never;
+  path: {
+    comment_id: number;
+  };
+  query?: never;
+  url: "/api/v1/activities/comments/{comment_id}/";
+};
+
+export type ActivitiesCommentsRetrieve2Responses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesCommentsPartialUpdateData = {
+  body?: never;
+  path: {
+    comment_id: number;
+  };
+  query?: never;
+  url: "/api/v1/activities/comments/{comment_id}/";
+};
+
+export type ActivitiesCommentsPartialUpdateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesCommentsRepliesRetrieveData = {
+  body?: never;
+  path: {
+    comment_id: number;
+  };
+  query?: never;
+  url: "/api/v1/activities/comments/{comment_id}/replies/";
+};
+
+export type ActivitiesCommentsRepliesRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesCommentsCreateCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/activities/comments/create/";
+};
+
+export type ActivitiesCommentsCreateCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesLikesRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/activities/likes/";
+};
+
+export type ActivitiesLikesRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesLikesCheckRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/activities/likes/check/";
+};
+
+export type ActivitiesLikesCheckRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ActivitiesLikesToggleCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/activities/likes/toggle/";
+};
+
+export type ActivitiesLikesToggleCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsListData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    page_size?: number;
+  };
+  url: "/api/v1/clubs/";
+};
+
+export type ClubsListResponses = {
+  200: PaginatedClubList;
+};
+
+export type ClubsListResponse = ClubsListResponses[keyof ClubsListResponses];
+
+export type ClubsCreateData = {
+  body: ClubCreateRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/clubs/";
+};
+
+export type ClubsCreateResponses = {
+  201: ClubCreate;
+};
+
+export type ClubsCreateResponse =
+  ClubsCreateResponses[keyof ClubsCreateResponses];
+
+export type ClubsDestroyData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/";
+};
+
+export type ClubsDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type ClubsDestroyResponse =
+  ClubsDestroyResponses[keyof ClubsDestroyResponses];
+
+export type ClubsRetrieveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/";
+};
+
+export type ClubsRetrieveResponses = {
+  200: ClubDetail;
+};
+
+export type ClubsRetrieveResponse =
+  ClubsRetrieveResponses[keyof ClubsRetrieveResponses];
+
+export type ClubsPartialUpdateData = {
+  body?: PatchedClubDetailRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/";
+};
+
+export type ClubsPartialUpdateResponses = {
+  200: ClubDetail;
+};
+
+export type ClubsPartialUpdateResponse =
+  ClubsPartialUpdateResponses[keyof ClubsPartialUpdateResponses];
+
+export type ClubsUpdateData = {
+  body: ClubDetailRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/";
+};
+
+export type ClubsUpdateResponses = {
+  200: ClubDetail;
+};
+
+export type ClubsUpdateResponse =
+  ClubsUpdateResponses[keyof ClubsUpdateResponses];
+
+export type ClubsApplicationsListData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/";
+};
+
+export type ClubsApplicationsListResponses = {
+  200: Array<MembershipApplicationCreate>;
+};
+
+export type ClubsApplicationsListResponse =
+  ClubsApplicationsListResponses[keyof ClubsApplicationsListResponses];
+
+export type ClubsApplicationsCreateData = {
+  body: MembershipApplicationCreateRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/";
+};
+
+export type ClubsApplicationsCreateResponses = {
+  201: MembershipApplicationCreate;
+};
+
+export type ClubsApplicationsCreateResponse =
+  ClubsApplicationsCreateResponses[keyof ClubsApplicationsCreateResponses];
+
+export type ClubsApplicationsList2Data = {
+  body?: never;
+  path: {
+    application_pk: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/";
+};
+
+export type ClubsApplicationsList2Responses = {
+  200: Array<MembershipApplicationCreate>;
+};
+
+export type ClubsApplicationsList2Response =
+  ClubsApplicationsList2Responses[keyof ClubsApplicationsList2Responses];
+
+export type ClubsApplicationsCreate2Data = {
+  body: MembershipApplicationCreateRequest;
+  path: {
+    application_pk: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/";
+};
+
+export type ClubsApplicationsCreate2Responses = {
+  201: MembershipApplicationCreate;
+};
+
+export type ClubsApplicationsCreate2Response =
+  ClubsApplicationsCreate2Responses[keyof ClubsApplicationsCreate2Responses];
+
+export type ClubsApplicationsApproveCreateData = {
+  body: MembershipApplicationRequest;
+  path: {
+    application_pk: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/approve/";
+};
+
+export type ClubsApplicationsApproveCreateResponses = {
+  200: MembershipApplication;
+};
+
+export type ClubsApplicationsApproveCreateResponse =
+  ClubsApplicationsApproveCreateResponses[keyof ClubsApplicationsApproveCreateResponses];
+
+export type ClubsApplicationsRejectCreateData = {
+  body: MembershipApplicationRequest;
+  path: {
+    application_pk: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/reject/";
+};
+
+export type ClubsApplicationsRejectCreateResponses = {
+  200: MembershipApplication;
+};
+
+export type ClubsApplicationsRejectCreateResponse =
+  ClubsApplicationsRejectCreateResponses[keyof ClubsApplicationsRejectCreateResponses];
+
+export type ClubsApplicationsWithdrawCreateData = {
+  body: MembershipApplicationRequest;
+  path: {
+    application_pk: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/withdraw/";
+};
+
+export type ClubsApplicationsWithdrawCreateResponses = {
+  200: MembershipApplication;
+};
+
+export type ClubsApplicationsWithdrawCreateResponse =
+  ClubsApplicationsWithdrawCreateResponses[keyof ClubsApplicationsWithdrawCreateResponses];
+
+export type ClubsEventsRetrieveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/events/";
+};
+
+export type ClubsEventsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsJoinCreateData = {
+  body?: ClubJoinRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/join/";
+};
+
+export type ClubsJoinCreateResponses = {
+  201: ClubJoin;
+};
+
+export type ClubsJoinCreateResponse =
+  ClubsJoinCreateResponses[keyof ClubsJoinCreateResponses];
+
+export type ClubsMembersRetrieveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/members/";
+};
+
+export type ClubsMembersRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsPostsRetrieveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{id}/posts/";
+};
+
+export type ClubsPostsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsDestroy2Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{slug}/";
+};
+
+export type ClubsDestroy2Responses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type ClubsDestroy2Response =
+  ClubsDestroy2Responses[keyof ClubsDestroy2Responses];
+
+export type ClubsRetrieve2Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{slug}/";
+};
+
+export type ClubsRetrieve2Responses = {
+  200: ClubDetail;
+};
+
+export type ClubsRetrieve2Response =
+  ClubsRetrieve2Responses[keyof ClubsRetrieve2Responses];
+
+export type ClubsPartialUpdate2Data = {
+  body?: PatchedClubDetailRequest;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{slug}/";
+};
+
+export type ClubsPartialUpdate2Responses = {
+  200: ClubDetail;
+};
+
+export type ClubsPartialUpdate2Response =
+  ClubsPartialUpdate2Responses[keyof ClubsPartialUpdate2Responses];
+
+export type ClubsUpdate2Data = {
+  body: ClubDetailRequest;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/clubs/{slug}/";
+};
+
+export type ClubsUpdate2Responses = {
+  200: ClubDetail;
+};
+
+export type ClubsUpdate2Response =
+  ClubsUpdate2Responses[keyof ClubsUpdate2Responses];
+
+export type ClubsRecommendedRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/clubs/recommended/";
+};
+
+export type ClubsRecommendedRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsTestManagerRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/clubs/test/manager/";
+};
+
+export type ClubsTestManagerRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsBlockCreateData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/block/";
+};
+
+export type ConnectionsBlockCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsFollowersRetrieveData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/followers/";
+};
+
+export type ConnectionsFollowersRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsFollowingRetrieveData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/following/";
+};
+
+export type ConnectionsFollowingRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsMutualRetrieveData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/mutual/";
+};
+
+export type ConnectionsMutualRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRelationshipRetrieveData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/relationship/";
+};
+
+export type ConnectionsRelationshipRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRemoveDestroyData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/remove/";
+};
+
+export type ConnectionsRemoveDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type ConnectionsRemoveDestroyResponse =
+  ConnectionsRemoveDestroyResponses[keyof ConnectionsRemoveDestroyResponses];
+
+export type ConnectionsStatusRetrieveData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/status/";
+};
+
+export type ConnectionsStatusRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsToggleCreateData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/toggle/";
+};
+
+export type ConnectionsToggleCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsUnblockCreateData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/{user_id}/unblock/";
+};
+
+export type ConnectionsUnblockCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsBlockedRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/blocked/";
+};
+
+export type ConnectionsBlockedRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRelationsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/relations/";
+};
+
+export type ConnectionsRelationsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRelationsConnectedRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/relations/connected/";
+};
+
+export type ConnectionsRelationsConnectedRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRelationsPendingRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/relations/pending/";
+};
+
+export type ConnectionsRelationsPendingRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRelationsSentRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/relations/sent/";
+};
+
+export type ConnectionsRelationsSentRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRequestsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/requests/";
+};
+
+export type ConnectionsRequestsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRequestsAcceptCreateData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/requests/{user_id}/accept/";
+};
+
+export type ConnectionsRequestsAcceptCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsRequestsRejectCreateData = {
+  body?: never;
+  path: {
+    user_id: number;
+  };
+  query?: never;
+  url: "/api/v1/connections/requests/{user_id}/reject/";
+};
+
+export type ConnectionsRequestsRejectCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ConnectionsSuggestionsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/connections/suggestions/";
+};
+
+export type ConnectionsSuggestionsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type InstitutesListData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/institutes/";
+};
+
+export type InstitutesListResponses = {
+  200: Array<Institute>;
+};
+
+export type InstitutesListResponse =
+  InstitutesListResponses[keyof InstitutesListResponses];
+
+export type InstitutesCreateData = {
+  body: InstituteRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/institutes/";
+};
+
+export type InstitutesCreateResponses = {
+  201: Institute;
+};
+
+export type InstitutesCreateResponse =
+  InstitutesCreateResponses[keyof InstitutesCreateResponses];
+
+export type InstitutesDestroyData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/institutes/{id}/";
+};
+
+export type InstitutesDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type InstitutesDestroyResponse =
+  InstitutesDestroyResponses[keyof InstitutesDestroyResponses];
+
+export type InstitutesRetrieveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/institutes/{id}/";
+};
+
+export type InstitutesRetrieveResponses = {
+  200: InstituteDetail;
+};
+
+export type InstitutesRetrieveResponse =
+  InstitutesRetrieveResponses[keyof InstitutesRetrieveResponses];
+
+export type InstitutesPartialUpdateData = {
+  body?: PatchedInstituteDetailRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/institutes/{id}/";
+};
+
+export type InstitutesPartialUpdateResponses = {
+  200: InstituteDetail;
+};
+
+export type InstitutesPartialUpdateResponse =
+  InstitutesPartialUpdateResponses[keyof InstitutesPartialUpdateResponses];
+
+export type InstitutesUpdateData = {
+  body: InstituteDetailRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/institutes/{id}/";
+};
+
+export type InstitutesUpdateResponses = {
+  200: InstituteDetail;
+};
+
+export type InstitutesUpdateResponse =
+  InstitutesUpdateResponses[keyof InstitutesUpdateResponses];
+
+export type NotificationsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/";
+};
+
+export type NotificationsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsRetrieve2Data = {
+  body?: never;
+  path: {
+    notification_id: number;
+  };
+  query?: never;
+  url: "/api/v1/notifications/{notification_id}/";
+};
+
+export type NotificationsRetrieve2Responses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsDeleteDestroyData = {
+  body?: never;
+  path: {
+    notification_id: number;
+  };
+  query?: never;
+  url: "/api/v1/notifications/{notification_id}/delete/";
+};
+
+export type NotificationsDeleteDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type NotificationsDeleteDestroyResponse =
+  NotificationsDeleteDestroyResponses[keyof NotificationsDeleteDestroyResponses];
+
+export type NotificationsDeliveriesRetrieveData = {
+  body?: never;
+  path: {
+    notification_id: number;
+  };
+  query?: never;
+  url: "/api/v1/notifications/{notification_id}/deliveries/";
+};
+
+export type NotificationsDeliveriesRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsReadCreateData = {
+  body?: never;
+  path: {
+    notification_id: number;
+  };
+  query?: never;
+  url: "/api/v1/notifications/{notification_id}/read/";
+};
+
+export type NotificationsReadCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsSeenCreateData = {
+  body?: never;
+  path: {
+    notification_id: number;
+  };
+  query?: never;
+  url: "/api/v1/notifications/{notification_id}/seen/";
+};
+
+export type NotificationsSeenCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsClearDestroyData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/clear/";
+};
+
+export type NotificationsClearDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type NotificationsClearDestroyResponse =
+  NotificationsClearDestroyResponses[keyof NotificationsClearDestroyResponses];
+
+export type NotificationsCommentsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/comments/";
+};
+
+export type NotificationsCommentsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsCountsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/counts/";
+};
+
+export type NotificationsCountsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsFollowAcceptsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/follow-accepts/";
+};
+
+export type NotificationsFollowAcceptsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsFollowRequestsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/follow-requests/";
+};
+
+export type NotificationsFollowRequestsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsLikesRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/likes/";
+};
+
+export type NotificationsLikesRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsMarkAllReadCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/mark-all-read/";
+};
+
+export type NotificationsMarkAllReadCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsMarkAllSeenCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/mark-all-seen/";
+};
+
+export type NotificationsMarkAllSeenCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type NotificationsPostsRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/notifications/posts/";
+};
+
+export type NotificationsPostsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type PostsListData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/posts/";
+};
+
+export type PostsListResponses = {
+  200: Array<Post>;
+};
+
+export type PostsListResponse = PostsListResponses[keyof PostsListResponses];
+
+export type PostsCreateData = {
+  body: PostRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/posts/";
+};
+
+export type PostsCreateResponses = {
+  201: Post;
+};
+
+export type PostsCreateResponse =
+  PostsCreateResponses[keyof PostsCreateResponses];
+
+export type PostsDestroyData = {
+  body?: never;
+  path: {
+    post_id: string;
+  };
+  query?: never;
+  url: "/api/v1/posts/{post_id}/";
+};
+
+export type PostsDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type PostsDestroyResponse =
+  PostsDestroyResponses[keyof PostsDestroyResponses];
+
+export type PostsRetrieveData = {
+  body?: never;
+  path: {
+    post_id: string;
+  };
+  query?: never;
+  url: "/api/v1/posts/{post_id}/";
+};
+
+export type PostsRetrieveResponses = {
+  200: Post;
+};
+
+export type PostsRetrieveResponse =
+  PostsRetrieveResponses[keyof PostsRetrieveResponses];
+
+export type PostsPartialUpdateData = {
+  body?: PatchedPostRequest;
+  path: {
+    post_id: string;
+  };
+  query?: never;
+  url: "/api/v1/posts/{post_id}/";
+};
+
+export type PostsPartialUpdateResponses = {
+  200: Post;
+};
+
+export type PostsPartialUpdateResponse =
+  PostsPartialUpdateResponses[keyof PostsPartialUpdateResponses];
+
+export type PostsUpdateData = {
+  body: PostRequest;
+  path: {
+    post_id: string;
+  };
+  query?: never;
+  url: "/api/v1/posts/{post_id}/";
+};
+
+export type PostsUpdateResponses = {
+  200: Post;
+};
+
+export type PostsUpdateResponse =
+  PostsUpdateResponses[keyof PostsUpdateResponses];
+
+export type PostsFeedRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/posts/feed/";
+};
+
+export type PostsFeedRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};

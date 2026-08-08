@@ -81,6 +81,120 @@ import type {
   AccountsAuthUsersUserUpdateResponses,
   AccountsAuthValidateCreateData,
   AccountsAuthValidateCreateResponses,
+  ActivitiesCommentsCreateCreateData,
+  ActivitiesCommentsCreateCreateResponses,
+  ActivitiesCommentsDestroyData,
+  ActivitiesCommentsDestroyResponses,
+  ActivitiesCommentsPartialUpdateData,
+  ActivitiesCommentsPartialUpdateResponses,
+  ActivitiesCommentsRepliesRetrieveData,
+  ActivitiesCommentsRepliesRetrieveResponses,
+  ActivitiesCommentsRetrieve2Data,
+  ActivitiesCommentsRetrieve2Responses,
+  ActivitiesCommentsRetrieveData,
+  ActivitiesCommentsRetrieveResponses,
+  ActivitiesLikesCheckRetrieveData,
+  ActivitiesLikesCheckRetrieveResponses,
+  ActivitiesLikesRetrieveData,
+  ActivitiesLikesRetrieveResponses,
+  ActivitiesLikesToggleCreateData,
+  ActivitiesLikesToggleCreateResponses,
+  ApiSchemaRetrieveData,
+  ApiSchemaRetrieveResponses,
+  ClubsApplicationsApproveCreateData,
+  ClubsApplicationsApproveCreateResponses,
+  ClubsApplicationsCreate2Data,
+  ClubsApplicationsCreate2Responses,
+  ClubsApplicationsCreateData,
+  ClubsApplicationsCreateResponses,
+  ClubsApplicationsList2Data,
+  ClubsApplicationsList2Responses,
+  ClubsApplicationsListData,
+  ClubsApplicationsListResponses,
+  ClubsApplicationsRejectCreateData,
+  ClubsApplicationsRejectCreateResponses,
+  ClubsApplicationsWithdrawCreateData,
+  ClubsApplicationsWithdrawCreateResponses,
+  ClubsCreateData,
+  ClubsCreateResponses,
+  ClubsDestroy2Data,
+  ClubsDestroy2Responses,
+  ClubsDestroyData,
+  ClubsDestroyResponses,
+  ClubsEventsRetrieveData,
+  ClubsEventsRetrieveResponses,
+  ClubsJoinCreateData,
+  ClubsJoinCreateResponses,
+  ClubsListData,
+  ClubsListResponses,
+  ClubsMembersRetrieveData,
+  ClubsMembersRetrieveResponses,
+  ClubsPartialUpdate2Data,
+  ClubsPartialUpdate2Responses,
+  ClubsPartialUpdateData,
+  ClubsPartialUpdateResponses,
+  ClubsPostsRetrieveData,
+  ClubsPostsRetrieveResponses,
+  ClubsRecommendedRetrieveData,
+  ClubsRecommendedRetrieveResponses,
+  ClubsRetrieve2Data,
+  ClubsRetrieve2Responses,
+  ClubsRetrieveData,
+  ClubsRetrieveResponses,
+  ClubsTestManagerRetrieveData,
+  ClubsTestManagerRetrieveResponses,
+  ClubsUpdate2Data,
+  ClubsUpdate2Responses,
+  ClubsUpdateData,
+  ClubsUpdateResponses,
+  ConnectionsBlockCreateData,
+  ConnectionsBlockCreateResponses,
+  ConnectionsBlockedRetrieveData,
+  ConnectionsBlockedRetrieveResponses,
+  ConnectionsFollowersRetrieveData,
+  ConnectionsFollowersRetrieveResponses,
+  ConnectionsFollowingRetrieveData,
+  ConnectionsFollowingRetrieveResponses,
+  ConnectionsMutualRetrieveData,
+  ConnectionsMutualRetrieveResponses,
+  ConnectionsRelationsConnectedRetrieveData,
+  ConnectionsRelationsConnectedRetrieveResponses,
+  ConnectionsRelationshipRetrieveData,
+  ConnectionsRelationshipRetrieveResponses,
+  ConnectionsRelationsPendingRetrieveData,
+  ConnectionsRelationsPendingRetrieveResponses,
+  ConnectionsRelationsRetrieveData,
+  ConnectionsRelationsRetrieveResponses,
+  ConnectionsRelationsSentRetrieveData,
+  ConnectionsRelationsSentRetrieveResponses,
+  ConnectionsRemoveDestroyData,
+  ConnectionsRemoveDestroyResponses,
+  ConnectionsRequestsAcceptCreateData,
+  ConnectionsRequestsAcceptCreateResponses,
+  ConnectionsRequestsRejectCreateData,
+  ConnectionsRequestsRejectCreateResponses,
+  ConnectionsRequestsRetrieveData,
+  ConnectionsRequestsRetrieveResponses,
+  ConnectionsStatusRetrieveData,
+  ConnectionsStatusRetrieveResponses,
+  ConnectionsSuggestionsRetrieveData,
+  ConnectionsSuggestionsRetrieveResponses,
+  ConnectionsToggleCreateData,
+  ConnectionsToggleCreateResponses,
+  ConnectionsUnblockCreateData,
+  ConnectionsUnblockCreateResponses,
+  InstitutesCreateData,
+  InstitutesCreateResponses,
+  InstitutesDestroyData,
+  InstitutesDestroyResponses,
+  InstitutesListData,
+  InstitutesListResponses,
+  InstitutesPartialUpdateData,
+  InstitutesPartialUpdateResponses,
+  InstitutesRetrieveData,
+  InstitutesRetrieveResponses,
+  InstitutesUpdateData,
+  InstitutesUpdateResponses,
   ListUsers2Data,
   ListUsers2Errors,
   ListUsers2Responses,
@@ -90,6 +204,50 @@ import type {
   LoginData,
   LoginErrors,
   LoginResponses,
+  NotificationsClearDestroyData,
+  NotificationsClearDestroyResponses,
+  NotificationsCommentsRetrieveData,
+  NotificationsCommentsRetrieveResponses,
+  NotificationsCountsRetrieveData,
+  NotificationsCountsRetrieveResponses,
+  NotificationsDeleteDestroyData,
+  NotificationsDeleteDestroyResponses,
+  NotificationsDeliveriesRetrieveData,
+  NotificationsDeliveriesRetrieveResponses,
+  NotificationsFollowAcceptsRetrieveData,
+  NotificationsFollowAcceptsRetrieveResponses,
+  NotificationsFollowRequestsRetrieveData,
+  NotificationsFollowRequestsRetrieveResponses,
+  NotificationsLikesRetrieveData,
+  NotificationsLikesRetrieveResponses,
+  NotificationsMarkAllReadCreateData,
+  NotificationsMarkAllReadCreateResponses,
+  NotificationsMarkAllSeenCreateData,
+  NotificationsMarkAllSeenCreateResponses,
+  NotificationsPostsRetrieveData,
+  NotificationsPostsRetrieveResponses,
+  NotificationsReadCreateData,
+  NotificationsReadCreateResponses,
+  NotificationsRetrieve2Data,
+  NotificationsRetrieve2Responses,
+  NotificationsRetrieveData,
+  NotificationsRetrieveResponses,
+  NotificationsSeenCreateData,
+  NotificationsSeenCreateResponses,
+  PostsCreateData,
+  PostsCreateResponses,
+  PostsDestroyData,
+  PostsDestroyResponses,
+  PostsFeedRetrieveData,
+  PostsFeedRetrieveResponses,
+  PostsListData,
+  PostsListResponses,
+  PostsPartialUpdateData,
+  PostsPartialUpdateResponses,
+  PostsRetrieveData,
+  PostsRetrieveResponses,
+  PostsUpdateData,
+  PostsUpdateResponses,
 } from "./types.gen";
 
 export type Options<
@@ -109,6 +267,32 @@ export type Options<
    */
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * OpenApi3 schema for this API. Format can be selected via content negotiation.
+ *
+ * - YAML: application/vnd.oai.openapi
+ * - JSON: application/vnd.oai.openapi+json
+ */
+export const apiSchemaRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ApiSchemaRetrieveData, ThrowOnError>,
+): RequestResult<ApiSchemaRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ApiSchemaRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/schema/",
+    ...options,
+  });
 
 export const accountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
   options: Options<AccountsAuthAllRetrieveData, ThrowOnError>,
@@ -1114,4 +1298,1979 @@ export const accountsAuthValidateCreate = <
       "Content-Type": "application/json",
       ...options.headers,
     },
+  });
+
+/**
+ * Get all comments for a specific content object
+ * Query params:
+ * - content_type: app_label.model_name
+ * - object_id: ID of the object
+ * - parent: (optional) ID of parent comment for nested replies
+ *
+ * Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
+ */
+export const activitiesCommentsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ActivitiesCommentsRetrieveData, ThrowOnError>,
+): RequestResult<ActivitiesCommentsRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ActivitiesCommentsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/",
+    ...options,
+  });
+
+/**
+ * Get, update, or delete a specific comment
+ * - GET: Anyone can view
+ * - PATCH: Only author can edit
+ * - DELETE: Author can delete
+ */
+export const activitiesCommentsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ActivitiesCommentsDestroyData, ThrowOnError>,
+): RequestResult<ActivitiesCommentsDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ActivitiesCommentsDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/{comment_id}/",
+    ...options,
+  });
+
+/**
+ * Get, update, or delete a specific comment
+ * - GET: Anyone can view
+ * - PATCH: Only author can edit
+ * - DELETE: Author can delete
+ */
+export const activitiesCommentsRetrieve2 = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ActivitiesCommentsRetrieve2Data, ThrowOnError>,
+): RequestResult<ActivitiesCommentsRetrieve2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ActivitiesCommentsRetrieve2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/{comment_id}/",
+    ...options,
+  });
+
+/**
+ * Get, update, or delete a specific comment
+ * - GET: Anyone can view
+ * - PATCH: Only author can edit
+ * - DELETE: Author can delete
+ */
+export const activitiesCommentsPartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ActivitiesCommentsPartialUpdateData, ThrowOnError>,
+): RequestResult<
+  ActivitiesCommentsPartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    ActivitiesCommentsPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/{comment_id}/",
+    ...options,
+  });
+
+/**
+ * Get all replies to a specific comment
+ */
+export const activitiesCommentsRepliesRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ActivitiesCommentsRepliesRetrieveData, ThrowOnError>,
+): RequestResult<
+  ActivitiesCommentsRepliesRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ActivitiesCommentsRepliesRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/{comment_id}/replies/",
+    ...options,
+  });
+
+/**
+ * Create a comment on any content object
+ * Body: {
+ * "content_type": "clubs.clubpost",
+ * "object_id": 123,
+ * "content": "Great post!",
+ * "parent": null  // Optional: ID of parent comment for replies
+ * }
+ */
+export const activitiesCommentsCreateCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ActivitiesCommentsCreateCreateData, ThrowOnError>,
+): RequestResult<
+  ActivitiesCommentsCreateCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    ActivitiesCommentsCreateCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/comments/create/",
+    ...options,
+  });
+
+/**
+ * Get all likes for a specific content object
+ * Query params:
+ * - content_type: app_label.model_name (e.g., "clubs.clubpost")
+ * - object_id: ID of the object
+ *
+ * Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
+ */
+export const activitiesLikesRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ActivitiesLikesRetrieveData, ThrowOnError>,
+): RequestResult<ActivitiesLikesRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ActivitiesLikesRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/likes/",
+    ...options,
+  });
+
+/**
+ * Check if current user has liked a specific object
+ * Query params:
+ * - content_type: app_label.model_name
+ * - object_id: ID of the object
+ *
+ * Returns: { "is_liked": true/false }
+ */
+export const activitiesLikesCheckRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ActivitiesLikesCheckRetrieveData, ThrowOnError>,
+): RequestResult<
+  ActivitiesLikesCheckRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ActivitiesLikesCheckRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/likes/check/",
+    ...options,
+  });
+
+/**
+ * Like or unlike any content object (toggle)
+ * Body: {
+ * "content_type": "clubs.clubpost",
+ * "object_id": 123
+ * }
+ *
+ * Returns: { "is_liked": true/false, "like_count": 42 }
+ */
+export const activitiesLikesToggleCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ActivitiesLikesToggleCreateData, ThrowOnError>,
+): RequestResult<ActivitiesLikesToggleCreateResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).post<
+    ActivitiesLikesToggleCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/activities/likes/toggle/",
+    ...options,
+  });
+
+/**
+ * List & create clubs visible to the authenticated user:
+ * - All public clubs
+ * - Closed/Secret clubs only if user is a member
+ *
+ * Query params:
+ * - search: Filter by name or origin
+ * - privacy: Filter by privacy type (public/closed/secret)
+ * - origin: Filter by specific origin
+ * - joined: Set to 'true' to only show clubs user is member of
+ */
+export const clubsList = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsListData, ThrowOnError>,
+): RequestResult<ClubsListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<ClubsListResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/",
+    ...options,
+  });
+
+/**
+ * List & create clubs visible to the authenticated user:
+ * - All public clubs
+ * - Closed/Secret clubs only if user is a member
+ *
+ * Query params:
+ * - search: Filter by name or origin
+ * - privacy: Filter by privacy type (public/closed/secret)
+ * - origin: Filter by specific origin
+ * - joined: Set to 'true' to only show clubs user is member of
+ */
+export const clubsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsCreateData, ThrowOnError>,
+): RequestResult<ClubsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<ClubsCreateResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsDestroyData, ThrowOnError>,
+): RequestResult<ClubsDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ClubsDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<ClubsRetrieveResponses, unknown, ThrowOnError>(
+    {
+      responseType: "json",
+      security: [
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/v1/clubs/{id}/",
+      ...options,
+    },
+  );
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPartialUpdateData, ThrowOnError>,
+): RequestResult<ClubsPartialUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).patch<
+    ClubsPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsUpdateData, ThrowOnError>,
+): RequestResult<ClubsUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<ClubsUpdateResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsList = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsListData, ThrowOnError>,
+): RequestResult<ClubsApplicationsListResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsApplicationsListResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/",
+    ...options,
+  });
+
+export const clubsApplicationsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsCreateData, ThrowOnError>,
+): RequestResult<ClubsApplicationsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ClubsApplicationsCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsList2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsList2Data, ThrowOnError>,
+): RequestResult<ClubsApplicationsList2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsApplicationsList2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/",
+    ...options,
+  });
+
+export const clubsApplicationsCreate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsCreate2Data, ThrowOnError>,
+): RequestResult<ClubsApplicationsCreate2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ClubsApplicationsCreate2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsApproveCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ClubsApplicationsApproveCreateData, ThrowOnError>,
+): RequestResult<
+  ClubsApplicationsApproveCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ClubsApplicationsApproveCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/approve/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsRejectCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ClubsApplicationsRejectCreateData, ThrowOnError>,
+): RequestResult<
+  ClubsApplicationsRejectCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ClubsApplicationsRejectCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/reject/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsWithdrawCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ClubsApplicationsWithdrawCreateData, ThrowOnError>,
+): RequestResult<
+  ClubsApplicationsWithdrawCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ClubsApplicationsWithdrawCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/withdraw/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * List all events in a club
+ * Query params:
+ * - status: upcoming|ongoing|completed|cancelled
+ */
+export const clubsEventsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsEventsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsEventsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsEventsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/events/",
+    ...options,
+  });
+
+export const clubsJoinCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsJoinCreateData, ThrowOnError>,
+): RequestResult<ClubsJoinCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ClubsJoinCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/join/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * List all members of a club with filtering options
+ * Query params:
+ * - role: Filter by role name
+ * - search: Search members by username or email
+ * - sort: joined_at (default), username, role
+ * - order: asc, desc (default)
+ */
+export const clubsMembersRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsMembersRetrieveData, ThrowOnError>,
+): RequestResult<ClubsMembersRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsMembersRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/members/",
+    ...options,
+  });
+
+/**
+ * List all posts in a club with interaction counts
+ */
+export const clubsPostsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPostsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsPostsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsPostsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{id}/posts/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsDestroy2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsDestroy2Data, ThrowOnError>,
+): RequestResult<ClubsDestroy2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ClubsDestroy2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{slug}/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsRetrieve2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsRetrieve2Data, ThrowOnError>,
+): RequestResult<ClubsRetrieve2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsRetrieve2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{slug}/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsPartialUpdate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPartialUpdate2Data, ThrowOnError>,
+): RequestResult<ClubsPartialUpdate2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).patch<
+    ClubsPartialUpdate2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{slug}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsUpdate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsUpdate2Data, ThrowOnError>,
+): RequestResult<ClubsUpdate2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<ClubsUpdate2Responses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/{slug}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Get recommended clubs for the authenticated user based on:
+ * - Clubs with similar origin/type
+ * - Clubs with friends/mutual connections
+ * - Popular clubs in user's location
+ * - Clubs related to user's interests (if available)
+ */
+export const clubsRecommendedRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsRecommendedRetrieveData, ThrowOnError>,
+): RequestResult<ClubsRecommendedRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ClubsRecommendedRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/recommended/",
+    ...options,
+  });
+
+export const clubsTestManagerRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsTestManagerRetrieveData, ThrowOnError>,
+): RequestResult<ClubsTestManagerRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ClubsTestManagerRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/clubs/test/manager/",
+    ...options,
+  });
+
+/**
+ * Block a user
+ * - Removes any existing follow relationships
+ * - Prevents future follows
+ */
+export const connectionsBlockCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsBlockCreateData, ThrowOnError>,
+): RequestResult<ConnectionsBlockCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ConnectionsBlockCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/block/",
+    ...options,
+  });
+
+/**
+ * Get list of users following this user
+ */
+export const connectionsFollowersRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ConnectionsFollowersRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsFollowersRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ConnectionsFollowersRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/followers/",
+    ...options,
+  });
+
+/**
+ * Get list of users this user is following
+ */
+export const connectionsFollowingRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ConnectionsFollowingRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsFollowingRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ConnectionsFollowingRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/following/",
+    ...options,
+  });
+
+/**
+ * Get mutual followers between current user and target user
+ */
+export const connectionsMutualRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsMutualRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsMutualRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ConnectionsMutualRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/mutual/",
+    ...options,
+  });
+
+/**
+ * Get comprehensive relationship information between current user and target user
+ * Returns:
+ * - Follow status (is_following, is_followed_by, is_mutual, follow_status)
+ * - Block status (is_blocked, is_blocking)
+ * - Mutual followers count
+ * - Privacy status
+ */
+export const connectionsRelationshipRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ConnectionsRelationshipRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRelationshipRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ConnectionsRelationshipRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/relationship/",
+    ...options,
+  });
+
+/**
+ * Remove a follower (they were following you, you remove them)
+ */
+export const connectionsRemoveDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsRemoveDestroyData, ThrowOnError>,
+): RequestResult<ConnectionsRemoveDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ConnectionsRemoveDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/remove/",
+    ...options,
+  });
+
+/**
+ * Get follow status between current user and target user
+ */
+export const connectionsStatusRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsStatusRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsStatusRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ConnectionsStatusRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/status/",
+    ...options,
+  });
+
+/**
+ * Follow or unfollow a user (toggle)
+ * - If target user is private: creates pending request
+ * - If target user is public: creates accepted follow
+ * - If already following: unfollows
+ */
+export const connectionsToggleCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsToggleCreateData, ThrowOnError>,
+): RequestResult<ConnectionsToggleCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ConnectionsToggleCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/toggle/",
+    ...options,
+  });
+
+/**
+ * Unblock a user
+ */
+export const connectionsUnblockCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsUnblockCreateData, ThrowOnError>,
+): RequestResult<ConnectionsUnblockCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ConnectionsUnblockCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/{user_id}/unblock/",
+    ...options,
+  });
+
+/**
+ * Get list of users current user has blocked
+ */
+export const connectionsBlockedRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsBlockedRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsBlockedRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ConnectionsBlockedRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/blocked/",
+    ...options,
+  });
+
+/**
+ * Get comprehensive overview of current user's relationships
+ * Categories:
+ * - mutual: Users who follow each other
+ * - followers_only: Users who follow you but you don't follow back
+ * - following_only: Users you follow but don't follow you back
+ * - pending_received: Follow requests you received (pending)
+ * - pending_sent: Follow requests you sent (pending)
+ */
+export const connectionsRelationsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsRelationsRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRelationsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ConnectionsRelationsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/relations/",
+    ...options,
+  });
+
+/**
+ * Get only mutual followers (users who follow each other with current user)
+ */
+export const connectionsRelationsConnectedRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsRelationsConnectedRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRelationsConnectedRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ConnectionsRelationsConnectedRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/relations/connected/",
+    ...options,
+  });
+
+/**
+ * Get only pending follow requests received by current user
+ * (Others want to follow you, waiting for your approval)
+ */
+export const connectionsRelationsPendingRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsRelationsPendingRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRelationsPendingRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ConnectionsRelationsPendingRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/relations/pending/",
+    ...options,
+  });
+
+/**
+ * Get only pending follow requests sent by current user
+ * (You want to follow others, waiting for their approval)
+ */
+export const connectionsRelationsSentRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsRelationsSentRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRelationsSentRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ConnectionsRelationsSentRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/relations/sent/",
+    ...options,
+  });
+
+/**
+ * Get all pending follow requests for current user
+ */
+export const connectionsRequestsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsRequestsRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsRequestsRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ConnectionsRequestsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/requests/",
+    ...options,
+  });
+
+/**
+ * Accept a pending follow request
+ */
+export const connectionsRequestsAcceptCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ConnectionsRequestsAcceptCreateData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRequestsAcceptCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ConnectionsRequestsAcceptCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/requests/{user_id}/accept/",
+    ...options,
+  });
+
+/**
+ * Reject/delete a pending follow request
+ */
+export const connectionsRequestsRejectCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ConnectionsRequestsRejectCreateData, ThrowOnError>,
+): RequestResult<
+  ConnectionsRequestsRejectCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ConnectionsRequestsRejectCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/requests/{user_id}/reject/",
+    ...options,
+  });
+
+/**
+ * Get suggested users to follow
+ * Based on:
+ * - Users with mutual followers
+ * - Users in same clubs
+ * - Popular users
+ */
+export const connectionsSuggestionsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ConnectionsSuggestionsRetrieveData, ThrowOnError>,
+): RequestResult<
+  ConnectionsSuggestionsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ConnectionsSuggestionsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/connections/suggestions/",
+    ...options,
+  });
+
+export const institutesList = <ThrowOnError extends boolean = false>(
+  options?: Options<InstitutesListData, ThrowOnError>,
+): RequestResult<InstitutesListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    InstitutesListResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/",
+    ...options,
+  });
+
+export const institutesCreate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesCreateData, ThrowOnError>,
+): RequestResult<InstitutesCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    InstitutesCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const institutesDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesDestroyData, ThrowOnError>,
+): RequestResult<InstitutesDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    InstitutesDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/{id}/",
+    ...options,
+  });
+
+export const institutesRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesRetrieveData, ThrowOnError>,
+): RequestResult<InstitutesRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    InstitutesRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/{id}/",
+    ...options,
+  });
+
+export const institutesPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesPartialUpdateData, ThrowOnError>,
+): RequestResult<InstitutesPartialUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).patch<
+    InstitutesPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const institutesUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesUpdateData, ThrowOnError>,
+): RequestResult<InstitutesUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<
+    InstitutesUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/institutes/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Get all notifications for the current user.
+ *
+ * Query params:
+ * - type: Filter by notification type (post, like, comment, follow_request, follow_accept)
+ * - is_read: Filter by read status (true/false)
+ * - is_seen: Filter by seen status (true/false)
+ * - page: Page number for pagination
+ */
+export const notificationsRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<NotificationsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    NotificationsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/",
+    ...options,
+  });
+
+/**
+ * Get detailed information about a specific notification.
+ * Automatically marks the notification as seen.
+ */
+export const notificationsRetrieve2 = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsRetrieve2Data, ThrowOnError>,
+): RequestResult<NotificationsRetrieve2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    NotificationsRetrieve2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/{notification_id}/",
+    ...options,
+  });
+
+/**
+ * Delete a specific notification.
+ */
+export const notificationsDeleteDestroy = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<NotificationsDeleteDestroyData, ThrowOnError>,
+): RequestResult<NotificationsDeleteDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    NotificationsDeleteDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/{notification_id}/delete/",
+    ...options,
+  });
+
+/**
+ * Get delivery status for a specific notification.
+ */
+export const notificationsDeliveriesRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<NotificationsDeliveriesRetrieveData, ThrowOnError>,
+): RequestResult<
+  NotificationsDeliveriesRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    NotificationsDeliveriesRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/{notification_id}/deliveries/",
+    ...options,
+  });
+
+/**
+ * Mark a specific notification as read.
+ */
+export const notificationsReadCreate = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsReadCreateData, ThrowOnError>,
+): RequestResult<NotificationsReadCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    NotificationsReadCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/{notification_id}/read/",
+    ...options,
+  });
+
+/**
+ * Mark a specific notification as seen.
+ */
+export const notificationsSeenCreate = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsSeenCreateData, ThrowOnError>,
+): RequestResult<NotificationsSeenCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    NotificationsSeenCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/{notification_id}/seen/",
+    ...options,
+  });
+
+/**
+ * Delete all notifications for the current user.
+ */
+export const notificationsClearDestroy = <ThrowOnError extends boolean = false>(
+  options?: Options<NotificationsClearDestroyData, ThrowOnError>,
+): RequestResult<NotificationsClearDestroyResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).delete<
+    NotificationsClearDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/clear/",
+    ...options,
+  });
+
+/**
+ * Get all comment notifications.
+ */
+export const notificationsCommentsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsCommentsRetrieveData, ThrowOnError>,
+): RequestResult<
+  NotificationsCommentsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    NotificationsCommentsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/comments/",
+    ...options,
+  });
+
+/**
+ * Get notification counts for the current user.
+ * Returns total, unread, and unseen counts.
+ */
+export const notificationsCountsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsCountsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsCountsRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    NotificationsCountsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/counts/",
+    ...options,
+  });
+
+/**
+ * Get all follow accept notifications.
+ */
+export const notificationsFollowAcceptsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsFollowAcceptsRetrieveData, ThrowOnError>,
+): RequestResult<
+  NotificationsFollowAcceptsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    NotificationsFollowAcceptsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/follow-accepts/",
+    ...options,
+  });
+
+/**
+ * Get all follow request notifications.
+ */
+export const notificationsFollowRequestsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsFollowRequestsRetrieveData, ThrowOnError>,
+): RequestResult<
+  NotificationsFollowRequestsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    NotificationsFollowRequestsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/follow-requests/",
+    ...options,
+  });
+
+/**
+ * Get all like notifications.
+ */
+export const notificationsLikesRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsLikesRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsLikesRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    NotificationsLikesRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/likes/",
+    ...options,
+  });
+
+/**
+ * Mark all notifications as read for the current user.
+ */
+export const notificationsMarkAllReadCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsMarkAllReadCreateData, ThrowOnError>,
+): RequestResult<
+  NotificationsMarkAllReadCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    NotificationsMarkAllReadCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/mark-all-read/",
+    ...options,
+  });
+
+/**
+ * Mark all notifications as seen for the current user.
+ */
+export const notificationsMarkAllSeenCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsMarkAllSeenCreateData, ThrowOnError>,
+): RequestResult<
+  NotificationsMarkAllSeenCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    NotificationsMarkAllSeenCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/mark-all-seen/",
+    ...options,
+  });
+
+/**
+ * Get all post-related notifications (new posts from followed users/clubs).
+ */
+export const notificationsPostsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<NotificationsPostsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsPostsRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    NotificationsPostsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/notifications/posts/",
+    ...options,
+  });
+
+export const postsList = <ThrowOnError extends boolean = false>(
+  options?: Options<PostsListData, ThrowOnError>,
+): RequestResult<PostsListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<PostsListResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/",
+    ...options,
+  });
+
+export const postsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsCreateData, ThrowOnError>,
+): RequestResult<PostsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<PostsCreateResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const postsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<PostsDestroyData, ThrowOnError>,
+): RequestResult<PostsDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    PostsDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/{post_id}/",
+    ...options,
+  });
+
+export const postsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<PostsRetrieveData, ThrowOnError>,
+): RequestResult<PostsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<PostsRetrieveResponses, unknown, ThrowOnError>(
+    {
+      responseType: "json",
+      security: [
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/v1/posts/{post_id}/",
+      ...options,
+    },
+  );
+
+export const postsPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsPartialUpdateData, ThrowOnError>,
+): RequestResult<PostsPartialUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).patch<
+    PostsPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/{post_id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const postsUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsUpdateData, ThrowOnError>,
+): RequestResult<PostsUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<PostsUpdateResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/{post_id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Get personalized feed for the current user
+ *
+ * Feed includes:
+ * 1. Posts from users the current user follows (with accepted status)
+ * 2. Public posts from public profiles (users with is_private=False)
+ * 3. Excludes posts from blocked users (in both directions)
+ *
+ * Privacy rules:
+ * - From followed users: Show all their public posts
+ * - From public profiles: Only show public posts (is_public=True)
+ * - Never show posts from blocked users
+ */
+export const postsFeedRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<PostsFeedRetrieveData, ThrowOnError>,
+): RequestResult<PostsFeedRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    PostsFeedRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/posts/feed/",
+    ...options,
   });

@@ -3,9 +3,26 @@ import { config } from "@/settings/app";
 import type {
   AccountsAuthUsersRetrieveResponse,
   AccountsAuthUsersUserRetrieveResponse,
-  PrivateUserResponse,
+  PatchedUserProfileRequest
 } from "@campus/api";
+
 import { AxiosError, type AxiosResponse } from "axios";
+
+
+export type PrivateUserResponse = {
+  detail: string;
+  id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  avatar: string;
+  following_count: number;
+  follower_count: number;
+  user_post_count: number;
+  is_private: boolean;
+  is_following: boolean;
+  follow_status: string | null;
+};
 
 type UserResponse = AccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
 
@@ -31,6 +48,11 @@ export class UserClient extends BaseClient<
       throw err;
     }
   }
+
+  async updateProfile(data: PatchedUserProfileRequest): Promise<AxiosResponse> {
+      const response = await this.client.patch(this.endpoint + "users/me/", data);
+      return response;
+    }
 
   async getUser(
     username: string,

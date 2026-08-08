@@ -1,9 +1,13 @@
+from typing import TYPE_CHECKING
 from django.db import models
 from django.conf import settings
 
 from apps.clubs.models.club import Club
 from apps.clubs.models.role import Role
 
+if TYPE_CHECKING:
+    from apps.accounts.models import User
+    from django.db.models.fields.related_descriptors import RelatedManager
 
 class Membership(models.Model):
     """
@@ -51,6 +55,9 @@ class Membership(models.Model):
         indexes = [
             models.Index(fields=['user', 'club']),
         ]
+
+    if TYPE_CHECKING:
+        users: RelatedManager["User"]
 
     def __str__(self) -> str:
         role_names = ", ".join([role.name for role in self.roles.all()])

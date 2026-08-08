@@ -6,25 +6,46 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "design/components/ui/dialog";
+import ProfileUpdateForm from "@/components/forms/user/profile-update";
+import type { UserProfile } from "@campus/api";
+import type { updateProfileSchema } from "validation/user";
+import type z from "zod";
+import React from "react";
+import { useUpdateProfile } from "../../hooks/user.hooks";
+import { useParams } from "react-router-dom";
 
 type DialogProps = {
   trigger: React.ReactElement;
   title?: string;
   description?: string;
+  data: UserProfile
 };
 
-export function EditProfileDialog({ trigger, title, description }: DialogProps) {
+export function EditProfileDialog({ trigger, title, description, data }: DialogProps) {
+  const { username } = useParams();
+  const { mutate: updateProfile } = useUpdateProfile(username!);
+  const [open, setOpen] = React.useState(false);
+  
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={trigger}>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            {description ? description : "edit your profile here"}
+            {description}
           </DialogDescription>
         </DialogHeader>
+        <ProfileUpdateForm onSubmit={(values: z.infer<typeof updateProfileSchema>) => {
+          console.log("Submitted", values);
+          updateProfile(values, {
+            onSuccess: () => {
+              console.log("Profile updated successfully");
+              setOpen(false);
+            },
+          })
+        }} data={data} />
       </DialogContent>
     </Dialog>
   );

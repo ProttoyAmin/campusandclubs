@@ -4,6 +4,152 @@ info:
   version: 1.0.0
   description: Campus & Clubs Backend API
 paths:
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - ht
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/accounts/auth/{user_id}/all/:
     get:
       operationId: accounts_auth_all_retrieve
@@ -936,6 +1082,1613 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserType'
           description: ''
+  /api/v1/activities/comments/:
+    get:
+      operationId: activities_comments_retrieve
+      description: |-
+        Get all comments for a specific content object
+        Query params:
+        - content_type: app_label.model_name
+        - object_id: ID of the object
+        - parent: (optional) ID of parent comment for nested replies
+
+        Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/comments/{comment_id}/:
+    get:
+      operationId: activities_comments_retrieve_2
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: activities_comments_partial_update
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: activities_comments_destroy
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/activities/comments/{comment_id}/replies/:
+    get:
+      operationId: activities_comments_replies_retrieve
+      description: Get all replies to a specific comment
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/comments/create/:
+    post:
+      operationId: activities_comments_create_create
+      description: |-
+        Create a comment on any content object
+        Body: {
+            "content_type": "clubs.clubpost",
+            "object_id": 123,
+            "content": "Great post!",
+            "parent": null  // Optional: ID of parent comment for replies
+        }
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/likes/:
+    get:
+      operationId: activities_likes_retrieve
+      description: |-
+        Get all likes for a specific content object
+        Query params:
+        - content_type: app_label.model_name (e.g., "clubs.clubpost")
+        - object_id: ID of the object
+
+        Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/likes/check/:
+    get:
+      operationId: activities_likes_check_retrieve
+      description: |-
+        Check if current user has liked a specific object
+        Query params:
+        - content_type: app_label.model_name
+        - object_id: ID of the object
+
+        Returns: { "is_liked": true/false }
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/likes/toggle/:
+    post:
+      operationId: activities_likes_toggle_create
+      description: |-
+        Like or unlike any content object (toggle)
+        Body: {
+            "content_type": "clubs.clubpost",
+            "object_id": 123
+        }
+
+        Returns: { "is_liked": true/false, "like_count": 42 }
+      tags:
+      - activities
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/clubs/:
+    get:
+      operationId: clubs_list
+      description: |-
+        List & create clubs visible to the authenticated user:
+        - All public clubs
+        - Closed/Secret clubs only if user is a member
+
+        Query params:
+        - search: Filter by name or origin
+        - privacy: Filter by privacy type (public/closed/secret)
+        - origin: Filter by specific origin
+        - joined: Set to 'true' to only show clubs user is member of
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClubList'
+          description: ''
+    post:
+      operationId: clubs_create
+      description: |-
+        List & create clubs visible to the authenticated user:
+        - All public clubs
+        - Closed/Secret clubs only if user is a member
+
+        Query params:
+        - search: Filter by name or origin
+        - privacy: Filter by privacy type (public/closed/secret)
+        - origin: Filter by specific origin
+        - joined: Set to 'true' to only show clubs user is member of
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubCreate'
+          description: ''
+  /api/v1/clubs/{id}/:
+    get:
+      operationId: clubs_retrieve
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    put:
+      operationId: clubs_update
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    patch:
+      operationId: clubs_partial_update
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    delete:
+      operationId: clubs_destroy
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/clubs/{id}/applications/:
+    get:
+      operationId: clubs_applications_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+    post:
+      operationId: clubs_applications_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+  /api/v1/clubs/{id}/applications/{application_pk}/:
+    get:
+      operationId: clubs_applications_list_2
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+    post:
+      operationId: clubs_applications_create_2
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+  /api/v1/clubs/{id}/applications/{application_pk}/approve/:
+    post:
+      operationId: clubs_applications_approve_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/v1/clubs/{id}/applications/{application_pk}/reject/:
+    post:
+      operationId: clubs_applications_reject_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/v1/clubs/{id}/applications/{application_pk}/withdraw/:
+    post:
+      operationId: clubs_applications_withdraw_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/v1/clubs/{id}/events/:
+    get:
+      operationId: clubs_events_retrieve
+      description: |-
+        List all events in a club
+        Query params:
+        - status: upcoming|ongoing|completed|cancelled
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/clubs/{id}/join/:
+    post:
+      operationId: clubs_join_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubJoin'
+          description: ''
+  /api/v1/clubs/{id}/members/:
+    get:
+      operationId: clubs_members_retrieve
+      description: |-
+        List all members of a club with filtering options
+        Query params:
+        - role: Filter by role name
+        - search: Search members by username or email
+        - sort: joined_at (default), username, role
+        - order: asc, desc (default)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/clubs/{id}/posts/:
+    get:
+      operationId: clubs_posts_retrieve
+      description: List all posts in a club with interaction counts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/clubs/{slug}/:
+    get:
+      operationId: clubs_retrieve_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    put:
+      operationId: clubs_update_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    patch:
+      operationId: clubs_partial_update_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - clubs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    delete:
+      operationId: clubs_destroy_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/clubs/recommended/:
+    get:
+      operationId: clubs_recommended_retrieve
+      description: |-
+        Get recommended clubs for the authenticated user based on:
+        - Clubs with similar origin/type
+        - Clubs with friends/mutual connections
+        - Popular clubs in user's location
+        - Clubs related to user's interests (if available)
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/clubs/test/manager/:
+    get:
+      operationId: clubs_test_manager_retrieve
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/block/:
+    post:
+      operationId: connections_block_create
+      description: |-
+        Block a user
+        - Removes any existing follow relationships
+        - Prevents future follows
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/followers/:
+    get:
+      operationId: connections_followers_retrieve
+      description: Get list of users following this user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/following/:
+    get:
+      operationId: connections_following_retrieve
+      description: Get list of users this user is following
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/mutual/:
+    get:
+      operationId: connections_mutual_retrieve
+      description: Get mutual followers between current user and target user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/relationship/:
+    get:
+      operationId: connections_relationship_retrieve
+      description: |-
+        Get comprehensive relationship information between current user and target user
+        Returns:
+        - Follow status (is_following, is_followed_by, is_mutual, follow_status)
+        - Block status (is_blocked, is_blocking)
+        - Mutual followers count
+        - Privacy status
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/remove/:
+    delete:
+      operationId: connections_remove_destroy
+      description: Remove a follower (they were following you, you remove them)
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/connections/{user_id}/status/:
+    get:
+      operationId: connections_status_retrieve
+      description: Get follow status between current user and target user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/toggle/:
+    post:
+      operationId: connections_toggle_create
+      description: |-
+        Follow or unfollow a user (toggle)
+        - If target user is private: creates pending request
+        - If target user is public: creates accepted follow
+        - If already following: unfollows
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/{user_id}/unblock/:
+    post:
+      operationId: connections_unblock_create
+      description: Unblock a user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/blocked/:
+    get:
+      operationId: connections_blocked_retrieve
+      description: Get list of users current user has blocked
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/relations/:
+    get:
+      operationId: connections_relations_retrieve
+      description: |-
+        Get comprehensive overview of current user's relationships
+        Categories:
+        - mutual: Users who follow each other
+        - followers_only: Users who follow you but you don't follow back
+        - following_only: Users you follow but don't follow you back
+        - pending_received: Follow requests you received (pending)
+        - pending_sent: Follow requests you sent (pending)
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/relations/connected/:
+    get:
+      operationId: connections_relations_connected_retrieve
+      description: Get only mutual followers (users who follow each other with current
+        user)
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/relations/pending/:
+    get:
+      operationId: connections_relations_pending_retrieve
+      description: |-
+        Get only pending follow requests received by current user
+        (Others want to follow you, waiting for your approval)
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/relations/sent/:
+    get:
+      operationId: connections_relations_sent_retrieve
+      description: |-
+        Get only pending follow requests sent by current user
+        (You want to follow others, waiting for their approval)
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/requests/:
+    get:
+      operationId: connections_requests_retrieve
+      description: Get all pending follow requests for current user
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/requests/{user_id}/accept/:
+    post:
+      operationId: connections_requests_accept_create
+      description: Accept a pending follow request
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/requests/{user_id}/reject/:
+    post:
+      operationId: connections_requests_reject_create
+      description: Reject/delete a pending follow request
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/connections/suggestions/:
+    get:
+      operationId: connections_suggestions_retrieve
+      description: |-
+        Get suggested users to follow
+        Based on:
+        - Users with mutual followers
+        - Users in same clubs
+        - Popular users
+      tags:
+      - connections
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/institutes/:
+    get:
+      operationId: institutes_list
+      tags:
+      - institutes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institute'
+          description: ''
+    post:
+      operationId: institutes_create
+      tags:
+      - institutes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institute'
+          description: ''
+  /api/v1/institutes/{id}/:
+    get:
+      operationId: institutes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - institutes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    put:
+      operationId: institutes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - institutes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    patch:
+      operationId: institutes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - institutes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    delete:
+      operationId: institutes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - institutes
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/notifications/:
+    get:
+      operationId: notifications_retrieve
+      description: |-
+        Get all notifications for the current user.
+
+        Query params:
+        - type: Filter by notification type (post, like, comment, follow_request, follow_accept)
+        - is_read: Filter by read status (true/false)
+        - is_seen: Filter by seen status (true/false)
+        - page: Page number for pagination
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/{notification_id}/:
+    get:
+      operationId: notifications_retrieve_2
+      description: |-
+        Get detailed information about a specific notification.
+        Automatically marks the notification as seen.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/{notification_id}/delete/:
+    delete:
+      operationId: notifications_delete_destroy
+      description: Delete a specific notification.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/notifications/{notification_id}/deliveries/:
+    get:
+      operationId: notifications_deliveries_retrieve
+      description: Get delivery status for a specific notification.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/{notification_id}/read/:
+    post:
+      operationId: notifications_read_create
+      description: Mark a specific notification as read.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/{notification_id}/seen/:
+    post:
+      operationId: notifications_seen_create
+      description: Mark a specific notification as seen.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/clear/:
+    delete:
+      operationId: notifications_clear_destroy
+      description: Delete all notifications for the current user.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/notifications/comments/:
+    get:
+      operationId: notifications_comments_retrieve
+      description: Get all comment notifications.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/counts/:
+    get:
+      operationId: notifications_counts_retrieve
+      description: |-
+        Get notification counts for the current user.
+        Returns total, unread, and unseen counts.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/follow-accepts/:
+    get:
+      operationId: notifications_follow_accepts_retrieve
+      description: Get all follow accept notifications.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/follow-requests/:
+    get:
+      operationId: notifications_follow_requests_retrieve
+      description: Get all follow request notifications.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/likes/:
+    get:
+      operationId: notifications_likes_retrieve
+      description: Get all like notifications.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/mark-all-read/:
+    post:
+      operationId: notifications_mark_all_read_create
+      description: Mark all notifications as read for the current user.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/mark-all-seen/:
+    post:
+      operationId: notifications_mark_all_seen_create
+      description: Mark all notifications as seen for the current user.
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/notifications/posts/:
+    get:
+      operationId: notifications_posts_retrieve
+      description: Get all post-related notifications (new posts from followed users/clubs).
+      tags:
+      - notifications
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/posts/:
+    get:
+      operationId: posts_list
+      tags:
+      - posts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+          description: ''
+    post:
+      operationId: posts_create
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /api/v1/posts/{post_id}/:
+    get:
+      operationId: posts_retrieve
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: posts_update
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    patch:
+      operationId: posts_partial_update
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: posts_destroy
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/posts/feed/:
+    get:
+      operationId: posts_feed_retrieve
+      description: |-
+        Get personalized feed for the current user
+
+        Feed includes:
+        1. Posts from users the current user follows (with accepted status)
+        2. Public posts from public profiles (users with is_private=False)
+        3. Excludes posts from blocked users (in both directions)
+
+        Privacy rules:
+        - From followed users: Show all their public posts
+        - From public profiles: Only show public posts (is_public=True)
+        - Never show posts from blocked users
+      tags:
+      - posts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
 components:
   schemas:
     Activation:
@@ -963,6 +2716,418 @@ components:
     BlankEnum:
       enum:
       - ''
+    Club:
+      type: object
+      description: |-
+        List clubs serializer
+
+        Used for listing clubs, includes fields like name, owner, origin, about, avatar, banner, privacy, allow_public_posts, is_member, total_members, total_events, total_posts, is_public, club_url, join_url, leave_url, and members_url.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        owner:
+          type: string
+          readOnly: true
+        origin:
+          type: string
+          readOnly: true
+        about:
+          type: string
+          nullable: true
+        avatar:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        banner:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        allow_public_posts:
+          type: boolean
+        is_member:
+          type: boolean
+          readOnly: true
+        total_members:
+          type: integer
+          readOnly: true
+        total_events:
+          type: integer
+          readOnly: true
+        total_posts:
+          type: integer
+          readOnly: true
+        is_public:
+          type: boolean
+          readOnly: true
+        club_url:
+          type: string
+          readOnly: true
+        join_url:
+          type: string
+          readOnly: true
+        leave_url:
+          type: string
+          readOnly: true
+        members_url:
+          type: string
+          readOnly: true
+      required:
+      - club_url
+      - id
+      - is_member
+      - is_public
+      - join_url
+      - leave_url
+      - members_url
+      - name
+      - origin
+      - owner
+      - total_events
+      - total_members
+      - total_posts
+    ClubCreate:
+      type: object
+      description: Create club serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        about:
+          type: string
+          maxLength: 500
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        origin:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - about
+      - id
+      - name
+      - privacy
+      - scope
+    ClubCreateRequest:
+      type: object
+      description: Create club serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        about:
+          type: string
+          minLength: 1
+          maxLength: 500
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        origin:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - about
+      - name
+      - privacy
+      - scope
+    ClubDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        origin:
+          type: string
+          nullable: true
+        slug:
+          oneOf:
+          - type: string
+            maxLength: 120
+            pattern: ^[-a-zA-Z0-9_]+$
+          - type: string
+            maxLength: 0
+        about:
+          type: string
+          nullable: true
+        avatar:
+          type: string
+          nullable: true
+          readOnly: true
+        banner:
+          type: string
+          nullable: true
+          readOnly: true
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        is_public:
+          type: boolean
+          readOnly: true
+        allow_public_posts:
+          type: boolean
+        rules:
+          type: string
+          nullable: true
+          description: Club rules and guidelines
+        owner:
+          type: string
+          format: uuid
+          readOnly: true
+        owner_details:
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
+            profile_picture:
+              type: string
+              nullable: true
+          required:
+          - id
+          - profile_picture
+          - username
+          readOnly: true
+        member_count:
+          type: integer
+          readOnly: true
+        join_mode:
+          allOf:
+          - $ref: '#/components/schemas/JoinModeEnum'
+          description: |-
+            How users join. Constrained by `privacy` — see clean().
+
+            * `instant` - Instant
+            * `application` - Application Required
+            * `invite_only` - Invite Only
+        status:
+          $ref: '#/components/schemas/ClubDetailStatusEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        category:
+          type: integer
+          nullable: true
+        application_status:
+          type: string
+          nullable: true
+          readOnly: true
+        user_role:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            permissions:
+              type: array
+              items:
+                type: string
+          required:
+          - id
+          - name
+          - permissions
+          nullable: true
+          readOnly: true
+        is_member:
+          type: boolean
+          readOnly: true
+        is_owner:
+          type: boolean
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+        members_url:
+          type: string
+          readOnly: true
+        posts_url:
+          type: string
+          readOnly: true
+        events_url:
+          type: string
+          readOnly: true
+        leave_url:
+          type: string
+          readOnly: true
+        join_url:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - application_status
+      - avatar
+      - banner
+      - created_at
+      - events_url
+      - id
+      - is_member
+      - is_owner
+      - is_public
+      - join_url
+      - leave_url
+      - member_count
+      - members_url
+      - name
+      - owner
+      - owner_details
+      - posts_url
+      - updated_at
+      - url
+      - user_role
+    ClubDetailRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        origin:
+          type: string
+          nullable: true
+        slug:
+          oneOf:
+          - type: string
+            maxLength: 120
+            pattern: ^[-a-zA-Z0-9_]+$
+          - type: string
+            maxLength: 0
+        about:
+          type: string
+          nullable: true
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        allow_public_posts:
+          type: boolean
+        rules:
+          type: string
+          nullable: true
+          description: Club rules and guidelines
+        join_mode:
+          allOf:
+          - $ref: '#/components/schemas/JoinModeEnum'
+          description: |-
+            How users join. Constrained by `privacy` — see clean().
+
+            * `instant` - Instant
+            * `application` - Application Required
+            * `invite_only` - Invite Only
+        status:
+          $ref: '#/components/schemas/ClubDetailStatusEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        category:
+          type: integer
+          nullable: true
+      required:
+      - name
+    ClubDetailStatusEnum:
+      enum:
+      - active
+      - paused
+      - archived
+      - suspended
+      type: string
+      description: |-
+        * `active` - Active
+        * `paused` - Paused
+        * `archived` - Archived
+        * `suspended` - Suspended
+    ClubJoin:
+      type: object
+      description: |-
+        Club join serializer
+
+        Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        joined_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: string
+          format: uuid
+          readOnly: true
+        club:
+          type: string
+          format: uuid
+          readOnly: true
+        application:
+          type: string
+          format: uuid
+          nullable: true
+        primary_role:
+          type: string
+          format: uuid
+          nullable: true
+          description: Primary/display role for this membership
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: User's roles in the club
+      required:
+      - club
+      - id
+      - joined_at
+      - user
+    ClubJoinRequest:
+      type: object
+      description: |-
+        Club join serializer
+
+        Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+      properties:
+        application:
+          type: string
+          format: uuid
+          nullable: true
+        primary_role:
+          type: string
+          format: uuid
+          nullable: true
+          description: Primary/display role for this membership
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: User's roles in the club
     CustomTokenObtainPairRequest:
       type: object
       properties:
@@ -1033,6 +3198,30 @@ components:
       - id
       - name
       - url
+    InstituteAffiliateForInstitute:
+      type: object
+      description: Used in Institute details — shows which users (students) belong
+        to it.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserMinimal'
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - id
+      - user
+    InstituteAffiliateForInstituteRequest:
+      type: object
+      description: Used in Institute details — shows which users (students) belong
+        to it.
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
     InstituteAffiliateForUser:
       type: object
       description: Used in User details — shows which institute the user belongs to.
@@ -1055,6 +3244,181 @@ components:
       properties:
         role:
           $ref: '#/components/schemas/RoleEnum'
+    InstituteDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        code:
+          type: string
+          nullable: true
+          maxLength: 50
+        country:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        portal:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        courses:
+          nullable: true
+          description: Dictionary of courses offered by the institute
+        affiliates:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstituteAffiliateForInstitute'
+        email_domains:
+          type: string
+          readOnly: true
+        clubs:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+        is_verified:
+          type: boolean
+        logo:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        description:
+          type: string
+          nullable: true
+        established_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        accreditation:
+          type: string
+          nullable: true
+          maxLength: 255
+        contact_number:
+          type: string
+          nullable: true
+          maxLength: 20
+        social_links:
+          nullable: true
+          description: Dictionary of social media links
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - affiliates
+      - clubs
+      - country
+      - created_at
+      - email_domains
+      - id
+      - name
+      - updated_at
+    InstituteDetailRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        code:
+          type: string
+          nullable: true
+          maxLength: 50
+        country:
+          type: string
+          minLength: 1
+          maxLength: 100
+        address:
+          type: string
+          minLength: 1
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        portal:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        courses:
+          nullable: true
+          description: Dictionary of courses offered by the institute
+        affiliates:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstituteAffiliateForInstituteRequest'
+        is_active:
+          type: boolean
+        is_verified:
+          type: boolean
+        logo:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        description:
+          type: string
+          nullable: true
+        established_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        accreditation:
+          type: string
+          nullable: true
+          maxLength: 255
+        contact_number:
+          type: string
+          nullable: true
+          maxLength: 20
+        social_links:
+          nullable: true
+          description: Dictionary of social media links
+      required:
+      - address
+      - affiliates
+      - country
+      - name
     InstituteRequest:
       type: object
       properties:
@@ -1096,9 +3460,182 @@ components:
       required:
       - country
       - name
+    JoinModeEnum:
+      enum:
+      - instant
+      - application
+      - invite_only
+      type: string
+      description: |-
+        * `instant` - Instant
+        * `application` - Application Required
+        * `invite_only` - Invite Only
+    MediaTypeEnum:
+      enum:
+      - IMAGE
+      - VIDEO
+      type: string
+      description: |-
+        * `IMAGE` - Image
+        * `VIDEO` - Video
+    MembershipApplication:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status99fEnum'
+          default: pending
+        message:
+          type: string
+          nullable: true
+          description: Optional note from the applicant, especially useful when the
+            club has no form.
+        reviewed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        club:
+          type: string
+          format: uuid
+        applicant:
+          type: string
+          format: uuid
+        form:
+          type: integer
+          nullable: true
+        reviewed_by:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - applicant
+      - club
+      - created_at
+      - id
+      - updated_at
+    MembershipApplicationCreate:
+      type: object
+      description: Serializer for creating a membership application.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        applicant:
+          type: string
+          format: uuid
+          readOnly: true
+        club:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status99fEnum'
+          readOnly: true
+          default: pending
+        reviewed_by:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        message:
+          type: string
+          nullable: true
+          maxLength: 500
+      required:
+      - applicant
+      - club
+      - id
+      - message
+      - reviewed_at
+      - reviewed_by
+      - status
+    MembershipApplicationCreateRequest:
+      type: object
+      description: Serializer for creating a membership application.
+      properties:
+        message:
+          type: string
+          nullable: true
+          maxLength: 500
+      required:
+      - message
+    MembershipApplicationRequest:
+      type: object
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status99fEnum'
+          default: pending
+        message:
+          type: string
+          nullable: true
+          description: Optional note from the applicant, especially useful when the
+            club has no form.
+        reviewed_at:
+          type: string
+          format: date-time
+          nullable: true
+        club:
+          type: string
+          format: uuid
+        applicant:
+          type: string
+          format: uuid
+        form:
+          type: integer
+          nullable: true
+        reviewed_by:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - applicant
+      - club
     NullEnum:
       enum:
       - null
+    PaginatedClubList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Club'
     PaginatedUserProfileList:
       type: object
       required:
@@ -1158,6 +3695,173 @@ components:
       - re_new_password
       - token
       - uid
+    PatchedClubDetailRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        origin:
+          type: string
+          nullable: true
+        slug:
+          oneOf:
+          - type: string
+            maxLength: 120
+            pattern: ^[-a-zA-Z0-9_]+$
+          - type: string
+            maxLength: 0
+        about:
+          type: string
+          nullable: true
+        privacy:
+          $ref: '#/components/schemas/PrivacyEnum'
+        allow_public_posts:
+          type: boolean
+        rules:
+          type: string
+          nullable: true
+          description: Club rules and guidelines
+        join_mode:
+          allOf:
+          - $ref: '#/components/schemas/JoinModeEnum'
+          description: |-
+            How users join. Constrained by `privacy` — see clean().
+
+            * `instant` - Instant
+            * `application` - Application Required
+            * `invite_only` - Invite Only
+        status:
+          $ref: '#/components/schemas/ClubDetailStatusEnum'
+        scope:
+          $ref: '#/components/schemas/ScopeEnum'
+        category:
+          type: integer
+          nullable: true
+    PatchedInstituteDetailRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        code:
+          type: string
+          nullable: true
+          maxLength: 50
+        country:
+          type: string
+          minLength: 1
+          maxLength: 100
+        address:
+          type: string
+          minLength: 1
+        website:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        portal:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        courses:
+          nullable: true
+          description: Dictionary of courses offered by the institute
+        affiliates:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstituteAffiliateForInstituteRequest'
+        is_active:
+          type: boolean
+        is_verified:
+          type: boolean
+        logo:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        description:
+          type: string
+          nullable: true
+        established_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        accreditation:
+          type: string
+          nullable: true
+          maxLength: 255
+        contact_number:
+          type: string
+          nullable: true
+          maxLength: 20
+        social_links:
+          nullable: true
+          description: Dictionary of social media links
+    PatchedPostRequest:
+      type: object
+      description: Detailed serializer for user posts with interaction data
+      properties:
+        id:
+          type: string
+          minLength: 1
+        title:
+          type: string
+          nullable: true
+          description: Optional title (commonly used for club posts)
+          maxLength: 255
+        is_pinned:
+          type: boolean
+          description: 'For club posts: whether the post is pinned in the club'
+        post_type:
+          $ref: '#/components/schemas/PostTypeEnum'
+        content:
+          type: string
+          nullable: true
+        image_file:
+          type: string
+          format: binary
+          nullable: true
+        video_file:
+          type: string
+          format: binary
+          nullable: true
+        image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        video_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        original_post:
+          type: string
+          format: uuid
+          nullable: true
+        is_public:
+          type: boolean
     PatchedUserMinimalRequest:
       type: object
       properties:
@@ -1271,7 +3975,7 @@ components:
           type: boolean
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 
@@ -1408,7 +4112,7 @@ components:
             * `professional_email` - Professional Email
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 
@@ -1435,6 +4139,329 @@ components:
           items:
             type: integer
           description: Specific permissions for this user.
+    Post:
+      type: object
+      description: Detailed serializer for user posts with interaction data
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          readOnly: true
+        author_id:
+          type: string
+          format: uuid
+          readOnly: true
+        author_username:
+          type: string
+          readOnly: true
+        author_avatar:
+          type: string
+          readOnly: true
+        author_url:
+          type: string
+          readOnly: true
+        club_id:
+          type: string
+          readOnly: true
+          nullable: true
+        club_name:
+          type: string
+          readOnly: true
+          nullable: true
+        club_url:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+          description: Optional title (commonly used for club posts)
+          maxLength: 255
+        is_pinned:
+          type: boolean
+          description: 'For club posts: whether the post is pinned in the club'
+        post_type:
+          $ref: '#/components/schemas/PostTypeEnum'
+        content:
+          type: string
+          nullable: true
+        image:
+          type: string
+          readOnly: true
+        video:
+          type: string
+          readOnly: true
+        image_file:
+          type: string
+          format: uri
+          nullable: true
+        video_file:
+          type: string
+          format: uri
+          nullable: true
+        image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        video_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        images:
+          type: string
+          readOnly: true
+        videos:
+          type: string
+          readOnly: true
+        media_files:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMedia'
+          readOnly: true
+        original_post:
+          type: string
+          format: uuid
+          nullable: true
+        original_post_data:
+          type: string
+          readOnly: true
+        like_count:
+          type: string
+          readOnly: true
+        comment_count:
+          type: string
+          readOnly: true
+        share_count:
+          type: string
+          readOnly: true
+        repost_count:
+          type: integer
+          readOnly: true
+        is_liked:
+          type: string
+          readOnly: true
+        is_shared:
+          type: string
+          readOnly: true
+        can_edit:
+          type: string
+          readOnly: true
+        likes_url:
+          type: string
+          readOnly: true
+        comments_url:
+          type: string
+          readOnly: true
+        shares_url:
+          type: string
+          readOnly: true
+        like_toggle_url:
+          type: string
+          readOnly: true
+        share_toggle_url:
+          type: string
+          readOnly: true
+        repost_url:
+          type: string
+          readOnly: true
+        is_public:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - author_avatar
+      - author_id
+      - author_url
+      - author_username
+      - can_edit
+      - club_id
+      - club_name
+      - club_url
+      - comment_count
+      - comments_url
+      - created_at
+      - id
+      - image
+      - images
+      - is_liked
+      - is_shared
+      - like_count
+      - like_toggle_url
+      - likes_url
+      - media_files
+      - original_post_data
+      - repost_count
+      - repost_url
+      - share_count
+      - share_toggle_url
+      - shares_url
+      - updated_at
+      - url
+      - video
+      - videos
+    PostMedia:
+      type: object
+      description: Serializer for PostMedia model
+      properties:
+        id:
+          type: string
+        media_type:
+          $ref: '#/components/schemas/MediaTypeEnum'
+        image_file:
+          type: string
+          format: uri
+          nullable: true
+        video_file:
+          type: string
+          format: uri
+          nullable: true
+        image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        video_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        media_url:
+          type: string
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - id
+      - media_type
+      - media_url
+    PostMediaRequest:
+      type: object
+      description: Serializer for PostMedia model
+      properties:
+        id:
+          type: string
+          minLength: 1
+        media_type:
+          $ref: '#/components/schemas/MediaTypeEnum'
+        image_file:
+          type: string
+          format: binary
+          nullable: true
+        video_file:
+          type: string
+          format: binary
+          nullable: true
+        image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        video_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - id
+      - media_type
+    PostRequest:
+      type: object
+      description: Detailed serializer for user posts with interaction data
+      properties:
+        id:
+          type: string
+          minLength: 1
+        title:
+          type: string
+          nullable: true
+          description: Optional title (commonly used for club posts)
+          maxLength: 255
+        is_pinned:
+          type: boolean
+          description: 'For club posts: whether the post is pinned in the club'
+        post_type:
+          $ref: '#/components/schemas/PostTypeEnum'
+        content:
+          type: string
+          nullable: true
+        image_file:
+          type: string
+          format: binary
+          nullable: true
+        video_file:
+          type: string
+          format: binary
+          nullable: true
+        image_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        video_url:
+          nullable: true
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        original_post:
+          type: string
+          format: uuid
+          nullable: true
+        is_public:
+          type: boolean
+      required:
+      - id
+    PostTypeEnum:
+      enum:
+      - TEXT
+      - IMAGE
+      - VIDEO
+      - MIXED
+      type: string
+      description: |-
+        * `TEXT` - Text/Status
+        * `IMAGE` - Image
+        * `VIDEO` - Video/Reel
+        * `MIXED` - Mixed Media
     PreferredEmailEnum:
       enum:
       - email
@@ -1443,6 +4470,16 @@ components:
       description: |-
         * `email` - Personal Email
         * `professional_email` - Professional Email
+    PrivacyEnum:
+      enum:
+      - public
+      - private
+      - secret
+      type: string
+      description: |-
+        * `public` - Public
+        * `private` - Private
+        * `secret` - Secret
     RefreshToken:
       type: object
       properties:
@@ -1511,6 +4548,16 @@ components:
         * `faculty` - Faculty
         * `staff` - Staff
         * `alumni` - Alumni
+    ScopeEnum:
+      enum:
+      - global
+      - exclusive
+      - cross_institute
+      type: string
+      description: |-
+        * `global` - Global
+        * `exclusive` - Exclusive
+        * `cross_institute` - Cross Institute
     SendEmailReset:
       type: object
       properties:
@@ -1582,7 +4629,7 @@ components:
       required:
       - current_password
       - new_username
-    StatusEnum:
+    Status1a5Enum:
       enum:
       - online
       - away
@@ -1592,6 +4639,18 @@ components:
         * `online` - Online
         * `away` - Away
         * `dnd` - Do Not Disturb
+    Status99fEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      - withdrawn
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `approved` - Approved
+        * `rejected` - Rejected
+        * `withdrawn` - Withdrawn
     TokenObtainPair:
       type: object
       properties:
@@ -1772,7 +4831,7 @@ components:
             * `professional_email` - Professional Email
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 
@@ -2008,7 +5067,7 @@ components:
           type: boolean
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 
@@ -2214,7 +5273,7 @@ components:
           type: boolean
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 
@@ -2353,7 +5412,7 @@ components:
             * `professional_email` - Professional Email
         status:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/Status1a5Enum'
           description: |-
             User's current online status
 

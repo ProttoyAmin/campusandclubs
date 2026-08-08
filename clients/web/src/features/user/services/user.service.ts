@@ -1,3 +1,4 @@
+import type { PatchedUserProfileRequest } from "@campus/api";
 import { userClient } from "../api/user.client";
 
 export class UserService {
@@ -17,6 +18,11 @@ export class UserService {
   async users() {
     const users = await this.userClient.grabUsers()
     return users;
+  }
+
+  async update(data: PatchedUserProfileRequest) {
+    const response = await this.userClient.updateProfile(data)
+    return response.data;
   }
 
   async me() {

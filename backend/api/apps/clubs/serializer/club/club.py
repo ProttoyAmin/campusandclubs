@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from rest_framework import serializers
 from rest_framework.request import Request
 
-from apps.clubs.models import Club, Visibility, MembershipScope
+from apps.clubs.models import Club, Visibility, MembershipScope, Membership
 from apps.institutes.models import Institute
 from core.policies.utils import current_user
 
@@ -175,7 +175,6 @@ class ClubSerializer(serializers.ModelSerializer):
                 'email': obj.owner.email,
                 'avatar': obj.owner.avatar if obj.owner.avatar else None
             }
-
     
 
 
@@ -185,9 +184,12 @@ class ClubJoinSerializer(serializers.ModelSerializer):
     
     Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
     """
+    # club = serializers.CharField(read_only=True, source='club.id')
+    # user = serializers.CharField(read_only=True, source='User.id')
     class Meta:
-        model = Club
-        fields = ['id', 'name', 'origin', 'about', 'avatar', 'banner', 'privacy', 'allow_public_posts']
+        model = Membership
+        fields = "__all__"
+        read_only_fields = ['club', 'user']
 
 
 

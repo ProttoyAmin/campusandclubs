@@ -32,7 +32,7 @@ export const UserProfileLayout: React.FC = () => {
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </Button>
-            <p className="text-2xl">{username}</p>
+            <p className="text-lg">{username}</p>
           </div>
         <div className="flex gap-2">
           <Button variant={"ghost"} className={"rounded-full"} size="icon">
@@ -52,7 +52,7 @@ export const UserProfileLayout: React.FC = () => {
 
   return (
     <section className="flex flex-col gap-8 w-2xl">
-      <div className="flex justify-between">{pageHeader.actions}</div>
+      <div className="flex justify-between items-center">{pageHeader.actions}</div>
       <div className="">
         <Outlet context={username} />
       </div>

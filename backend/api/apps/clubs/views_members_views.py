@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
+from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
+
 from . import models, serializers, permissions as club_permissions
 from apps.accounts.models import User
 from core import pagination
@@ -23,7 +25,7 @@ def list_members(request, pk):
     - sort: joined_at (default), username, role
     - order: asc, desc (default)
     """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
+    club = get_object_or_404(models.Club, pk=pk, status='active')
 
     # Check if user can view members
     is_member = models.Membership.objects.filter(
@@ -76,7 +78,7 @@ def list_members(request, pk):
     paginator = pagination.StandardResultsSetPagination()
     paginated_memberships = paginator.paginate_queryset(memberships, request)
 
-    serializer = serializers.MembershipSerializer(
+    serializer = MembershipSerializer(
         paginated_memberships,
         many=True,
         context={'request': request}

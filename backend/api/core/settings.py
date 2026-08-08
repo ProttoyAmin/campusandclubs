@@ -127,9 +127,9 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": r"/api/v1",
     "COMPONENT_SPLIT_REQUEST": True,
     "VERSION": "1.0.0",
-    "PREPROCESSING_HOOKS": [
-        "core.openapi.hook.accounts_only",
-    ],
+    # "PREPROCESSING_HOOKS": [
+    #     "core.openapi.hook.accounts_only",
+    # ],
 }
 
 SIMPLE_JWT = {
