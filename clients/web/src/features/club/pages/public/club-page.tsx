@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -12,7 +11,7 @@ const ClubPage: React.FC = () => {
   const { club } = useClubOutlet();
 
   return (
-    <Card className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
+    <div className="">
       <CardHeader>
         <div className="relative">
           {club?.banner && <img src={club?.banner} alt={club?.name} />}
@@ -37,7 +36,7 @@ const ClubPage: React.FC = () => {
       <CardContent>
         <pre>{JSON.stringify(club, null, 2)}</pre>
       </CardContent>
-    </Card>
+    </div>
   );
 };
 

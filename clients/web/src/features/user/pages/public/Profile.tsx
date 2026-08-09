@@ -1,12 +1,8 @@
-import type { UserProfileLayoutProps } from "@/layouts/user";
-import { useOutletContext } from "react-router-dom";
-import { useUser } from "../../hooks/user.hooks";
-import { useSession } from "@/features/auth/hooks";
-
 import type { UserProfile } from "@campus/api";
 import type { PrivateUserResponse } from "../../api/user.client";
 import { PrivateProfile } from "../../components/profile/private-profie";
 import { PublicProfile } from "../../components/profile/public-profile";
+import { useUserOutlet } from "../../context/user-layout-context";
 
 function isPrivateUser(
   data: UserProfile | PrivateUserResponse,
@@ -14,20 +10,16 @@ function isPrivateUser(
   return data?.is_private;
 }
 
-
-
 const Profile: React.FC = () => {
-  const username = useOutletContext<UserProfileLayoutProps>();
-  const { data, error } = useUser(username as unknown as string);
-  const { data: currentUser } = useSession();
+  const { user, currentUser } = useUserOutlet();
 
-  if (!data) return <div>Not found {error?.message}</div>;
+  if (!user) return <div>Not found</div>;
 
-  if (isPrivateUser(data)) {
-    return <PrivateProfile data={data} />;
+  if (isPrivateUser(user)) {
+    return <PrivateProfile data={user as PrivateUserResponse} />;
   }
 
-  return <PublicProfile data={data} currentUser={currentUser} />;
+  return <PublicProfile data={user as UserProfile} currentUser={currentUser as UserProfile} />;
 };
 
 export default Profile;

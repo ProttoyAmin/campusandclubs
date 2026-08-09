@@ -4,7 +4,12 @@ export const userRoutes = {
         profile: {
             username: '/@/u/:username',
         },
-        settings: '@/u/:username/settings',
+        settings: {
+            base: '/@/u/:username/settings',
+            account: '/@/u/:username/settings/account',
+            affilications: '/@/u/:username/settings/affilications',
+            privacy: '/@/u/:username/settings/privacy',
+        },
     },
     public: {
         profile: '/@/u/:username',

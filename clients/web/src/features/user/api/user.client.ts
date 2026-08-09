@@ -24,7 +24,7 @@ export type PrivateUserResponse = {
   follow_status: string | null;
 };
 
-type UserResponse = AccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
+export type UserResponse = AccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
 
 export class UserClient extends BaseClient<
   AxiosResponse,
@@ -53,6 +53,13 @@ export class UserClient extends BaseClient<
       const response = await this.client.patch(this.endpoint + "users/me/", data);
       return response;
     }
+  
+  async fetchMe(): Promise<AxiosResponse<UserResponse>> {
+      const response = await this.client.get<UserResponse>(this.endpoint + "me/");
+      return response;
+  }
+
+
 
   async getUser(
     username: string,

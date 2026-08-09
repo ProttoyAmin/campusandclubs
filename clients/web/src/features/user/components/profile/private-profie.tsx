@@ -1,6 +1,5 @@
 
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -15,7 +14,7 @@ import {
 
 export const PrivateProfile: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
   return (
-    <Card className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
+    <div className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
       <CardHeader>
         <CardTitle className="flex justify-between ">
           <div>
@@ -50,6 +49,6 @@ export const PrivateProfile: React.FC<{ data: PrivateUserResponse }> = ({ data }
           </p>
         </div>
       </CardContent>
-    </Card>
+    </div>
   );
 };

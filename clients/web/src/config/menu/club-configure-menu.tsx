@@ -1,16 +1,8 @@
 import { paths, routes } from "@/settings/routes";
 import { House, LayoutList } from "lucide-react";
-// import type { MenuItemType } from "../_core";
 import { matchPath } from "react-router-dom";
+import type { MenuItemType } from "./main-menu";
 
-export type MenuItemType = {
-    id: number | string;
-    label: string;
-    icon?: React.ReactNode | ((icon: string) => React.ReactNode);
-    iconActive?: React.ReactNode | ((icon: string) => React.ReactNode);
-    link: string | ((id: string) => string);
-    isActive: (currentPath: string) => boolean;
-};
 
 export function isRouteActive(pattern: string, pathname: string) {
   return !!matchPath(pattern, pathname);

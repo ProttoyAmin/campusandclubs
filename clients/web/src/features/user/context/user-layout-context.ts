@@ -1,10 +1,6 @@
 import { useOutletContext } from "react-router-dom";
-import type { UserProfile } from "@campus/api";
-
-type UserOutletContext = {
-  user: UserProfile | undefined;
-};
+import type { UserProfileLayoutProps } from "@/layouts/user";
 
 export function useUserOutlet() {
-  return useOutletContext<UserOutletContext>();
+  return useOutletContext<UserProfileLayoutProps>();
 }

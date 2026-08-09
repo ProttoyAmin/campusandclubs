@@ -2,58 +2,67 @@ import { paths } from "@/settings/routes";
 import type React from "react";
 import { Link } from "react-router-dom";
 import NavTabs from "./nav-tabs";
-import { userMenu } from "@/config/menu/main-menu";
+import { userMenu, type MenuItemType } from "@/config/menu/main-menu";
 import { ModeToggle } from "@/shared/components/mode-toggle";
 import { useSession } from "@/features/auth/hooks";
 import { NavLink } from "react-router-dom";
-import { clubConfigureMenu } from "@/config/menu/club-configure-menu";
-import { useParams } from "react-router-dom";
+import { TextAlignJustify, Menu, MenuIcon } from "lucide-react";
+import { Button } from "design/components/ui/button";
+import SidebarDropDown from "@/components/sidebar-dropdown";
+import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
+
 
 interface SideBarProps {
-  for: "club" | "user";
+  main?: boolean;
+  className?: string;
+  menu?: (param: any) => MenuItemType[];
+  menuParam?: any;
 }
 
 const SideBar: React.FC<SideBarProps> = (props) => {
   const { data: currentUser } = useSession();
-  const { slug } = useParams();
   const clubs: any = currentUser?.clubs || [];
 
-  if (props.for === "club") {
+  if (props.main) {
     return (
-      <NavTabs
-        menu={clubConfigureMenu(slug || "")}
-        className="flex flex-col space-y-2 self-start"
-      />
+      <header
+        className={`min-h-screen p-4 sticky top-0 left-0 flex flex-col justify-between items-left ${props.className}`}
+      >
+        <Link to={paths.public.home} className="col-span-1 max-w-fit">
+          CampusandClubs
+        </Link>
+        <div className="">
+          <NavTabs
+            menu={userMenu(currentUser?.username || "")}
+            className="flex flex-col space-y-2 w-5/6 self-start"
+          />
+        </div>
+        <div className="flex flex-col space-y-2">
+          <h1 className="text-muted-foreground text-xs">Clubs</h1>
+          {clubs &&
+            clubs.map((club: any) => (
+              <NavLink
+                key={club.club_id}
+                to={paths.public.club.slug(club.club_slug)}
+                className="flex flex-col space-y-2 self-start"
+              >
+                {club?.club_name}
+              </NavLink>
+            ))}
+        </div>
+        <div className="">
+          <SidebarDropDown menu={SettingsDropdownMenu} trigger={<Button variant="ghost"><MenuIcon className="size-5" />More</Button>} />
+        </div>
+      </header>
     );
   }
 
   return (
-    <header className="min-h-screen p-4 sticky top-0 left-0 flex flex-col justify-between items-left">
-      <Link to={paths.public.home} className="col-span-1 max-w-fit">
-        CampusandClubs
-      </Link>
-      <div className="">
-        <NavTabs
-          menu={userMenu(currentUser?.username || "")}
-          className="flex flex-col space-y-2 w-5/6 self-start"
-        />
-      </div>
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-muted-foreground text-xs">Clubs</h1>
-        {clubs &&
-          clubs.map((club: any) => (
-            <NavLink
-              key={club.club_id}
-              to={paths.public.club.slug(club.club_slug)}
-              className="flex flex-col space-y-2 self-start"
-            >
-              {club.club_slug}
-            </NavLink>
-          ))}
-      </div>
-      <div className="">
-        <ModeToggle />
-      </div>
+    <header className={`${props.className}`}>
+      <NavTabs
+        menu={props.menu ? props.menu(props.menuParam) : []}
+        className="flex flex-col space-y-2 self-start"
+      />
     </header>
   );
 };

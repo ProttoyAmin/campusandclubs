@@ -15,6 +15,8 @@ class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView):
     def get_queryset(self) -> QuerySet[Post]:
         return self.get_service(self.request).list_posts()
 
+    
+
 
 class PostUpdateDestroyView(ServiceMixin[PostService], generics.RetrieveUpdateDestroyAPIView[Post]):
     serializer_class = PostSerializer

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'rest_framework.authtoken',
+    # 'social_django',
     'rest_framework_simplejwt.token_blacklist',
     'debug_toolbar',
     'channels',
@@ -111,6 +112,19 @@ LOGGING = {
     },
 }
 
+# AUTHENTICATION_BACKENDS = [
+#     "social_core.backends.google.GoogleOAuth2",
+#     "django.contrib.auth.backends.ModelBackend",
+# ]
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ["GOOGLE_CLIENT_ID"]
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ["GOOGLE_CLIENT_SECRET"]
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+#     "openid",
+#     "email",
+#     "profile",
+# ]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),

@@ -1,6 +1,5 @@
 
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -26,7 +25,7 @@ export const PublicProfile: React.FC<{
   currentUser: UserProfile;
 }> = ({ data, currentUser }) => {
   return (
-    <Card className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
+    <div className="">
       <CardHeader>
         <CardTitle className="flex justify-between ">
           <div>
@@ -36,16 +35,7 @@ export const PublicProfile: React.FC<{
                   {data.first_name} {data.last_name}
                 </h1>
               )}
-
-              {data.id === currentUser?.id ? (
-                <EditProfileDialog
-                  trigger={<Button variant={"outline"}>Edit</Button>}
-                  title="Edit Profile"
-                  data={data}
-                />
-              ) : (
-                <Button variant={"outline"}>Follow</Button>
-              )}
+              
             </div>
             <CardDescription>{data.username}</CardDescription>
             {data.bio && (
@@ -87,6 +77,6 @@ export const PublicProfile: React.FC<{
         </Tabs>
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </CardContent>
-    </Card>
+    </div>
   );
 };

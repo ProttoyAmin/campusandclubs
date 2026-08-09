@@ -1,21 +1,21 @@
 import { Outlet, useParams } from "react-router-dom";
 import SideBar from "@/components/sidebar";
-import { Card, CardContent } from "design/components/ui/card";
-import { useClubOutlet } from "@/features/club/context/club-layout-context";
+import { CardContent } from "design/components/ui/card";
 import { useClub } from "@/features/club/hooks/club.hooks";
+import { clubConfigureMenu } from "@/config/menu/club-configure-menu";
 
 const ClubConfigLayout = () => {
   const { slug } = useParams();
   const { data: club } = useClub(slug);
   return (
-    <div className="flex gap-4 w-full">
-      <SideBar for="club" />
-      <Card className="w-full bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
-        <CardContent>
-          <Outlet context={{ club }} />
-        </CardContent>
-      </Card>
-    </div>
+    <CardContent className="flex w-full gap-4">
+      <div className="relative w-2/6 border-r pr-4">
+        <SideBar menu={clubConfigureMenu} menuParam={slug} className="sticky top-0 left-0"/>
+      </div>
+      <div className="w-3/5 overflow-hidden">
+        <Outlet context={{ club }} />
+      </div>
+    </CardContent>
   );
 };
 

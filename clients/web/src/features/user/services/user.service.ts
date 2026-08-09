@@ -26,10 +26,8 @@ export class UserService {
   }
 
   async me() {
-    // const response = await accountsAuthUsersMeRetrieve({
-    //   client: this.api.client,
-    // })
-    // return response
+    const response = await this.userClient.fetchMe()
+    return response.data
   }
 
   async userByUsername(username: string) {

@@ -5,6 +5,8 @@ import SideBar from "@/components/sidebar";
 import PageHeaderProvider from "@/providers/page-header-provider";
 import Create from "@/components/create";
 import Guard from "@/guards/guard";
+import { Toaster } from "design/components/ui/toast";
+
 
 export type MainLayoutContext = {
   user: {
@@ -26,7 +28,7 @@ const MainLayout: React.FC = () => {
       <PageHeaderProvider>
           <div className="flex relative h-screen overflow-hidden">
             <div className="w-1/6 container">
-              <SideBar for="user" />
+              <SideBar main />
             </div>
             <div className="w-5/6 ps-40 container pt-2">
               <Outlet />
@@ -35,6 +37,7 @@ const MainLayout: React.FC = () => {
               <Create />
             </div>
           </div>
+          <Toaster />
       </PageHeaderProvider>
       </Guard>
     </Suspense>

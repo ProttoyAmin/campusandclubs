@@ -1,19 +1,22 @@
 import React from "react";
 import { useParams, Outlet, useNavigate } from "react-router-dom";
-import { Button } from "design/components/ui/button";
-import { ArrowLeftIcon, MoreHorizontalIcon, Search } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
+import { Card } from "design/components/ui/card";
+import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
+import { useUser } from "@/features/user/hooks/user.hooks";
+import type { UserResponse } from "@/features/user/api/user.client";
+import { useSession } from "@/features/auth/hooks";
 
 export type UserProfileLayoutProps = {
-  username: string;
+  user: UserResponse;
+  currentUser: UserResponse;
 };
 
 export const UserProfileLayout: React.FC = () => {
   const { username } = useParams();
-  
+  const { data: user } = useUser(username as string);
+  const { data: currentUser } = useSession();
   const navigate = useNavigate();
-  const location = useLocation();
   const pageHeader = usePageHeader();
 
   React.useEffect(() => {
@@ -23,39 +26,23 @@ export const UserProfileLayout: React.FC = () => {
   React.useEffect(() => {
     pageHeader.setActions(
       <>
-          <div className="flex gap-2 items-center">
-            <Button
-              variant="ghost"
-              className={`rounded-full ${location.pathname === document.location.pathname ? 'invisible' : ''}`}
-              size="icon"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeftIcon className="size-5" />
-            </Button>
-            <p className="text-lg">{username}</p>
-          </div>
-        <div className="flex gap-2">
-          <Button variant={"ghost"} className={"rounded-full"} size="icon">
-            <Search className="size-5" />
-          </Button>
-          <Button variant={"ghost"} className={"rounded-full"} size="icon">
-            <MoreHorizontalIcon className="size-5" />
-          </Button>
-        </div>
+        <ProfileLayoutHeader user={user} currentUser={currentUser} />
       </>,
     );
 
     return () => {
       pageHeader.clearActions();
     };
-  }, [username, navigate, pageHeader.setActions, pageHeader.clearActions]);
+  }, [username, user, navigate, pageHeader.setActions, pageHeader.clearActions]);
 
   return (
-    <section className="flex flex-col gap-8 w-2xl">
-      <div className="flex justify-between items-center">{pageHeader.actions}</div>
-      <div className="">
-        <Outlet context={username} />
+    <section className="flex flex-col gap-8 max-w-3xl justify-around">
+      <div className="flex justify-between items-center p-4">
+        {pageHeader.actions}
       </div>
+      <Card className="w-full bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
+        <Outlet context={{ user, currentUser }} />
+      </Card>
     </section>
   );
 };
