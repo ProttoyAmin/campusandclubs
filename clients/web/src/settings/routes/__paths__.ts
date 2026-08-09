@@ -18,6 +18,30 @@ export const paths = {
         }),
     },
 
+    club: {
+      config: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.base, {
+          slug,
+        }),
+      permissions: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.permissions, {
+          slug,
+        }),
+      members: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.members, {
+          slug,
+        }),
+
+      requests: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.requests, {
+          slug,
+        }),
+      settings: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.settings, {
+          slug,
+        }),
+    }
+
     // auth: {
     //   activation: routes.auth.private.activation,
     // }
@@ -35,7 +59,7 @@ export const paths = {
 
     club: {
       slug: (slug: string) =>
-        generateRouteFromPath(routes.club.public.slug, {
+        generateRouteFromPath(routes.club.public.base, {
           slug,
         }),
     },

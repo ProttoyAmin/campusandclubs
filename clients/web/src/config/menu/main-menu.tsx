@@ -6,7 +6,7 @@ import { matchPath } from "react-router-dom";
 export type MenuItemType = {
     id: number | string;
     label: string;
-    icon?: React.ReactNode | ((icon: string) => React.ReactNode);
+    icon?: React.ReactNode | ((icon: string) => React.ReactNode) | string;
     iconActive?: React.ReactNode | ((icon: string) => React.ReactNode);
     link: string | ((id: string) => string);
     isActive: (currentPath: string) => boolean;

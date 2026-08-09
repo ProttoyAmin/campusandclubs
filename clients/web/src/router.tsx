@@ -15,24 +15,27 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
+        id: "home",
         children: [{ path: routes.home, element: <App /> }],
       },
-
       {
-        element: <AuthLayout />,
-        children: [...authRoutes],
-      },
-
-      {
+        id: "user",
         element: <UserProfileLayout />,
         children: [...userRoutes],
       },
 
       {
+        id: "club",
         element: <ClubMainLayout />,
         children: [...clubRoutes],
       },
     ],
+  },
+
+  {
+    id: "auth",
+    element: <AuthLayout />,
+    children: [...authRoutes],
   },
 
   {

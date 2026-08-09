@@ -1,7 +1,6 @@
 import type {
   ActivationRequest,
   CustomTokenObtainPairRequestWritable,
-  UserProfile,
   AccountsAuthUsersMeRetrieveResponse
 } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";

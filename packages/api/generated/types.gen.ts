@@ -98,7 +98,14 @@ export type ClubDetail = {
   status?: ClubDetailStatusEnum;
   scope?: ScopeEnum;
   category?: number | null;
-  readonly application_status: string | null;
+  readonly application: {
+    id: string;
+    club: string;
+    applicant: string;
+    message: string;
+    status: string;
+    created_at: string;
+  };
   readonly user_role: {
     id: number;
     name: string;
@@ -330,18 +337,14 @@ export type MediaTypeEnum = "IMAGE" | "VIDEO";
 
 export type MembershipApplication = {
   readonly id: string;
-  status?: Status99fEnum;
+  club: string;
+  applicant: string;
   /**
    * Optional note from the applicant, especially useful when the club has no form.
    */
   message?: string | null;
-  reviewed_at?: string | null;
+  status?: Status99fEnum;
   readonly created_at: string;
-  readonly updated_at: string;
-  club: string;
-  applicant: string;
-  form?: number | null;
-  reviewed_by?: string | null;
 };
 
 /**
@@ -365,16 +368,13 @@ export type MembershipApplicationCreateRequest = {
 };
 
 export type MembershipApplicationRequest = {
-  status?: Status99fEnum;
+  club: string;
+  applicant: string;
   /**
    * Optional note from the applicant, especially useful when the club has no form.
    */
   message?: string | null;
-  reviewed_at?: string | null;
-  club: string;
-  applicant: string;
-  form?: number | null;
-  reviewed_by?: string | null;
+  status?: Status99fEnum;
 };
 
 export type NullEnum = never;
@@ -1337,16 +1337,13 @@ export type InstituteDetailWritable = {
 };
 
 export type MembershipApplicationWritable = {
-  status?: Status99fEnum;
+  club: string;
+  applicant: string;
   /**
    * Optional note from the applicant, especially useful when the club has no form.
    */
   message?: string | null;
-  reviewed_at?: string | null;
-  club: string;
-  applicant: string;
-  form?: number | null;
-  reviewed_by?: string | null;
+  status?: Status99fEnum;
 };
 
 /**

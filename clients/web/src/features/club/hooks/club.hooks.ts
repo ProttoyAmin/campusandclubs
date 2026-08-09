@@ -55,3 +55,17 @@ export const useApplyToClub = (id: string, slug: string) => {
   });
 };
 
+export const useWithdraw = (id: string, applicationId: string, slug: string) => {
+  return useMutation({
+    mutationFn: () => {
+      const response = club.withdrawApplication(id, applicationId)
+      return response
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug] });
+    },
+    onError: (error: JoinErrorResponse) => {
+      console.log("Error withdrawing application:", error.detail);
+    },
+  });
+};

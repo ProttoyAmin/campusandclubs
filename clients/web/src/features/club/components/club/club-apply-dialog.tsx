@@ -8,6 +8,7 @@ import {
 import ClubApplicationForm from "@/components/forms/club/apply-club";
 import type { MembershipApplicationCreateRequest } from "@campus/api";
 import { useApplyToClub } from "../../hooks/club.hooks";
+import { useParams } from "react-router-dom";
 
 type DialogProps = {
   open: boolean;
@@ -18,14 +19,15 @@ type DialogProps = {
   
 };
 
-export function ClubJoinDialog({
+export function ClubApplicationDialog({
   open,
   onOpenChange,
   title,
   description,
   clubId
 }: DialogProps) {
-  const { mutate: applyToClub } = useApplyToClub(clubId || "", "");
+  const { slug } = useParams();
+  const { mutate: applyToClub } = useApplyToClub(clubId || "", slug || "");
   const onSubmit = (data: MembershipApplicationCreateRequest) => {
     console.log(data);
     applyToClub(data, { onSuccess: () => onOpenChange(false) });

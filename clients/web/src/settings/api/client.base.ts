@@ -1,6 +1,5 @@
 // shared/api/base.client.ts
 // import { api, Client } from "./client";
-import { config } from "../app";
 import { api } from "./api";
 import type { ApiResponse } from "./types";
 

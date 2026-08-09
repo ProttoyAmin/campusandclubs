@@ -9,12 +9,12 @@ interface NavTabsProps {
   id?: string;
 }
 
-const NavTabs = ({ menu, className, onlyIcon, avatar, id }: NavTabsProps) => {
+const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps) => {
   const { pathname } = useLocation();
 
   const renderLabel = (item: MenuItemType, active: boolean) => {
-    if (typeof item.icon === "function") return item.icon(avatar || "");
     if (!onlyIcon) return item.label;
+    if (typeof item.icon === "function") return item.icon(avatar || "");
     if (onlyIcon && active) {
       return typeof item.iconActive === "function"
         ? item.iconActive(avatar || "")

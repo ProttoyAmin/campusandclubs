@@ -8,7 +8,7 @@ from apps.clubs.serializers import RoleSerializer
 class MembershipApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipApplication
-        fields = "__all__"
+        fields = ['id', 'club', 'applicant', 'message', 'status', 'created_at']
 
 
 

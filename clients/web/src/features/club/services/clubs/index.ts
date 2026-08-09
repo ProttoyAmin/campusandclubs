@@ -1,15 +1,12 @@
 import type { MembershipApplicationCreateRequest } from "@campus/api";
 import { clubClient } from "../../http/club.http";
-// import type { CustomTokenObtainPairWritable  } from "@campus/api";
-// import type { RegisterWritable } from "@campus/api";
-// import { storage } from "@/settings/storage/";
-// import { api } from "@/settings/api";
-// import {
-//     accountsAuthUsersUserClubsRetrieve
-// } from '@campus/api'
+import { clubApplicationsService } from "./applications.service";
+import { membershipService } from "./membership.service";
 
 class ClubService {
     private clubClient = clubClient;
+    public application = clubApplicationsService;
+    public members = membershipService;
     constructor() {}
 
     async clubs(): Promise<any> {
@@ -34,6 +31,11 @@ class ClubService {
 
     async apply(clubId: string, data: MembershipApplicationCreateRequest) {
         const res = await this.clubClient.applyToClub(clubId, data);
+        return res.data;
+    }
+
+    async withdrawApplication(clubId: string, applicationId: string) {
+        const res = await this.clubClient.withdrawFromClub(clubId, applicationId);
         return res.data;
     }
 }

@@ -1,0 +1,67 @@
+import { paths, routes } from "@/settings/routes";
+import { House, LayoutList } from "lucide-react";
+// import type { MenuItemType } from "../_core";
+import { matchPath } from "react-router-dom";
+
+export type MenuItemType = {
+    id: number | string;
+    label: string;
+    icon?: React.ReactNode | ((icon: string) => React.ReactNode);
+    iconActive?: React.ReactNode | ((icon: string) => React.ReactNode);
+    link: string | ((id: string) => string);
+    isActive: (currentPath: string) => boolean;
+};
+
+export function isRouteActive(pattern: string, pathname: string) {
+  return !!matchPath(pattern, pathname);
+}
+
+export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
+  slug: string
+) => [
+  {
+    id: 1,
+    label: "Info",
+    icon: <House size={18} />,
+    iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.club.config(slug),
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.config.base, currentPath),
+  },
+  {
+    id: 2,
+    label: "Permissions",
+    icon: <LayoutList size={18} />,
+    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.club.permissions(slug),
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.config.permissions, currentPath),
+  },
+  {
+    id: 3,
+    label: "Requests",
+    icon: <LayoutList size={18} />,
+    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.club.requests(slug),
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.config.requests, currentPath),
+  },
+  {
+    id: 4,
+    label: "Members",
+    icon: <LayoutList size={18} />,
+    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.club.members(slug),
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.config.members, currentPath),
+  },
+  {
+    id: 5,
+    label: "Settings",
+    icon: <LayoutList size={18} />,
+    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.club.settings(slug),
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.config.settings, currentPath),
+  },
+];

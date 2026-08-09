@@ -30,16 +30,16 @@ export const UserProfileLayout: React.FC = () => {
               size="icon"
               onClick={() => navigate(-1)}
             >
-              <ArrowLeftIcon className="h-4 w-4" />
+              <ArrowLeftIcon className="size-5" />
             </Button>
             <p className="text-lg">{username}</p>
           </div>
         <div className="flex gap-2">
           <Button variant={"ghost"} className={"rounded-full"} size="icon">
-            <Search className="h-4 w-4" />
+            <Search className="size-5" />
           </Button>
           <Button variant={"ghost"} className={"rounded-full"} size="icon">
-            <MoreHorizontalIcon className="h-4 w-4" />
+            <MoreHorizontalIcon className="size-5" />
           </Button>
         </div>
       </>,

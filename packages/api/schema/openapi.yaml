@@ -2932,9 +2932,8 @@ components:
         category:
           type: integer
           nullable: true
-        application_status:
+        application:
           type: string
-          nullable: true
           readOnly: true
         user_role:
           type: object
@@ -2986,7 +2985,7 @@ components:
           format: date-time
           readOnly: true
       required:
-      - application_status
+      - application
       - avatar
       - banner
       - created_at
@@ -3485,46 +3484,30 @@ components:
           type: string
           format: uuid
           readOnly: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Status99fEnum'
-          default: pending
-        message:
-          type: string
-          nullable: true
-          description: Optional note from the applicant, especially useful when the
-            club has no form.
-        reviewed_at:
-          type: string
-          format: date-time
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         club:
           type: string
           format: uuid
         applicant:
           type: string
           format: uuid
-        form:
-          type: integer
-          nullable: true
-        reviewed_by:
+        message:
           type: string
-          format: uuid
           nullable: true
+          description: Optional note from the applicant, especially useful when the
+            club has no form.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status99fEnum'
+          default: pending
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - applicant
       - club
       - created_at
       - id
-      - updated_at
     MembershipApplicationCreate:
       type: object
       description: Serializer for creating a membership application.
@@ -3581,32 +3564,21 @@ components:
     MembershipApplicationRequest:
       type: object
       properties:
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Status99fEnum'
-          default: pending
-        message:
-          type: string
-          nullable: true
-          description: Optional note from the applicant, especially useful when the
-            club has no form.
-        reviewed_at:
-          type: string
-          format: date-time
-          nullable: true
         club:
           type: string
           format: uuid
         applicant:
           type: string
           format: uuid
-        form:
-          type: integer
-          nullable: true
-        reviewed_by:
+        message:
           type: string
-          format: uuid
           nullable: true
+          description: Optional note from the applicant, especially useful when the
+            club has no form.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status99fEnum'
+          default: pending
       required:
       - applicant
       - club

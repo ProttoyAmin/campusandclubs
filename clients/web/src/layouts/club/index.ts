@@ -1,1 +1,1 @@
-export * from './club-page';
+export * from './club-layout';
