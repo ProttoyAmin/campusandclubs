@@ -1,4 +1,5 @@
 # apps/accounts/models.py
+from django.contrib.contenttypes.fields import GenericRelation
 import uuid
 from typing import TYPE_CHECKING
 from django.db import models
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
     from apps.clubs.models import Club, Event
     from django.db.models.fields.related_descriptors import RelatedManager
     from apps.institutes.models import InstituteAffiliate
+    from apps.media.models import Media
 
 
 class User(AbstractUser):
@@ -43,23 +45,9 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    # institute = models.ForeignKey(
-    #     "institutes.Institute",
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     related_name="users"
-    # )
     professional_email = models.EmailField(
         unique=True, blank=True, null=True, default=None)
     student_id = models.CharField(unique=True, blank=True, null=True)
-    # department = models.ForeignKey(
-    #     "institutes.Department",
-    #     on_delete=models.SET_NULL,
-    #     null=True,
-    #     blank=True,
-    #     related_name="users"
-    # )
     year = models.PositiveSmallIntegerField(blank=True, null=True)
     level = models.PositiveBigIntegerField(blank=True, null=True)
     email_verified = models.BooleanField(default=False)
@@ -71,6 +59,11 @@ class User(AbstractUser):
         default=None
     )
     avatar = models.URLField(blank=True, null=True)
+
+    # GENERIC RELATION FIELDS
+
+    media = GenericRelation('media.Media', related_query_name='users')
+
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(
         max_length=20, choices=GENDER_TYPES, blank=True, null=True)
@@ -115,6 +108,7 @@ class User(AbstractUser):
         events: RelatedManager["Event"]
         memberships: RelatedManager["Post"]
         affiliations: RelatedManager["InstituteAffiliate"]
+        media: RelatedManager["Media"]
 
     def __str__(self):
         return f'{self.username} - {self.id}'

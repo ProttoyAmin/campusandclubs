@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import dotenv
 from os import path, getenv
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,6 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third parties
+    'cloudinary',
     'rest_framework',
     'djoser',
     'corsheaders',
@@ -99,6 +101,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.clubs',
     'apps.interactions',
+    'apps.media',
     'apps.posts',
     'apps.connections',
     'apps.notifications',
@@ -313,6 +316,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+cloudinary.config(
+    cloud_name = getenv("CLOUDINARY_CLOUD_NAME", ""),
+    api_key = getenv("CLOUDINARY_KEY", ""),
+    api_secret = getenv("CLOUDINARY_SECRET", ""),
+    secure = True
+)
 
 STATIC_URL = 'static/'
 

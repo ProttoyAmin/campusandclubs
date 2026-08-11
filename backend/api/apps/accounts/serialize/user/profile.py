@@ -16,9 +16,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserMinimalSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar', 'professional_email', 'profile_picture']
+        fields = ['id', 'username', 'email', 'avatar', 'professional_email', 'profile_picture',]
+
+    def get_avatar(self, obj: models.User):
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.filter(role="avatar").first()
+        
+        if not media:
+            return None
+        
+        serializer = MediaListSerializer(media, context=self.context)
+        return serializer.data['file']['url']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Detailed user profile with club, post, and follow information"""
@@ -27,11 +38,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     # department = serializers.SerializerMethodField()
     
     # Institute info
-    institute = serializers.CharField(
-        source='institute.name', read_only=True)
-    institute_id = serializers.CharField(
-        source='institute.id', read_only=True
-    )
 
     affiliations = InstituteAffiliateForUserSerializer(many=True, read_only=True)
     
@@ -39,6 +45,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
     club_count = serializers.SerializerMethodField()
     clubs = serializers.SerializerMethodField()
     clubs_url = serializers.SerializerMethodField()
+
+    # Media
+    media = serializers.SerializerMethodField()
 
     # Post stats
     user_post_count = serializers.IntegerField(read_only=True)
@@ -77,8 +86,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         visible_fields = [
-            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'institute', 'institute_id', 'url', 'gender', 'affiliations',
-            'student_id', 'year', 'level', 'type', 'preferred_email',
+            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'url', 'gender', 'affiliations',
+            'student_id', 'year', 'level', 'type', 'preferred_email', 'media',
             'profile_picture_url', 'avatar', 'bio', 'location', 'website', 'date_of_birth',
             'email_verified', 'is_private', 'status', 'is_status_manual',
             'club_count', 'clubs', 'clubs_url',
@@ -169,12 +178,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Alias for profile_picture_url"""
         return self.get_profile_picture_url(obj)
 
-    # def get_affiliations(self, obj: models.User):
-    #     affiliations = obj.affiliations.all()
-    #     return {
-    #         'affiliations': affiliations,
-    #         'count': affiliations.count()
-    #     }
+    
+    def get_media(self, obj: models.User):
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.all()
+        return MediaListSerializer(media, many=True, context=self.context).data
 
     def get_profile_picture_url(self, obj: models.User):
         if obj.avatar:

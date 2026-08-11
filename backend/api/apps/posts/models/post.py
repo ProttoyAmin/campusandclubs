@@ -62,6 +62,7 @@ class Post(models.Model):
     )  # For share/repost functionality
 
     # Generic relations for likes, comments, shares
+    media = GenericRelation('media.Media', related_query_name='posts')
     likes = GenericRelation('interactions.Like', related_query_name='posts')
     comments = GenericRelation(
         'interactions.Comment', related_query_name='posts')

@@ -101,6 +101,8 @@ class ClubSerializer(serializers.ModelSerializer):
     origin = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
 
+    media = serializers.SerializerMethodField()
+
     total_members = serializers.SerializerMethodField()
     total_events = serializers.SerializerMethodField()
     total_posts = serializers.SerializerMethodField()
@@ -114,14 +116,14 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'owner', 'origin', 'about',
+        fields = ['id', 'name', 'owner', 'origin', 'about', "media",
                   'avatar', 'banner', 'privacy','allow_public_posts', 'is_member',
                   'total_members', 'total_events', 'total_posts', 'is_public',
                   'club_url', 'join_url', 'leave_url', 'members_url'
                   ]
         read_only_fields = ['id']
 
-    def _get_request(self) -> Request | None:
+    def _get_request(self) -> Request:
         return self.context.get('request')
 
     def get_total_members(self, obj: Club) -> int:
@@ -157,7 +159,10 @@ class ClubSerializer(serializers.ModelSerializer):
         return request.build_absolute_uri(reverse('clubs:join_club', kwargs={'pk': obj.pk}))
 
     def get_is_member(self, obj: Club) -> bool:
-        return obj.members.filter(id=self.context['request'].user.id).exists()
+        request = self._get_request()
+        if not (request and request.user.is_authenticated):
+            return False
+        return Membership.objects.filter(user=request.user, club=obj).exists()
 
 
     def get_origin(self, obj):
@@ -175,6 +180,11 @@ class ClubSerializer(serializers.ModelSerializer):
                 'email': obj.owner.email,
                 'avatar': obj.owner.avatar if obj.owner.avatar else None
             }
+
+    def get_media(self, obj: Club):
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.all()
+        return MediaListSerializer(media, many=True, context=self.context).data
     
 
 

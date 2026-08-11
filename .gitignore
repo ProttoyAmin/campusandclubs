@@ -24,7 +24,7 @@ ENV/
 *.local
 
 # Django
-media/
+storage/
 staticfiles/
 
 # Node.js

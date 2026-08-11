@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from typing import Any, TYPE_CHECKING
 import uuid
 
@@ -18,6 +19,7 @@ from apps.clubs.models.club.club_category import Category
 
 if TYPE_CHECKING:
     from apps.posts.models import Post
+    from apps.media.models import Media
     from apps.clubs.models import Event, Membership, MembershipApplication, Role
     from django.db.models.fields.related_descriptors import RelatedManager
 
@@ -71,6 +73,9 @@ class Club(models.Model):
     avatar = models.URLField(blank=True, null=True)
     banner = models.URLField(blank=True, null=True)
 
+    # generic relation fields
+    media = GenericRelation('media.Media', related_query_name='clubs')
+
     status = models.CharField(
         max_length=20, choices=ClubStatus.choices, default=ClubStatus.ACTIVE
     )
@@ -120,6 +125,7 @@ class Club(models.Model):
         events: RelatedManager["Event"]
         memberships: RelatedManager["Membership"]
         applications: RelatedManager["MembershipApplication"]
+        media: RelatedManager["Media"]
 
     def clean(self) -> None:
         allowed = _ALLOWED_JOIN_MODES.get(self.privacy, ())

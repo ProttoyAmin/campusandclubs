@@ -35,6 +35,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
+    media = serializers.SerializerMethodField()
 
     is_public = serializers.SerializerMethodField()
     application = serializers.SerializerMethodField()
@@ -49,7 +50,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
         fields = [
-            'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'privacy',
+            'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
             'member_count', 'join_mode', 'status', 'scope', 'category', 'application',
             'user_role', 'is_member', 'is_owner',
@@ -80,6 +81,11 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     def get_banner(self, obj: Club) -> str | None:
         return obj.banner
+
+    def get_media(self, obj: Club):
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.all()
+        return MediaListSerializer(media, many=True, context=self.context).data
 
     def get_is_public(self, obj: Club) -> bool:
         return obj.privacy == 'public'

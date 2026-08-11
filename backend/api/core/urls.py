@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/posts/', include('apps.posts.urls')),
     path('api/connections/', include('apps.connections.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
+    path('api/media/', include('apps.media.urls')),
 
     path('api/_allauth/', include('allauth.headless.urls')),
     path('accounts/', include('allauth.urls')),
