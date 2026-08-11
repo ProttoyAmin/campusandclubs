@@ -1,4 +1,5 @@
 import type { MenuItemType } from "@/config/menu/main-menu";
+import { LogoutAlertDialog } from "@/features/auth/components/logout-dialog";
 import { ModeToggle } from "@/shared/components/mode-toggle";
 import {
   DropdownMenu,
@@ -11,7 +12,6 @@ import {
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 type DropDownProps = {
   trigger: React.ReactElement;
   menu: () => MenuItemType[];
@@ -19,7 +19,7 @@ type DropDownProps = {
 
 const SidebarDropDown = (props: DropDownProps) => {
   const navigate = useNavigate();
-  console.log(props);
+  const [logoutAlertModal, setLogoutAlertModal] = React.useState(false);
 
   const unLink = (item: MenuItemType["link"]) => {
     const link = typeof item === "function" ? item("") : item;
@@ -27,27 +27,40 @@ const SidebarDropDown = (props: DropDownProps) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger render={props.trigger} />
-      <DropdownMenuContent className={`w-fit`}>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className={'mb-2'}>
-            <ModeToggle />
-          </DropdownMenuLabel>
-          {props.menu().map((item: MenuItemType) => (
+    <>
+      <LogoutAlertDialog
+        open={logoutAlertModal}
+        onOpenChange={setLogoutAlertModal}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger render={props.trigger} />
+        <DropdownMenuContent className={`w-fit`}>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className={"mb-2"}>
+              <ModeToggle />
+            </DropdownMenuLabel>
+            {props.menu().map((item: MenuItemType) => (
+              <DropdownMenuItem
+                key={item.id}
+                onClick={() => {
+                  navigate(unLink(item.link));
+                }}
+                className="cursor-pointer"
+              >
+                {item.label}
+              </DropdownMenuItem>
+            ))}
             <DropdownMenuItem
-              key={item.id}
-              onClick={() => {
-                navigate(unLink(item.link));
-              }}
-              className="cursor-pointer"
+              onClick={() => setLogoutAlertModal(true)}
+              variant="destructive"
+              className={"cursor-pointer"}
             >
-              {item.label}
+              Logout
             </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 

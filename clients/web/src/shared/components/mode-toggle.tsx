@@ -48,7 +48,13 @@ export function ModeToggle({ dropdown = false }) {
   return (
     <ToggleGroup
       variant="outline"
-      defaultValue={theme === "light" ? ["light"] : theme === "dark" ? ["dark"] : ["auto"] as const}
+      defaultValue={
+        theme === "light"
+          ? ["light"]
+          : theme === "dark"
+            ? ["dark"]
+            : (["auto"] as const)
+      }
       spacing={0}
       size="lg"
       className={`border`}
@@ -60,9 +66,9 @@ export function ModeToggle({ dropdown = false }) {
         className={`border-none`}
         onClick={() => setTheme("light")}
       >
-        <Button variant="ghost">
-          Light
-        </Button>
+        {/* <Button variant="ghost"> */}
+        Light
+        {/* </Button> */}
       </ToggleGroupItem>
       <ToggleGroupItem
         value="dark"
@@ -71,9 +77,9 @@ export function ModeToggle({ dropdown = false }) {
         className={`border-none`}
         onClick={() => setTheme("dark")}
       >
-        <Button variant="ghost">
-          Dark
-        </Button>
+        {/* <Button variant="ghost"> */}
+        Dark
+        {/* </Button> */}
       </ToggleGroupItem>
       <ToggleGroupItem
         value="auto"
@@ -81,9 +87,9 @@ export function ModeToggle({ dropdown = false }) {
         className={`border-none`}
         onClick={() => setTheme("system")}
       >
-        <Button variant="ghost">
-          Auto
-        </Button>
+        {/* <Button variant="ghost"> */}
+        Auto
+        {/* </Button> */}
       </ToggleGroupItem>
     </ToggleGroup>
   );

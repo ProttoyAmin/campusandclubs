@@ -4,6 +4,2556 @@ info:
   version: 1.0.0
   description: Campus & Clubs Backend API
 paths:
+  /api/accounts/auth/{user_id}/all/:
+    get:
+      operationId: api_accounts_auth_all_retrieve
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_accounts_auth_all_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_accounts_auth_all_partial_update
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/accounts/auth/{user_id}/posts/:
+    get:
+      operationId: api_accounts_auth_posts_retrieve
+      description: |-
+        Get all posts created by a user (both user posts and club posts)
+        Query params:
+        - source: all|user|club (default: all)
+        - post_type: TEXT|IMAGE|VIDEO (default: all)
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/all/:
+    get:
+      operationId: list_users
+      description: Returns a paginated list of users.
+      summary: List users
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Sort field, e.g. `-date_joined`, `username`.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by username, first name, or last name.
+      tags:
+      - Users
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserProfileList'
+          description: Paginated list of users.
+        '401':
+          description: Unauthorized.
+    post:
+      operationId: list_users_2
+      description: Returns a paginated list of users.
+      summary: List users
+      parameters:
+      - in: query
+        name: ordering
+        schema:
+          type: string
+        description: Sort field, e.g. `-date_joined`, `username`.
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search by username, first name, or last name.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserProfileList'
+          description: Paginated list of users.
+        '401':
+          description: Unauthorized.
+  /api/accounts/auth/jwt/create/:
+    post:
+      operationId: api_accounts_auth_jwt_create_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/accounts/auth/jwt/refresh/:
+    post:
+      operationId: api_accounts_auth_jwt_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+          description: ''
+  /api/accounts/auth/jwt/verify/:
+    post:
+      operationId: api_accounts_auth_jwt_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/login/:
+    post:
+      operationId: login
+      description: Authenticates a user with email or username and returns tokens.
+      summary: Log in
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+            examples:
+              BasicLogin:
+                value:
+                  username_or_email: asha@example.com
+                  password: s3cret!
+                summary: Basic login
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: Login succeeded.
+        '401':
+          description: Invalid credentials.
+  /api/accounts/auth/logout/:
+    post:
+      operationId: api_accounts_auth_logout_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/me/:
+    get:
+      operationId: api_accounts_auth_me_retrieve
+      description: Get current authenticated user's profile
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/refresh/:
+    post:
+      operationId: api_accounts_auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+          description: ''
+  /api/accounts/auth/request-info/:
+    get:
+      operationId: api_accounts_auth_request_info_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/users/:
+    get:
+      operationId: api_accounts_auth_users_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserMinimal'
+          description: ''
+    post:
+      operationId: api_accounts_auth_users_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/accounts/auth/users/{id}/:
+    get:
+      operationId: api_accounts_auth_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMinimal'
+          description: ''
+    put:
+      operationId: api_accounts_auth_users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserMinimalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMinimal'
+          description: ''
+    patch:
+      operationId: api_accounts_auth_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMinimalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMinimalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMinimalRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMinimal'
+          description: ''
+    delete:
+      operationId: api_accounts_auth_users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this user.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/accounts/auth/users/activation/:
+    post:
+      operationId: api_accounts_auth_users_activation_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ActivationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ActivationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activation'
+          description: ''
+  /api/accounts/auth/users/me/:
+    get:
+      operationId: api_accounts_auth_users_me_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: api_accounts_auth_users_me_update
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: api_accounts_auth_users_me_partial_update
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    delete:
+      operationId: api_accounts_auth_users_me_destroy
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/accounts/auth/users/resend_activation/:
+    post:
+      operationId: api_accounts_auth_users_resend_activation_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/accounts/auth/users/reset_password/:
+    post:
+      operationId: api_accounts_auth_users_reset_password_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/accounts/auth/users/reset_password_confirm/:
+    post:
+      operationId: api_accounts_auth_users_reset_password_confirm_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirmRetype'
+          description: ''
+  /api/accounts/auth/users/reset_username/:
+    post:
+      operationId: api_accounts_auth_users_reset_username_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendEmailResetRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailReset'
+          description: ''
+  /api/accounts/auth/users/reset_username_confirm/:
+    post:
+      operationId: api_accounts_auth_users_reset_username_confirm_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsernameResetConfirmRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsernameResetConfirm'
+          description: ''
+  /api/accounts/auth/users/set_password/:
+    post:
+      operationId: api_accounts_auth_users_set_password_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetPasswordRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetPassword'
+          description: ''
+  /api/accounts/auth/users/set_username/:
+    post:
+      operationId: api_accounts_auth_users_set_username_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUsernameRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUsernameRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SetUsernameRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetUsername'
+          description: ''
+  /api/accounts/auth/users/user/{username}/:
+    get:
+      operationId: api_accounts_auth_users_user_retrieve
+      description: User Detail View
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: api_accounts_auth_users_user_update
+      description: User Detail View
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: api_accounts_auth_users_user_partial_update
+      description: User Detail View
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    delete:
+      operationId: api_accounts_auth_users_user_destroy
+      description: User Detail View
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/accounts/auth/users/user/{username}/activity/:
+    get:
+      operationId: api_accounts_auth_users_user_activity_retrieve
+      description: Get user's recent activity (likes, comments, shares)
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/users/user/{username}/clubs/:
+    get:
+      operationId: api_accounts_auth_users_user_clubs_retrieve
+      description: Get all clubs a user has joined
+      parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/auth/validate/:
+    post:
+      operationId: api_accounts_auth_validate_create
+      description: Validate user type and institute.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserTypeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserTypeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserTypeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserType'
+          description: ''
+  /api/activities/comments/:
+    get:
+      operationId: api_activities_comments_retrieve
+      description: |-
+        Get all comments for a specific content object
+        Query params:
+        - content_type: app_label.model_name
+        - object_id: ID of the object
+        - parent: (optional) ID of parent comment for nested replies
+
+        Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/activities/comments/{comment_id}/:
+    get:
+      operationId: api_activities_comments_retrieve_2
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: api_activities_comments_partial_update
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: api_activities_comments_destroy
+      description: |-
+        Get, update, or delete a specific comment
+        - GET: Anyone can view
+        - PATCH: Only author can edit
+        - DELETE: Author can delete
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/activities/comments/{comment_id}/replies/:
+    get:
+      operationId: api_activities_comments_replies_retrieve
+      description: Get all replies to a specific comment
+      parameters:
+      - in: path
+        name: comment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/activities/comments/create/:
+    post:
+      operationId: api_activities_comments_create_create
+      description: |-
+        Create a comment on any content object
+        Body: {
+            "content_type": "clubs.clubpost",
+            "object_id": 123,
+            "content": "Great post!",
+            "parent": null  // Optional: ID of parent comment for replies
+        }
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/activities/likes/:
+    get:
+      operationId: api_activities_likes_retrieve
+      description: |-
+        Get all likes for a specific content object
+        Query params:
+        - content_type: app_label.model_name (e.g., "clubs.clubpost")
+        - object_id: ID of the object
+
+        Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/activities/likes/check/:
+    get:
+      operationId: api_activities_likes_check_retrieve
+      description: |-
+        Check if current user has liked a specific object
+        Query params:
+        - content_type: app_label.model_name
+        - object_id: ID of the object
+
+        Returns: { "is_liked": true/false }
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/activities/likes/toggle/:
+    post:
+      operationId: api_activities_likes_toggle_create
+      description: |-
+        Like or unlike any content object (toggle)
+        Body: {
+            "content_type": "clubs.clubpost",
+            "object_id": 123
+        }
+
+        Returns: { "is_liked": true/false, "like_count": 42 }
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/clubs/:
+    get:
+      operationId: api_clubs_list
+      description: |-
+        List & create clubs visible to the authenticated user:
+        - All public clubs
+        - Closed/Secret clubs only if user is a member
+
+        Query params:
+        - search: Filter by name or origin
+        - privacy: Filter by privacy type (public/closed/secret)
+        - origin: Filter by specific origin
+        - joined: Set to 'true' to only show clubs user is member of
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClubList'
+          description: ''
+    post:
+      operationId: api_clubs_create
+      description: |-
+        List & create clubs visible to the authenticated user:
+        - All public clubs
+        - Closed/Secret clubs only if user is a member
+
+        Query params:
+        - search: Filter by name or origin
+        - privacy: Filter by privacy type (public/closed/secret)
+        - origin: Filter by specific origin
+        - joined: Set to 'true' to only show clubs user is member of
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubCreate'
+          description: ''
+  /api/clubs/{id}/:
+    get:
+      operationId: api_clubs_retrieve
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    put:
+      operationId: api_clubs_update
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    patch:
+      operationId: api_clubs_partial_update
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    delete:
+      operationId: api_clubs_destroy
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/clubs/{id}/applications/:
+    get:
+      operationId: api_clubs_applications_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+    post:
+      operationId: api_clubs_applications_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+  /api/clubs/{id}/applications/{application_pk}/:
+    get:
+      operationId: api_clubs_applications_list_2
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+    post:
+      operationId: api_clubs_applications_create_2
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplicationCreate'
+          description: ''
+  /api/clubs/{id}/applications/{application_pk}/approve/:
+    post:
+      operationId: api_clubs_applications_approve_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/clubs/{id}/applications/{application_pk}/reject/:
+    post:
+      operationId: api_clubs_applications_reject_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/clubs/{id}/applications/{application_pk}/withdraw/:
+    post:
+      operationId: api_clubs_applications_withdraw_create
+      parameters:
+      - in: path
+        name: application_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MembershipApplicationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipApplication'
+          description: ''
+  /api/clubs/{id}/events/:
+    get:
+      operationId: api_clubs_events_retrieve
+      description: |-
+        List all events in a club
+        Query params:
+        - status: upcoming|ongoing|completed|cancelled
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/clubs/{id}/join/:
+    post:
+      operationId: api_clubs_join_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubJoinRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubJoin'
+          description: ''
+  /api/clubs/{id}/members/:
+    get:
+      operationId: api_clubs_members_retrieve
+      description: |-
+        List all members of a club with filtering options
+        Query params:
+        - role: Filter by role name
+        - search: Search members by username or email
+        - sort: joined_at (default), username, role
+        - order: asc, desc (default)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/clubs/{id}/posts/:
+    get:
+      operationId: api_clubs_posts_retrieve
+      description: List all posts in a club with interaction counts
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/clubs/{slug}/:
+    get:
+      operationId: api_clubs_retrieve_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    put:
+      operationId: api_clubs_update_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClubDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    patch:
+      operationId: api_clubs_partial_update_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClubDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+          description: ''
+    delete:
+      operationId: api_clubs_destroy_2
+      description: Retrieve, update or delete a club instance.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/clubs/recommended/:
+    get:
+      operationId: api_clubs_recommended_retrieve
+      description: |-
+        Get recommended clubs for the authenticated user based on:
+        - Clubs with similar origin/type
+        - Clubs with friends/mutual connections
+        - Popular clubs in user's location
+        - Clubs related to user's interests (if available)
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/clubs/test/manager/:
+    get:
+      operationId: api_clubs_test_manager_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/block/:
+    post:
+      operationId: api_connections_block_create
+      description: |-
+        Block a user
+        - Removes any existing follow relationships
+        - Prevents future follows
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/followers/:
+    get:
+      operationId: api_connections_followers_retrieve
+      description: Get list of users following this user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/following/:
+    get:
+      operationId: api_connections_following_retrieve
+      description: Get list of users this user is following
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/mutual/:
+    get:
+      operationId: api_connections_mutual_retrieve
+      description: Get mutual followers between current user and target user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/relationship/:
+    get:
+      operationId: api_connections_relationship_retrieve
+      description: |-
+        Get comprehensive relationship information between current user and target user
+        Returns:
+        - Follow status (is_following, is_followed_by, is_mutual, follow_status)
+        - Block status (is_blocked, is_blocking)
+        - Mutual followers count
+        - Privacy status
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/remove/:
+    delete:
+      operationId: api_connections_remove_destroy
+      description: Remove a follower (they were following you, you remove them)
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/connections/{user_id}/status/:
+    get:
+      operationId: api_connections_status_retrieve
+      description: Get follow status between current user and target user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/toggle/:
+    post:
+      operationId: api_connections_toggle_create
+      description: |-
+        Follow or unfollow a user (toggle)
+        - If target user is private: creates pending request
+        - If target user is public: creates accepted follow
+        - If already following: unfollows
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/{user_id}/unblock/:
+    post:
+      operationId: api_connections_unblock_create
+      description: Unblock a user
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/blocked/:
+    get:
+      operationId: api_connections_blocked_retrieve
+      description: Get list of users current user has blocked
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/relations/:
+    get:
+      operationId: api_connections_relations_retrieve
+      description: |-
+        Get comprehensive overview of current user's relationships
+        Categories:
+        - mutual: Users who follow each other
+        - followers_only: Users who follow you but you don't follow back
+        - following_only: Users you follow but don't follow you back
+        - pending_received: Follow requests you received (pending)
+        - pending_sent: Follow requests you sent (pending)
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/relations/connected/:
+    get:
+      operationId: api_connections_relations_connected_retrieve
+      description: Get only mutual followers (users who follow each other with current
+        user)
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/relations/pending/:
+    get:
+      operationId: api_connections_relations_pending_retrieve
+      description: |-
+        Get only pending follow requests received by current user
+        (Others want to follow you, waiting for your approval)
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/relations/sent/:
+    get:
+      operationId: api_connections_relations_sent_retrieve
+      description: |-
+        Get only pending follow requests sent by current user
+        (You want to follow others, waiting for their approval)
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/requests/:
+    get:
+      operationId: api_connections_requests_retrieve
+      description: Get all pending follow requests for current user
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/requests/{user_id}/accept/:
+    post:
+      operationId: api_connections_requests_accept_create
+      description: Accept a pending follow request
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/requests/{user_id}/reject/:
+    post:
+      operationId: api_connections_requests_reject_create
+      description: Reject/delete a pending follow request
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/connections/suggestions/:
+    get:
+      operationId: api_connections_suggestions_retrieve
+      description: |-
+        Get suggested users to follow
+        Based on:
+        - Users with mutual followers
+        - Users in same clubs
+        - Popular users
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/institutes/:
+    get:
+      operationId: api_institutes_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Institute'
+          description: ''
+    post:
+      operationId: api_institutes_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institute'
+          description: ''
+  /api/institutes/{id}/:
+    get:
+      operationId: api_institutes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    put:
+      operationId: api_institutes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InstituteDetailRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    patch:
+      operationId: api_institutes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstituteDetail'
+          description: ''
+    delete:
+      operationId: api_institutes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notifications/:
+    get:
+      operationId: api_notifications_retrieve
+      description: |-
+        Get all notifications for the current user.
+
+        Query params:
+        - type: Filter by notification type (post, like, comment, follow_request, follow_accept)
+        - is_read: Filter by read status (true/false)
+        - is_seen: Filter by seen status (true/false)
+        - page: Page number for pagination
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notification_id}/:
+    get:
+      operationId: api_notifications_retrieve_2
+      description: |-
+        Get detailed information about a specific notification.
+        Automatically marks the notification as seen.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notification_id}/delete/:
+    delete:
+      operationId: api_notifications_delete_destroy
+      description: Delete a specific notification.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notifications/{notification_id}/deliveries/:
+    get:
+      operationId: api_notifications_deliveries_retrieve
+      description: Get delivery status for a specific notification.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notification_id}/read/:
+    post:
+      operationId: api_notifications_read_create
+      description: Mark a specific notification as read.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notification_id}/seen/:
+    post:
+      operationId: api_notifications_seen_create
+      description: Mark a specific notification as seen.
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/clear/:
+    delete:
+      operationId: api_notifications_clear_destroy
+      description: Delete all notifications for the current user.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notifications/comments/:
+    get:
+      operationId: api_notifications_comments_retrieve
+      description: Get all comment notifications.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/counts/:
+    get:
+      operationId: api_notifications_counts_retrieve
+      description: |-
+        Get notification counts for the current user.
+        Returns total, unread, and unseen counts.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/follow-accepts/:
+    get:
+      operationId: api_notifications_follow_accepts_retrieve
+      description: Get all follow accept notifications.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/follow-requests/:
+    get:
+      operationId: api_notifications_follow_requests_retrieve
+      description: Get all follow request notifications.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/likes/:
+    get:
+      operationId: api_notifications_likes_retrieve
+      description: Get all like notifications.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/mark-all-read/:
+    post:
+      operationId: api_notifications_mark_all_read_create
+      description: Mark all notifications as read for the current user.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/mark-all-seen/:
+    post:
+      operationId: api_notifications_mark_all_seen_create
+      description: Mark all notifications as seen for the current user.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/posts/:
+    get:
+      operationId: api_notifications_posts_retrieve
+      description: Get all post-related notifications (new posts from followed users/clubs).
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/posts/:
+    get:
+      operationId: api_posts_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+          description: ''
+    post:
+      operationId: api_posts_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCreate'
+          description: ''
+  /api/posts/{post_id}/:
+    get:
+      operationId: api_posts_retrieve
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: api_posts_update
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    patch:
+      operationId: api_posts_partial_update
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPostRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: api_posts_destroy
+      parameters:
+      - in: path
+        name: post_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/posts/feed/:
+    get:
+      operationId: api_posts_feed_retrieve
+      description: |-
+        Get personalized feed for the current user
+
+        Feed includes:
+        1. Posts from users the current user follows (with accepted status)
+        2. Public posts from public profiles (users with is_private=False)
+        3. Excludes posts from blocked users (in both directions)
+
+        Privacy rules:
+        - From followed users: Show all their public posts
+        - From public profiles: Only show public posts (is_public=True)
+        - Never show posts from blocked users
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /api/schema/:
     get:
       operationId: api_schema_retrieve
@@ -150,2545 +2700,6 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/v1/accounts/auth/{user_id}/all/:
-    get:
-      operationId: accounts_auth_all_retrieve
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    put:
-      operationId: accounts_auth_all_update
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    patch:
-      operationId: accounts_auth_all_partial_update
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-  /api/v1/accounts/auth/{user_id}/posts/:
-    get:
-      operationId: accounts_auth_posts_retrieve
-      description: |-
-        Get all posts created by a user (both user posts and club posts)
-        Query params:
-        - source: all|user|club (default: all)
-        - post_type: TEXT|IMAGE|VIDEO (default: all)
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/all/:
-    get:
-      operationId: list_users
-      description: Returns a paginated list of users.
-      summary: List users
-      parameters:
-      - in: query
-        name: ordering
-        schema:
-          type: string
-        description: Sort field, e.g. `-date_joined`, `username`.
-      - in: query
-        name: page
-        schema:
-          type: integer
-        description: Page number.
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: search
-        schema:
-          type: string
-        description: Search by username, first name, or last name.
-      tags:
-      - Users
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserProfileList'
-          description: Paginated list of users.
-        '401':
-          description: Unauthorized.
-    post:
-      operationId: list_users_2
-      description: Returns a paginated list of users.
-      summary: List users
-      parameters:
-      - in: query
-        name: ordering
-        schema:
-          type: string
-        description: Sort field, e.g. `-date_joined`, `username`.
-      - in: query
-        name: page
-        schema:
-          type: integer
-        description: Page number.
-      - in: query
-        name: search
-        schema:
-          type: string
-        description: Search by username, first name, or last name.
-      tags:
-      - Users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedUserProfileList'
-          description: Paginated list of users.
-        '401':
-          description: Unauthorized.
-  /api/v1/accounts/auth/jwt/create/:
-    post:
-      operationId: accounts_auth_jwt_create_create
-      description: |-
-        Takes a set of user credentials and returns an access and refresh JSON web
-        token pair to prove the authentication of those credentials.
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenObtainPairRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenObtainPair'
-          description: ''
-  /api/v1/accounts/auth/jwt/refresh/:
-    post:
-      operationId: accounts_auth_jwt_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
-      tags:
-      - accounts
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RefreshToken'
-          description: ''
-  /api/v1/accounts/auth/jwt/verify/:
-    post:
-      operationId: accounts_auth_jwt_verify_create
-      description: |-
-        Takes a token and indicates if it is valid.  This view provides no
-        information about a token's fitness for a particular use.
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenVerifyRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenVerifyRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenVerifyRequest'
-        required: true
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/login/:
-    post:
-      operationId: login
-      description: Authenticates a user with email or username and returns tokens.
-      summary: Log in
-      tags:
-      - Authentication
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
-            examples:
-              BasicLogin:
-                value:
-                  username_or_email: asha@example.com
-                  password: s3cret!
-                summary: Basic login
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenObtainPair'
-          description: Login succeeded.
-        '401':
-          description: Invalid credentials.
-  /api/v1/accounts/auth/logout/:
-    post:
-      operationId: accounts_auth_logout_create
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/me/:
-    get:
-      operationId: accounts_auth_me_retrieve
-      description: Get current authenticated user's profile
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/refresh/:
-    post:
-      operationId: accounts_auth_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
-      tags:
-      - accounts
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RefreshToken'
-          description: ''
-  /api/v1/accounts/auth/request-info/:
-    get:
-      operationId: accounts_auth_request_info_retrieve
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/users/:
-    get:
-      operationId: accounts_auth_users_list
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserMinimal'
-          description: ''
-    post:
-      operationId: accounts_auth_users_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Register'
-          description: ''
-  /api/v1/accounts/auth/users/{id}/:
-    get:
-      operationId: accounts_auth_users_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserMinimal'
-          description: ''
-    put:
-      operationId: accounts_auth_users_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserMinimalRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserMinimal'
-          description: ''
-    patch:
-      operationId: accounts_auth_users_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserMinimalRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserMinimalRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserMinimalRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserMinimal'
-          description: ''
-    delete:
-      operationId: accounts_auth_users_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this user.
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/accounts/auth/users/activation/:
-    post:
-      operationId: accounts_auth_users_activation_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ActivationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ActivationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ActivationRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Activation'
-          description: ''
-  /api/v1/accounts/auth/users/me/:
-    get:
-      operationId: accounts_auth_users_me_retrieve
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    put:
-      operationId: accounts_auth_users_me_update
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    patch:
-      operationId: accounts_auth_users_me_partial_update
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    delete:
-      operationId: accounts_auth_users_me_destroy
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/accounts/auth/users/resend_activation/:
-    post:
-      operationId: accounts_auth_users_resend_activation_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SendEmailReset'
-          description: ''
-  /api/v1/accounts/auth/users/reset_password/:
-    post:
-      operationId: accounts_auth_users_reset_password_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SendEmailReset'
-          description: ''
-  /api/v1/accounts/auth/users/reset_password_confirm/:
-    post:
-      operationId: accounts_auth_users_reset_password_confirm_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PasswordResetConfirmRetypeRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PasswordResetConfirmRetype'
-          description: ''
-  /api/v1/accounts/auth/users/reset_username/:
-    post:
-      operationId: accounts_auth_users_reset_username_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SendEmailResetRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SendEmailReset'
-          description: ''
-  /api/v1/accounts/auth/users/reset_username_confirm/:
-    post:
-      operationId: accounts_auth_users_reset_username_confirm_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UsernameResetConfirmRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UsernameResetConfirmRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UsernameResetConfirmRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UsernameResetConfirm'
-          description: ''
-  /api/v1/accounts/auth/users/set_password/:
-    post:
-      operationId: accounts_auth_users_set_password_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetPasswordRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SetPasswordRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SetPasswordRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SetPassword'
-          description: ''
-  /api/v1/accounts/auth/users/set_username/:
-    post:
-      operationId: accounts_auth_users_set_username_create
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetUsernameRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SetUsernameRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SetUsernameRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SetUsername'
-          description: ''
-  /api/v1/accounts/auth/users/user/{username}/:
-    get:
-      operationId: accounts_auth_users_user_retrieve
-      description: User Detail View
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    put:
-      operationId: accounts_auth_users_user_update
-      description: User Detail View
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserProfileRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    patch:
-      operationId: accounts_auth_users_user_partial_update
-      description: User Detail View
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUserProfileRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-          description: ''
-    delete:
-      operationId: accounts_auth_users_user_destroy
-      description: User Detail View
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/accounts/auth/users/user/{username}/activity/:
-    get:
-      operationId: accounts_auth_users_user_activity_retrieve
-      description: Get user's recent activity (likes, comments, shares)
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/users/user/{username}/clubs/:
-    get:
-      operationId: accounts_auth_users_user_clubs_retrieve
-      description: Get all clubs a user has joined
-      parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/accounts/auth/validate/:
-    post:
-      operationId: accounts_auth_validate_create
-      description: Validate user type and institute.
-      tags:
-      - accounts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserTypeRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserTypeRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserTypeRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserType'
-          description: ''
-  /api/v1/activities/comments/:
-    get:
-      operationId: activities_comments_retrieve
-      description: |-
-        Get all comments for a specific content object
-        Query params:
-        - content_type: app_label.model_name
-        - object_id: ID of the object
-        - parent: (optional) ID of parent comment for nested replies
-
-        Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/activities/comments/{comment_id}/:
-    get:
-      operationId: activities_comments_retrieve_2
-      description: |-
-        Get, update, or delete a specific comment
-        - GET: Anyone can view
-        - PATCH: Only author can edit
-        - DELETE: Author can delete
-      parameters:
-      - in: path
-        name: comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-    patch:
-      operationId: activities_comments_partial_update
-      description: |-
-        Get, update, or delete a specific comment
-        - GET: Anyone can view
-        - PATCH: Only author can edit
-        - DELETE: Author can delete
-      parameters:
-      - in: path
-        name: comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-    delete:
-      operationId: activities_comments_destroy
-      description: |-
-        Get, update, or delete a specific comment
-        - GET: Anyone can view
-        - PATCH: Only author can edit
-        - DELETE: Author can delete
-      parameters:
-      - in: path
-        name: comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/activities/comments/{comment_id}/replies/:
-    get:
-      operationId: activities_comments_replies_retrieve
-      description: Get all replies to a specific comment
-      parameters:
-      - in: path
-        name: comment_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
-  /api/v1/activities/comments/create/:
-    post:
-      operationId: activities_comments_create_create
-      description: |-
-        Create a comment on any content object
-        Body: {
-            "content_type": "clubs.clubpost",
-            "object_id": 123,
-            "content": "Great post!",
-            "parent": null  // Optional: ID of parent comment for replies
-        }
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/activities/likes/:
-    get:
-      operationId: activities_likes_retrieve
-      description: |-
-        Get all likes for a specific content object
-        Query params:
-        - content_type: app_label.model_name (e.g., "clubs.clubpost")
-        - object_id: ID of the object
-
-        Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/activities/likes/check/:
-    get:
-      operationId: activities_likes_check_retrieve
-      description: |-
-        Check if current user has liked a specific object
-        Query params:
-        - content_type: app_label.model_name
-        - object_id: ID of the object
-
-        Returns: { "is_liked": true/false }
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/activities/likes/toggle/:
-    post:
-      operationId: activities_likes_toggle_create
-      description: |-
-        Like or unlike any content object (toggle)
-        Body: {
-            "content_type": "clubs.clubpost",
-            "object_id": 123
-        }
-
-        Returns: { "is_liked": true/false, "like_count": 42 }
-      tags:
-      - activities
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/clubs/:
-    get:
-      operationId: clubs_list
-      description: |-
-        List & create clubs visible to the authenticated user:
-        - All public clubs
-        - Closed/Secret clubs only if user is a member
-
-        Query params:
-        - search: Filter by name or origin
-        - privacy: Filter by privacy type (public/closed/secret)
-        - origin: Filter by specific origin
-        - joined: Set to 'true' to only show clubs user is member of
-      parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedClubList'
-          description: ''
-    post:
-      operationId: clubs_create
-      description: |-
-        List & create clubs visible to the authenticated user:
-        - All public clubs
-        - Closed/Secret clubs only if user is a member
-
-        Query params:
-        - search: Filter by name or origin
-        - privacy: Filter by privacy type (public/closed/secret)
-        - origin: Filter by specific origin
-        - joined: Set to 'true' to only show clubs user is member of
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClubCreateRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ClubCreateRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ClubCreateRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubCreate'
-          description: ''
-  /api/v1/clubs/{id}/:
-    get:
-      operationId: clubs_retrieve
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    put:
-      operationId: clubs_update
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    patch:
-      operationId: clubs_partial_update
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    delete:
-      operationId: clubs_destroy
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/clubs/{id}/applications/:
-    get:
-      operationId: clubs_applications_list
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipApplicationCreate'
-          description: ''
-    post:
-      operationId: clubs_applications_create
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembershipApplicationCreate'
-          description: ''
-  /api/v1/clubs/{id}/applications/{application_pk}/:
-    get:
-      operationId: clubs_applications_list_2
-      parameters:
-      - in: path
-        name: application_pk
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MembershipApplicationCreate'
-          description: ''
-    post:
-      operationId: clubs_applications_create_2
-      parameters:
-      - in: path
-        name: application_pk
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationCreateRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembershipApplicationCreate'
-          description: ''
-  /api/v1/clubs/{id}/applications/{application_pk}/approve/:
-    post:
-      operationId: clubs_applications_approve_create
-      parameters:
-      - in: path
-        name: application_pk
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembershipApplication'
-          description: ''
-  /api/v1/clubs/{id}/applications/{application_pk}/reject/:
-    post:
-      operationId: clubs_applications_reject_create
-      parameters:
-      - in: path
-        name: application_pk
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembershipApplication'
-          description: ''
-  /api/v1/clubs/{id}/applications/{application_pk}/withdraw/:
-    post:
-      operationId: clubs_applications_withdraw_create
-      parameters:
-      - in: path
-        name: application_pk
-        schema:
-          type: string
-          format: uuid
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/MembershipApplicationRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MembershipApplication'
-          description: ''
-  /api/v1/clubs/{id}/events/:
-    get:
-      operationId: clubs_events_retrieve
-      description: |-
-        List all events in a club
-        Query params:
-        - status: upcoming|ongoing|completed|cancelled
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/clubs/{id}/join/:
-    post:
-      operationId: clubs_join_create
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClubJoinRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ClubJoinRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ClubJoinRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubJoin'
-          description: ''
-  /api/v1/clubs/{id}/members/:
-    get:
-      operationId: clubs_members_retrieve
-      description: |-
-        List all members of a club with filtering options
-        Query params:
-        - role: Filter by role name
-        - search: Search members by username or email
-        - sort: joined_at (default), username, role
-        - order: asc, desc (default)
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/clubs/{id}/posts/:
-    get:
-      operationId: clubs_posts_retrieve
-      description: List all posts in a club with interaction counts
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/clubs/{slug}/:
-    get:
-      operationId: clubs_retrieve_2
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    put:
-      operationId: clubs_update_2
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/ClubDetailRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    patch:
-      operationId: clubs_partial_update_2
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-        required: true
-      tags:
-      - clubs
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedClubDetailRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClubDetail'
-          description: ''
-    delete:
-      operationId: clubs_destroy_2
-      description: Retrieve, update or delete a club instance.
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-        required: true
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/clubs/recommended/:
-    get:
-      operationId: clubs_recommended_retrieve
-      description: |-
-        Get recommended clubs for the authenticated user based on:
-        - Clubs with similar origin/type
-        - Clubs with friends/mutual connections
-        - Popular clubs in user's location
-        - Clubs related to user's interests (if available)
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/clubs/test/manager/:
-    get:
-      operationId: clubs_test_manager_retrieve
-      tags:
-      - clubs
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/block/:
-    post:
-      operationId: connections_block_create
-      description: |-
-        Block a user
-        - Removes any existing follow relationships
-        - Prevents future follows
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/followers/:
-    get:
-      operationId: connections_followers_retrieve
-      description: Get list of users following this user
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/following/:
-    get:
-      operationId: connections_following_retrieve
-      description: Get list of users this user is following
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/mutual/:
-    get:
-      operationId: connections_mutual_retrieve
-      description: Get mutual followers between current user and target user
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/relationship/:
-    get:
-      operationId: connections_relationship_retrieve
-      description: |-
-        Get comprehensive relationship information between current user and target user
-        Returns:
-        - Follow status (is_following, is_followed_by, is_mutual, follow_status)
-        - Block status (is_blocked, is_blocking)
-        - Mutual followers count
-        - Privacy status
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/remove/:
-    delete:
-      operationId: connections_remove_destroy
-      description: Remove a follower (they were following you, you remove them)
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/connections/{user_id}/status/:
-    get:
-      operationId: connections_status_retrieve
-      description: Get follow status between current user and target user
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/toggle/:
-    post:
-      operationId: connections_toggle_create
-      description: |-
-        Follow or unfollow a user (toggle)
-        - If target user is private: creates pending request
-        - If target user is public: creates accepted follow
-        - If already following: unfollows
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/{user_id}/unblock/:
-    post:
-      operationId: connections_unblock_create
-      description: Unblock a user
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/blocked/:
-    get:
-      operationId: connections_blocked_retrieve
-      description: Get list of users current user has blocked
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/relations/:
-    get:
-      operationId: connections_relations_retrieve
-      description: |-
-        Get comprehensive overview of current user's relationships
-        Categories:
-        - mutual: Users who follow each other
-        - followers_only: Users who follow you but you don't follow back
-        - following_only: Users you follow but don't follow you back
-        - pending_received: Follow requests you received (pending)
-        - pending_sent: Follow requests you sent (pending)
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/relations/connected/:
-    get:
-      operationId: connections_relations_connected_retrieve
-      description: Get only mutual followers (users who follow each other with current
-        user)
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/relations/pending/:
-    get:
-      operationId: connections_relations_pending_retrieve
-      description: |-
-        Get only pending follow requests received by current user
-        (Others want to follow you, waiting for your approval)
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/relations/sent/:
-    get:
-      operationId: connections_relations_sent_retrieve
-      description: |-
-        Get only pending follow requests sent by current user
-        (You want to follow others, waiting for their approval)
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/requests/:
-    get:
-      operationId: connections_requests_retrieve
-      description: Get all pending follow requests for current user
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/requests/{user_id}/accept/:
-    post:
-      operationId: connections_requests_accept_create
-      description: Accept a pending follow request
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/requests/{user_id}/reject/:
-    post:
-      operationId: connections_requests_reject_create
-      description: Reject/delete a pending follow request
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/connections/suggestions/:
-    get:
-      operationId: connections_suggestions_retrieve
-      description: |-
-        Get suggested users to follow
-        Based on:
-        - Users with mutual followers
-        - Users in same clubs
-        - Popular users
-      tags:
-      - connections
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/institutes/:
-    get:
-      operationId: institutes_list
-      tags:
-      - institutes
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Institute'
-          description: ''
-    post:
-      operationId: institutes_create
-      tags:
-      - institutes
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InstituteRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InstituteRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InstituteRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Institute'
-          description: ''
-  /api/v1/institutes/{id}/:
-    get:
-      operationId: institutes_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - institutes
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InstituteDetail'
-          description: ''
-    put:
-      operationId: institutes_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - institutes
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InstituteDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/InstituteDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/InstituteDetailRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InstituteDetail'
-          description: ''
-    patch:
-      operationId: institutes_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - institutes
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedInstituteDetailRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InstituteDetail'
-          description: ''
-    delete:
-      operationId: institutes_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - institutes
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/notifications/:
-    get:
-      operationId: notifications_retrieve
-      description: |-
-        Get all notifications for the current user.
-
-        Query params:
-        - type: Filter by notification type (post, like, comment, follow_request, follow_accept)
-        - is_read: Filter by read status (true/false)
-        - is_seen: Filter by seen status (true/false)
-        - page: Page number for pagination
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/{notification_id}/:
-    get:
-      operationId: notifications_retrieve_2
-      description: |-
-        Get detailed information about a specific notification.
-        Automatically marks the notification as seen.
-      parameters:
-      - in: path
-        name: notification_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/{notification_id}/delete/:
-    delete:
-      operationId: notifications_delete_destroy
-      description: Delete a specific notification.
-      parameters:
-      - in: path
-        name: notification_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/notifications/{notification_id}/deliveries/:
-    get:
-      operationId: notifications_deliveries_retrieve
-      description: Get delivery status for a specific notification.
-      parameters:
-      - in: path
-        name: notification_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/{notification_id}/read/:
-    post:
-      operationId: notifications_read_create
-      description: Mark a specific notification as read.
-      parameters:
-      - in: path
-        name: notification_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/{notification_id}/seen/:
-    post:
-      operationId: notifications_seen_create
-      description: Mark a specific notification as seen.
-      parameters:
-      - in: path
-        name: notification_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/clear/:
-    delete:
-      operationId: notifications_clear_destroy
-      description: Delete all notifications for the current user.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/notifications/comments/:
-    get:
-      operationId: notifications_comments_retrieve
-      description: Get all comment notifications.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/counts/:
-    get:
-      operationId: notifications_counts_retrieve
-      description: |-
-        Get notification counts for the current user.
-        Returns total, unread, and unseen counts.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/follow-accepts/:
-    get:
-      operationId: notifications_follow_accepts_retrieve
-      description: Get all follow accept notifications.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/follow-requests/:
-    get:
-      operationId: notifications_follow_requests_retrieve
-      description: Get all follow request notifications.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/likes/:
-    get:
-      operationId: notifications_likes_retrieve
-      description: Get all like notifications.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/mark-all-read/:
-    post:
-      operationId: notifications_mark_all_read_create
-      description: Mark all notifications as read for the current user.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/mark-all-seen/:
-    post:
-      operationId: notifications_mark_all_seen_create
-      description: Mark all notifications as seen for the current user.
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/notifications/posts/:
-    get:
-      operationId: notifications_posts_retrieve
-      description: Get all post-related notifications (new posts from followed users/clubs).
-      tags:
-      - notifications
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
-  /api/v1/posts/:
-    get:
-      operationId: posts_list
-      tags:
-      - posts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Post'
-          description: ''
-    post:
-      operationId: posts_create
-      tags:
-      - posts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-          description: ''
-  /api/v1/posts/{post_id}/:
-    get:
-      operationId: posts_retrieve
-      parameters:
-      - in: path
-        name: post_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - posts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-          description: ''
-    put:
-      operationId: posts_update
-      parameters:
-      - in: path
-        name: post_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - posts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PostRequest'
-        required: true
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-          description: ''
-    patch:
-      operationId: posts_partial_update
-      parameters:
-      - in: path
-        name: post_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - posts
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPostRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedPostRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedPostRequest'
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Post'
-          description: ''
-    delete:
-      operationId: posts_destroy
-      parameters:
-      - in: path
-        name: post_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - posts
-      security:
-      - cookieAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1/posts/feed/:
-    get:
-      operationId: posts_feed_retrieve
-      description: |-
-        Get personalized feed for the current user
-
-        Feed includes:
-        1. Posts from users the current user follows (with accepted status)
-        2. Public posts from public profiles (users with is_private=False)
-        3. Excludes posts from blocked users (in both directions)
-
-        Privacy rules:
-        - From followed users: Show all their public posts
-        - From public profiles: Only show public posts (is_public=True)
-        - Never show posts from blocked users
-      tags:
-      - posts
-      security:
-      - cookieAuth: []
-      responses:
-        '200':
-          description: No response body
 components:
   schemas:
     Activation:
@@ -4031,6 +4042,10 @@ components:
           nullable: true
         email_verified:
           type: boolean
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
         profile_picture:
           type: string
           format: binary
@@ -4285,6 +4300,34 @@ components:
       - url
       - video
       - videos
+    PostCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        content:
+          type: string
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMedia'
+      required:
+      - content
+      - id
+    PostCreateRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMediaRequest'
+      required:
+      - content
     PostMedia:
       type: object
       description: Serializer for PostMedia model
@@ -4748,7 +4791,6 @@ components:
         last_active:
           type: string
           format: date-time
-          readOnly: true
           nullable: true
         profile_picture:
           type: string
@@ -4841,7 +4883,6 @@ components:
       required:
       - created_at
       - id
-      - last_active
       - updated_at
       - username
     UserMinimal:
@@ -5331,6 +5372,10 @@ components:
           nullable: true
         email_verified:
           type: boolean
+        last_active:
+          type: string
+          format: date-time
+          nullable: true
         profile_picture:
           type: string
           format: binary

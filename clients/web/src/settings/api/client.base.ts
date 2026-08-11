@@ -1,16 +1,25 @@
 // shared/api/base.client.ts
 // import { api, Client } from "./client";
+import type { AxiosError } from "axios";
 import { api } from "./api";
 import type { ApiResponse } from "./types";
+import { AppError } from "../app/error";
 
 export abstract class BaseClient<TResult, TCreateDTO, TUpdateDTO = Partial<TCreateDTO>> {
     protected client: typeof api.v1.client = api.v1.client;
     protected authorized: boolean = false;
-    // protected baseUrl = config.api.v1.baseUrl
 
     constructor(
-        protected readonly endpoint: string
-    ) { }
+        protected readonly endpoint: string,
+        protected readonly allauthBrowser: string | undefined = undefined
+    ) {
+        this.client.interceptors.response.use(
+            (response) => response,
+            (error: AxiosError) => {
+                return Promise.reject(new AppError(error));
+            },
+        );
+    }
 
     async getAll(params?: Record<string, unknown>): Promise<TResult[]> {
         const response = await this.client.get<ApiResponse<TResult[]>>(this.endpoint, { params });

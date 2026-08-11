@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
         exclude = ['password']
-        read_only_fields = ['last_active']
+        read_only_fields = ['password']
 
 
 class UserMinimalSerializer(serializers.ModelSerializer):

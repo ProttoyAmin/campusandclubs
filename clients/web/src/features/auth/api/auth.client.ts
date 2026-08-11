@@ -3,36 +3,42 @@ import type { ApiResponse } from "@/settings/api/";
 import type {
   RegisterWritable,
   RegisterRequestWritable,
-  AccountsAuthJwtRefreshCreateResponse,
-  CustomTokenObtainPairRequestWritable,
-  TokenVerifyRequest,
-  TokenRefresh,
+  ApiAccountsAuthJwtRefreshCreateResponse,
+  RefreshToken,
   ActivationRequest,
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";
+import type { SignInSchemaType } from "validation/auth";
+
+export type AllauthError = {
+  errors: {
+    message: string;
+    code: string;
+    param: string;
+  }[]
+}
+
+// Kept as an alias while sign-up consumers migrate to the shared allauth shape.
+export type SignUpError = AllauthError;
 
 export class AuthClient extends BaseClient<
   AxiosResponse,
   RegisterRequestWritable,
-  AccountsAuthJwtRefreshCreateResponse
+  ApiAccountsAuthJwtRefreshCreateResponse
 > {
   constructor() {
-    super(config.api.v1.account.base);
+    super(config.api.v1.account.base, config.api.v1.allauth.base);
   }
 
-  async register(
+  async signUp(
     data: RegisterWritable,
   ): Promise<AxiosResponse<RegisterRequestWritable>> {
-    try {
-      const response = await this.client.post<
-        RegisterRequestWritable>
-      (`${this.endpoint}users/`, data);
-      return response;
-    } catch (err) {
-      console.error("Register error:", (err as AxiosError).response?.data);
-      throw err;
-    }
+    const response = await this.client.post<RegisterRequestWritable>(
+      `${this.allauthBrowser}auth/signup`,
+      data,
+    );
+    return response;
   }
 
   async activate({ uid, token }: ActivationRequest): Promise<AxiosResponse> {
@@ -49,22 +55,16 @@ export class AuthClient extends BaseClient<
   }
 
   async login(
-    data: CustomTokenObtainPairRequestWritable,
-  ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
-    try {
-      const response = await this.client.post<AccountsAuthJwtRefreshCreateResponse>(`${this.endpoint}login/`, data);
-      console.log("response", response)
-      return response;
-    } catch (err) {
-      console.error("Login error:", (err as AxiosError).response?.data);
-      throw err as AxiosError;
-    }
+    data: SignInSchemaType,
+  ): Promise<AxiosResponse<ApiAccountsAuthJwtRefreshCreateResponse>> {
+    const response = (await this.client.post<ApiAccountsAuthJwtRefreshCreateResponse>(`${this.allauthBrowser}auth/login`, data));
+    return response;
   }
 
   async logout(): Promise<ApiResponse> {
     try {
-      const response = await this.client.post<ApiResponse>(
-        `${this.endpoint}logout/`,
+      const response = await this.client.delete<ApiResponse>(
+        `${this.allauthBrowser}auth/session`,
       );
       return response.data;
     } catch (err) {
@@ -73,9 +73,9 @@ export class AuthClient extends BaseClient<
     }
   }
 
-  async refresh(): Promise<AxiosResponse<TokenRefresh>> {
+  async refresh(): Promise<AxiosResponse<RefreshToken>> {
     try {
-      const response = await this.client.post<TokenRefresh>(
+      const response = await this.client.post<RefreshToken>(
         `${this.endpoint}refresh/`,
       );
       return response;

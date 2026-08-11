@@ -17,7 +17,16 @@ export class V1Client {
   private constructor() {
     this.client = axios.create({
       baseURL: config.api.v1.suffix,
-      withCredentials: true
+      withCredentials: true,
+      xsrfCookieName: "csrftoken",
+      xsrfHeaderName: "X-CSRFToken",
+    });
+
+    this.client.interceptors.request.use(async (reqConfig) => {
+      if (!this.hasCsrfCookie()) {
+        await this.ensureCsrfCookie();
+      }
+      return reqConfig;
     });
 
     this.client.interceptors.response.use(
@@ -31,14 +40,13 @@ export class V1Client {
           originalRequest &&
           !originalRequest._retry
         ) {
-          console.log("retry", originalRequest);
           if (this.isRefreshing) {
             return new Promise((resolve, reject) => {
               this.refreshSubscribers.push((success: boolean) => {
                 if (success) {
-                   resolve(this.client(originalRequest));
+                  resolve(this.client(originalRequest));
                 } else {
-                   reject(error);
+                  reject(error);
                 }
               });
             });
@@ -48,14 +56,17 @@ export class V1Client {
           this.isRefreshing = true;
 
           try {
-            console.log('Trying silent refresh...')
             // Call the refresh endpoint directly
             await axios.post(
-               `${config.api.v1.suffix}${config.api.v1.account.base}refresh/`,
-               {},
-               { withCredentials: true }
+              `${config.api.v1.suffix}${config.api.v1.account.base}refresh/`,
+              {},
+              {
+                withCredentials: true,
+                xsrfCookieName: "csrftoken",
+                xsrfHeaderName: "X-CSRFToken",
+              }
             );
-            
+
             this.refreshSubscribers.forEach((cb) => cb(true));
             this.refreshSubscribers = [];
 
@@ -63,10 +74,10 @@ export class V1Client {
           } catch (refreshError) {
             this.refreshSubscribers.forEach((cb) => cb(false));
             this.refreshSubscribers = [];
-            
+
             // Dispatch event to clear auth state
             window.dispatchEvent(new Event("auth:logout"));
-            
+
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;
@@ -76,6 +87,27 @@ export class V1Client {
       },
     );
   }
+
+  private ensureCsrfCookie(): Promise<void> {
+    if (!this.csrfBootstrap) {
+      // Use a bare axios call, NOT this.client — otherwise this triggers
+      // the same request interceptor again and recurses.
+      this.csrfBootstrap = axios
+        .get(`${config.api.v1.raw}/api/_allauth/browser/v1/config`, {
+          withCredentials: true,
+        })
+        .then(() => {
+          this.csrfBootstrap = null;
+        });
+    }
+    return this.csrfBootstrap;
+  }
+
+  private hasCsrfCookie(): boolean {
+    return document.cookie.split("; ").some((c) => c.startsWith("csrftoken="));
+  }
+
+  private csrfBootstrap: Promise<void> | null = null;
 
   public static getInstance(): V1Client {
     if (!V1Client.instance) {

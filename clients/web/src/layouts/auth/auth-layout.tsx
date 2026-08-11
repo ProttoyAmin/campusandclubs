@@ -1,21 +1,19 @@
 import Guard from "@/guards/guard";
 import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-// import { PublicOnlyRoute } from "@/guards";
-
-
+import { Card } from "design/components/ui/card";
 
 const AuthLayout: React.FC = () => {
-
-    React.useEffect(() => {
-      document.title = "Auth";
-    }, []);
+  React.useEffect(() => {
+    document.title = "Auth";
+  }, []);
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Guard>
-      <Outlet/>
-      {/* <PublicOnlyRoute children={<Outlet />} /> */}
-      </Guard>
+      {/* <Guard> */}
+      <Card className="border max-w-md mx-auto my-auto">
+        <Outlet />
+      </Card>
+      {/* </Guard> */}
     </Suspense>
   );
 };

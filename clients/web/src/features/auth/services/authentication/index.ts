@@ -1,11 +1,12 @@
 import type {
   ActivationRequest,
-  CustomTokenObtainPairRequestWritable,
-  AccountsAuthUsersMeRetrieveResponse
+  ApiAccountsAuthUsersMeRetrieveResponse,
+
 } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
 import { api } from "@/settings/api";
+import type { SignInSchemaType } from "validation/auth";
 
 export class Authentication {
   public authenticated: boolean = false;
@@ -19,18 +20,18 @@ export class Authentication {
     });
   }
 
-  async login(data: CustomTokenObtainPairRequestWritable) {
+  async login(data: SignInSchemaType) {
     const response = await this.apiClient.login(data);
 
     if (response.status === 200) {
       this.authenticated = true;
     }
 
-    return response.status;
+    return response;
   }
 
-  async register(data: RegisterRequestWritable) {
-    return await this.apiClient.register(data);
+  async signUp(data: RegisterRequestWritable) {
+    return await this.apiClient.signUp(data);
   }
 
   async activate(data: ActivationRequest) {
@@ -41,15 +42,18 @@ export class Authentication {
   }
 
   async logout() {
-    this.authenticated = false;
-    return await this.apiClient.logout();
+    const response = await this.apiClient.logout();
+    if (response.success) {
+      this.authenticated = false;
+    }
+    return response;
   }
-  
-  async checkSession(): Promise<AccountsAuthUsersMeRetrieveResponse | null> {
+
+  async checkSession(): Promise<ApiAccountsAuthUsersMeRetrieveResponse | null> {
     // Lightweight check: try to fetch user info. If cookies are missing or invalid,
     // the 401 interceptor will catch it and attempt a silent refresh.
     try {
-      const response = await api.v1.client.get<AccountsAuthUsersMeRetrieveResponse>('/accounts/auth/me/');
+      const response = await api.v1.client.get<ApiAccountsAuthUsersMeRetrieveResponse>('/accounts/auth/me/');
       if (response.status === 200) {
         this.authenticated = true;
         return response.data;

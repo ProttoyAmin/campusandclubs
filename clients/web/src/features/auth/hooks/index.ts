@@ -1,9 +1,4 @@
 export {
-    useLogin,
-    useRegister,
-    useLogout,
-} from './login.hook'
-
-export {
     useSession,
+    useAuth,
 } from './session.hook'

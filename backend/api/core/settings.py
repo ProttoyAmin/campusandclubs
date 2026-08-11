@@ -47,7 +47,25 @@ ALLOWED_HOSTS = [
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
+    "http://localhost:4000",
+    "http://localhost:5173",
+    "http://127.0.0.1:4000",
+    "http://127.0.0.1:5173"
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4000",  # Your React/Next.js dev server
+    "http://localhost:5173",  # Vite default port
+    "http://127.0.0.1:3000",
+    # Add your production domain here
+]
+
+# Or for development only (NOT recommended for production):
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,11 +82,18 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'rest_framework.authtoken',
-    # 'social_django',
     'rest_framework_simplejwt.token_blacklist',
     'debug_toolbar',
     'channels',
     'drf_spectacular',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.headless',
+
+    # providers
+    'allauth.socialaccount.providers.google',
 
     # my apps
     'apps.accounts',
@@ -79,20 +104,6 @@ INSTALLED_APPS = [
     'apps.notifications',
     'apps.institutes',
 ]
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4000",  # Your React/Next.js dev server
-    "http://localhost:5173",  # Vite default port
-    "http://127.0.0.1:3000",
-    # Add your production domain here
-]
-
-# Or for development only (NOT recommended for production):
-# CORS_ALLOW_ALL_ORIGINS = True
-
-CORS_ALLOW_CREDENTIALS = True  # Important for cookies
-
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -112,10 +123,10 @@ LOGGING = {
     },
 }
 
-# AUTHENTICATION_BACKENDS = [
-#     "social_core.backends.google.GoogleOAuth2",
-#     "django.contrib.auth.backends.ModelBackend",
-# ]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
 
 # SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ["GOOGLE_CLIENT_ID"]
 # SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ["GOOGLE_CLIENT_SECRET"]
@@ -188,15 +199,47 @@ SITE_NAME = getenv('SITE_NAME')
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APPS': [
+            {
+                'client_id': os.environ.get('GOOGLE_CLIENT_ID'),
+                'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
+                'key': '',
+            }
+        ],
+        'SCOPES': [
+            'email',
+            'profile',
+        ],
+    }
+}
+
+HEADLESS_ONLY = True
+HEADLESS_SERVE_CSRF_TOKEN = True
+
+SITE_ID = 1
+
+ACCOUNT_SIGNUP_FIELDS = [
+    "email*",
+    "username*",
+    "password1*",
+    "password2*",
+]
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 INTERNAL_IPS = [
     '127.0.0.1',

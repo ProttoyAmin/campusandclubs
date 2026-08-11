@@ -6,7 +6,8 @@
   "type": "module",
   "exports": {
     "./user": "./src/user/index.ts",
-    "./club": "./src/club/index.ts"
+    "./club": "./src/club/index.ts",
+    "./auth": "./src/auth/index.ts"
   },
   "dependencies": {
     "@campus/api": "workspace:*",

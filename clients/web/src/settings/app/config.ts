@@ -14,15 +14,19 @@ export const config = {
     api: {
         v1: {
             name: 'v1',
-            raw: VITE_PUBLIC_API_URL,
-            suffix: "/api/v1/",
-            baseUrl: VITE_PUBLIC_API_URL + "/api/v1/",
+            raw: import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL,
+            suffix: "/api/",
+            baseUrl: (import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL) + "/api/v1/",
             version: "1.0.0",
             account: {
                 base: `accounts/auth/`,
                 login: `accounts/auth/login/`,
                 register: `accounts/auth/register/`,
                 logout: `accounts/auth/logout/`
+            },
+            allauth: {
+                base: `_allauth/browser/v1/`,
+                signup: `auth/signup/`,
             },
             clubs: {
                 base: `clubs/`,

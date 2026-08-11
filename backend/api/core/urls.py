@@ -25,16 +25,20 @@ from drf_spectacular.views import (
 )
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
-    path('api/v1/accounts/', include('apps.accounts.urls')),
-    path('api/v1/institutes/', include('apps.institutes.urls')),
-    path('api/v1/clubs/', include('apps.clubs.urls')),
-    path('api/v1/activities/', include('apps.interactions.urls')),
-    path('api/v1/posts/', include('apps.posts.urls')),
-    path('api/v1/connections/', include('apps.connections.urls')),
-    path('api/v1/notifications/', include('apps.notifications.urls')),
+    path('api/accounts/', include('apps.accounts.urls')),
+    path('api/institutes/', include('apps.institutes.urls')),
+    path('api/clubs/', include('apps.clubs.urls')),
+    path('api/activities/', include('apps.interactions.urls')),
+    path('api/posts/', include('apps.posts.urls')),
+    path('api/connections/', include('apps.connections.urls')),
+    path('api/notifications/', include('apps.notifications.urls')),
+
+    path('api/_allauth/', include('allauth.headless.urls')),
+    path('accounts/', include('allauth.urls')),
 
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

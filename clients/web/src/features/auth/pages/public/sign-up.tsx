@@ -1,42 +1,29 @@
 import React from "react";
-import { useRegister } from "@/features/auth/hooks";
 import type { RegisterRequestWritable } from "@campus/api";
-
+import SignUpForm from "@/features/auth/components/forms/sign-up-form";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/session.hook";
+import { paths } from "@/settings/routes";
 
 const SignUp: React.FC = () => {
-  const { mutate, isPending, isError, error } = useRegister();
-  const [formData, setFormData] = React.useState<RegisterRequestWritable>({
-    username: "newuser1",
-    email: "prottoy.amin10615@gmail.com",
-    password: "password@123",
-    re_password: "password@123",
-  });
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (formData: RegisterRequestWritable) => {
-    console.log("CLICKED", formData);
-    mutate(formData, {
+  const handleSubmit = async (formData: RegisterRequestWritable) => {
+    signUp.mutate(formData, {
       onSuccess: () => {
-        console.log("Success");
-      },
-      onError: (error) => {
-        console.log("Error:", error.response);
+        navigate(paths.public.auth.signIn);
       },
     });
   };
 
-  console.log("ERROR: ", error);
   return (
     <>
-      <button onClick={(e) => handleSubmit(formData)} disabled={isPending}>Sign Up</button>
-      {isError && (
-        <ul>
-          {Object.entries(error.response.data).map(([field, messages]) => (
-            <li key={field}>
-              {field}: {(messages as string[]).join(", ")}
-            </li>
-          ))}
-        </ul>
-      )}
+      <SignUpForm
+        onSubmit={handleSubmit}
+        pending={signUp.isPending}
+        serverErrors={signUp.error?.response.data ?? undefined}
+      />
     </>
   );
 };

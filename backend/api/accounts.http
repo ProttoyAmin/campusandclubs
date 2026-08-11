@@ -2,12 +2,16 @@
 @baseUrl = http://127.0.0.1:8000/api/v1/accounts/auth/
 @accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg1OTkyNzYwLCJpYXQiOjE3ODU5ODkxNjAsImp0aSI6ImM0MDU5ZTFiYWYwYTQzNDZhNmVlMzliMjczYzBjZTJhIiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.U8L5pGAiBVwqefPCaQ94y5O64Y6TqF-Ik2FMSzADviU
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4ODU4MTE2MCwiaWF0IjoxNzg1OTg5MTYwLCJqdGkiOiI2Yzg4MjhiNDI4ZjM0OTVkOWQ3YTViOTgzZmIyOTBlMCIsInVzZXJfaWQiOiJiMGFlYzc1NC01MjAxLTQ2YTEtOWU3OS1kNGFlMjgzZjRiZTkifQ.QvwNCTL4nSg_yHNmIa9YC2soZDvRdjHACM8Y3z7Nv-s
-
+@csrftoken = ""
 @clubId = 9af7488b-98e3-4a93-a617-c35dc19a579d
 @postId = 7391907467086532608
 @eventId = 7392190347431907328
 @userId = 3
 
+###
+POST http://127.0.0.1:8000/api/_allauth/browser/v1/auth/login HTTP/1.1
+Content-Type: application/json
+X-CSRFToken: {{csrftoken}}
 
 ###
 GET {{baseUrl}}users/ HTTP/1.1
