@@ -34,7 +34,7 @@ export const router = createBrowserRouter([
         id: "settings",
         element: <SettingsLayout />,
         children: [...userSettingsRoutes],
-      }
+      },
     ],
   },
 

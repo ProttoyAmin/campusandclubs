@@ -1,12 +1,28 @@
 import type {
   ActivationRequest,
-  ApiAccountsAuthUsersMeRetrieveResponse,
-
 } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
 import { api } from "@/settings/api";
 import type { SignInSchemaType } from "validation/auth";
+
+
+export type AuthSession = {
+  status: number;
+  data: {
+    user: {
+      id: string;
+      display: string;
+      email: string;
+      has_usable_password: boolean;
+      username: string;
+    }
+    methods: string[];
+  }
+  meta: {
+    is_authenticated: boolean;
+  }
+}
 
 export class Authentication {
   public authenticated: boolean = false;
@@ -49,11 +65,11 @@ export class Authentication {
     return response;
   }
 
-  async checkSession(): Promise<ApiAccountsAuthUsersMeRetrieveResponse | null> {
+  async checkSession(): Promise<AuthSession | null> {
     // Lightweight check: try to fetch user info. If cookies are missing or invalid,
     // the 401 interceptor will catch it and attempt a silent refresh.
     try {
-      const response = await api.v1.client.get<ApiAccountsAuthUsersMeRetrieveResponse>('/accounts/auth/me/');
+      const response = await api.v1.client.get<AuthSession>('/_allauth/browser/v1/auth/session');
       if (response.status === 200) {
         this.authenticated = true;
         return response.data;

@@ -10,6 +10,7 @@ import {
 } from "design/components/ui/alert-dialog";
 import { useWithdraw } from "../../hooks/club.hooks";
 import { useParams } from "react-router-dom";
+import { toast } from "design/components/ui/toast";
 
 type DialogProps = {
   open: boolean;
@@ -37,8 +38,22 @@ export function ClubApplicationWithdrawDialog({
 
   const onSubmit = () => {
     withdraw(null, {
-      onSuccess: () => onOpenChange(false),
-      onError: (error) => console.log(error),
+      onSuccess: (id) => {
+        onOpenChange(false);
+        toast.add({
+          title: "Application withdrawn",
+          description: "Your application has been withdrawn successfully.",
+          actionProps: {
+            children: "Undo",
+            onClick() {
+              toast.close(id);
+            },
+          },
+        });
+      },
+      onError: (error) => {
+        console.log(error);
+      },
     });
   };
   return (
@@ -46,13 +61,13 @@ export function ClubApplicationWithdrawDialog({
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel variant="default">Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={() => onSubmit()}>Withdraw</AlertDialogAction>
+          <AlertDialogAction variant="destructive" onClick={() => onSubmit()}>
+            Withdraw
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

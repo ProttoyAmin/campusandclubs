@@ -3,14 +3,12 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import NavTabs from "./nav-tabs";
 import { userMenu, type MenuItemType } from "@/config/menu/main-menu";
-import { ModeToggle } from "@/shared/components/mode-toggle";
-import { useSession } from "@/features/auth/hooks";
 import { NavLink } from "react-router-dom";
-import { TextAlignJustify, Menu, MenuIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
-
+import { useMe } from "@/features/user/hooks/user.hooks";
 
 interface SideBarProps {
   main?: boolean;
@@ -20,7 +18,7 @@ interface SideBarProps {
 }
 
 const SideBar: React.FC<SideBarProps> = (props) => {
-  const { data: currentUser } = useSession();
+  const { data: currentUser } = useMe();
   const clubs: any = currentUser?.clubs || [];
 
   if (props.main) {
@@ -51,7 +49,15 @@ const SideBar: React.FC<SideBarProps> = (props) => {
             ))}
         </div>
         <div className="">
-          <SidebarDropDown menu={SettingsDropdownMenu} trigger={<Button variant="ghost"><MenuIcon className="size-5" />More</Button>} />
+          <SidebarDropDown
+            menu={SettingsDropdownMenu}
+            trigger={
+              <Button variant="ghost">
+                <MenuIcon className="size-5" />
+                More
+              </Button>
+            }
+          />
         </div>
       </header>
     );

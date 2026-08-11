@@ -155,6 +155,9 @@ SPECTACULAR_SETTINGS = {
     # "PREPROCESSING_HOOKS": [
     #     "core.openapi.hook.accounts_only",
     # ],
+    "POSTPROCESSING_HOOKS": [
+        "core.openapi.hook.merge_allauth_spec",
+    ],
 }
 
 SIMPLE_JWT = {
@@ -229,6 +232,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 HEADLESS_ONLY = True
+HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
 
 SITE_ID = 1

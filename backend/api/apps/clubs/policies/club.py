@@ -1,5 +1,5 @@
 from pprint import pprint
-from apps.clubs.dtos.decisions import JoinDecision, Decision, EditDecision
+from apps.clubs.dtos.decisions import JoinDecision, Decision
 from core.policies.base import Policy
 from apps.clubs.models import (
     Club,
@@ -19,6 +19,9 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
 
     def get_membership(self) -> Membership | None:
         return Membership.objects.filter(user=self.actor, club=self.record).first()
+
+    def membership_exists(self) -> bool:
+        return Membership.objects.filter(user=self.actor, club=self.record).exists()
     
     def can_view(self) -> Decision:
         club = self.record
@@ -97,10 +100,23 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
 
     def can_review_application(self) -> Decision:
         """Only members with can_manage_members may approve/reject."""
+        if not self.membership_exists():
+            return Decision(allowed=False, reason="You are not a member of this club.")
+
         membership = self.get_membership()
         if membership and membership.has_permission("can_manage_members"):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to review applications.")
+
+    def can_create_application(self) -> Decision:
+        if self.membership_exists():
+            return Decision(allowed=False, reason="You are already a member of this club.")
+
+        membership = self.get_membership()
+        if membership and membership.has_permission("can_manage_members"):
+            return Decision(allowed=True, reason="")
+        return Decision(allowed=False, reason="You don't have permission to create applications.")
+        
 
     def can_withdraw(self, application: MembershipApplication, user: User) -> Decision:
         if application.applicant.id != user.id:

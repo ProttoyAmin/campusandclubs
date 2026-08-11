@@ -9,11 +9,11 @@ const AuthLayout: React.FC = () => {
   }, []);
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      {/* <Guard> */}
-      <Card className="border max-w-md mx-auto my-auto">
-        <Outlet />
-      </Card>
-      {/* </Guard> */}
+      <Guard>
+        <Card className="border max-w-md mx-auto my-auto">
+          <Outlet />
+        </Card>
+      </Guard>
     </Suspense>
   );
 };

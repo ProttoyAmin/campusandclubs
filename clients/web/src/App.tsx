@@ -1,22 +1,23 @@
-
-import { useUsers } from '@/features/user/hooks/user.hooks';
-import { useSession } from './features/auth/hooks';
-import { Link } from 'react-router-dom';
-import { paths } from './settings/routes';
+import { useUsers } from "@/features/user/hooks/user.hooks";
+import { useSession } from "./features/auth/hooks";
+import { Link } from "react-router-dom";
+import { paths } from "./settings/routes";
 
 function App() {
-  const { data: users } = useUsers()
-  const { data } = useSession()
+  const { data: users } = useUsers();
+  const { data } = useSession();
 
   return (
-     <div>
-      <p>{data ? 'true' : 'false'}</p>
+    <div>
+      <p>{data.meta.is_authenticated ? "true" : "false"}</p>
       <pre>{JSON.stringify(users?.data, null, 2)}</pre>
       {users?.data.map((user) => (
-        <Link key={user?.id} to={paths.private.user.profile(user.username)}>{user.username}</Link>
+        <Link key={user?.id} to={paths.private.user.profile(user.username)}>
+          {user.username}
+        </Link>
       ))}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

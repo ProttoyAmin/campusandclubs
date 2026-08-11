@@ -11,13 +11,14 @@ import {
 } from "design/components/ui/avatar";
 import { EditProfileDialog } from "../profile/edit-profile-dialog";
 import type { UserProfile } from "@campus/api";
+import type { AuthSession } from "@/features/auth/services/authentication";
 
 const ProfileLayoutHeader = ({
   user,
   currentUser,
 }: {
   user: UserResponse;
-  currentUser: UserResponse;
+  currentUser: AuthSession;
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,11 +47,13 @@ const ProfileLayoutHeader = ({
             </Avatar>
             <div className="flex gap-2 items-center">
               <p className="text-lg">{user.username}</p>
-              {user.is_private && <LockIcon className="size-4 text-muted-foreground" />}
+              {user.is_private && (
+                <LockIcon className="size-4 text-muted-foreground" />
+              )}
             </div>
           </div>
           <div className="flex gap-2 items-center">
-            {user?.id === currentUser?.id ? (
+            {user?.id === currentUser?.data.user.id ? (
               <EditProfileDialog
                 trigger={<Button variant={"outline"}>Edit</Button>}
                 title="Edit Profile"

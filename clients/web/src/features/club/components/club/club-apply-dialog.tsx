@@ -9,6 +9,7 @@ import ClubApplicationForm from "@/components/forms/club/apply-club";
 import type { MembershipApplicationCreateRequest } from "@campus/api";
 import { useApplyToClub } from "../../hooks/club.hooks";
 import { useParams } from "react-router-dom";
+import { toast } from "design/components/ui/toast";
 
 type DialogProps = {
   open: boolean;
@@ -16,7 +17,6 @@ type DialogProps = {
   title?: string;
   description?: string;
   clubId?: string;
-  
 };
 
 export function ClubApplicationDialog({
@@ -24,13 +24,26 @@ export function ClubApplicationDialog({
   onOpenChange,
   title,
   description,
-  clubId
+  clubId,
 }: DialogProps) {
   const { slug } = useParams();
   const { mutate: applyToClub } = useApplyToClub(clubId || "", slug || "");
   const onSubmit = (data: MembershipApplicationCreateRequest) => {
-    console.log(data);
-    applyToClub(data, { onSuccess: () => onOpenChange(false) });
+    applyToClub(data, {
+      onSuccess: (id) => {
+        onOpenChange(false);
+        toast.add({
+          title: "Application submitted",
+          description: "Your application has been submitted successfully.",
+          actionProps: {
+            children: "Undo",
+            onClick() {
+              toast.close(id);
+            },
+          },
+        });
+      },
+    });
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
