@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { account } from "../services/user.service";
-import type { PatchedUserProfileRequest } from "@campus/api";
+import type { PatchedUserProfileRequest, UserProfile } from "@campus/api";
 import { queryClient } from "@/config/query-client";
 
 export const useUsers = () => {
@@ -53,3 +53,12 @@ export const useUpdateProfile = (username: string) => {
     },
   });
 };
+
+
+// export const useAccountActions = (user: Pick<UserProfile, "id" | "username" | "email">) => {
+  
+
+//   return {
+//     forgotPassword,
+//   };
+// }

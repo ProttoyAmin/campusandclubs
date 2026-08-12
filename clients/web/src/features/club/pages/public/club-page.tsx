@@ -13,10 +13,16 @@ const ClubPage: React.FC = () => {
   return (
     <div className="">
       <CardHeader>
-        <div className="relative">
-          {club?.banner && <img src={club?.banner} alt={club?.name} />}
+        <div className="relative rounded-md overflow-hidden">
+          {club?.banner && (
+            <img
+              src={club?.banner}
+              alt={club?.name}
+              className="w-full h-64 object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="absolute top-30 right-6 flex justify-center items-center shadow-md">
+          {/* <div className="absolute bottom-0 right-6 flex justify-center items-center ">
             {club?.avatar && (
               <img
                 src={club?.avatar}
@@ -24,7 +30,7 @@ const ClubPage: React.FC = () => {
                 className="w-32 h-32 object-cover rounded-md shadow-2xl"
               />
             )}
-          </div>
+          </div> */}
         </div>
         <CardTitle className="flex justify-between mt-4">
           {club?.name}

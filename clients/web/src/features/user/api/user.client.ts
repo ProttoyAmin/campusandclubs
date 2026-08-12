@@ -1,8 +1,9 @@
 import { BaseClient } from "@/settings/api/";
 import { config } from "@/settings/app";
 import type {
-  AccountsAuthUsersRetrieveResponse,
-  AccountsAuthUsersUserRetrieveResponse,
+  ApiAccountsAuthUsersRetrieveResponse,
+  PaginatedUserProfileList,
+  ApiAccountsAuthUsersUserRetrieveResponse,
   PatchedUserProfileRequest
 } from "@campus/api";
 
@@ -24,24 +25,24 @@ export type PrivateUserResponse = {
   follow_status: string | null;
 };
 
-export type UserResponse = AccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
+export type UserResponse = ApiAccountsAuthUsersUserRetrieveResponse | PrivateUserResponse;
 
 export class UserClient extends BaseClient<
   AxiosResponse,
-  AccountsAuthUsersRetrieveResponse,
+  ApiAccountsAuthUsersRetrieveResponse,
   any
 > {
   constructor() {
-    super(config.api.v1.account.base);
+    super(config.api.v1.account.base, config.api.v1.allauth.base);
   }
 
   async grabUsers(): Promise<
-    AxiosResponse<AccountsAuthUsersRetrieveResponse[]>
+    AxiosResponse<PaginatedUserProfileList>
   > {
     try {
       const response = await this.client.get<
-        AccountsAuthUsersRetrieveResponse[]
-      >(this.endpoint + "users/");
+        PaginatedUserProfileList
+      >(this.endpoint + "all/");
       return response;
     } catch (err) {
       console.error("Grab users error:", (err as AxiosError).response?.data);
@@ -50,16 +51,14 @@ export class UserClient extends BaseClient<
   }
 
   async updateProfile(data: PatchedUserProfileRequest): Promise<AxiosResponse> {
-      const response = await this.client.patch(this.endpoint + "users/me/", data);
-      return response;
-    }
-  
-  async fetchMe(): Promise<AxiosResponse<UserResponse>> {
-      const response = await this.client.get<UserResponse>(this.endpoint + "me/");
-      return response;
+    const response = await this.client.patch(this.endpoint + "users/me/", data);
+    return response;
   }
 
-
+  async fetchMe(): Promise<AxiosResponse<UserResponse>> {
+    const response = await this.client.get<UserResponse>(this.endpoint + "me/");
+    return response;
+  }
 
   async getUser(
     username: string,

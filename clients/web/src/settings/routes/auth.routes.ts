@@ -5,5 +5,7 @@ export const authRoutes = {
     },
     private: {
         activation: '/activate/:uuid/:token',
+        forgot_password: '/@/auth/forgot-password',
+        reset_password: '/@/auth/reset-password/:key',
     }
 }

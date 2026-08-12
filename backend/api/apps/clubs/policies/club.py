@@ -35,12 +35,12 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return Decision(False, "You must be logged in to view this club.")
 
 
-        if not club.owner == self.actor:
-            return Decision(False, "You are not the owner of this club.")
+        # if not club.owner == self.actor:
+        #     return Decision(False, "You are not the owner of this club.")
         
 
-        # AVOID DB CALL. MOVE THE LOGIC TO REPO LAYER <- SERVICE <- POLICY
-        if club.privacy == Visibility.PRIVATE or club.privacy == Visibility.SECRET:
+        # TODO: AVOID DB CALL. MOVE THE LOGIC TO REPO LAYER <- SERVICE <- POLICY
+        if club.privacy == Visibility.PRIVATE:
             return Decision(Membership.objects.filter(user=self.actor, club=club).exists(), "This is a private club and you're not a member.")
         
 

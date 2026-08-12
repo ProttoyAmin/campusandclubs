@@ -21,4 +21,4 @@ class PrivateResponseMixin(Generic[ObjT]):
     def get_private_payload(self, instance: ObjT, request) -> Response:
         serializer = self.get_private_serializer(instance, request)
         data = {"detail": self.private_detail_message, **serializer.data}
-        return Response(data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data, status=status.HTTP_200_OK)

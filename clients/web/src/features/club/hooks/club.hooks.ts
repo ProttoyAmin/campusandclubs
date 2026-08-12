@@ -2,7 +2,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { club } from "../services/clubs";
 import { queryClient } from "@/config/query-client";
 import type { JoinErrorResponse } from "@/features/user/api/types";
-import type { MembershipApplicationCreateRequest } from "@campus/api";
+import type { ClubDetail, MembershipApplicationCreateRequest } from "@campus/api";
+import type { AppError } from "@/settings/app/error";
 
 
 export const useGetClubs = () => {
@@ -16,11 +17,10 @@ export const useGetClubs = () => {
 };
 
 export const useClub = (slug: string) => {
-  return useQuery({
+  return useQuery<ClubDetail, AppError>({
     queryKey: ["club", slug],
     queryFn: () => {
-      const response = club.club(slug)
-      return response
+      return club.club(slug)
     },
   });
 };

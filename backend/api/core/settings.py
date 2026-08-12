@@ -237,6 +237,12 @@ SOCIALACCOUNT_PROVIDERS = {
 HEADLESS_ONLY = True
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
+HEADLESS_FRONTEND_URLS = {
+    "account_reset_password_from_key": "http://localhost:4000/@/auth/reset-password/{key}",
+    # add other flows here as you hit them, e.g.:
+    # "account_confirm_email": "http://localhost:3000/confirm-email/{key}",
+    # "socialaccount_login_error": "http://localhost:3000/login/error",
+}
 
 SITE_ID = 1
 
@@ -247,6 +253,7 @@ ACCOUNT_SIGNUP_FIELDS = [
     "password2*",
 ]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ON_PASSWORD_RESET=True
 
 INTERNAL_IPS = [
     '127.0.0.1',

@@ -69,9 +69,15 @@ export const paths = {
         }),
     },
 
-    // auth: {
-    //   activation: routes.auth.private.activation,
-    // }
+    auth: {
+      activation: routes.auth.private.activation,
+      forgot_password: routes.auth.private.forgot_password,
+      reset_password: (uid: string, token: string) =>
+        generateRouteFromPath(routes.auth.private.reset_password, {
+          uid,
+          token,
+        }),
+    }
   },
 
   public: {

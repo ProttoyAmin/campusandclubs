@@ -27,7 +27,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
                                    default=None)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     owner_details = serializers.SerializerMethodField()
-    member_count = serializers.SerializerMethodField()
+    total_members = serializers.SerializerMethodField()
     # post_count = serializers.SerializerMethodField()
     # event_count = serializers.SerializerMethodField()
     user_role = serializers.SerializerMethodField()
@@ -52,7 +52,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
-            'member_count', 'join_mode', 'status', 'scope', 'category', 'application',
+            'total_members', 'join_mode', 'status', 'scope', 'category', 'application',
             'user_role', 'is_member', 'is_owner',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
@@ -76,8 +76,9 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             return False
         return obj.owner == request.user
 
-    def get_avatar(self, obj: Club) -> str | None:
-        return obj.avatar
+    def get_avatar(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
     def get_banner(self, obj: Club) -> str | None:
         return obj.banner
@@ -120,8 +121,8 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         assert request is not None
         return request.build_absolute_uri(reverse('clubs:join_club', kwargs={'pk': obj.pk}))
 
-    def get_member_count(self, obj: Club) -> int:
-        return getattr(obj, 'member_count', obj.members.count())
+    def get_total_members(self, obj: Club) -> int:
+        return getattr(obj, 'total_members', obj.members.count())
 
     # def get_post_count(self, obj: Club) -> int:
     #     return getattr(obj, 'post_count', obj.total_posts)

@@ -1,11 +1,9 @@
 import { Controller, useForm } from "react-hook-form";
-import { signInSchema, type SignInSchemaType } from "validation/auth";
 import {
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "design/components/ui/card";
+  resetPasswordSchema,
+  type ResetPasswordSchemaType,
+} from "validation/auth";
+import { CardContent, CardHeader, CardTitle } from "design/components/ui/card";
 import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
@@ -16,28 +14,22 @@ import {
   FieldGroup,
   FieldLabel,
 } from "design/components/ui/field";
-import { useNavigate } from "react-router-dom";
 import type { AllauthError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { routes } from "@/settings/routes";
 
-type SignInFormProps = {
-  onSubmit: (data: SignInSchemaType) => void;
+type ResetPasswordFormProps = {
+  onSubmit: (data: ResetPasswordSchemaType) => void;
   serverErrors?: AllauthError | null;
   pending: boolean;
 };
-
-const SignInForm = (props: SignInFormProps) => {
-  const form = useForm<SignInSchemaType>({
-    resolver: zodResolver(signInSchema),
+const ResetPasswordForm = (props: ResetPasswordFormProps) => {
+  const form = useForm<ResetPasswordSchemaType>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      username: "",
       password: "",
+      re_password: "",
     },
   });
-
-  const navigate = useNavigate();
-
   return (
     <CardContent>
       <CardHeader>
@@ -46,62 +38,19 @@ const SignInForm = (props: SignInFormProps) => {
       <form onSubmit={form.handleSubmit(props.onSubmit)}>
         <FieldGroup>
           <Controller
-            name="username"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-in-form-username_or_email">
-                  Username
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="username_or_email"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Username or Email"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-                {props.serverErrors && (
-                  <FieldError
-                    errors={[
-                      ...(props.serverErrors.errors || [])
-                        .filter((item) => item.param === "username")
-                        .map((item) => new Error(item.message || "")),
-                    ]}
-                  />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
             name="password"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="sign-in-form-password">
-                    Password
-                  </FieldLabel>
-                  <CardAction>
-                    <Button
-                      variant="link"
-                      className={"text-blue-500"}
-                      onClick={() => {
-                        navigate(routes.auth.private.forgot_password);
-                      }}
-                    >
-                      Forgot password?
-                    </Button>
-                  </CardAction>
-                </div>
+                <FieldLabel htmlFor="reset-passowrd-form-password">
+                  New password
+                </FieldLabel>
                 <Input
                   {...field}
-                  id="password"
                   type="password"
+                  id="reset-password-form-password"
                   aria-invalid={fieldState.invalid}
-                  placeholder="Password"
+                  placeholder="New password"
                   autoComplete="off"
                 />
                 {fieldState.invalid && (
@@ -119,20 +68,42 @@ const SignInForm = (props: SignInFormProps) => {
               </Field>
             )}
           />
-          <Button
-            variant="link"
-            className={"w-fit self-start"}
-            onClick={() => {
-              navigate(routes.auth.public.sign_up);
-            }}
-          >
-            Don't have an account?
-          </Button>
+          <Controller
+            name="re_password"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="reset-passowrd-form-re_password">
+                  Confirm Password
+                </FieldLabel>
+                <Input
+                  {...field}
+                  id="reset-password-form-re_password"
+                  type="password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Confirm password"
+                  autoComplete="off"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+                {props.serverErrors && (
+                  <FieldError
+                    errors={[
+                      ...(props.serverErrors.errors || [])
+                        .filter((item) => item.param === "re_password")
+                        .map((item) => new Error(item.message || "")),
+                    ]}
+                  />
+                )}
+              </Field>
+            )}
+          />
           <Button type="submit" disabled={props.pending}>
             {props.pending && (
               <Spinner className="size-4" data-icon="inline-start" />
             )}
-            {props.pending ? "Signing in..." : "Sign in"}
+            {props.pending ? "Resetting password..." : "Reset password"}
           </Button>
         </FieldGroup>
       </form>
@@ -140,4 +111,4 @@ const SignInForm = (props: SignInFormProps) => {
   );
 };
 
-export default SignInForm;
+export default ResetPasswordForm;

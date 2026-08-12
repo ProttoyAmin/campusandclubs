@@ -7,6 +7,7 @@ from .event import Event
 from .membership.form import (
     MembershipApplication,
     Form,
+    FormQuestion,
     MembershipApplicationResponse,
     ApplicationStatus,
     QuestionType,
@@ -30,6 +31,7 @@ __all__ = [
     'Form',
     'MembershipApplicationResponse',
     'Category',
+    'FormQuestion',
 
 
     'ApplicationStatus',

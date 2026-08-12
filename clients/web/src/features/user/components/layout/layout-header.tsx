@@ -1,6 +1,6 @@
 import { paths } from "@/settings/routes";
 import { Button } from "design/components/ui/button";
-import { Search, CircleEllipsis, LockIcon } from "lucide-react";
+import { Search, CircleEllipsis, LockIcon, SettingsIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavigateButtons from "@/shared/components/navigate-buttons";
 import type { UserResponse } from "../../api/user.client";
@@ -68,16 +68,22 @@ const ProfileLayoutHeader = ({
             <Button variant={"ghost"} className={"rounded-full"} size="icon">
               <Search className="size-5" />
             </Button>
-            <Button
-              variant={"ghost"}
-              className={"rounded-full group"}
-              size="icon"
-              onClick={() => {
-                navigate(paths.private.settings.account);
-              }}
-            >
-              <CircleEllipsis className="size-5 transition-transform duration-200 group-hover:rotate-180" />
-            </Button>
+            {user?.id === currentUser?.data.user.id ? (
+              <Button
+                variant={"ghost"}
+                className={"rounded-full group"}
+                size="icon"
+                onClick={() => {
+                  navigate(paths.private.settings.account);
+                }}
+              >
+                <SettingsIcon className="size-5 transition-transform duration-200 group-hover:rotate-45" />
+              </Button>
+            ) : (
+              <Button variant={"ghost"} className={"rounded-full"} size="icon">
+                <CircleEllipsis className="size-5 transition-transform duration-200" />
+              </Button>
+            )}
           </div>
         </>
       )}

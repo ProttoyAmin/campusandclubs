@@ -19,7 +19,6 @@ const Requests = React.lazy(
   () => import("./pages/private/config-club/requests-page"),
 );
 
-
 export const clubRoutes = [
   { id: "club-main", path: routes.club.public.base, element: <ClubPage /> },
   {

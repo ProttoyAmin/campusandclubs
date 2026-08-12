@@ -11,7 +11,8 @@ from apps.clubs.viewss.club.common import (
     club_info,
     recommended_clubs,
     ClubJoinView,
-    LeaveClubView
+    LeaveClubView,
+    AF_ListCreateAPIView
 )
 
 from apps.clubs.viewss.membership.common import (
@@ -65,6 +66,12 @@ urlpatterns = [
     #     path('<uuid:pk>/stats/', views.club_stats, name='club_stats'),  # NEW
 
     #     path('<uuid:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
+
+
+    #     # ==================== APPLICATION FORMS ====================
+    path('<uuid:pk>/application-forms/', AF_ListCreateAPIView.as_view(),
+         name='application_forms'),      # ---- checked
+    
 
     #     # ==================== MEMBER MANAGEMENT ====================
     path('<uuid:pk>/members/', views_members_views.list_members,

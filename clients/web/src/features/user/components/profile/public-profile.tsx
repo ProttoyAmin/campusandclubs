@@ -1,4 +1,3 @@
-
 import {
   CardContent,
   CardDescription,
@@ -11,8 +10,6 @@ import {
   AvatarImage,
 } from "design/components/ui/avatar";
 import type { UserProfile } from "@campus/api";
-import { EditProfileDialog } from "./edit-profile-dialog";
-import { Button } from "design/components/ui/button";
 import {
   Tabs,
   TabsContent,
@@ -23,7 +20,7 @@ import {
 export const PublicProfile: React.FC<{
   data: UserProfile;
   currentUser: UserProfile;
-}> = ({ data, currentUser }) => {
+}> = ({ data }) => {
   return (
     <div className="">
       <CardHeader>
@@ -35,7 +32,6 @@ export const PublicProfile: React.FC<{
                   {data.first_name} {data.last_name}
                 </h1>
               )}
-              
             </div>
             <CardDescription>{data.username}</CardDescription>
             {data.bio && (

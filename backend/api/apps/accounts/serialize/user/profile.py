@@ -81,14 +81,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     # URLs
     url = serializers.SerializerMethodField()
-    profile_picture_url = serializers.SerializerMethodField()
-    avatar = serializers.SerializerMethodField()  # Alias for profile_picture_url
+    avatar = serializers.SerializerMethodField()
 
     class Meta:
         visible_fields = [
-            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'url', 'gender', 'affiliations',
+            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'avatar', 'url', 'gender', 'affiliations',
             'student_id', 'year', 'level', 'type', 'preferred_email', 'media',
-            'profile_picture_url', 'avatar', 'bio', 'location', 'website', 'date_of_birth',
+            'bio', 'location', 'website', 'date_of_birth',
             'email_verified', 'is_private', 'status', 'is_status_manual',
             'club_count', 'clubs', 'clubs_url',
             'user_post_count', 'total_posts_count', 'posts_url',
@@ -175,8 +174,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return field_name in requested_fields
 
     def get_avatar(self, obj: models.User):
-        """Alias for profile_picture_url"""
-        return self.get_profile_picture_url(obj)
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
     
     def get_media(self, obj: models.User):
@@ -184,23 +183,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         media = obj.media.all()
         return MediaListSerializer(media, many=True, context=self.context).data
 
-    def get_profile_picture_url(self, obj: models.User):
-        if obj.avatar:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.avatar)
-        return None
 
     def get_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(f'/api/v1/accounts/auth/users/user/{obj.username}/')
         return None
-    
-    # def get_department(self, obj: models.User):
-    #     if obj.department:
-    #         return obj.department.code
-    #     return None
 
     def get_clubs_url(self, obj: models.User):
         request = self.context.get('request')

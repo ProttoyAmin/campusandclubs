@@ -101,6 +101,8 @@ class ClubSerializer(serializers.ModelSerializer):
     origin = serializers.SerializerMethodField()
     owner = serializers.SerializerMethodField()
 
+    avatar = serializers.SerializerMethodField()
+    banner = serializers.SerializerMethodField()
     media = serializers.SerializerMethodField()
 
     total_members = serializers.SerializerMethodField()
@@ -134,6 +136,14 @@ class ClubSerializer(serializers.ModelSerializer):
 
     def get_total_posts(self, obj: Club) -> int:
         return obj.posts.count()
+
+    def get_avatar(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+
+    def get_banner(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.BANNER).first().file.url if obj.media.filter(role=MediaRole.BANNER).exists() else None
     
     def get_is_public(self, obj: Club) -> bool:
         return obj.privacy == 'public'
@@ -186,7 +196,56 @@ class ClubSerializer(serializers.ModelSerializer):
         media = obj.media.all()
         return MediaListSerializer(media, many=True, context=self.context).data
     
+class ClubPrivateSerializer(serializers.ModelSerializer):
+    """
+    Club private serializer
+    
+    Used for listing private clubs, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+    """
+    avatar = serializers.SerializerMethodField()
+    banner = serializers.SerializerMethodField()
+    total_members = serializers.SerializerMethodField()
+    application = serializers.SerializerMethodField()
+    class Meta:
+        model = Club
+        fields = ['id', 'name', 'origin', 'about', 'join_mode',
+                  'avatar', 'banner', 'privacy','allow_public_posts', 'total_members', 'application'
+                  ]
+        read_only_fields = ['id']
 
+    
+    def _get_request(self) -> Request | None:
+        return self.context.get('request')
+
+    def get_avatar(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+
+    def get_banner(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.BANNER).first().file.url if obj.media.filter(role=MediaRole.BANNER).exists() else None
+
+    def get_total_members(self, obj: Club) -> int:
+        return obj.members.count()
+
+    def get_application(self, obj: Club):
+        from core.policies.utils import current_user
+        from apps.clubs.repositories import MembershipApplicationRepository
+        from apps.clubs.serializer.membership import MembershipApplicationSerializer
+        request = self._get_request()
+
+        if not (request and request.user.is_authenticated):
+            return None
+
+        application = MembershipApplicationRepository().get_membership_application_for_user(
+            club=obj, applicant=current_user(request)
+        )
+
+        if application is None:
+            return {
+                'status': None
+            }
+        return MembershipApplicationSerializer(application).data
 
 class ClubJoinSerializer(serializers.ModelSerializer):
     """

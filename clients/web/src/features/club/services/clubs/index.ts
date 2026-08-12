@@ -7,7 +7,7 @@ class ClubService {
     private clubClient = clubClient;
     public application = clubApplicationsService;
     public members = membershipService;
-    constructor() {}
+    constructor() { }
 
     async clubs(): Promise<any> {
         const res = await this.clubClient.getClubs();

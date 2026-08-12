@@ -10,6 +10,10 @@ import type { AllauthError, SignUpError } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
 
+export type ResetPasswordErrors = {
+
+}
+
 export const authKeys = {
   session: ["auth", "session"] as const,
 };
@@ -17,7 +21,7 @@ export const authKeys = {
 export const useSession = () => {
   return useQuery({
     queryKey: authKeys.session,
-    queryFn: () => authentication.checkSession(),
+    queryFn: () => authentication.check_session(),
     staleTime: 1000 * 60 * 5, // 5 min, tune access token lifetime
     retry: false,
   });
@@ -44,7 +48,7 @@ export const useAuth = () => {
     AppError<SignUpError>,
     RegisterRequestWritable
   >({
-    mutationFn: (data) => authentication.signUp(data),
+    mutationFn: (data) => authentication.sign_up(data),
     onSuccess: (data) => {
       console.log("Registration successful:", data);
     },
@@ -59,7 +63,29 @@ export const useAuth = () => {
       authentication.login(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: authKeys.session });
+      queryClient.clear()
     },
   });
-  return { logout, login, signUp };
+
+  const forgotPassword = useMutation({
+    mutationFn: (email: string) => {
+      return authentication.request_password_reset(email);
+    },
+  });
+
+  const resetPassword = useMutation<
+    AxiosResponse,
+    AppError<AllauthError>,
+    { key: string, new_password: string }
+  >({
+    mutationFn: ({ key, new_password }) => {
+      return authentication.reset_password(key, new_password);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.session });
+    },
+  });
+
+
+  return { logout, login, signUp, forgotPassword, resetPassword };
 };

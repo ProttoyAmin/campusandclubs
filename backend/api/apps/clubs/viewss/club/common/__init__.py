@@ -3,6 +3,7 @@ from .class_views import (
     ClubJoinView,
     LeaveClubView,
 )
+from .application_forms import AF_ListCreateAPIView
 
 
 __all__ = [
@@ -10,4 +11,6 @@ __all__ = [
     'join_club',
     'recommended_clubs',
     "ClubJoinView",
+
+    "AF_ListCreateAPIView"
 ]

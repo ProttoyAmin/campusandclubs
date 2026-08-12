@@ -21,11 +21,9 @@ class PrivateUserSerializer(serializers.ModelSerializer):
             "is_private", "is_following", "follow_status",
         ]
 
-    def get_avatar(self, obj: models.User) -> str | None:
-        request = self.context.get("request")
-        if request and obj.avatar:
-            return request.build_absolute_uri(obj.avatar)
-        return None
+    def get_avatar(self, obj: models.User):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
     def get_is_following(self, obj: models.User) -> bool:
         request = self.context.get("request")

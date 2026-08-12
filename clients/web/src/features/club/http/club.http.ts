@@ -4,7 +4,7 @@ import type {
   MembershipApplicationCreateRequest,
   ClubJoinRequest,
 } from "@campus/api";
-import { AxiosError, type AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
 export class ClubClient extends BaseClient<AxiosResponse, any, any> {
@@ -13,25 +13,15 @@ export class ClubClient extends BaseClient<AxiosResponse, any, any> {
   }
 
   async getClubs(): Promise<AxiosResponse> {
-    try {
-      const response = await this.client.get<AxiosResponse>(this.endpoint);
-      return response;
-    } catch (error) {
-      console.error("Get Clubs error:", (error as AxiosError).response?.data);
-      throw error;
-    }
+    const response = await this.client.get<AxiosResponse>(this.endpoint);
+    return response;
   }
 
   async fetchClub(slug: string): Promise<AxiosResponse<ClubDetail>> {
-    try {
-      const response = await this.client.get<ClubDetail>(
-        `${this.endpoint}${slug}`,
-      );
-      return response;
-    } catch (error) {
-      console.error("Get Club error:", (error as AxiosError).response?.data);
-      throw error;
-    }
+    const response = await this.client.get<ClubDetail>(
+      `${this.endpoint}${slug}`,
+    );
+    return response;
   }
 
   async joinClub(

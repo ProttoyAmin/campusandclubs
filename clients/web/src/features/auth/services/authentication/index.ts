@@ -46,7 +46,7 @@ export class Authentication {
     return response;
   }
 
-  async signUp(data: RegisterRequestWritable) {
+  async sign_up(data: RegisterRequestWritable) {
     return await this.apiClient.signUp(data);
   }
 
@@ -57,6 +57,18 @@ export class Authentication {
     });
   }
 
+
+
+  async request_password_reset(email: string) {
+    const response = await this.apiClient.requestPasswordReset(email)
+    return response.data;
+  }
+
+  async reset_password(key: string, new_password: string) {
+    const response = await this.apiClient.resetPassword(key, new_password);
+    return response.data;
+  }
+
   async logout() {
     const response = await this.apiClient.logout();
     if (response.success) {
@@ -65,7 +77,9 @@ export class Authentication {
     return response;
   }
 
-  async checkSession(): Promise<AuthSession | null> {
+
+
+  async check_session(): Promise<AuthSession | null> {
     // Lightweight check: try to fetch user info. If cookies are missing or invalid,
     // the 401 interceptor will catch it and attempt a silent refresh.
     try {

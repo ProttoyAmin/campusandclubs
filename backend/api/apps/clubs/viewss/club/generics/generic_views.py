@@ -14,6 +14,8 @@ from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.dtos import ClubListFilters
 from core.policies.utils import current_user
 from apps.clubs.policies.club import ClubPolicy
+from core.views import PrivateResponseMixin
+from apps.clubs.serializer.club.club import ClubPrivateSerializer
 
 
 # Club List & Create Generic View
@@ -81,6 +83,7 @@ class ClubListCreateView(
 
 class ClubRetrieveUpdateDestroyAPIView(
     ServiceMixin[ClubService],
+    PrivateResponseMixin[Club],
     PolicyMixin[ClubPolicy, Club],
     generics.RetrieveUpdateDestroyAPIView[Club]
 ):
@@ -88,6 +91,8 @@ class ClubRetrieveUpdateDestroyAPIView(
         Retrieve, update or delete a club instance.
         """
     serializer_class = ClubDetailSerializer
+    private_detail_message = "This club is private"
+    private_serializer_class = ClubPrivateSerializer
     service_class = ClubService
     policy_class = ClubPolicy
     permission_classes = [permissions.IsAuthenticated]
@@ -96,11 +101,17 @@ class ClubRetrieveUpdateDestroyAPIView(
         return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        from apps.clubs.models import Visibility
+
         policy = self.get_policy(request, self.get_object())
         if not policy:
             ...
 
         decision = policy.can_view()
+
+        if not decision.allowed and self.get_object().privacy == Visibility.PRIVATE:
+            return self.get_private_payload(self.get_object(), request)
+
 
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)

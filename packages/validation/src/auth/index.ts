@@ -7,3 +7,8 @@ export {
     signInSchema,
     type SignInSchemaType,
 } from "./sign-in-schema";
+
+export {
+    resetPasswordSchema,
+    type ResetPasswordSchemaType,
+} from "./reset-password-schema";

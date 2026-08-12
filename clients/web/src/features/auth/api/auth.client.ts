@@ -73,6 +73,29 @@ export class AuthClient extends BaseClient<
     }
   }
 
+  async requestPasswordReset(email: string): Promise<AxiosResponse> {
+    const response = await this.client.post(this.allauthBrowser + "auth/password/request", {
+      email
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response;
+  }
+
+  async resetPassword(key: string, password: string): Promise<AxiosResponse> {
+    const response = await this.client.post(this.allauthBrowser + "auth/password/reset", {
+      key,
+      password
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response;
+  }
+
   async refresh(): Promise<AxiosResponse<RefreshToken>> {
     try {
       const response = await this.client.post<RefreshToken>(
