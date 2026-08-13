@@ -3,12 +3,13 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import NavTabs from "./nav-tabs";
 import { userMenu, type MenuItemType } from "@/config/menu/main-menu";
-import { NavLink } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { useMe } from "@/features/user/hooks/user.hooks";
+import { clubMenu } from "@/config/menu/club-menu";
+import type { ClubDetail } from "@campus/api";
 
 interface SideBarProps {
   main?: boolean;
@@ -19,12 +20,13 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = (props) => {
   const { data: currentUser } = useMe();
-  const clubs: any = currentUser?.clubs || [];
+  const clubs: Pick<ClubDetail, "id" | "slug" | "name">[] =
+    currentUser?.clubs || [];
 
   if (props.main) {
     return (
       <header
-        className={`min-h-screen p-4 sticky top-0 left-0 flex flex-col justify-between items-left ${props.className}`}
+        className={`h-screen p-4 flex flex-col justify-between items-left ${props.className}`}
       >
         <Link to={paths.public.home} className="col-span-1 max-w-fit">
           CampusandClubs
@@ -32,20 +34,18 @@ const SideBar: React.FC<SideBarProps> = (props) => {
         <div className="">
           <NavTabs
             menu={userMenu(currentUser?.username || "")}
-            className="flex flex-col space-y-2 w-5/6 self-start"
+            className="flex flex-row md:flex-col space-y-2 w-full md:w-5/6 self-start"
           />
         </div>
         <div className="flex flex-col space-y-2">
           <h1 className="text-muted-foreground text-xs">Clubs</h1>
           {clubs &&
             clubs.map((club: any) => (
-              <NavLink
-                key={club.club_id}
-                to={paths.public.club.slug(club.club_slug)}
-                className="flex flex-col space-y-2 self-start"
-              >
-                {club?.club_name}
-              </NavLink>
+              <NavTabs
+                key={club?.club_id}
+                menu={clubMenu(club.club_id, club.club_name, club.club_slug)}
+                className="flex flex-row md:flex-col space-y-2 w-full md:w-5/6 self-start"
+              />
             ))}
         </div>
         <div className="">

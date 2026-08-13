@@ -6,17 +6,18 @@ import { authClient } from "../../api/auth.client";
 import { api } from "@/settings/api";
 import type { SignInSchemaType } from "validation/auth";
 
+export type AuthUser = {
+  id: string;
+  display: string;
+  email: string;
+  has_usable_password: boolean;
+  username: string;
+};
 
 export type AuthSession = {
   status: number;
   data: {
-    user: {
-      id: string;
-      display: string;
-      email: string;
-      has_usable_password: boolean;
-      username: string;
-    }
+    user: AuthUser | null;
     methods: string[];
   }
   meta: {
@@ -71,7 +72,7 @@ export class Authentication {
 
   async logout() {
     const response = await this.apiClient.logout();
-    if (response.success) {
+    if (response.data.success) {
       this.authenticated = false;
     }
     return response;

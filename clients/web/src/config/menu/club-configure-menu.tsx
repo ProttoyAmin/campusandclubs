@@ -3,13 +3,12 @@ import { House, LayoutList } from "lucide-react";
 import { matchPath } from "react-router-dom";
 import type { MenuItemType } from "./main-menu";
 
-
 export function isRouteActive(pattern: string, pathname: string) {
   return !!matchPath(pattern, pathname);
 }
 
 export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
-  slug: string
+  slug: string,
 ) => [
   {
     id: 1,
@@ -24,7 +23,9 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
     id: 2,
     label: "Permissions",
     icon: <LayoutList size={18} />,
-    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    iconActive: (
+      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+    ),
     link: () => paths.private.club.permissions(slug),
     isActive: (currentPath) =>
       isRouteActive(routes.club.private.config.permissions, currentPath),
@@ -33,16 +34,20 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
     id: 3,
     label: "Requests",
     icon: <LayoutList size={18} />,
-    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
-    link: () => paths.private.club.requests(slug),
+    iconActive: (
+      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+    ),
+    link: () => paths.private.club.requests.base(slug),
     isActive: (currentPath) =>
-      isRouteActive(routes.club.private.config.requests, currentPath),
+      isRouteActive(routes.club.private.config.requests.base, currentPath),
   },
   {
     id: 4,
     label: "Members",
     icon: <LayoutList size={18} />,
-    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    iconActive: (
+      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+    ),
     link: () => paths.private.club.members(slug),
     isActive: (currentPath) =>
       isRouteActive(routes.club.private.config.members, currentPath),
@@ -51,7 +56,9 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
     id: 5,
     label: "Settings",
     icon: <LayoutList size={18} />,
-    iconActive: <LayoutList size={18} fill="currentColor" stroke="currentColor" />,
+    iconActive: (
+      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+    ),
     link: () => paths.private.club.settings(slug),
     isActive: (currentPath) =>
       isRouteActive(routes.club.private.config.settings, currentPath),

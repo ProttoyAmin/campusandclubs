@@ -37,9 +37,16 @@ export const useSession = () => {
 export const useAuth = () => {
   const logout = useMutation({
     mutationFn: () => authentication.logout(),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await queryClient.cancelQueries({
+        queryKey: authKeys.session,
+      });
+
       queryClient.setQueryData(authKeys.session, false);
-      queryClient.clear(); // wipe any user-scoped cached data on logout
+
+      await queryClient.invalidateQueries({
+        queryKey: authKeys.session
+      });
     },
   });
 

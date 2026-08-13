@@ -6,12 +6,15 @@ from rest_framework import serializers
 from rest_framework.request import Request
 from apps.clubs.models import MembershipApplication
 from apps.clubs.models.club.club import Club
+from apps.accounts.serialize.user.profile import UserMinimalSerializer
 
 class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
     """
     Serializer for creating a membership application.
     """
     message = serializers.CharField(required=True, allow_blank=True, allow_null=True, max_length=500)
+
+    applicant = UserMinimalSerializer(read_only=True)
 
     # url = serializers.SerializerMethodField()
 

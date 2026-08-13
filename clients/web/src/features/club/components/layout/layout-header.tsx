@@ -84,7 +84,7 @@ const ClubLayoutHeader = ({
             <Button variant={"ghost"} className={"rounded-full"} size="icon">
               <Search className="size-5" />
             </Button>
-            {club?.user_role ? (
+            {club?.is_owner ? (
               <Button
                 variant={"ghost"}
                 className={"rounded-full group"}

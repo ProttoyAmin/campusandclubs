@@ -4,7 +4,12 @@ export const clubRoutes = {
       base: "/@/c/:slug/config/",
       permissions: "/@/c/:slug/config/permissions/",
       members: "/@/c/:slug/config/members/",
-      requests: "/@/c/:slug/config/requests/",
+      requests: {
+        base: "/@/c/:slug/config/requests/",
+        approved: "/@/c/:slug/config/requests/approved/",
+        pendings: "/@/c/:slug/config/requests/pendings/",
+        rejected: "/@/c/:slug/config/requests/rejected/",
+      },
       settings: "/@/c/:slug/config/settings/",
     },
   },

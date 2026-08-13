@@ -24,7 +24,7 @@ const ClubApplicationForm = (props: ClubApplicationProps) => {
     },
   });
   return (
-    <form id="profile-update-form" onSubmit={form.handleSubmit(props.onSubmit)}>
+    <form id="apply-club-form" onSubmit={form.handleSubmit(props.onSubmit)}>
       <FieldGroup>
         <div className="flex gap-2">
           <Controller
@@ -32,12 +32,12 @@ const ClubApplicationForm = (props: ClubApplicationProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="club-application-form-message">
+                <FieldLabel htmlFor="apply-club-form-message">
                   Message
                 </FieldLabel>
                 <Textarea
                   {...field}
-                  id="message"
+                  id="apply-club-form-message"
                   aria-invalid={fieldState.invalid}
                   placeholder="I want to join this club"
                   autoComplete="off"
@@ -49,7 +49,9 @@ const ClubApplicationForm = (props: ClubApplicationProps) => {
             )}
           />
         </div>
-        <Button type="submit">{form.formState.isSubmitting ? "Submitting..." : "Submit"}</Button>
+        <Button type="submit">
+          {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
       </FieldGroup>
     </form>
   );

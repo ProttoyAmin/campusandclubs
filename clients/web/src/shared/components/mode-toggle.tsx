@@ -63,33 +63,27 @@ export function ModeToggle({ dropdown = false }) {
         value="light"
         aria-checked={theme === "light"}
         aria-label="Toggle light"
-        className={`border-none`}
+        className={`border-none w-20`}
         onClick={() => setTheme("light")}
       >
-        {/* <Button variant="ghost"> */}
-        Light
-        {/* </Button> */}
+        <Sun />
       </ToggleGroupItem>
       <ToggleGroupItem
         value="dark"
         aria-checked={theme === "dark"}
         aria-label="Toggle dark"
-        className={`border-none`}
+        className={`border-none w-20`}
         onClick={() => setTheme("dark")}
       >
-        {/* <Button variant="ghost"> */}
-        Dark
-        {/* </Button> */}
+        <Moon />
       </ToggleGroupItem>
       <ToggleGroupItem
         value="auto"
         aria-label="Toggle auto"
-        className={`border-none`}
+        className={`border-none w-20`}
         onClick={() => setTheme("system")}
       >
-        {/* <Button variant="ghost"> */}
         Auto
-        {/* </Button> */}
       </ToggleGroupItem>
     </ToggleGroup>
   );

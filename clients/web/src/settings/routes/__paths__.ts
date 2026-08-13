@@ -59,10 +59,24 @@ export const paths = {
           slug,
         }),
 
-      requests: (slug: string) =>
-        generateRouteFromPath(routes.club.private.config.requests, {
-          slug,
-        }),
+      requests: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.base, {
+            slug,
+          }),
+        approved: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.approved, {
+            slug,
+          }),
+        pendings: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.pendings, {
+            slug,
+          }),
+        rejected: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.rejected, {
+            slug,
+          }),
+      },
       settings: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.settings, {
           slug,

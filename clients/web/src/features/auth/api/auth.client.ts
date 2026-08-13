@@ -61,16 +61,17 @@ export class AuthClient extends BaseClient<
     return response;
   }
 
-  async logout(): Promise<ApiResponse> {
-    try {
-      const response = await this.client.delete<ApiResponse>(
-        `${this.allauthBrowser}auth/session`,
-      );
-      return response.data;
-    } catch (err) {
-      console.error("Logout error:", (err as AxiosError).response?.data);
-      throw err;
-    }
+  async logout() {
+    // try {
+    const response = await this.client.delete(
+      `${this.allauthBrowser}auth/session`,
+    );
+    console.log(response)
+    return response;
+    // } catch (err) {
+    //   console.error("Logout error:", (err as AxiosError).response?.data);
+    //   throw err;
+    // }
   }
 
   async requestPasswordReset(email: string): Promise<AxiosResponse> {

@@ -1,13 +1,16 @@
 import { BaseClient } from "@/settings/api";
 import type {
   ClubDetail,
+  ClubCreateRequest,
+  PatchedClubDetailRequest,
+  ApiClubsUpdate2Response,
   MembershipApplicationCreateRequest,
   ClubJoinRequest,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
-export class ClubClient extends BaseClient<AxiosResponse, any, any> {
+export class ClubClient extends BaseClient<ClubDetail, ClubCreateRequest, PatchedClubDetailRequest> {
   constructor() {
     super(config.api.v1.clubs.base);
   }
@@ -21,6 +24,11 @@ export class ClubClient extends BaseClient<AxiosResponse, any, any> {
     const response = await this.client.get<ClubDetail>(
       `${this.endpoint}${slug}`,
     );
+    return response;
+  }
+
+  async updateClub(clubId: string, data: PatchedClubDetailRequest): Promise<AxiosResponse<ApiClubsUpdate2Response>> {
+    const response = await this.client.patch<ApiClubsUpdate2Response>(`${this.endpoint}${clubId}/`, data);
     return response;
   }
 

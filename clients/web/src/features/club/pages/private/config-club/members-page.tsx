@@ -1,12 +1,20 @@
 import { useClubOutlet } from "@/features/club/context/club-layout-context";
 import { useMembers } from "@/features/club/hooks/membership.hooks";
+import MemberCard from "@/features/club/components/club/member-card";
 
 const ClubMembersPage = () => {
   const { club } = useClubOutlet();
   const { data } = useMembers(club?.id);
   return (
-    <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+    <div className="grid gap-3 grid-cols-1">
+      {data?.results?.members.map((member) => (
+        <MemberCard
+          key={member.id}
+          member={member}
+          showActions={club?.is_owner}
+          type="list"
+        />
+      ))}
     </div>
   );
 };

@@ -80,8 +80,9 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         from apps.media.models import MediaRole
         return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
-    def get_banner(self, obj: Club) -> str | None:
-        return obj.banner
+    def get_banner(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.BANNER).first().file.url if obj.media.filter(role=MediaRole.BANNER).exists() else None
 
     def get_media(self, obj: Club):
         from apps.media.serializers import MediaListSerializer

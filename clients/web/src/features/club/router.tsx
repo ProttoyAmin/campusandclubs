@@ -1,3 +1,4 @@
+import ClubRequestsLayout from "@/layouts/club/club-config/requests-layout";
 import ClubConfigLayout from "@/layouts/club/config-layout";
 import { routes } from "@/settings/routes";
 import React from "react";
@@ -12,11 +13,21 @@ const Permissions = React.lazy(
 const Members = React.lazy(
   () => import("./pages/private/config-club/members-page"),
 );
-const Config = React.lazy(
-  () => import("./pages/private/config-club/config-page"),
-);
+const Info = React.lazy(() => import("./pages/private/config-club/info-page"));
 const Requests = React.lazy(
   () => import("./pages/private/config-club/requests-page"),
+);
+
+const Approved = React.lazy(
+  () => import("./pages/private/config-club/requests/approved"),
+);
+
+const Pending = React.lazy(
+  () => import("./pages/private/config-club/requests/pending"),
+);
+
+const Rejected = React.lazy(
+  () => import("./pages/private/config-club/requests/rejected"),
 );
 
 export const clubRoutes = [
@@ -29,7 +40,7 @@ export const clubRoutes = [
       {
         id: "club-config",
         path: routes.club.private.config.base,
-        element: <Config />,
+        element: <Info />,
       },
       {
         id: "club-permissions",
@@ -42,9 +53,31 @@ export const clubRoutes = [
         element: <Members />,
       },
       {
-        id: "club-requests",
-        path: routes.club.private.config.requests,
-        element: <Requests />,
+        id: "club-requests-layout",
+        path: routes.club.private.config.requests.base,
+        element: <ClubRequestsLayout />,
+        children: [
+          {
+            id: "club-requests",
+            index: true,
+            element: <Requests />,
+          },
+          {
+            id: "club-requests-approved",
+            path: routes.club.private.config.requests.approved,
+            element: <Approved />,
+          },
+          {
+            id: "club-requests-pending",
+            path: routes.club.private.config.requests.pendings,
+            element: <Pending />,
+          },
+          {
+            id: "club-requests-rejected",
+            path: routes.club.private.config.requests.rejected,
+            element: <Rejected />,
+          },
+        ],
       },
       {
         id: "club-settings",

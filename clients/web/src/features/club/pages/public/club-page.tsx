@@ -22,7 +22,7 @@ const ClubPage: React.FC = () => {
             />
           )}
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          {/* <div className="absolute bottom-0 right-6 flex justify-center items-center ">
+          <div className="absolute bottom-0 right-6 flex justify-center items-center ">
             {club?.avatar && (
               <img
                 src={club?.avatar}
@@ -30,7 +30,7 @@ const ClubPage: React.FC = () => {
                 className="w-32 h-32 object-cover rounded-md shadow-2xl"
               />
             )}
-          </div> */}
+          </div>
         </div>
         <CardTitle className="flex justify-between mt-4">
           {club?.name}

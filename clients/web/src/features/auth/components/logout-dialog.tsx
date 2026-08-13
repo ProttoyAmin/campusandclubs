@@ -26,13 +26,9 @@ export const LogoutAlertDialog = ({
     logout.mutate(undefined, {
       onSuccess: () => {
         onOpenChange(false);
-        navigate(paths.public.auth.signIn, {
-          replace: true,
-          viewTransition: true,
-        });
       },
       onError: (error) => {
-        console.error("Error:", error);
+        console.error("Logout error:", error);
         onOpenChange(false);
       },
     });

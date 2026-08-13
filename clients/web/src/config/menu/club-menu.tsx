@@ -7,17 +7,19 @@ export function isRouteActive(pattern: string, pathname: string) {
   return !!matchPath(pattern, pathname);
 }
 
-export const clubMenu: (id: string, slug: string, icon: React.ReactNode) => MenuItemType[] = (
+export const clubMenu: (
   id: string,
   icon: React.ReactNode,
-  slug: string
-) => [
-  {
-    id: id,
-    label: slug,
-    icon: () => icon,
-    link: () => paths.public.club.slug(slug),
-    isActive: (currentPath) =>
-      isRouteActive(routes.club.public.base, currentPath)
-  },
-];
+  slug: string,
+) => MenuItemType[] = (id: string, icon: React.ReactNode, slug: string) => {
+  return [
+    {
+      id: id,
+      label: slug,
+      icon: () => icon,
+      link: () => paths.public.club.slug(slug),
+      isActive: (currentPath) =>
+        isRouteActive(routes.club.public.base, currentPath),
+    },
+  ];
+};

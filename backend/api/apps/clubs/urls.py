@@ -15,7 +15,7 @@ from apps.clubs.viewss.club.common import (
     AF_ListCreateAPIView
 )
 
-from apps.clubs.viewss.membership.common import (
+from apps.clubs.viewss.membership.generics import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
     MA_WithdrawAPIView,

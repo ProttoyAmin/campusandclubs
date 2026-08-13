@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { club } from "../services/clubs";
 import { queryClient } from "@/config/query-client";
-import type { JoinErrorResponse } from "@/features/user/api/types";
-import type { ClubDetail, MembershipApplicationCreateRequest } from "@campus/api";
+import type { ClubJoinErrorResponse } from "@/features/club/types/club-join";
+import type { ClubDetail, MembershipApplicationCreateRequest, PatchedClubDetailRequest } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
-
+import type { APIError } from "@/shared/types/response";
 
 export const useGetClubs = () => {
   return useQuery({
@@ -25,6 +25,23 @@ export const useClub = (slug: string) => {
   });
 };
 
+export const useUpdateClub = (slug: string, id: string) => {
+  const update = useMutation({
+    mutationFn: (data: PatchedClubDetailRequest) => {
+      const response = club.update(id, data)
+      return response
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error updating club:", error.response.data);
+    },
+  });
+
+  return { update };
+};
+
 export const useJoin = (id: string, slug: string) => {
   return useMutation({
     mutationFn: () => {
@@ -34,7 +51,7 @@ export const useJoin = (id: string, slug: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club", slug] });
     },
-    onError: (error: JoinErrorResponse) => {
+    onError: (error: ClubJoinErrorResponse) => {
       console.log("Error joining club:", error.detail);
     },
   });
@@ -49,7 +66,7 @@ export const useApplyToClub = (id: string, slug: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club", slug] });
     },
-    onError: (error: JoinErrorResponse) => {
+    onError: (error: ClubJoinErrorResponse) => {
       console.log("Error applying to club:", error.detail);
     },
   });
@@ -64,7 +81,7 @@ export const useWithdraw = (id: string, applicationId: string, slug: string) => 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club", slug] });
     },
-    onError: (error: JoinErrorResponse) => {
+    onError: (error: ClubJoinErrorResponse) => {
       console.log("Error withdrawing application:", error.detail);
     },
   });

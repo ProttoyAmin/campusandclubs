@@ -1,4 +1,4 @@
-import type { MembershipApplicationCreateRequest } from "@campus/api";
+import type { ClubDetail, MembershipApplicationCreateRequest, PatchedClubDetailRequest } from "@campus/api";
 import { clubClient } from "../../http/club.http";
 import { clubApplicationsService } from "./applications.service";
 import { membershipService } from "./membership.service";
@@ -15,11 +15,15 @@ class ClubService {
         return res.data;
     }
 
-    async club(slug: string) {
+    async club(slug: string): Promise<ClubDetail> {
         const res = await this.clubClient.fetchClub(slug);
         return res.data;
     }
 
+    async update(clubId: string, data: PatchedClubDetailRequest): Promise<ClubDetail> {
+        const res = await this.clubClient.updateClub(clubId, data);
+        return res.data;
+    }
 
     async join(clubId: string) {
         const res = await this.clubClient.joinClub(clubId);

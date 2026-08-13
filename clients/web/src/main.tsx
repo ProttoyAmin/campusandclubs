@@ -11,7 +11,6 @@ import { queryClient } from "@/config/query-client.ts";
 import { ThemeProvider } from "./providers/theme-provider.tsx";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

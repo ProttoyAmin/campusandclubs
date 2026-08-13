@@ -7,20 +7,14 @@ import { useParams } from "react-router-dom";
 import { ClubApplicationWithdrawDialog } from "@/features/club/components/club/club-withdraw-dialog";
 import ClubLayoutHeader from "@/features/club/components/layout/layout-header";
 import { Card } from "design/components/ui/card";
-import EmptyState from "@/shared/components/empty-state";
-import { Spinner } from "design/components/ui/spinner";
-import { Button } from "design/components/ui/button";
 import { toast } from "design/components/ui/toast";
+import { generateId } from "@/utils/id";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const pageHeader = usePageHeader();
-  const {
-    data: club,
-    error: clubError,
-    isLoading: clubIsLoading,
-  } = useClub(slug);
+  const { data: club } = useClub(slug);
   const { mutate: joinClub, isPending: isJoinPending } = useJoin(
     club?.id,
     slug,
@@ -112,32 +106,16 @@ export const ClubMainLayout: React.FC = () => {
     pageHeader.clearActions,
   ]);
 
-  const handleError = React.useCallback(() => {
-    if (clubIsLoading) return <Spinner className="mx-auto" />;
-    if (clubError?.response?.status === 404) {
-      return (
-        <EmptyState
-          title="Club not found"
-          description="The club you're looking for doesn't exist or been removed."
-          children={
-            <Button onClick={() => navigate(-1)} variant="outline">
-              Go Back
-            </Button>
-          }
-        />
-      );
-    }
-  }, [clubError, clubIsLoading]);
-  console.log("reached here");
-
   return (
-    <section className="flex flex-col gap-8 max-w-3xl justify-around">
+    <section
+      id={generateId()}
+      className="flex flex-col gap-8 max-w-3xl justify-around"
+    >
       <div className="flex justify-between items-center p-4">
         {pageHeader.actions}
       </div>
       <Card className="w-full bg-background overflow-y-auto md:max-h-[calc(100vh-5rem)]">
-        {/* {handleError()} */}
-        <Outlet context={{ club, clubError }} />
+        <Outlet context={{ club }} />
       </Card>
     </section>
   );

@@ -99,12 +99,15 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return Membership.objects.filter(user=actor, club=club).exists()
 
     def can_review_application(self) -> Decision:
-        """Only members with can_manage_members may approve/reject."""
+        """Only members with manage:members permission may approve/reject."""
+        if self.actor == self.record.owner:
+            return Decision(allowed=True, reason="")
+
         if not self.membership_exists():
             return Decision(allowed=False, reason="You are not a member of this club.")
 
         membership = self.get_membership()
-        if membership and membership.has_permission("can_manage_members"):
+        if membership and membership.has_permission("manage:members"):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to review applications.")
 
@@ -113,7 +116,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return Decision(allowed=False, reason="You are already a member of this club.")
 
         membership = self.get_membership()
-        if membership and membership.has_permission("can_manage_members"):
+        if membership and membership.has_permission("manage:members"):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to create applications.")
         
