@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import { Outlet } from "react-router-dom";
-// import { ProtectedRoute } from '@/guards';
 import SideBar from "@/components/sidebar";
 import PageHeaderProvider from "@/providers/page-header-provider";
 import Create from "@/components/create";

@@ -3,7 +3,6 @@ import type {
 } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
-import { api } from "@/settings/api";
 import type { SignInSchemaType } from "validation/auth";
 
 export type AuthUser = {
@@ -31,7 +30,6 @@ export class Authentication {
   private apiClient = authClient;
 
   constructor() {
-    // Listen for auth:logout events dispatched by the 401 interceptor
     window.addEventListener("auth:logout", () => {
       this.authenticated = false;
     });
@@ -81,10 +79,8 @@ export class Authentication {
 
 
   async check_session(): Promise<AuthSession | null> {
-    // Lightweight check: try to fetch user info. If cookies are missing or invalid,
-    // the 401 interceptor will catch it and attempt a silent refresh.
     try {
-      const response = await api.v1.client.get<AuthSession>('/_allauth/browser/v1/auth/session');
+      const response = await this.apiClient.base.client.get<AuthSession>('/_allauth/browser/v1/auth/session');
       if (response.status === 200) {
         this.authenticated = true;
         return response.data;

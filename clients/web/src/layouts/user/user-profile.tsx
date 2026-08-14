@@ -33,11 +33,17 @@ export const UserProfileLayout: React.FC = () => {
     return () => {
       pageHeader.clearActions();
     };
-  }, [username, user, navigate, pageHeader.setActions, pageHeader.clearActions]);
+  }, [
+    username,
+    user,
+    navigate,
+    pageHeader.setActions,
+    pageHeader.clearActions,
+  ]);
 
   return (
-    <section className="flex flex-col gap-8 max-w-3xl justify-around">
-      <div className="flex justify-between items-center p-4">
+    <section className="flex flex-col gap-4 max-w-3xl justify-around overflow-x-hidden">
+      <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
       <Card className="w-full bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">

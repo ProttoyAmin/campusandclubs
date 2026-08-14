@@ -9,6 +9,7 @@ import ClubLayoutHeader from "@/features/club/components/layout/layout-header";
 import { Card } from "design/components/ui/card";
 import { toast } from "design/components/ui/toast";
 import { generateId } from "@/utils/id";
+import { useSectionId } from "@/shared/hooks/id";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -27,6 +28,8 @@ export const ClubMainLayout: React.FC = () => {
 
   const handleJoin = () => {
     if (club?.is_member) return;
+    // @ts-ignore
+    // TODO: Fix the type later (priority:low)
     if (club?.application && club?.application?.status === "pending") {
       setIsWithdrawing(true);
       return;
@@ -87,6 +90,8 @@ export const ClubMainLayout: React.FC = () => {
           title={`${club?.name}`}
           description={`Are you sure you want to withdraw your application?`}
           clubId={club?.id}
+          // @ts-ignore
+          // TODO: Fix the type later (priority:low)
           applicationId={club?.application?.id}
         />
       </>,
@@ -108,10 +113,10 @@ export const ClubMainLayout: React.FC = () => {
 
   return (
     <section
-      id={generateId()}
-      className="flex flex-col gap-8 max-w-3xl justify-around"
+      id={useSectionId()}
+      className="flex flex-col gap-4 max-w-3xl justify-around"
     >
-      <div className="flex justify-between items-center p-4">
+      <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
       <Card className="w-full bg-background overflow-y-auto md:max-h-[calc(100vh-5rem)]">

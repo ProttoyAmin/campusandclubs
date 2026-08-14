@@ -1,11 +1,7 @@
 import { paths, routes } from "@/settings/routes";
 import { House, LayoutList } from "lucide-react";
-import { matchPath } from "react-router-dom";
 import type { MenuItemType } from "./main-menu";
-
-export function isRouteActive(pattern: string, pathname: string) {
-  return !!matchPath(pattern, pathname);
-}
+import { isRouteActive } from "@/utils/route";
 
 export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
   slug: string,

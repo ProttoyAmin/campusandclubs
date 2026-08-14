@@ -5,10 +5,12 @@ import { useMe } from "@/features/user/hooks/user.hooks";
 import { SettingsMenu } from "@/config/menu/settings-menu";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React from "react";
-import NavigateButtons from "@/shared/components/navigate-buttons";
+import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
+import { useSession } from "@/features/auth/hooks";
 
 const SettingsLayout = () => {
   const { data: me } = useMe();
+  const { data: currentUser } = useSession();
   const pageHeader = usePageHeader();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,12 +21,7 @@ const SettingsLayout = () => {
 
   React.useEffect(() => {
     pageHeader.setActions(
-      <div>
-        <NavigateButtons
-          disableForward={location.pathname === "/settings/account"}
-          hideForward={location.pathname === "/settings/account"}
-        />
-      </div>,
+      <ProfileLayoutHeader user={me} currentUser={currentUser} />,
     );
 
     return () => {
@@ -40,15 +37,14 @@ const SettingsLayout = () => {
 
   if (!me) return <div>Not found</div>;
 
-
   return (
-    <div className="flex flex-col gap-4 max-w-5xl">
+    <section className="flex flex-col gap-4 max-w-3xl justify-around">
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
       <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
-        <CardContent className="flex gap-4">
-          <div className="relative w-2/6 pr-4 border-r">
+        <CardContent className="flex flex-col md:flex-row gap-4">
+          <div className="relative w-full md:w-2/6 pr-4 md:border-r">
             <SideBar menu={SettingsMenu} className="sticky top-0 left-0" />
           </div>
           <div className="w-full overflow-hidden">
@@ -56,7 +52,7 @@ const SettingsLayout = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </section>
   );
 };
 

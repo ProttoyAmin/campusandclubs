@@ -1,6 +1,7 @@
 import type { MenuItemType } from "@/config/menu/main-menu";
 import { LogoutAlertDialog } from "@/features/auth/components/logout-dialog";
 import { ModeToggle } from "@/shared/components/mode-toggle";
+import { unLink } from "@/utils/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,11 +21,6 @@ type DropDownProps = {
 const SidebarDropDown = (props: DropDownProps) => {
   const navigate = useNavigate();
   const [logoutAlertModal, setLogoutAlertModal] = React.useState(false);
-
-  const unLink = (item: MenuItemType["link"]) => {
-    const link = typeof item === "function" ? item("") : item;
-    return link;
-  };
 
   return (
     <>

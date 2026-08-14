@@ -3,7 +3,7 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import NavTabs from "./nav-tabs";
 import { userMenu, type MenuItemType } from "@/config/menu/main-menu";
-import { MenuIcon } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
@@ -21,6 +21,8 @@ interface SideBarProps {
 const SideBar: React.FC<SideBarProps> = (props) => {
   const { data: currentUser } = useMe();
   const clubs: Pick<ClubDetail, "id" | "slug" | "name">[] =
+    // @ts-ignore
+    // TODO: Fix the type later (priority:low)
     currentUser?.clubs || [];
 
   if (props.main) {
@@ -29,7 +31,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
         className={`h-screen p-4 flex flex-col justify-between items-left ${props.className}`}
       >
         <Link to={paths.public.home} className="col-span-1 max-w-fit">
-          CampusandClubs
+          CQlubs
         </Link>
         <div className="">
           <NavTabs
@@ -53,8 +55,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
             menu={SettingsDropdownMenu}
             trigger={
               <Button variant="ghost">
-                <MenuIcon className="size-5" />
-                More
+                <Ellipsis className="size-5" />
               </Button>
             }
           />
@@ -67,7 +68,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
     <header className={`${props.className}`}>
       <NavTabs
         menu={props.menu ? props.menu(props.menuParam) : []}
-        className="flex flex-col space-y-2 self-start"
+        className="flex flex-row md:flex-col space-y-2 self-start"
       />
     </header>
   );

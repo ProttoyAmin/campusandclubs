@@ -9,8 +9,6 @@ import {
   AlertDialogTitle,
 } from "design/components/ui/alert-dialog";
 import { useAuth } from "../hooks/session.hook";
-import { useNavigate } from "react-router-dom";
-import { paths } from "@/settings/routes";
 
 export const LogoutAlertDialog = ({
   open,
@@ -20,15 +18,13 @@ export const LogoutAlertDialog = ({
   onOpenChange: (open: boolean) => void;
 }) => {
   const { logout } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     logout.mutate(undefined, {
       onSuccess: () => {
         onOpenChange(false);
       },
-      onError: (error) => {
-        console.error("Logout error:", error);
+      onError: () => {
         onOpenChange(false);
       },
     });
@@ -48,7 +44,7 @@ export const LogoutAlertDialog = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel variant="default" onClick={handleCancel}>
+          <AlertDialogCancel variant="ghost" onClick={handleCancel}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={handleLogout}>

@@ -6,7 +6,7 @@
  * @param length - Length of the random portion (default: 8)
  * @returns A unique ID string
  */
-export const generateId = (prefix?: string, length: number = 8): string => {
+export const generateId = (prefix?: string, length: number = 12): string => {
     const timestamp = Date.now().toString(36);
     const randomPart = Math.random()
         .toString(36)

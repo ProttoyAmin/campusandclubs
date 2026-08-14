@@ -1,25 +1,20 @@
-import { paths, routes } from "@/settings/routes";
-// import type { MenuItemType } from "../_core";
-import { matchPath } from "react-router-dom";
-import type { MenuItemType } from "./main-menu";
-
-export function isRouteActive(pattern: string, pathname: string) {
-  return !!matchPath(pattern, pathname);
-}
+import { paths } from "@/settings/routes";
+import { type MenuItemType } from "./main-menu";
+import { isRouteActive } from "@/utils/route";
 
 export const clubMenu: (
   id: string,
   icon: React.ReactNode,
   slug: string,
 ) => MenuItemType[] = (id: string, icon: React.ReactNode, slug: string) => {
+  const clubPath = paths.public.club.slug(slug);
   return [
     {
       id: id,
       label: slug,
       icon: () => icon,
-      link: () => paths.public.club.slug(slug),
-      isActive: (currentPath) =>
-        isRouteActive(routes.club.public.base, currentPath),
+      link: () => clubPath,
+      isActive: (currentPath) => isRouteActive(clubPath, currentPath, false),
     },
   ];
 };

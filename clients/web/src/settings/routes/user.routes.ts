@@ -2,7 +2,7 @@ export const userRoutes = {
     private: {
         me: '/me',
         profile: {
-            username: '/@/u/:username',
+            username: '/@/:username',
         },
         settings: {
             base: '/@/u/:username/settings',
@@ -12,6 +12,6 @@ export const userRoutes = {
         },
     },
     public: {
-        profile: '/@/u/:username',
+        profile: '/@/:username',
     },
 } as const;

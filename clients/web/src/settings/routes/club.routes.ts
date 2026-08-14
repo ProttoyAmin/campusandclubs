@@ -1,19 +1,19 @@
 export const clubRoutes = {
   private: {
     config: {
-      base: "/@/c/:slug/config/",
-      permissions: "/@/c/:slug/config/permissions/",
-      members: "/@/c/:slug/config/members/",
+      base: "/@/clubs/:slug/config/",
+      permissions: "/@/clubs/:slug/config/permissions/",
+      members: "/@/clubs/:slug/config/members/",
       requests: {
-        base: "/@/c/:slug/config/requests/",
-        approved: "/@/c/:slug/config/requests/approved/",
-        pendings: "/@/c/:slug/config/requests/pendings/",
-        rejected: "/@/c/:slug/config/requests/rejected/",
+        base: "/@/clubs/:slug/config/requests/",
+        approved: "/@/clubs/:slug/config/requests/approved/",
+        pendings: "/@/clubs/:slug/config/requests/pendings/",
+        rejected: "/@/clubs/:slug/config/requests/rejected/",
       },
-      settings: "/@/c/:slug/config/settings/",
+      settings: "/@/clubs/:slug/config/settings/",
     },
   },
   public: {
-    base: "/@/c/:slug/",
+    base: "/@/clubs/:slug/",
   },
 } as const;

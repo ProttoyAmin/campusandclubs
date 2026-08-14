@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { generateId } from "@/utils/id";
 
 export const useComponentId = (prefix?: string, suffix?: string): string => {
   const reactId = useId();
@@ -10,6 +11,13 @@ export const useComponentId = (prefix?: string, suffix?: string): string => {
   if (suffix) id = `${id}-${suffix}`;
 
   return id;
+};
+
+export const useSectionId = (
+  prefix: string = "section-id-",
+  length: number = 12,
+): string => {
+  return generateId(prefix, length);
 };
 
 export const useFieldId = (

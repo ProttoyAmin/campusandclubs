@@ -1,5 +1,4 @@
 import { BaseClient } from "@/settings/api/";
-import type { ApiResponse } from "@/settings/api/";
 import type {
   RegisterWritable,
   RegisterRequestWritable,
@@ -61,17 +60,19 @@ export class AuthClient extends BaseClient<
     return response;
   }
 
-  async logout() {
-    // try {
-    const response = await this.client.delete(
-      `${this.allauthBrowser}auth/session`,
-    );
-    console.log(response)
-    return response;
-    // } catch (err) {
-    //   console.error("Logout error:", (err as AxiosError).response?.data);
-    //   throw err;
-    // }
+  async logout(): Promise<AxiosResponse> {
+    try {
+      const response = await this.client.delete(`${this.allauthBrowser}auth/session`);
+      window.dispatchEvent(new Event("auth:logout"));
+      return response;
+    } catch (err) {
+      const axiosErr = err as AxiosError;
+      if (axiosErr.response?.status === 401) {
+        window.dispatchEvent(new Event("auth:logout"));
+        return axiosErr.response;
+      }
+      throw err;
+    }
   }
 
   async requestPasswordReset(email: string): Promise<AxiosResponse> {

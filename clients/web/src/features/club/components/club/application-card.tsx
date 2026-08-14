@@ -79,7 +79,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application }) => {
         </Avatar>
         <div className="md:w-xl w-full">
           <CardDescription className="flex flex-col">
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-semibold text-foreground">
               {application.applicant?.username}
               <span
                 className={`text-xs ml-2 ${

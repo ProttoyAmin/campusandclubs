@@ -8,6 +8,7 @@ import { AppError } from "../app/error";
 export abstract class BaseClient<TResult, TCreateDTO, TUpdateDTO = Partial<TCreateDTO>> {
     protected client: typeof api.v1.client = api.v1.client;
     protected authorized: boolean = false;
+    public base = api.v1
 
     constructor(
         protected readonly endpoint: string,
@@ -19,6 +20,11 @@ export abstract class BaseClient<TResult, TCreateDTO, TUpdateDTO = Partial<TCrea
                 return Promise.reject(new AppError(error));
             },
         );
+    }
+
+    async get(url: string) {
+        const response = await this.client.get(url);
+        return response.data;
     }
 
     async getAll(params?: Record<string, unknown>): Promise<TResult[]> {

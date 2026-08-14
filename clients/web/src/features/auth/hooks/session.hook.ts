@@ -10,10 +10,6 @@ import type { AllauthError, SignUpError } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
 
-export type ResetPasswordErrors = {
-
-}
-
 export const authKeys = {
   session: ["auth", "session"] as const,
 };
@@ -22,22 +18,15 @@ export const useSession = () => {
   return useQuery({
     queryKey: authKeys.session,
     queryFn: () => authentication.check_session(),
-    staleTime: 1000 * 60 * 5, // 5 min, tune access token lifetime
+    staleTime: 1000 * 60 * 5,
     retry: false,
   });
 };
 
-/**
- * Exposes auth helpers for components.
- *
- * The API client interceptors (token getter + 401 refresh handler)
- * are wired up in the Authentication constructor at module load time,
- * so they work regardless of whether this hook is called.
- */
 export const useAuth = () => {
   const logout = useMutation({
-    mutationFn: () => authentication.logout(),
-    onSuccess: async () => {
+    mutationFn: async () => {
+      await authentication.logout();
       await queryClient.cancelQueries({
         queryKey: authKeys.session,
       });
@@ -55,10 +44,7 @@ export const useAuth = () => {
     AppError<SignUpError>,
     RegisterRequestWritable
   >({
-    mutationFn: (data) => authentication.sign_up(data),
-    onSuccess: (data) => {
-      console.log("Registration successful:", data);
-    },
+    mutationFn: (data) => authentication.sign_up(data)
   });
 
   const login = useMutation<

@@ -1,9 +1,11 @@
-import { Button } from "design/components/ui/button";
-import { CircleEllipsis, Search, Settings } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { paths } from "@/settings/routes";
-import { Spinner } from "design/components/ui/spinner";
+
+import ClubDropdown from "../club/club-dropdown";
 import NavigateButtons from "@/shared/components/navigate-buttons";
+import { Button } from "design/components/ui/button";
+import { CircleEllipsis, Search, Settings } from "lucide-react";
+import { Spinner } from "design/components/ui/spinner";
 import {
   Avatar,
   AvatarFallback,
@@ -32,7 +34,7 @@ const ClubLayoutHeader = ({
             <div>
               {location.pathname !== paths.public.club.slug(slug) && (
                 <>
-                  <NavigateButtons />
+                  <NavigateButtons hideForward />
                 </>
               )}
             </div>
@@ -57,29 +59,32 @@ const ClubLayoutHeader = ({
           </div>
 
           <div className="flex gap-2 items-center">
-            <Button
-              variant={
-                club?.is_member
-                  ? "ghost"
-                  : club?.application && club?.application?.status === "pending"
-                    ? "secondary"
-                    : "outline"
-              }
-              disabled={isJoinPending}
-              onClick={() => handleJoin()}
-            >
-              {isJoinPending && (
-                <Spinner className="mr-2" data-icon="inline-start" />
-              )}
+            {!club.is_member && (
+              <Button
+                variant={
+                  club?.is_member
+                    ? "ghost"
+                    : club?.application &&
+                        club?.application?.status === "pending"
+                      ? "secondary"
+                      : "outline"
+                }
+                disabled={isJoinPending}
+                onClick={() => handleJoin()}
+              >
+                {isJoinPending && (
+                  <Spinner className="mr-2" data-icon="inline-start" />
+                )}
 
-              {isJoinPending
-                ? "Joining..."
-                : club?.is_member
-                  ? "Joined"
-                  : club?.application?.status === "pending"
-                    ? "Pending"
-                    : "Join"}
-            </Button>
+                {isJoinPending
+                  ? "Joining..."
+                  : club?.is_member
+                    ? "Joined"
+                    : club?.application?.status === "pending"
+                      ? "Pending"
+                      : "Join"}
+              </Button>
+            )}
 
             <Button variant={"ghost"} className={"rounded-full"} size="icon">
               <Search className="size-5" />
@@ -96,9 +101,17 @@ const ClubLayoutHeader = ({
                 <Settings className="size-5 transition-transform duration-200 group-hover:rotate-45" />
               </Button>
             ) : (
-              <Button variant={"ghost"} className={"rounded-full"} size="icon">
-                <CircleEllipsis className="size-5 transition-transform duration-200" />
-              </Button>
+              <ClubDropdown
+                trigger={
+                  <Button
+                    variant={"ghost"}
+                    className={"rounded-full"}
+                    size="icon"
+                  >
+                    <CircleEllipsis className="size-5 transition-transform duration-200" />
+                  </Button>
+                }
+              />
             )}
           </div>
         </>

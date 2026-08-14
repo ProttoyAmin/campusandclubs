@@ -6,7 +6,7 @@ const ClubMembersPage = () => {
   const { club } = useClubOutlet();
   const { data } = useMembers(club?.id);
   return (
-    <div className="grid gap-3 grid-cols-1">
+    <div className="grid gap-3 grid-cols-1 px-4">
       {data?.results?.members.map((member) => (
         <MemberCard
           key={member.id}

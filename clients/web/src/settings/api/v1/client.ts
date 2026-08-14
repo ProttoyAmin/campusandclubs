@@ -90,8 +90,6 @@ export class V1Client {
 
   private ensureCsrfCookie(): Promise<void> {
     if (!this.csrfBootstrap) {
-      // Use a bare axios call, NOT this.client — otherwise this triggers
-      // the same request interceptor again and recurses.
       this.csrfBootstrap = axios
         .get(`${config.api.v1.raw}/api/_allauth/browser/v1/config`, {
           withCredentials: true,
