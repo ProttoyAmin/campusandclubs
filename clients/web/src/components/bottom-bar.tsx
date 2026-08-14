@@ -14,7 +14,7 @@ const BottomBar: React.FC<BottomBarProps> = (props) => {
     { id: 3, to: "/notifications", label: "Notifications", icon: "Bell" },
     {
       id: 4,
-      to: `/@/u/${currentUser?.username}`,
+      to: `/@/${currentUser?.username}`,
       label: "Profile",
       icon: "User",
     },

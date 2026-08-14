@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'channels',
     'drf_spectacular',
+    'anymail',
 
     'allauth',
     'allauth.account',
@@ -106,6 +107,7 @@ INSTALLED_APPS = [
     'apps.connections',
     'apps.notifications',
     'apps.institutes',
+    'apps.communications',
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -343,13 +345,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'anymail.backends.resend.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_APP_PASSWORD')
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+ANYMAIL = {
+    "RESEND_API_KEY": getenv("RESEND_API_KEY"),
+}
+
+DEFAULT_FROM_EMAIL = "onboarding@resend.dev"
+
 
 # Channels Configuration
 ASGI_APPLICATION = 'core.asgi.application'

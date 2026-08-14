@@ -25,7 +25,6 @@ from drf_spectacular.views import (
 )
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
@@ -36,6 +35,7 @@ urlpatterns = [
     path('api/posts/', include('apps.posts.urls')),
     path('api/connections/', include('apps.connections.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
+    path('api/communications/', include('apps.communications.urls')),
     path('api/media/', include('apps.media.urls')),
 
     path('api/_allauth/', include('allauth.headless.urls')),
