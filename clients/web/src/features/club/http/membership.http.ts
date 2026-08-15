@@ -22,7 +22,7 @@ export interface RoleDetails {
 }
 
 export interface Member {
-    id: number;
+    id: string;
     user_id: string;
     username: string;
     email: string;

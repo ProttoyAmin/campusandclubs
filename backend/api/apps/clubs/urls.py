@@ -78,8 +78,8 @@ urlpatterns = [
          name='list_members'),    # ---- checked
     # path('<int:pk>/members/search/', views_members_views.search_members,
     #      name='search_members'),  # NEW
-    # path('<int:pk>/members/<int:user_id>/', views_members_views.member_detail,
-    #      name='member_detail'),  # NEW
+    path('<uuid:pk>/members/<uuid:user_id>/', views_members_views.member_detail,
+         name='member_detail'),  # NEW
     # path('<int:pk>/members/<int:user_id>/role/',
     #      views_members_views.update_member_role, name='update_member_role'),
     # path('<int:pk>/members/<int:user_id>/remove/',

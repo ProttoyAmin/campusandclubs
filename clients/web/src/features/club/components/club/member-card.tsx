@@ -21,15 +21,15 @@ import { TrashIcon } from "lucide-react";
 interface MemberCardProps {
   member: Member;
   showActions: boolean;
-  type?: "list" | "card";
+  variant?: "list" | "card";
 }
 
 const MemberCard = ({
   member,
   showActions,
-  type = "card",
+  variant = "card",
 }: MemberCardProps) => {
-  if (type === "list") {
+  if (variant === "list") {
     return (
       <div className="flex items-center gap-2">
         <Avatar>

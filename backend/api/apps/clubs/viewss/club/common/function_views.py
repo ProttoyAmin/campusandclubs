@@ -44,7 +44,7 @@ def club_info(request: Request, pk) -> response.Response:
             Prefetch(
                 'memberships',
                 queryset=Membership.objects.filter(
-                    user=request.user).prefetch_related('roles'),
+                    user=request.user, left_at__isnull=True).prefetch_related('roles'),
                 to_attr='user_memberships'
             )
         ).select_related('owner'),
@@ -84,7 +84,7 @@ def club_info(request: Request, pk) -> response.Response:
                 Prefetch(
                     'memberships',
                     queryset=Membership.objects.filter(
-                        user=request.user).prefetch_related('roles'),
+                        user=request.user, left_at__isnull=True).prefetch_related('roles'),
                     to_attr='user_memberships'
                 )
             ).get(pk=club.pk)
@@ -243,7 +243,7 @@ def recommended_clubs(request):
         Prefetch(
             'memberships',
             queryset=Membership.objects.filter(
-                user=user).prefetch_related('roles'),
+                user=user, left_at__isnull=True).prefetch_related('roles'),
             to_attr='user_memberships'
         )
     )

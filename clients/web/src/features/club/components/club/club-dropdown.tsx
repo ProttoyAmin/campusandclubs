@@ -13,12 +13,16 @@ import { InfoIcon, LinkIcon, CircleAlertIcon, LogOutIcon } from "lucide-react";
 type DropDownProps = {
   trigger: React.ReactElement;
   menu?: () => MenuItemType[];
+  onLeave: () => void;
+  isMember: boolean;
 };
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import AppAlertDialog from "@/shared/components/alert";
 
 const ClubDropdown = (props: DropDownProps) => {
+  const [leaving, setIsLeaving] = React.useState(false);
   const navigate = useNavigate();
 
   const onCopy = () => {
@@ -70,16 +74,31 @@ const ClubDropdown = (props: DropDownProps) => {
             <CircleAlertIcon className="size-4" />
             Report club
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {}}
-            variant="destructive"
-            className={"cursor-pointer p-2"}
-          >
-            <LogOutIcon className="size-4" />
-            Leave
-          </DropdownMenuItem>
+          {props.isMember && (
+            <DropdownMenuItem
+              onClick={() => setIsLeaving(true)}
+              variant="destructive"
+              className={"cursor-pointer p-2"}
+            >
+              <LogOutIcon className="size-4" />
+              Leave
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
+      <AppAlertDialog
+        open={leaving}
+        onOpenChange={setIsLeaving}
+        title="Leave club"
+        description="Are you sure you want to leave this club?"
+        cancelText="Cancel"
+        confirmText="Leave"
+        onCancel={() => setIsLeaving(false)}
+        onConfirm={() => {
+          props.onLeave();
+          setIsLeaving(false);
+        }}
+      />
     </DropdownMenu>
   );
 };

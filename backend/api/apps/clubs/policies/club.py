@@ -1,5 +1,5 @@
 from pprint import pprint
-from apps.clubs.dtos.decisions import JoinDecision, Decision
+from apps.clubs.dtos.decisions import JoinDecision, Decision, LeaveDecision
 from core.policies.base import Policy
 from apps.clubs.models import (
     Club,
@@ -77,6 +77,27 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
 
         return JoinDecision(False, False, "Joining is not currently available for this club.")
 
+    def can_leave(self) -> LeaveDecision:
+        if not self._is_member(self.actor, self.record):
+            return LeaveDecision(allowed=False, reason={
+                "code": "not_a_member",
+                "message": "You are not a member of this club."
+            })
+
+        if self.actor == self.record.owner:
+            return LeaveDecision(allowed=False, reason={
+                "code": "is_owner",
+                "message": "Club owners cannot leave their own clubs. Transfer ownership or delete the club instead."
+            })
+
+        if self._has_active_permissions(self.actor, self.record):
+            return LeaveDecision(allowed=False, reason={
+                "code": "has_permissioned_roles",
+                "message": "You cannot leave with roles assigned to this club. Ask the owner to remove the assigned roles."
+            })
+
+        
+        return LeaveDecision(True, {})
 
     def _check_scope(self, actor: User, club: Club) -> tuple[bool, str]:
         if club.scope == MembershipScope.GLOBAL:
@@ -96,7 +117,17 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return False, "Unknown membership scope."
 
     def _is_member(self, actor: User, club: Club) -> bool:
-        return Membership.objects.filter(user=actor, club=club).exists()
+        return Membership.objects.filter(user=actor, club=club, left_at__isnull=True).exists()
+
+    def _has_active_permissions(self, actor, club) -> bool:
+        membership = Membership.objects.filter(
+            club=club, user=actor, left_at__isnull=True
+        ).prefetch_related("roles").first()
+
+        if not membership:
+            return False
+
+        return bool(membership.user_permissions())
 
     def can_review_application(self) -> Decision:
         """Only members with manage:members permission may approve/reject."""

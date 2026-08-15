@@ -30,8 +30,6 @@ from apps.accounts.models import User
 #     return decorator
 
 
-DEFAULT_ROLE = 'Owner'
-DEFAULT_COLOR = "#8F2811"
 
 
 class SuperuserOnlyStrictTestView(APIView):
@@ -45,72 +43,13 @@ class SuperuserOnlyStrictTestView(APIView):
         })
 
 
-@api_view(['GET'])
-@permission_classes([permissions.IsAuthenticated])
-def list_clubs(request):
-    """
-    List clubs visible to the authenticated user:
-    - All public clubs
-    - Closed/Secret clubs only if user is a member
-
-    Query params:
-    - search: Filter by name or origin
-    - privacy: Filter by privacy type (public/closed/secret)
-    - origin: Filter by specific origin
-    - my_clubs: Set to 'true' to only show clubs user is member of
-    """
-    user = request.user
-
-    clubs = models.Club.objects.filter(is_active=True)
-
-    my_clubs_only = request.query_params.get('my_clubs', '').lower() == 'true'
-    if my_clubs_only:
-        clubs = clubs.filter(members=user)
-    else:
-        clubs = clubs.filter(
-            Q(privacy='public') | Q(members=user)
-        )
-
-    search = request.query_params.get('search')
-    if search:
-        clubs = clubs.filter(
-            Q(name__icontains=search) | Q(origin__icontains=search)
-        )
-
-    privacy_filter = request.query_params.get('privacy')
-    if privacy_filter in ['public', 'closed', 'secret']:
-        clubs = clubs.filter(privacy=privacy_filter)
-
-    origin_filter = request.query_params.get('origin')
-    if origin_filter:
-        clubs = clubs.filter(origin__iexact=origin_filter)
-
-    clubs = clubs.distinct().annotate(
-        member_count=Count('members', distinct=True),
-        post_count=Count('club_posts', distinct=True),
-        event_count=Count('events', distinct=True),
-    ).prefetch_related(
-        Prefetch(
-            'memberships',
-            queryset=models.Membership.objects.filter(
-                user=user).prefetch_related('roles'),
-            to_attr='user_memberships'
-        )
-    ).select_related('owner').order_by('-created_at')
-
-    paginator = pagination.StandardResultsSetPagination()
-    paginated_clubs = paginator.paginate_queryset(clubs, request)
-
-    serializer = serializers.ClubListSerializer(
-        paginated_clubs, many=True, context={'request': request}
-    )
-    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def create_club(request):
     from apps.institutes.models import Institute
+    from core.constants import DEFAULT_COLOR, DEFAULT_ROLE
     """
     Create a new club (any authenticated user can create)
     Required fields: name, origin
@@ -131,17 +70,17 @@ def create_club(request):
         # print("Default admin role for new club:", default_role)
 
         # Get the admin role to assign to creator
-        admin_role = club.roles.filter(name="Owner").first()
+        admin_role = club.roles.filter(name=DEFAULT_ROLE).first()
         if not admin_role:
             # Fallback if admin role doesn't exist - create owner role with all permissions
             admin_role = models.Role.objects.create(
                 club=club,
                 name=DEFAULT_ROLE,
                 permissions={
-                    'can_manage_members': True,
-                    'can_manage_posts': True,
-                    'can_manage_events': True,
-                    'can_manage_settings': True
+                    'manage:members': True,
+                    'manage:posts': True,
+                    'manage:events': True,
+                    'manage:settings': True
                 },
                 is_default=False,
                 color=DEFAULT_COLOR
@@ -163,7 +102,7 @@ def create_club(request):
         Prefetch(
             'memberships',
             queryset=models.Membership.objects.filter(
-                user=request.user).prefetch_related('roles'),
+                user=request.user, left_at__isnull=True).prefetch_related('roles'),
             to_attr='user_memberships'
         )
     ).get(pk=club.pk)
@@ -172,160 +111,6 @@ def create_club(request):
         club, context={'request': request}
     )
     return response.Response(detail_serializer.data, status=status.HTTP_201_CREATED)
-
-
-@api_view(['GET', 'PATCH', 'DELETE'])
-@permission_classes([permissions.IsAuthenticated])
-def club_info(request, pk):
-    """
-    Retrieve, update, or delete a club.
-    - GET: Public clubs visible to all; private clubs only to members
-    - PATCH: Only club owner or admins with can_manage_settings
-    - DELETE: Only club owner
-    """
-    # Base queryset
-    base_qs = models.Club.objects.filter(is_active=True)
-
-    if request.method == 'GET':
-        club_qs = base_qs.filter(
-            Q(privacy='public') | Q(members=request.user)
-        )
-    else:
-        club_qs = base_qs.filter(members=request.user)
-
-    club = get_object_or_404(
-        club_qs.annotate(
-            member_count=Count('members', distinct=True),
-            post_count=Count('club_posts', distinct=True),
-            event_count=Count('events', distinct=True),
-        ).prefetch_related(
-            Prefetch(
-                'memberships',
-                queryset=models.Membership.objects.filter(
-                    user=request.user).prefetch_related('roles'),
-                to_attr='user_memberships'
-            )
-        ).select_related('owner'),
-        pk=pk
-    )
-
-    if request.method == 'GET':
-        serializer = serializers.ClubDetailSerializer(
-            club, context={'request': request})
-        return response.Response(serializer.data)
-
-    is_owner = (request.user == club.owner)
-    has_admin_perm = False
-
-    if not is_owner:
-        memberships = getattr(club, 'user_memberships', [])
-        if memberships:
-            has_admin_perm = memberships[0].has_permission(
-                'can_manage_settings')
-
-    if request.method == 'PATCH':
-        if not (is_owner or has_admin_perm):
-            return response.Response(
-                {'detail': 'Only club owners or admins can edit club settings.'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        serializer = serializers.ClubSerializer(
-            club, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            club = models.Club.objects.annotate(
-                member_count=Count('members', distinct=True),
-                post_count=Count('club_posts', distinct=True),
-                event_count=Count('events', distinct=True),
-            ).prefetch_related(
-                Prefetch(
-                    'memberships',
-                    queryset=models.Membership.objects.filter(
-                        user=request.user).prefetch_related('roles'),
-                    to_attr='user_memberships'
-                )
-            ).get(pk=club.pk)
-
-            detail_serializer = serializers.ClubDetailSerializer(
-                club, context={'request': request})
-            return response.Response(detail_serializer.data)
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    if request.method == 'DELETE':
-        if not is_owner:
-            return response.Response({'detail': 'Only the club owner can delete the club.'},
-                                     status=status.HTTP_403_FORBIDDEN
-                                     )
-
-        club.is_active = False
-        club.save()
-        return response.Response(
-            {'detail': f'{club.name} has been deleted.'},
-            status=status.HTTP_200_OK
-        )
-
-
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def join_club(request, pk):
-    """
-    Join a public or closed club.
-    Secret clubs cannot be joined via this endpoint (must be invited).
-    """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
-
-    # Prevent joining secret clubs
-    if club.privacy == 'secret':
-        return response.Response(
-            {'detail': 'Cannot join secret clubs directly. You must be invited.'},
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    # Check if already member
-    if models.Membership.objects.filter(user=request.user, club=club).exists():
-        return response.Response(
-            {'detail': f'You are already a member of {club.name}.'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    # Get default role
-    default_role = club.roles.filter(is_default=True).first()
-
-    if not default_role:
-        # Get Member role if exists
-        default_role = club.roles.filter(name__iexact='Member').first()
-
-        if not default_role:
-            # Create default member role
-            default_role = models.Role.objects.create(
-                club=club,
-                name='Member',
-                is_default=True,
-                color='#95A5A6'
-            )
-
-    # Create membership
-    membership = models.Membership.objects.create(
-        user=request.user,
-        club=club
-    )
-    if default_role:
-        membership.add_role(default_role, set_as_primary=True)
-
-    return response.Response(
-        {
-            'detail': f'Successfully joined {club.name}.',
-            'club': {
-                'id': str(club.id),
-                'name': club.name,
-                'origin': club.origin,
-                'slug': club.slug
-            },
-            'role': default_role.name if default_role else None
-        },
-        status=status.HTTP_201_CREATED
-    )
 
 
 @api_view(['POST'])
@@ -353,11 +138,11 @@ def leave_club(request, pk):
         )
 
     # Check if last admin (and not owner)
-    if membership.has_permission('can_manage_settings'):
+    if membership.has_permission('manage:settings'):
         # Count how many members have can_manage_settings permission
         admin_count = sum(
             1 for m in models.Membership.objects.filter(club=club).prefetch_related('roles')
-            if m.has_permission('can_manage_settings') and m.user != club.owner
+            if m.has_permission('manage:settings') and m.user != club.owner
         )
 
         if admin_count == 1:
@@ -828,7 +613,7 @@ def recommended_clubs(request):
         Prefetch(
             'memberships',
             queryset=models.Membership.objects.filter(
-                user=user).prefetch_related('roles'),
+                user=user, left_at__isnul=True).prefetch_related('roles'),
             to_attr='user_memberships'
         )
     )

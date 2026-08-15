@@ -12,7 +12,7 @@ class MembershipAwarePolicy(Policy[ActorT, RecordT]):
     """
 
     def get_club(self) -> Club:
-        raise NotImplementedError
+        raise NotImplementedError("Subclasses must implement `get_club()` to say which Club the membership check applies to.")
 
     @cached_property
     def membership(self) -> Membership | None:
@@ -26,3 +26,9 @@ class MembershipAwarePolicy(Policy[ActorT, RecordT]):
 
     def has_permission(self, permission_name: str) -> bool:
         return bool(self.membership and self.membership.has_permission(permission_name))
+
+    def has_active_permissions(self) -> bool:
+        if not self.membership:
+            return False
+
+        return bool(self.membership.user_permissions())

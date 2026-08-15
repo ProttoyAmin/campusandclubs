@@ -1,5 +1,4 @@
 import { useClubOutlet } from "@/features/club/context/club-layout-context";
-import { Badge } from "lucide-react";
 
 const ClubInfoPage = () => {
   const { club } = useClubOutlet();
@@ -13,8 +12,7 @@ const ClubInfoPage = () => {
         </div>
       </div>
       <div>
-        <p>{club?.status}</p>
-        <Badge>{club?.category}</Badge>
+        <p>{club?.origin}</p>
       </div>
     </div>
   );

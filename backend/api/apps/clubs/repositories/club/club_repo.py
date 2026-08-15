@@ -39,11 +39,12 @@ class ClubRepository(BaseRepository[Club]):
             .annotate(
                 member_count=Count("members", distinct=True),
                 event_count=Count("events", distinct=True),
+                post_count=Count("posts", distinct=True),
             )
             .prefetch_related(
                 Prefetch(
                     "memberships",
-                    queryset=Membership.objects.filter(user=viewer).prefetch_related("roles"),
+                    queryset=Membership.objects.filter(user=viewer, left_at__isnull=True).prefetch_related("roles"),
                     to_attr="user_memberships",
                 )
             )

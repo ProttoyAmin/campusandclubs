@@ -1,3 +1,6 @@
+
+from apps.clubs.policies.club import ClubPolicy
+from core.views import PolicyMixin
 import logging
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
@@ -21,10 +24,11 @@ from apps.accounts.models import User
 
 logger = logging.getLogger(__name__)
 
-class ClubService(BaseService[Club, ClubRepository]):
+class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRepository]):
     """Club service class for managing club operations"""
 
     repository_class = ClubRepository
+    policy_class = ClubPolicy
 
     def __init__(
         self,
@@ -36,6 +40,9 @@ class ClubService(BaseService[Club, ClubRepository]):
         self.membership_repository = MembershipRepository()
         self.membership_application_repository = MembershipApplicationRepository()
         self.form_repository = FormRepository()
+
+    def _get_object(self, pk: int) -> Club:
+        return self.repository.get_queryset().filter(pk=pk).get()
 
 
 
@@ -83,6 +90,17 @@ class ClubService(BaseService[Club, ClubRepository]):
 
     def join_club(self, club: Club, user: User) -> Membership:
         return self.membership_repository.create_membership(club, user)
+
+    def leave_club(self, club: Club, actor: User):
+        decision = self.get_policy(actor, club).can_leave()
+
+        if decision.allowed:
+            membership = self.membership_repository.get_queryset().get(
+                club=club, user=actor, left_at__isnull=True
+            )
+            return self.membership_repository.leave(membership)
+        
+        raise ValidationError({"detail" : decision.reason})
 
     def apply_to_club(self, club: Club, user: User, message: str) -> MembershipApplication:
 

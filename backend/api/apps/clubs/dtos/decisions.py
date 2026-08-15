@@ -15,3 +15,8 @@ class Decision:
 class EditDecision:
     allowed: bool
     reason: str
+
+@dataclass(frozen=True)
+class LeaveDecision:
+    allowed: bool
+    reason: dict[str, str]

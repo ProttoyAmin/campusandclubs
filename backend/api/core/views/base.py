@@ -1,3 +1,4 @@
+from apps.accounts.models import User
 from typing import ClassVar, Generic, Optional, TypeVar, cast
 
 from django.db.models import Model
@@ -19,7 +20,10 @@ class PolicyMixin(Generic[PolicyT, RecordT]):
 
     def get_policy(self, request: Request, record: RecordT) -> PolicyT:
         assert self.policy_class is not None, f"{type(self).__name__} has no policy_class set"
-        return cast(PolicyT, self.policy_class(current_user(request), record))
+        if isinstance(request, User):
+            return cast(PolicyT, self.policy_class(request, record))
+        else:
+            return cast(PolicyT, self.policy_class(current_user(request), record))
 
 
 class ServiceMixin(Generic[ServiceT]):

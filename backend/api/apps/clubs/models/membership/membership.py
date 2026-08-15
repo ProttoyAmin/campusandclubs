@@ -40,6 +40,8 @@ class Membership(models.Model):
     )
 
     joined_at = models.DateTimeField(auto_now_add=True)
+    left_at = models.DateTimeField(null=True, blank=True)
+    
     # Add a primary field to mark which role is primary/display
     primary_role = models.ForeignKey(
         Role,

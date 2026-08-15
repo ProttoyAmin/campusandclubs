@@ -33,6 +33,14 @@ class ClubService {
         return res.data;
     }
 
+    async leave(clubId: string) {
+        const res = await this.clubClient.leaveClub(clubId);
+        if (res.status !== 200) {
+            console.log("Error leaving club:", res.data);
+        }
+        return res.data;
+    }
+
     async apply(clubId: string, data: MembershipApplicationCreateRequest) {
         const res = await this.clubClient.applyToClub(clubId, data);
         return res.data;

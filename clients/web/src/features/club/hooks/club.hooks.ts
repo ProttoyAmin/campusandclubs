@@ -39,7 +39,19 @@ export const useUpdateClub = (slug: string, id: string) => {
     },
   });
 
-  return { update };
+  const leave = useMutation({
+    mutationFn: () => {
+      return club.leave(id)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error leaving club:", error.response.data.detail);
+    },
+  });
+
+  return { update, leave };
 };
 
 export const useJoin = (id: string, slug: string) => {

@@ -158,11 +158,11 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     def get_is_member(self, obj: Club) -> bool:
         request = self._get_request()
-        if not (request and request.user.is_authenticated):
-            return False
         if hasattr(obj, 'user_memberships'):
             return bool(obj.user_memberships)  # type: ignore[attr-defined]
-        return Membership.objects.filter(user=request.user, club=obj).exists()
+        return Membership.objects.filter(
+            user=request.user, club=obj, left_at__isnull=True
+        ).exists()
 
     def get_application(self, obj: Club):
         from core.policies.utils import current_user

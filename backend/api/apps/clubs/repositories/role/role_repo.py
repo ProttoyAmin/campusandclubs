@@ -1,6 +1,6 @@
 from core.repositories import BaseRepository
 from apps.clubs.models import Role, Club
-from apps.clubs.views import DEFAULT_COLOR, DEFAULT_ROLE
+from core.constants import DEFAULT_COLOR, DEFAULT_ROLE
 
 
 class RoleRepository(BaseRepository[Role]):
@@ -13,10 +13,10 @@ class RoleRepository(BaseRepository[Role]):
             name=DEFAULT_ROLE,
             defaults={
                 "permissions": {
-                    "can_manage_members": True,
-                    "can_manage_posts": True,
-                    "can_manage_events": True,
-                    "can_manage_settings": True,
+                    "manage:members": True,
+                    "manage:posts": True,
+                    "manage:events": True,
+                    "manage:settings": True,
                 },
                 "is_default": True,
                 "color": DEFAULT_COLOR,

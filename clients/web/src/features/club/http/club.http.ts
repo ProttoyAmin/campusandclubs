@@ -41,6 +41,15 @@ export class ClubClient extends BaseClient<ClubDetail, ClubCreateRequest, Patche
     return response;
   }
 
+  async leaveClub(
+    clubId: string | number,
+  ): Promise<AxiosResponse> {
+    const response = await this.client.delete(
+      `${this.endpoint}${clubId}/leave/`,
+    );
+    return response;
+  }
+
   async applyToClub(
     clubId: string | number,
     data: MembershipApplicationCreateRequest,

@@ -11,6 +11,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "design/components/ui/avatar";
+import { useUpdateClub } from "../../hooks/club.hooks";
+import { toast } from "design/components/ui/toast";
 
 const ClubLayoutHeader = ({
   club,
@@ -23,8 +25,29 @@ const ClubLayoutHeader = ({
   handleJoin: () => void;
   isJoinPending: boolean;
 }) => {
+  const { leave } = useUpdateClub(club?.slug, club?.id);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLeave = () => {
+    leave.mutate(undefined, {
+      onSuccess: () => {
+        toast.add({
+          title: "Club",
+          description: "Club left successfully",
+          type: "success",
+        });
+      },
+      onError: (error) => {
+        toast.add({
+          title: "Error leaving club",
+          // @ts-ignore
+          description: error?.response?.data?.detail?.message,
+          type: "error",
+        });
+      },
+    });
+  };
 
   return (
     <>
@@ -111,6 +134,8 @@ const ClubLayoutHeader = ({
                     <CircleEllipsis className="size-5 transition-transform duration-200" />
                   </Button>
                 }
+                onLeave={handleLeave}
+                isMember={club?.is_member}
               />
             )}
           </div>

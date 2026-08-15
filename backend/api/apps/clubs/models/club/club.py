@@ -47,7 +47,7 @@ class Club(models.Model):
     )
 
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="club_owner"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="club_ownerships"
     )
 
     members = models.ManyToManyField(
@@ -101,6 +101,7 @@ class Club(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    paused_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:

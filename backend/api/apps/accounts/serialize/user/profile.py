@@ -221,7 +221,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             
         from apps.clubs.models import Membership
         memberships = Membership.objects.filter(
-            user=obj).select_related('club').prefetch_related('roles')
+            user=obj, left_at__isnull=True).select_related('club').prefetch_related('roles')
         return UserClubMembershipSerializer(
             memberships,
             many=True,

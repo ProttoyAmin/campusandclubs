@@ -1,3 +1,4 @@
+from django.db.models import F
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, response, status
 from django.db.models import Count, Q, Prefetch
@@ -40,7 +41,7 @@ def list_members(request, pk):
 
     memberships = models.Membership.objects.filter(
         club=club
-    ).select_related('user').prefetch_related('roles').order_by('-joined_at')
+    ).select_related('user').prefetch_related('roles').order_by('-joined_at').exclude(user_id=F('club__owner_id'))
 
     # Filter by role name
     role_name = request.query_params.get('role')
@@ -100,7 +101,8 @@ def member_detail(request, pk, user_id):
     """
     Get detailed information about a specific member
     """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
+    from apps.clubs.models import ClubStatus
+    club = get_object_or_404(models.Club, pk=pk, status=ClubStatus.ACTIVE)
     user = get_object_or_404(User, pk=user_id)
 
     # Check if user can view member details
@@ -130,7 +132,7 @@ def member_detail(request, pk, user_id):
     from apps.posts.models import Post
     post_count = Post.objects.filter(
         author=user,
-        club_post__club=club,
+        club=club,
         is_deleted=False
     ).count()
 

@@ -1,3 +1,4 @@
+from django.utils import timezone
 from apps.clubs.models.membership.membership import Membership
 
 
@@ -34,6 +35,13 @@ class MembershipRepository(BaseRepository[Membership]):
             user=user,
         )
         return self.get_queryset().get(club=club, user=user)
+    
+    def exists(self, club: Club, user: User):
+        return self.filter(club=club, user=user, left_at__isnull=True).exists()
+    
+    def leave(self, membership: Membership) -> None:
+        membership.roles.clear()
+        self.update(membership, primary_role=None, left_at=timezone.now())
     
     
 

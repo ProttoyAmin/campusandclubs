@@ -12,7 +12,7 @@ const ClubMembersPage = () => {
           key={member.id}
           member={member}
           showActions={club?.is_owner}
-          type="list"
+          variant="card"
         />
       ))}
     </div>
