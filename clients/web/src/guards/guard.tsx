@@ -3,9 +3,6 @@ import { matchPath, Navigate, useLocation } from "react-router-dom";
 import { useSession } from "@/features/auth/hooks/session.hook";
 import { paths, routes } from "@/settings/routes";
 
-const AUTH_PREFIX = "@/auth/";
-const SIGN_IN_ROUTE = "@/auth/sign-in";
-
 // Route *patterns* (with :params), not resolved paths — matchPath needs patterns
 const PUBLIC_PATTERNS = [
   //   routes.home,
@@ -15,6 +12,7 @@ const PUBLIC_PATTERNS = [
   routes.auth.private.forgot_password,
   routes.auth.private.activation,
   routes.auth.private.reset_password,
+  routes.auth.private.verify_email,
   //   routes.club.public.base,
 ];
 

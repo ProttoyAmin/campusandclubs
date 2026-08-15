@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks";
 const ResetPasswordPage = () => {
   const { key } = useParams();
   const { resetPassword } = useAuth();
+  console.log(key);
 
   const handleSubmit = (data: ResetPasswordSchemaType) => {
     console.log(data);

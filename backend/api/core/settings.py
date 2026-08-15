@@ -49,6 +49,7 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
     "http://localhost:4000",
+    "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:4000",
     "http://127.0.0.1:5173"
@@ -240,9 +241,10 @@ HEADLESS_ONLY = True
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
 HEADLESS_FRONTEND_URLS = {
-    "account_reset_password_from_key": "http://localhost:4000/@/auth/reset-password/{key}",
+    "account_reset_password_from_key": "http://localhost:3000/@/auth/account/reset-password/{key}",
     # add other flows here as you hit them, e.g.:
-    # "account_confirm_email": "http://localhost:3000/confirm-email/{key}",
+    "account_confirm_email": "http://localhost:3000/@/auth/account/verify-email/{key}",
+    "account_signup": "http://localhost:3000/@/auth/sign-up",
     # "socialaccount_login_error": "http://localhost:3000/login/error",
 }
 
@@ -255,7 +257,7 @@ ACCOUNT_SIGNUP_FIELDS = [
     "password2*",
 ]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_LOGIN_ON_PASSWORD_RESET=True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -327,10 +329,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 cloudinary.config(
-    cloud_name = getenv("CLOUDINARY_CLOUD_NAME", ""),
-    api_key = getenv("CLOUDINARY_KEY", ""),
-    api_secret = getenv("CLOUDINARY_SECRET", ""),
-    secure = True
+    cloud_name=getenv("CLOUDINARY_CLOUD_NAME", ""),
+    api_key=getenv("CLOUDINARY_KEY", ""),
+    api_secret=getenv("CLOUDINARY_SECRET", ""),
+    secure=True
 )
 
 STATIC_URL = 'static/'

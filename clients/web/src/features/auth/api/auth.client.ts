@@ -1,4 +1,4 @@
-import { BaseClient } from "@/settings/api/";
+import { BaseAuthClient } from "@/settings/api/";
 import type {
   RegisterWritable,
   RegisterRequestWritable,
@@ -21,11 +21,7 @@ export type AllauthError = {
 // Kept as an alias while sign-up consumers migrate to the shared allauth shape.
 export type SignUpError = AllauthError;
 
-export class AuthClient extends BaseClient<
-  AxiosResponse,
-  RegisterRequestWritable,
-  ApiAccountsAuthJwtRefreshCreateResponse
-> {
+export class AuthClient extends BaseAuthClient {
   constructor() {
     super(config.api.v1.account.base, config.api.v1.allauth.base);
   }
@@ -51,6 +47,17 @@ export class AuthClient extends BaseClient<
       console.error("Activate error:", (err as AxiosError).response?.data);
       throw err;
     }
+  }
+
+  async verifyEmail(key: string): Promise<AxiosResponse> {
+    const response = await this.client.post(`${this.allauthBrowser}auth/email/verify`, {
+      key
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return response;
   }
 
   async login(
@@ -108,6 +115,10 @@ export class AuthClient extends BaseClient<
       console.error("Refresh error:", (err as AxiosError).response?.data);
       throw err;
     }
+  }
+
+  async getSession(): Promise<AxiosResponse> {
+    return this.client.get(`${this.allauthBrowser}auth/session`);
   }
 }
 

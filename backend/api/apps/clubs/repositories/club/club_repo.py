@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db.models import (
     Count,
     Prefetch,
@@ -6,7 +7,7 @@ from django.db.models import (
 )
 
 from core.repositories import BaseRepository
-from apps.clubs.models import Club, Membership, Visibility
+from apps.clubs.models import Club, Membership, Visibility, ClubStatus
 from apps.clubs.repositories.role.role_repo import RoleRepository
 from apps.clubs.dtos.club_create import ClubDuplicateCheckDTO
 
@@ -14,7 +15,7 @@ from apps.clubs.dtos.club_create import ClubDuplicateCheckDTO
 class ClubRepository(BaseRepository[Club]):
     model = Club
     role_repository = RoleRepository
-    
+
     def get_queryset(self) -> QuerySet[Club]:
         return super().get_queryset().filter(deleted_at__isnull=True)
 
@@ -52,10 +53,96 @@ class ClubRepository(BaseRepository[Club]):
             .order_by("-created_at")
         )
 
+    def get_with_annotations_for_viewer(self, pk, viewer) -> Club:
+        """Single Club with member/event/post counts and viewer's active memberships prefetched.
+        Used by `club_info` for GET / PATCH / DELETE.
+        """
+        return (
+            self.get_queryset()
+            .filter(status=ClubStatus.ACTIVE)
+            .annotate(
+                member_count=Count("members", distinct=True),
+                event_count=Count("events", distinct=True),
+            )
+            .prefetch_related(
+                Prefetch(
+                    "memberships",
+                    queryset=Membership.objects.filter(
+                        user=viewer, left_at__isnull=True
+                    ).prefetch_related("roles"),
+                    to_attr="user_memberships",
+                )
+            )
+            .select_related("owner")
+            .get(pk=pk)
+        )
+
+    def visible_qs_for_viewer(self, viewer, *, only_member: bool = False) -> QuerySet[Club]:
+        """Scope `club_info`'s base queryset:
+        - `only_member=True` → only clubs the viewer is a member of (used for PATCH/DELETE).
+        - `only_member=False` → public OR member-clubs (used for GET).
+        """
+        base = self.get_queryset().filter(status=ClubStatus.ACTIVE)
+        if only_member:
+            return base.filter(members=viewer)
+        return base.filter(Q(privacy=Visibility.PUBLIC) | Q(members=viewer))
+
+    def soft_delete(self, club: Club) -> Club:
+        """Soft-delete: stamp `deleted_at` and persist. Repository-level because
+        it's purely a persistence concern; authorization lives in the policy."""
+        club.deleted_at = timezone.now()
+        club.save()
+        return club
+
+    def recommend_for_user(self, user) -> QuerySet[Club]:
+        """Personalized recommendation queryset. Excludes secret clubs, clubs
+        the user is already a member of, and biases toward clubs matching the
+        user's origin (first via memberships, then via user profile.origin)."""
+        user_club_ids = Membership.objects.filter(
+            user=user
+        ).values_list("club_id", flat=True)
+
+        clubs = (
+            self.get_queryset()
+            .filter(status=ClubStatus.ACTIVE)
+            .exclude(privacy=Visibility.SECRET)
+            .exclude(id__in=user_club_ids)
+        )
+
+        user_origins = Membership.objects.filter(
+            user=user
+        ).values_list("club__origin", flat=True).distinct()
+
+        if user_origins:
+            same_origin = clubs.filter(origin__in=user_origins)
+            if same_origin.exists():
+                clubs = same_origin
+
+        if hasattr(user, "profile") and getattr(user.profile, "origin", None):
+            profile_origin = clubs.filter(origin__iexact=user.profile.origin)
+            if profile_origin.exists():
+                profile_origin = profile_origin.exclude(
+                    id__in=clubs.values_list("id", flat=True)
+                )
+                clubs = clubs | profile_origin
+
+        if not clubs.exists():
+            clubs = clubs.filter(privacy=Visibility.PUBLIC)
+
+        return clubs.prefetch_related(
+            Prefetch(
+                "memberships",
+                queryset=Membership.objects.filter(
+                    user=user, left_at__isnull=True
+                ).prefetch_related("roles"),
+                to_attr="user_memberships",
+            )
+        )
+
     def exists_similar_name(self, data: ClubDuplicateCheckDTO) -> bool:
         from django.db.models import Value
         from django.db.models.functions import Lower, Replace
-        
+
         normalized_name = data.name.strip().replace(" ", "").lower()
 
         queryset = self.get_queryset().annotate(

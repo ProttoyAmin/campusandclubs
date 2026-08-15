@@ -1,5 +1,6 @@
 import { routes } from "@/settings/routes";
 import React from "react";
+import VerifyEmail from "./pages/private/verify-email";
 
 const SignIn = React.lazy(() => import("./pages/public/sign-in"));
 
@@ -35,5 +36,9 @@ export const authRoutes = [
   {
     path: routes.auth.private.reset_password,
     element: <ResetPassword />,
+  },
+  {
+    path: routes.auth.private.verify_email,
+    element: <VerifyEmail />,
   },
 ];

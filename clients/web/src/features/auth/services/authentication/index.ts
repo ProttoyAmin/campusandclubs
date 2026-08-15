@@ -1,6 +1,4 @@
-import type {
-  ActivationRequest,
-} from "@campus/api";
+import type { ActivationRequest } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
 import type { SignInSchemaType } from "validation/auth";
@@ -18,11 +16,11 @@ export type AuthSession = {
   data: {
     user: AuthUser | null;
     methods: string[];
-  }
+  };
   meta: {
     is_authenticated: boolean;
-  }
-}
+  };
+};
 
 export class Authentication {
   public authenticated: boolean = false;
@@ -49,6 +47,10 @@ export class Authentication {
     return await this.apiClient.signUp(data);
   }
 
+  async verify_email(key: string) {
+    return await this.apiClient.verifyEmail(key);
+  }
+
   async activate(data: ActivationRequest) {
     return await this.apiClient.activate({
       uid: data.uid,
@@ -56,10 +58,8 @@ export class Authentication {
     });
   }
 
-
-
   async request_password_reset(email: string) {
-    const response = await this.apiClient.requestPasswordReset(email)
+    const response = await this.apiClient.requestPasswordReset(email);
     return response.data;
   }
 
@@ -76,11 +76,9 @@ export class Authentication {
     return response;
   }
 
-
-
   async check_session(): Promise<AuthSession | null> {
     try {
-      const response = await this.apiClient.base.client.get<AuthSession>('/_allauth/browser/v1/auth/session');
+      const response = await this.apiClient.getSession();
       if (response.status === 200) {
         this.authenticated = true;
         return response.data;

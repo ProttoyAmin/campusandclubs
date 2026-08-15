@@ -34,9 +34,13 @@ export const useAuth = () => {
       queryClient.setQueryData(authKeys.session, false);
 
       await queryClient.invalidateQueries({
-        queryKey: authKeys.session
+        queryKey: authKeys.session,
       });
     },
+  });
+
+  const verifyEmail = useMutation({
+    mutationFn: (key: string) => authentication.verify_email(key),
   });
 
   const signUp = useMutation<
@@ -44,7 +48,7 @@ export const useAuth = () => {
     AppError<SignUpError>,
     RegisterRequestWritable
   >({
-    mutationFn: (data) => authentication.sign_up(data)
+    mutationFn: (data) => authentication.sign_up(data),
   });
 
   const login = useMutation<
@@ -52,11 +56,10 @@ export const useAuth = () => {
     AppError<AllauthError>,
     SignInSchemaType
   >({
-    mutationFn: (data) =>
-      authentication.login(data),
+    mutationFn: (data) => authentication.login(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: authKeys.session });
-      queryClient.clear()
+      queryClient.clear();
     },
   });
 
@@ -69,7 +72,7 @@ export const useAuth = () => {
   const resetPassword = useMutation<
     AxiosResponse,
     AppError<AllauthError>,
-    { key: string, new_password: string }
+    { key: string; new_password: string }
   >({
     mutationFn: ({ key, new_password }) => {
       return authentication.reset_password(key, new_password);
@@ -79,6 +82,12 @@ export const useAuth = () => {
     },
   });
 
-
-  return { logout, login, signUp, forgotPassword, resetPassword };
+  return {
+    logout,
+    login,
+    signUp,
+    forgotPassword,
+    resetPassword,
+    verifyEmail,
+  };
 };

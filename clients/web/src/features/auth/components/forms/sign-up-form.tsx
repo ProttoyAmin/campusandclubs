@@ -63,9 +63,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                 {props.serverErrors && (
                   <FieldError
                     errors={[
-                      ...(props.serverErrors.errors || []).map(
-                        (item) => new Error(item.message || ""),
-                      ),
+                      ...(props.serverErrors.errors || [])
+                        .filter((item) => item.param === "username")
+                        .map((item) => new Error(item.message || "")),
                     ]}
                   />
                 )}
@@ -93,9 +93,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                 {props.serverErrors && (
                   <FieldError
                     errors={[
-                      ...(props.serverErrors.errors || []).map(
-                        (item) => new Error(item.message || ""),
-                      ),
+                      ...(props.serverErrors.errors || [])
+                        .filter((item) => item.param === "email")
+                        .map((item) => new Error(item.message || "")),
                     ]}
                   />
                 )}
@@ -124,9 +124,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                 {props.serverErrors && (
                   <FieldError
                     errors={[
-                      ...(props.serverErrors.errors || []).map(
-                        (item) => new Error(item.message || ""),
-                      ),
+                      ...(props.serverErrors.errors || [])
+                        .filter((item) => item.param === "password" || item.param === "password1")
+                        .map((item) => new Error(item.message || "")),
                     ]}
                   />
                 )}
@@ -155,9 +155,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                 {props.serverErrors && (
                   <FieldError
                     errors={[
-                      ...(props.serverErrors.errors || []).map(
-                        (item) => new Error(item.message || ""),
-                      ),
+                      ...(props.serverErrors.errors || [])
+                        .filter((item) => item.param === "re_password" || item.param === "password2")
+                        .map((item) => new Error(item.message || "")),
                     ]}
                   />
                 )}
