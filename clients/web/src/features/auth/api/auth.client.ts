@@ -6,8 +6,7 @@ import type {
   JwtRefreshCreateResponse,
   CustomTokenObtainPairWritable,
   TokenVerify,
-  TokenRefresh,
-  registerCreate,
+  TokenRefresh
 } from "@campus/api";
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";

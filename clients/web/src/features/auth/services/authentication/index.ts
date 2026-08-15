@@ -25,31 +25,30 @@ export class Authentication {
   }
 
   async login(data: CustomTokenObtainPairWritable) {
-    const res = await login({
-      client: this.client,
-      body: data,
-    });
+    // const res = await login({
+    //   client: this.client,
+    //   body: data,
+    // });
 
-    if (res.status === 200) {
-      this.authenticated = true;
-      this.authenticated = true;
-      storage.token.setAccessToken(res.data.access);
-      storage.token.setRefreshToken(res.data.refresh);
-      return res;
-    }
-
-    // const response = await this.authClient.login(data);
-    // if (response.status === 200) {
+    // if (res.status === 200) {
     //   this.authenticated = true;
-    //   storage.token.setAccessToken(response.data.access);
-    //   storage.token.setRefreshToken(response.data.refresh);
-    //   return response;
+    //   this.authenticated = true;
+    //   storage.token.setAccessToken(res.data.access);
+    //   storage.token.setRefreshToken(res.data.refresh);
+    //   return res;
     // }
-    // return response;
+
+    const response = await this.authClient.login(data);
+    if (response.status === 200) {
+      this.authenticated = true;
+      storage.token.setAccessToken(response.data.access);
+      storage.token.setRefreshToken(response.data.refresh);
+      return response;
+    }
+    return response;
   }
 
   async register(data: RegisterWritable) {
-    console.log(await this.authClient.register(data));
     return await this.authClient.register(data);
   }
 

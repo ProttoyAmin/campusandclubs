@@ -12,10 +12,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-dotenv_file = BASE_DIR / '.env.local'
-
-if path.isfile(dotenv_file):
-    load_dotenv(dotenv_file)
+# .env / .env.local are loaded by core/settings/__init__.py before this
+# module is imported, so all env-driven defaults below are already populated.
 
 
 # Quick-start development settings - unsuitable for production

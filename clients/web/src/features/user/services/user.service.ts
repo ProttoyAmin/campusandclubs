@@ -2,7 +2,7 @@ import { userClient } from "../api/user.client";
 import { api } from "@/settings/api";
 import { config } from "@/settings/app";
 import { usersList } from "@campus/api";
-import type { UsersListResponse } from "@campus/api";
+import type { AllRetrieveResponse, UsersListResponse } from "@campus/api";
 import { useAuth } from "@/features/auth/hooks/session.hook";
 // import { client } from "@campus/api/client";
 import { createClient } from "@campus/api/client";
@@ -32,41 +32,42 @@ import { storage } from "@/settings/storage";
 //   url: config.api.v1.raw
 // })
 
-console.log(console.log(v1Client.client.getConfig()));
+// console.log(console.log(v1Client.client.getConfig()));
 
 export class UserService {
-  private api = v1Client;
+  private api = userClient;
   public authenticated: boolean = false;
 
   constructor() {
-    this.api.setTokenGetter(async () => {
-      return storage.token.getAccessToken() ?? null;
-    });
+    // this.api.setTokenGetter(async () => {
+    //   return storage.token.getAccessToken() ?? null;
+    // });
 
-    this.api.setUnauthorizedHandler(async () => {
-      return "token refresh";
-    });
+    // this.api.setUnauthorizedHandler(async () => {
+    //   return "token refresh";
+    // });
   }
 
-  async getUsers(): Promise<any> {
+  async getUsers(): Promise<AllRetrieveResponse> {
     // const response = await usersList({
     //   client: this.api.client,
     // });
 
-    console.log("REFRESH FROM COOKIE: ", storage.token.getRefreshToken())
 
-    const refreshResponse = await jwtRefreshCreate({
-        client: this.api.client,
-        body: {
-          refresh: storage.token.getRefreshToken(),
-        },
-      });
+    // const refreshResponse = await jwtRefreshCreate({
+    //     client: this.api.client,
+    //     body: {
+    //       refresh: storage.token.getRefreshToken(),
+    //     },
+    //   });
 
-      console.log('refresh response: ', refreshResponse)
+      // console.log('refresh response: ', refreshResponse)
 
     // console.log("raw", response.data);
-    console.log("api: ", await authClient.verify(useAuth().getToken()));
-    return null;
+    // console.log("api: ", await authClient.verify(useAuth().getToken()));
+    const response = await userClient.grabUsers()
+    console.log(response)
+    return response.data;
   }
 }
 

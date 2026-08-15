@@ -6,7 +6,6 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],
     queryFn: () => {
-      console.log(account.getUsers());
       return account.getUsers();
     },
   });

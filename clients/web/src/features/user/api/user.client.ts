@@ -1,6 +1,7 @@
 import { BaseClient } from "@/settings/api/";
 import type { ApiResponse } from "@/settings/api/";
 import type {
+  AllRetrieveResponse,
   AllRetrieveResponses,
   UsersActivationCreateResponse,
 } from "@campus/api";
@@ -15,13 +16,15 @@ export class UserClient extends BaseClient<
     super("/accounts/auth/");
   }
 
-  async grabUsers(): Promise<AllRetrieveResponses> {
+  async grabUsers(): Promise<AxiosResponse<AllRetrieveResponse>> {
     try {
       const response = await this.client.v1.get<
-        AllRetrieveResponses>
+        AllRetrieveResponse>
       (this.endpoint + "all/");
-      return response as AllRetrieveResponses | any;     // TODO: Handle the response data type properly
+      console.log("RESPONSE: ", response)
+      return response;     // TODO: Handle the response data type properly
     } catch (err) {
+      console.error("Grab users error:", err);
       console.error("Grab users error:", (err as AxiosError).response?.data);
       throw err;
     }

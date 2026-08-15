@@ -43,6 +43,8 @@ def toggle_follow(request, user_id):
             status=status.HTTP_403_FORBIDDEN
         )
 
+    print('Toggling follow for', target_user.username)
+
     # Check if already following
     existing_follow = Follow.objects.filter(
         follower=request.user,
