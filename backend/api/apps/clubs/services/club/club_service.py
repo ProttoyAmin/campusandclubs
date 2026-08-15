@@ -142,3 +142,117 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
         application.status = ApplicationStatus.WITHDRAWN
         application.save(update_fields=["status"])
         return application
+
+    # ---------- Discovery / Stats ----------
+
+    def recommend_for_user(self, user: User) -> QuerySet[Club]:
+        """Delegate to repository so the recommendation algorithm lives
+        next to the persistence layer that owns the underlying queries."""
+        return self.repository.recommend_for_user(user)
+
+    def trending_clubs(self) -> QuerySet[Club]:
+        from django.utils import timezone
+        from datetime import timedelta
+
+        week_ago = timezone.now() - timedelta(days=7)
+        return self.repository.trending(week_ago=week_ago)
+
+    def search_clubs(self, query: str) -> QuerySet[Club]:
+        return self.repository.search_public(query)
+
+    def clubs_by_origin(self, origin: str) -> QuerySet[Club]:
+        return self.repository.by_origin(origin)
+
+    def get_club_stats(self, club: Club, *, since) -> dict:
+        from apps.clubs.models import Post, Event
+
+        member_count = club.members.count()
+        post_count = club.club_posts.count()
+        event_count = club.events.count()
+
+        roles_data = [
+            {
+                "role_id": str(role.id),
+                "role_name": role.name,
+                "user_count": role.user_count() if hasattr(role, "user_count") else 0,
+                "color": role.color,
+                "is_default": role.is_default,
+            }
+            for role in club.roles.all()
+        ]
+
+        recent_posts = Post.objects.filter(club=club, created_at__gte=since).count()
+        recent_events = Event.objects.filter(club=club, created_at__gte=since).count()
+        new_members = Membership.objects.filter(club=club, joined_at__gte=since).count()
+
+        engagement_rate = 0
+        if member_count > 0:
+            engagement_rate = min(100, (recent_posts + recent_events) / member_count * 100)
+
+        return {
+            "member_count": member_count,
+            "post_count": post_count,
+            "event_count": event_count,
+            "roles_data": roles_data,
+            "recent_posts": recent_posts,
+            "recent_events": recent_events,
+            "new_members": new_members,
+            "engagement_rate": round(engagement_rate, 2),
+        }
+
+    # ---------- Media ----------
+
+    def upload_media(self, club: Club, file, kind: str) -> Club:
+        """Persist the uploaded media file and update the club's avatar/banner.
+
+        `kind` is either "avatar" or "banner". Returns the updated club.
+        """
+        import os
+        import time
+        from django.core.files.storage import default_storage
+        from django.core.files.base import ContentFile
+
+        upload_path_prefix = "images/club-pictures"
+        ext = os.path.splitext(file.name)[1]
+        filename = f"club_{club.id}_{kind}_{int(time.time())}{ext}"
+        file_path = os.path.join(upload_path_prefix, filename)
+
+        saved_path = default_storage.save(file_path, ContentFile(file.read()))
+
+        from django.conf import settings
+        file_url = os.path.join(settings.MEDIA_URL, saved_path).replace("\\", "/")
+
+        if kind == "avatar":
+            club.avatar = file_url
+        else:
+            club.banner = file_url
+        club.save()
+        return club
+
+    def clear_media(self, club: Club, kind: str) -> Club:
+        """Clear the club's avatar or banner (no file deletion; just DB column)."""
+        if kind == "avatar":
+            club.avatar = None
+        else:
+            club.banner = None
+        club.save()
+        return club
+
+    # ---------- Membership ----------
+
+    def list_members(
+        self,
+        club: Club,
+        *,
+        role_name: str | None = None,
+        search: str | None = None,
+        sort_by: str = "joined_at",
+        order: str = "desc",
+    ) -> QuerySet[Membership]:
+        return self.membership_repository.list_for_club(
+            club,
+            role_name=role_name,
+            search=search,
+            sort_by=sort_by,
+            order=order,
+        )

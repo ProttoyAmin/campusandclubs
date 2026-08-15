@@ -42,6 +42,41 @@ class MembershipRepository(BaseRepository[Membership]):
     def leave(self, membership: Membership) -> None:
         membership.roles.clear()
         self.update(membership, primary_role=None, left_at=timezone.now())
-    
-    
+
+    def list_for_club(
+        self,
+        club: Club,
+        *,
+        exclude_owner: bool = True,
+        role_name: str | None = None,
+        search: str | None = None,
+        sort_by: str = "joined_at",
+        order: str = "desc",
+    ) -> QuerySet[Membership]:
+        """List memberships for a club with filtering and sorting."""
+        from django.db.models import F, Q
+
+        qs = self.get_queryset().filter(club=club).select_related("user").prefetch_related("roles")
+
+        if exclude_owner:
+            qs = qs.exclude(user_id=F("club__owner_id"))
+
+        if role_name:
+            qs = qs.filter(roles__name__iexact=role_name)
+
+        if search:
+            qs = qs.filter(
+                Q(user__username__icontains=search)
+                | Q(user__email__icontains=search)
+                | Q(user__first_name__icontains=search)
+                | Q(user__last_name__icontains=search)
+            )
+
+        sort_map = {"username": "user__username", "role": "role__name"}
+        sort_field = sort_map.get(sort_by, "joined_at")
+        if order != "asc":
+            sort_field = f"-{sort_field}"
+        return qs.order_by(sort_field)
+
+
 

@@ -1,12 +1,19 @@
 from .club.club_details import ClubDetailSerializer
 from .membership.form.application import MembershipApplicationCreateSerializer
-from .club.club import ClubJoinSerializer
-from .club.club import ClubSerializer, ClubCreateSerializer
+from .club.club import (
+    ClubJoinSerializer,
+    ClubSerializer,
+    ClubCreateSerializer,
+    ClubAvatarUploadSerializer,
+    ClubBannerUploadSerializer,
+)
 
 __all__ = [
     'ClubCreateSerializer',
     'ClubDetailSerializer',
-    'ClubJoinSerializer',  
+    'ClubJoinSerializer',
     'ClubSerializer',
-    'MembershipApplicationCreateSerializer'
+    'ClubAvatarUploadSerializer',
+    'ClubBannerUploadSerializer',
+    'MembershipApplicationCreateSerializer',
 ]

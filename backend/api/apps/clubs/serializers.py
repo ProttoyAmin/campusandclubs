@@ -29,50 +29,10 @@ class RoleSerializer(rest_serializers.ModelSerializer):
         return obj.user_count() if hasattr(obj, 'user_count') else 0
 
 
-
-
-
-
-
 class DemoSerializer(rest_serializers.ModelSerializer):
     class Meta:
         model = models.Club
         fields = "__all__"
-
-
-
-class ClubBannerUploadSerializer(rest_serializers.Serializer):
-    banner = rest_serializers.FileField(
-        required=True,
-        allow_empty_file=False,
-        max_length=None,
-        help_text="Upload banner image or video for the club"
-    )
-
-    def validate_banner(self, value):
-        max_size = MAX_SIZE * 2  # Allow larger size for banners/videos
-
-        if value.size > max_size:
-            raise rest_serializers.ValidationError(
-                f"File size too large. Maximum size is {max_size//1024//1024}MB"
-            )
-
-        valid_mime_types = [
-            'image/jpeg', 'image/png', 'image/gif', 'image/webp',
-            'video/mp4', 'video/webm', 'video/quicktime'
-        ]
-        mime_type, _ = mimetypes.guess_type(value.name)
-
-        if mime_type not in valid_mime_types:
-            ext = value.name.split('.')[-1].lower()
-            allowed_exts = ['jpg', 'jpeg', 'png',
-                            'gif', 'webp', 'mp4', 'webm', 'mov']
-            if ext not in allowed_exts:
-                raise rest_serializers.ValidationError(
-                    f"Unsupported file type. Supported types: {', '.join(valid_mime_types)}"
-                )
-
-        return value
 
 
 class EventSerializer(rest_serializers.ModelSerializer):

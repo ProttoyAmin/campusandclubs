@@ -139,6 +139,62 @@ class ClubRepository(BaseRepository[Club]):
             )
         )
 
+    def trending(self, *, week_ago, limit: int = 10) -> QuerySet[Club]:
+        """Trending clubs: ranked by posts/events from the last 7 days plus member count."""
+        return (
+            self.get_queryset()
+            .filter(status=ClubStatus.ACTIVE)
+            .exclude(privacy=Visibility.SECRET)
+            .annotate(
+                member_count=Count("members", distinct=True),
+                recent_posts=Count(
+                    "club_posts",
+                    filter=Q(club_posts__created_at__gte=week_ago),
+                ),
+                recent_events=Count(
+                    "events",
+                    filter=Q(events__created_at__gte=week_ago),
+                ),
+                trending_score=(
+                    Count("club_posts", filter=Q(club_posts__created_at__gte=week_ago)) * 2
+                    + Count("events", filter=Q(events__created_at__gte=week_ago)) * 3
+                    + Count("members", distinct=True) * 0.5
+                ),
+            )
+            .order_by("-trending_score", "-member_count")[:limit]
+        )
+
+    def search_public(self, query: str) -> QuerySet[Club]:
+        """Full-text search over name, origin, about, slug for public clubs."""
+        return (
+            self.get_queryset()
+            .filter(status=ClubStatus.ACTIVE, privacy=Visibility.PUBLIC)
+            .filter(
+                Q(name__icontains=query)
+                | Q(origin__icontains=query)
+                | Q(about__icontains=query)
+                | Q(slug__icontains=query)
+            )
+            .distinct()
+            .annotate(
+                member_count=Count("members", distinct=True),
+                post_count=Count("club_posts", distinct=True),
+            )
+            .order_by("-member_count", "-created_at")
+        )
+
+    def by_origin(self, origin: str) -> QuerySet[Club]:
+        """Public clubs filtered by origin."""
+        return (
+            self.get_queryset()
+            .filter(status=ClubStatus.ACTIVE, privacy=Visibility.PUBLIC, origin__iexact=origin)
+            .annotate(
+                member_count=Count("members", distinct=True),
+                post_count=Count("club_posts", distinct=True),
+            )
+            .order_by("-member_count", "-created_at")
+        )
+
     def exists_similar_name(self, data: ClubDuplicateCheckDTO) -> bool:
         from django.db.models import Value
         from django.db.models.functions import Lower, Replace

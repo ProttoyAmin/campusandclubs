@@ -8,13 +8,18 @@ from apps.clubs.viewss.club.generics import (
 )
 
 from apps.clubs.viewss.club.common import (
-    club_info,
     recommended_clubs,
     ClubJoinView,
     LeaveClubView,
-    AF_ListCreateAPIView
+    AF_ListCreateAPIView,
+    trending_clubs,
+    search_clubs,
+    clubs_by_origin,
+    club_stats,
+    ClubMediaUploadView,
 )
 
+from apps.clubs.viewss.membership.common import list_members
 from apps.clubs.viewss.membership.generics import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
@@ -49,7 +54,6 @@ urlpatterns = [
          name='application'),      # ---- checked
     path('<uuid:pk>/applications/<uuid:application_pk>/', MA_ListCreateAPIView.as_view(),
          name='application_detail'),      # ---- checked
-    path('recommended/', recommended_clubs, name='recommended_clubs'),
 
     path('<uuid:pk>/applications/<uuid:application_pk>/approve/',
          MA_ApproveAPIView.as_view(), name='application_approve'),
@@ -71,7 +75,7 @@ urlpatterns = [
     #     # ==================== APPLICATION FORMS ====================
     path('<uuid:pk>/application-forms/', AF_ListCreateAPIView.as_view(),
          name='application_forms'),      # ---- checked
-    
+
 
     #     # ==================== MEMBER MANAGEMENT ====================
     path('<uuid:pk>/members/', views_members_views.list_members,
@@ -150,6 +154,7 @@ urlpatterns = [
     # #          name='delete_club'),  # NEW (soft delete)
 
     # #     # ==================== ANALYTICS & INSIGHTS ====================
+    path('<int:pk>/stats/', club_stats, name='club_stats'),  # NEW
     # #     path('<int:pk>/analytics/', views.club_analytics, name='club_analytics'),  # NEW
     # #     path('<int:pk>/analytics/engagement/', views.engagement_analytics,
     # #          name='engagement_analytics'),  # NEW
@@ -157,11 +162,12 @@ urlpatterns = [
     # #          name='member_analytics'),  # NEW
 
     #     # ==================== SEARCH & DISCOVERY ====================
-    #     path('search/', views.search_clubs, name='search_clubs'),  # NEW
-    #     path('trending/', views.trending_clubs, name='trending_clubs'),  # NEW
-    # #     path('categories/', views.club_categories, name='club_categories'),  # NEW
-    #     path('origin/<str:origin>/', views.clubs_by_origin,
-    #          name='clubs_by_origin'),  # NEW
+    path('recommended/', recommended_clubs, name='recommended_clubs'),
+    path('search/', search_clubs, name='search_clubs'),  # NEW
+    path('trending/', trending_clubs, name='trending_clubs'),  # NEW
+    #     path('categories/', views.club_categories, name='club_categories'),  # NEW
+    path('origin/<str:origin>/', clubs_by_origin,
+         name='clubs_by_origin'),  # NEW
 
     # ==================== CLUB INVITES ====================
     #     path('<int:pk>/invites/', views.club_invites, name='club_invites'),  # NEW
