@@ -1,6 +1,8 @@
 scripts:
   backend:migrations: cd backend/api && uv run python manage.py makemigrations
+  backend:build:migrations: cd backend/api && $env:DEBUG="False"; uv run python manage.py makemigrations
   backend:migrate: cd backend/api && uv run python manage.py migrate
+  backend:build:migrate: cd backend/api && $env:DEBUG="False"; uv run python manage.py migrate
   backend:server: cd backend/api && uv run python manage.py runserver
   backend:schema: cd backend/api && uv run python manage.py spectacular --file ../../packages/api/schema/openapi.yaml
 

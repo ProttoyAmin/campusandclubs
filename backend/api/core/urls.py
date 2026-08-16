@@ -27,7 +27,6 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('__debug__/', include('debug_toolbar.urls')),
     path('api/accounts/', include('apps.accounts.urls')),
     path('api/institutes/', include('apps.institutes.urls')),
     path('api/clubs/', include('apps.clubs.urls')),
@@ -50,6 +49,9 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
+
     # For files in STATICFILES_DIRS and app 'static' folders
     urlpatterns += staticfiles_urlpatterns()
     # For user-uploaded media
