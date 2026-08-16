@@ -39,7 +39,11 @@ export const useAuth = () => {
     },
   });
 
-  const verifyEmail = useMutation({
+  const verifyEmail = useMutation<
+    AxiosResponse<void>,
+    AppError<AllauthError>,
+    string
+  >({
     mutationFn: (key: string) => authentication.verify_email(key),
   });
 

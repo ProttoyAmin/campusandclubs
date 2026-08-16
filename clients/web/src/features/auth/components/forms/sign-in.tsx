@@ -40,9 +40,6 @@ const SignInForm = (props: SignInFormProps) => {
 
   return (
     <CardContent>
-      <CardHeader>
-        <CardTitle className=""></CardTitle>
-      </CardHeader>
       <form onSubmit={form.handleSubmit(props.onSubmit)}>
         <FieldGroup>
           <Controller
@@ -50,9 +47,9 @@ const SignInForm = (props: SignInFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-in-form-username_or_email">
+                {/* <FieldLabel htmlFor="sign-in-form-username_or_email">
                   Username
-                </FieldLabel>
+                </FieldLabel> */}
                 <Input
                   {...field}
                   id="username_or_email"
@@ -81,20 +78,9 @@ const SignInForm = (props: SignInFormProps) => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="sign-in-form-password">
+                  {/* <FieldLabel htmlFor="sign-in-form-password">
                     Password
-                  </FieldLabel>
-                  <CardAction>
-                    <Button
-                      variant="link"
-                      className={"text-blue-500"}
-                      onClick={() => {
-                        navigate(routes.auth.private.forgot_password);
-                      }}
-                    >
-                      Forgot password?
-                    </Button>
-                  </CardAction>
+                  </FieldLabel> */}
                 </div>
                 <Input
                   {...field}
@@ -119,15 +105,26 @@ const SignInForm = (props: SignInFormProps) => {
               </Field>
             )}
           />
-          <Button
-            variant="link"
-            className={"w-fit self-start"}
-            onClick={() => {
-              navigate(routes.auth.public.sign_up);
-            }}
-          >
-            Don't have an account?
-          </Button>
+          <CardAction className="flex justify-between w-full">
+            <Button
+              variant="link"
+              className={"text-blue-500"}
+              onClick={() => {
+                navigate(routes.auth.private.forgot_password);
+              }}
+            >
+              Forgot password?
+            </Button>
+            <Button
+              variant="link"
+              className={"w-fit"}
+              onClick={() => {
+                navigate(routes.auth.public.sign_up);
+              }}
+            >
+              Sign up
+            </Button>
+          </CardAction>
           <Button type="submit" disabled={props.pending}>
             {props.pending && (
               <Spinner className="size-4" data-icon="inline-start" />

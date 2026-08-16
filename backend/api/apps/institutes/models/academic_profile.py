@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class AcademicProfile(models.Model):
     member = models.OneToOneField(
         'institutes.InstituteAffiliate', on_delete=models.CASCADE, related_name='academic_profile'
@@ -19,7 +20,8 @@ class AcademicProfile(models.Model):
         null=True
     )
 
-    department = models.ForeignKey('institutes.Department', on_delete=models.CASCADE, related_name='department')
+    department = models.ForeignKey(
+        'institutes.Department', on_delete=models.CASCADE, related_name='department', blank=True, null=True)
 
     employee_id = models.CharField(
         max_length=50,
@@ -67,4 +69,4 @@ class AcademicProfile(models.Model):
         ]
 
     def __str__(self) -> str:
-        return self.member.username
+        return self.academic_email

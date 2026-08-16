@@ -7,4 +7,5 @@ import uuid
 class AffiliateCreateDTO:
     institute_id: uuid.UUID
     user_id: uuid.UUID
+    email: str
     role: str

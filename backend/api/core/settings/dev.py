@@ -1,7 +1,10 @@
 from .base import *  # noqa: F401,F403
 from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE
+from os import getenv
 
 DEBUG = True
+
+FRONTEND_URL = getenv('FRONTEND_URL', '')
 
 ALLOWED_HOSTS = ["*"]
 
@@ -51,3 +54,5 @@ HEADLESS_FRONTEND_URLS = {
 # SMTP (Gmail) locally instead — same backend allauth was already using
 # before Resend was introduced.
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")

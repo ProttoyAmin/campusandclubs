@@ -20,10 +20,10 @@ export class V1PublicClient {
       withCredentials: true,
       xsrfCookieName: "csrftoken",
       xsrfHeaderName: "X-CSRFToken",
-      validateStatus: (status) => (status >= 200 && status < 300) || status === 401,
+      validateStatus: (status) =>
+        (status >= 200 && status < 300) || status === 401,
     });
 
-    // Only interceptor: ensure a CSRF cookie exists before every request.
     this.client.interceptors.request.use(async (reqConfig) => {
       if (!this.hasCsrfCookie()) {
         await this.ensureCsrfCookie();

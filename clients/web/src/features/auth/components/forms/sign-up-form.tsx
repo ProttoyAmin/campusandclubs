@@ -36,9 +36,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
 
   return (
     <CardContent className="">
-      <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-      </CardHeader>
       <form onSubmit={form.handleSubmit(props.onSubmit)} className="">
         <FieldGroup>
           <Controller
@@ -46,9 +43,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-form-username">
+                {/* <FieldLabel htmlFor="sign-up-form-username">
                   Username
-                </FieldLabel>
+                </FieldLabel> */}
                 <Input
                   {...field}
                   id="username"
@@ -78,7 +75,7 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-form-email">Email</FieldLabel>
+                {/* <FieldLabel htmlFor="sign-up-form-email">Email</FieldLabel> */}
                 <Input
                   {...field}
                   id="email"
@@ -107,9 +104,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-form-password">
+                {/* <FieldLabel htmlFor="sign-up-form-password">
                   Password
-                </FieldLabel>
+                </FieldLabel> */}
                 <Input
                   {...field}
                   id="password"
@@ -125,7 +122,11 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                   <FieldError
                     errors={[
                       ...(props.serverErrors.errors || [])
-                        .filter((item) => item.param === "password" || item.param === "password1")
+                        .filter(
+                          (item) =>
+                            item.param === "password" ||
+                            item.param === "password1",
+                        )
                         .map((item) => new Error(item.message || "")),
                     ]}
                   />
@@ -138,9 +139,9 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-form-re_password">
+                {/* <FieldLabel htmlFor="sign-up-form-re_password">
                   Confirm Password
-                </FieldLabel>
+                </FieldLabel> */}
                 <Input
                   {...field}
                   id="re_password"
@@ -156,7 +157,11 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
                   <FieldError
                     errors={[
                       ...(props.serverErrors.errors || [])
-                        .filter((item) => item.param === "re_password" || item.param === "password2")
+                        .filter(
+                          (item) =>
+                            item.param === "re_password" ||
+                            item.param === "password2",
+                        )
                         .map((item) => new Error(item.message || "")),
                     ]}
                   />

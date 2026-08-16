@@ -17,30 +17,34 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserMinimalSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar', 'professional_email', 'profile_picture',]
+        fields = ['id', 'username', 'email', 'avatar',
+                  'professional_email', 'profile_picture',]
 
     def get_avatar(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer
         media = obj.media.filter(role="avatar").first()
-        
+
         if not media:
             return None
-        
+
         serializer = MediaListSerializer(media, context=self.context)
         return serializer.data['file']['url']
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Detailed user profile with club, post, and follow information"""
     from apps.institutes.serializers.affiliates import InstituteAffiliateForUserSerializer
     # Personal info
     # department = serializers.SerializerMethodField()
-    
+
     # Institute info
 
-    affiliations = InstituteAffiliateForUserSerializer(many=True, read_only=True)
-    
+    affiliations = InstituteAffiliateForUserSerializer(
+        many=True, read_only=True)
+
     # Club stats
     club_count = serializers.SerializerMethodField()
     clubs = serializers.SerializerMethodField()
@@ -82,10 +86,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     # URLs
     url = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
+    emails = serializers.SerializerMethodField()
 
     class Meta:
         visible_fields = [
-            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'avatar', 'url', 'gender', 'affiliations',
+            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'avatar', 'url', 'gender', 'affiliations', 'emails',
             'student_id', 'year', 'level', 'type', 'preferred_email', 'media',
             'bio', 'location', 'website', 'date_of_birth',
             'email_verified', 'is_private', 'status', 'is_status_manual',
@@ -104,36 +109,36 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'id', 'email', 'professional_email', 'email_verified',
             'created_at', 'updated_at', 'last_login'
         ]
-    
+
     def __init__(self, *args: Any, **kwargs: Any):
         # Remove 'fields' from kwargs if present to avoid passing to super
         fields_param = kwargs.pop('fields', None)
         super().__init__(*args, **kwargs)
-        
+
         # If fields_param is provided, use it
         if fields_param is not None:
             # Get the existing set of fields from the Meta class
             existing_fields = set(self.fields)
-            
+
             # Determine the fields to be removed
             removable_fields = existing_fields - set(fields_param)
-            
+
             # Remove fields not present in the 'fields' argument
             for field_name in removable_fields:
                 self.fields.pop(field_name)
-    
+
     def to_representation(self, instance: models.User) -> dict[str, Any] | dict[Any, Any]:
         """Optimize representation based on requested fields"""
         # Get requested fields from context
         requested_fields = self.context.get('fields')
-        
+
         # If no specific fields requested, return full representation
         if not requested_fields:
             return super().to_representation(instance)
-        
+
         # Build representation only for requested fields
         representation = {}
-        
+
         # Use cached values where possible
         for field_name in requested_fields:
             if field_name in self.fields:
@@ -145,13 +150,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
                     else:
                         # Otherwise use the serializer field
                         field = self.fields[field_name]
-                        representation[field_name] = field.get_attribute(instance)
+                        representation[field_name] = field.get_attribute(
+                            instance)
                 except Exception:
                     # Fallback to serializer method
                     field = self.fields.get(field_name)
                     if field and hasattr(field, 'get_attribute'):
-                        representation[field_name] = field.get_attribute(instance)
-        
+                        representation[field_name] = field.get_attribute(
+                            instance)
+
         return representation
 
     def update(self, instance: models.User, validated_data):
@@ -173,16 +180,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return True
         return field_name in requested_fields
 
+    def get_emails(self, obj: models.User):
+        from apps.accounts.services.user_service import AccountService
+        account = AccountService()
+        emails = []
+        email_addresses = account.emails(obj)
+        for email_address in email_addresses:
+            emails.append({
+                'email': email_address.email,
+                'primary': email_address.primary,
+                'verified': email_address.verified,
+            })
+        return emails
+
     def get_avatar(self, obj: models.User):
         from apps.media.models import MediaRole
         return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
-    
     def get_media(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer
         media = obj.media.all()
         return MediaListSerializer(media, many=True, context=self.context).data
-
 
     def get_url(self, obj: models.User):
         request = self.context.get('request')
@@ -218,7 +236,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Return lightweight club info - only if requested"""
         if not self._should_include('clubs'):
             return []
-            
+
         from apps.clubs.models import Membership
         memberships = Membership.objects.filter(
             user=obj, left_at__isnull=True).select_related('club').prefetch_related('roles')
@@ -239,7 +257,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Is current user following this user?"""
         if not self._should_include('is_following'):
             return None
-            
+
         request = self.context.get('request')
         if request and request.user.is_authenticated and request.user != obj:
             return obj.is_followed_by(request.user) if hasattr(obj, 'is_followed_by') else False
@@ -249,7 +267,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Is this user following current user?"""
         if not self._should_include('is_followed_by'):
             return None
-            
+
         request = self.context.get('request')
         if request and request.user.is_authenticated and request.user != obj:
             return obj.is_following(request.user) if hasattr(obj, 'is_following') else False
@@ -259,7 +277,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Are they mutual followers?"""
         if not self._should_include('is_mutual'):
             return None
-            
+
         request = self.context.get('request')
         if request and request.user.is_authenticated and request.user != obj:
             return obj.are_mutual_followers(request.user) if hasattr(obj, 'are_mutual_followers') else False
@@ -269,7 +287,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         """Get follow status (pending, accepted, None)"""
         if not self._should_include('follow_status'):
             return None
-            
+
         request = self.context.get('request')
         if request and request.user.is_authenticated and request.user != obj:
             from apps.connections.models import Follow

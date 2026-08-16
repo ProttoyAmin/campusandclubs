@@ -7,6 +7,11 @@ import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React from "react";
 import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
 import { useSession } from "@/features/auth/hooks";
+import type { UserProfile } from "@campus/api";
+
+export interface UserSettingsLayoutProps {
+  me: UserProfile;
+}
 
 const SettingsLayout = () => {
   const { data: me } = useMe();

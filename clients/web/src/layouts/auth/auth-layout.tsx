@@ -10,9 +10,14 @@ const AuthLayout: React.FC = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Guard>
-        <Card className="border max-w-md mx-auto my-auto">
-          <Outlet />
-        </Card>
+        <div className="h-screen flex flex-col justify-center items-center">
+          <h1 className="mb-10 text-primary text-xl font-bold">
+            campusandclubs
+          </h1>
+          <Card className="max-w-md w-full min-h-fit bg-background">
+            <Outlet />
+          </Card>
+        </div>
       </Guard>
     </Suspense>
   );

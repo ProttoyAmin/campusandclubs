@@ -71,7 +71,7 @@ export const PublicProfile: React.FC<{
           <TabsContent value="reels">Reels</TabsContent>
           <TabsContent value="reposts">Reposts</TabsContent>
         </Tabs>
-        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </CardContent>
     </div>
   );

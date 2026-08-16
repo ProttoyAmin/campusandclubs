@@ -1,9 +1,17 @@
 from .generic_views import (
     InstituteListCreateView,
-    InstituteDetailUpdateDeleteView
+    InstituteDetailUpdateDeleteView,
+    AffiliateClaimView,
+    AffiliationStatusView,
+    AffiliationRetreiveUpdateDeleteView,
+    VerifyAffiliationView
 )
 
 __all__ = [
     'InstituteListCreateView',
-    'InstituteDetailUpdateDeleteView'
+    'InstituteDetailUpdateDeleteView',
+    'AffiliateClaimView',
+    'AffiliationStatusView',
+    'AffiliationRetreiveUpdateDeleteView',
+    'VerifyAffiliationView'
 ]
