@@ -18,34 +18,38 @@ type DialogProps = {
   trigger: React.ReactElement;
   title?: string;
   description?: string;
-  data: UserProfile
+  data: UserProfile;
 };
 
-export function EditProfileDialog({ trigger, title, description, data }: DialogProps) {
+export function EditProfileDialog({
+  trigger,
+  title,
+  description,
+  data,
+}: DialogProps) {
   const { username } = useParams();
-  const { mutate: updateProfile } = useUpdateProfile(username!);
+  const { mutate: updateProfile, isPending } = useUpdateProfile(username!);
   const [open, setOpen] = React.useState(false);
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger}>
-      </DialogTrigger>
+      <DialogTrigger render={trigger}></DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            {description}
-          </DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <ProfileUpdateForm onSubmit={(values: z.infer<typeof updateProfileSchema>) => {
-          console.log("Submitted", values);
-          updateProfile(values, {
-            onSuccess: () => {
-              console.log("Profile updated successfully");
-              setOpen(false);
-            },
-          })
-        }} data={data} />
+        <ProfileUpdateForm
+          onSubmit={(values: z.infer<typeof updateProfileSchema>) => {
+            updateProfile(values, {
+              onSuccess: () => {
+                setOpen(false);
+              },
+            });
+          }}
+          data={data}
+          isPending={isPending}
+        />
       </DialogContent>
     </Dialog>
   );

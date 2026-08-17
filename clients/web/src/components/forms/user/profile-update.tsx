@@ -20,9 +20,11 @@ import {
 } from "design/components/ui/select";
 import { Textarea } from "design/components/ui/textarea";
 import { Button } from "design/components/ui/button";
+import { Spinner } from "design/components/ui/spinner";
 
 type ProfileUpdateProps = {
   onSubmit: (data: z.infer<typeof updateProfileSchema>) => void;
+  isPending?: boolean;
 };
 
 const ProfileUpdateForm = (
@@ -147,8 +149,19 @@ const ProfileUpdateForm = (
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
-          <Button type="submit" form="profile-update-form">
-            Save
+          <Button
+            type="submit"
+            form="profile-update-form"
+            disabled={props?.isPending}
+          >
+            {props?.isPending ? (
+              <>
+                <Spinner />
+                <p>Saving...</p>
+              </>
+            ) : (
+              <p>Save</p>
+            )}
           </Button>
         </Field>
       </FieldGroup>

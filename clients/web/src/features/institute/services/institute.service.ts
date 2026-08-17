@@ -1,7 +1,4 @@
-import type {
-  PatchedInstituteDetailRequest,
-  UserTypeRequestWritable,
-} from "@campus/api";
+import type { ClaimAffiliateRequest } from "@campus/api";
 import { instituteClient } from "../http/institute.http";
 
 class InstituteService {
@@ -27,7 +24,7 @@ class InstituteService {
   //     return res.data;
   // }
 
-  async claim_affiliation(data: UserTypeRequestWritable) {
+  async claim_affiliation(data: ClaimAffiliateRequest) {
     const res = await this.instituteClient.claimAffiliation(data);
     return res.data;
   }

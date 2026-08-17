@@ -2,7 +2,7 @@ import { BaseAuthClient } from "@/settings/api/";
 import type {
   RegisterWritable,
   RegisterRequestWritable,
-  ApiAccountsAuthJwtRefreshCreateResponse,
+  AccountsAuthJwtRefreshCreateResponse,
   RefreshToken,
   ActivationRequest,
 } from "@campus/api";
@@ -15,8 +15,8 @@ export type AllauthError = {
     message: string;
     code: string;
     param: string;
-  }[]
-}
+  }[];
+};
 
 // Kept as an alias while sign-up consumers migrate to the shared allauth shape.
 export type SignUpError = AllauthError;
@@ -38,10 +38,13 @@ export class AuthClient extends BaseAuthClient {
 
   async activate({ uid, token }: ActivationRequest): Promise<AxiosResponse> {
     try {
-      const response = await this.client.post<AxiosResponse>(`${this.endpoint}users/activation/`, {
-        uid,
-        token,
-      });
+      const response = await this.client.post<AxiosResponse>(
+        `${this.endpoint}users/activation/`,
+        {
+          uid,
+          token,
+        },
+      );
       return response;
     } catch (err) {
       console.error("Activate error:", (err as AxiosError).response?.data);
@@ -50,26 +53,36 @@ export class AuthClient extends BaseAuthClient {
   }
 
   async verifyEmail(key: string): Promise<AxiosResponse> {
-    const response = await this.client.post(`${this.allauthBrowser}auth/email/verify`, {
-      key
-    }, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    const response = await this.client.post(
+      `${this.allauthBrowser}auth/email/verify`,
+      {
+        key,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
     return response;
   }
 
   async login(
     data: SignInSchemaType,
-  ): Promise<AxiosResponse<ApiAccountsAuthJwtRefreshCreateResponse>> {
-    const response = (await this.client.post<ApiAccountsAuthJwtRefreshCreateResponse>(`${this.allauthBrowser}auth/login`, data));
+  ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
+    const response =
+      await this.client.post<AccountsAuthJwtRefreshCreateResponse>(
+        `${this.allauthBrowser}auth/login`,
+        data,
+      );
     return response;
   }
 
   async logout(): Promise<AxiosResponse> {
     try {
-      const response = await this.client.delete(`${this.allauthBrowser}auth/session`);
+      const response = await this.client.delete(
+        `${this.allauthBrowser}auth/session`,
+      );
       window.dispatchEvent(new Event("auth:logout"));
       return response;
     } catch (err) {
@@ -83,25 +96,33 @@ export class AuthClient extends BaseAuthClient {
   }
 
   async requestPasswordReset(email: string): Promise<AxiosResponse> {
-    const response = await this.client.post(this.allauthBrowser + "auth/password/request", {
-      email
-    }, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    const response = await this.client.post(
+      this.allauthBrowser + "auth/password/request",
+      {
+        email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
     return response;
   }
 
   async resetPassword(key: string, password: string): Promise<AxiosResponse> {
-    const response = await this.client.post(this.allauthBrowser + "auth/password/reset", {
-      key,
-      password
-    }, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    const response = await this.client.post(
+      this.allauthBrowser + "auth/password/reset",
+      {
+        key,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
     return response;
   }
 

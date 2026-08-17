@@ -1,21 +1,11 @@
 import { Controller, useForm } from "react-hook-form";
 import { signInSchema, type SignInSchemaType } from "validation/auth";
-import {
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "design/components/ui/card";
+import { CardAction, CardContent } from "design/components/ui/card";
 import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
 
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "design/components/ui/field";
+import { Field, FieldError, FieldGroup } from "design/components/ui/field";
 import { useNavigate } from "react-router-dom";
 import type { AllauthError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,14 +37,11 @@ const SignInForm = (props: SignInFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* <FieldLabel htmlFor="sign-in-form-username_or_email">
-                  Username
-                </FieldLabel> */}
                 <Input
                   {...field}
                   id="username_or_email"
                   aria-invalid={fieldState.invalid}
-                  placeholder="Username or Email"
+                  placeholder="Username"
                   autoComplete="off"
                 />
                 {fieldState.invalid && (
@@ -77,11 +64,6 @@ const SignInForm = (props: SignInFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <div className="flex items-center justify-between">
-                  {/* <FieldLabel htmlFor="sign-in-form-password">
-                    Password
-                  </FieldLabel> */}
-                </div>
                 <Input
                   {...field}
                   id="password"

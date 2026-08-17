@@ -9,236 +9,229 @@ import type {
 } from "./client";
 import { client } from "./client.gen";
 import type {
-  ApiAccountsAuthAllPartialUpdateData,
-  ApiAccountsAuthAllPartialUpdateResponses,
-  ApiAccountsAuthAllRetrieveData,
-  ApiAccountsAuthAllRetrieveResponses,
-  ApiAccountsAuthAllUpdateData,
-  ApiAccountsAuthAllUpdateResponses,
-  ApiAccountsAuthJwtCreateCreateData,
-  ApiAccountsAuthJwtCreateCreateResponses,
-  ApiAccountsAuthJwtRefreshCreateData,
-  ApiAccountsAuthJwtRefreshCreateResponses,
-  ApiAccountsAuthJwtVerifyCreateData,
-  ApiAccountsAuthJwtVerifyCreateResponses,
-  ApiAccountsAuthLogoutCreateData,
-  ApiAccountsAuthLogoutCreateResponses,
-  ApiAccountsAuthMeRetrieveData,
-  ApiAccountsAuthMeRetrieveResponses,
-  ApiAccountsAuthPostsRetrieveData,
-  ApiAccountsAuthPostsRetrieveResponses,
-  ApiAccountsAuthRefreshCreateData,
-  ApiAccountsAuthRefreshCreateResponses,
-  ApiAccountsAuthRequestInfoRetrieveData,
-  ApiAccountsAuthRequestInfoRetrieveResponses,
-  ApiAccountsAuthUsersActivationCreateData,
-  ApiAccountsAuthUsersActivationCreateResponses,
-  ApiAccountsAuthUsersCreateData,
-  ApiAccountsAuthUsersCreateResponses,
-  ApiAccountsAuthUsersDestroyData,
-  ApiAccountsAuthUsersDestroyResponses,
-  ApiAccountsAuthUsersListData,
-  ApiAccountsAuthUsersListResponses,
-  ApiAccountsAuthUsersMeDestroyData,
-  ApiAccountsAuthUsersMeDestroyResponses,
-  ApiAccountsAuthUsersMePartialUpdateData,
-  ApiAccountsAuthUsersMePartialUpdateResponses,
-  ApiAccountsAuthUsersMeRetrieveData,
-  ApiAccountsAuthUsersMeRetrieveResponses,
-  ApiAccountsAuthUsersMeUpdateData,
-  ApiAccountsAuthUsersMeUpdateResponses,
-  ApiAccountsAuthUsersPartialUpdateData,
-  ApiAccountsAuthUsersPartialUpdateResponses,
-  ApiAccountsAuthUsersResendActivationCreateData,
-  ApiAccountsAuthUsersResendActivationCreateResponses,
-  ApiAccountsAuthUsersResetPasswordConfirmCreateData,
-  ApiAccountsAuthUsersResetPasswordConfirmCreateResponses,
-  ApiAccountsAuthUsersResetPasswordCreateData,
-  ApiAccountsAuthUsersResetPasswordCreateResponses,
-  ApiAccountsAuthUsersResetUsernameConfirmCreateData,
-  ApiAccountsAuthUsersResetUsernameConfirmCreateResponses,
-  ApiAccountsAuthUsersResetUsernameCreateData,
-  ApiAccountsAuthUsersResetUsernameCreateResponses,
-  ApiAccountsAuthUsersRetrieveData,
-  ApiAccountsAuthUsersRetrieveResponses,
-  ApiAccountsAuthUsersSetPasswordCreateData,
-  ApiAccountsAuthUsersSetPasswordCreateResponses,
-  ApiAccountsAuthUsersSetUsernameCreateData,
-  ApiAccountsAuthUsersSetUsernameCreateResponses,
-  ApiAccountsAuthUsersUpdateData,
-  ApiAccountsAuthUsersUpdateResponses,
-  ApiAccountsAuthUsersUserActivityRetrieveData,
-  ApiAccountsAuthUsersUserActivityRetrieveResponses,
-  ApiAccountsAuthUsersUserClubsRetrieveData,
-  ApiAccountsAuthUsersUserClubsRetrieveResponses,
-  ApiAccountsAuthUsersUserDestroyData,
-  ApiAccountsAuthUsersUserDestroyResponses,
-  ApiAccountsAuthUsersUserPartialUpdateData,
-  ApiAccountsAuthUsersUserPartialUpdateResponses,
-  ApiAccountsAuthUsersUserRetrieveData,
-  ApiAccountsAuthUsersUserRetrieveResponses,
-  ApiAccountsAuthUsersUserUpdateData,
-  ApiAccountsAuthUsersUserUpdateResponses,
-  ApiAccountsAuthValidateCreateData,
-  ApiAccountsAuthValidateCreateResponses,
-  ApiActivitiesCommentsCreateCreateData,
-  ApiActivitiesCommentsCreateCreateResponses,
-  ApiActivitiesCommentsDestroyData,
-  ApiActivitiesCommentsDestroyResponses,
-  ApiActivitiesCommentsPartialUpdateData,
-  ApiActivitiesCommentsPartialUpdateResponses,
-  ApiActivitiesCommentsRepliesRetrieveData,
-  ApiActivitiesCommentsRepliesRetrieveResponses,
-  ApiActivitiesCommentsRetrieve2Data,
-  ApiActivitiesCommentsRetrieve2Responses,
-  ApiActivitiesCommentsRetrieveData,
-  ApiActivitiesCommentsRetrieveResponses,
-  ApiActivitiesLikesCheckRetrieveData,
-  ApiActivitiesLikesCheckRetrieveResponses,
-  ApiActivitiesLikesRetrieveData,
-  ApiActivitiesLikesRetrieveResponses,
-  ApiActivitiesLikesToggleCreateData,
-  ApiActivitiesLikesToggleCreateResponses,
-  ApiClubsApplicationsApproveCreateData,
-  ApiClubsApplicationsApproveCreateResponses,
-  ApiClubsApplicationsCreate2Data,
-  ApiClubsApplicationsCreate2Responses,
-  ApiClubsApplicationsCreateData,
-  ApiClubsApplicationsCreateResponses,
-  ApiClubsApplicationsList2Data,
-  ApiClubsApplicationsList2Responses,
-  ApiClubsApplicationsListData,
-  ApiClubsApplicationsListResponses,
-  ApiClubsApplicationsRejectCreateData,
-  ApiClubsApplicationsRejectCreateResponses,
-  ApiClubsApplicationsWithdrawCreateData,
-  ApiClubsApplicationsWithdrawCreateResponses,
-  ApiClubsCreateData,
-  ApiClubsCreateResponses,
-  ApiClubsDestroy2Data,
-  ApiClubsDestroy2Responses,
-  ApiClubsDestroyData,
-  ApiClubsDestroyResponses,
-  ApiClubsEventsRetrieveData,
-  ApiClubsEventsRetrieveResponses,
-  ApiClubsJoinCreateData,
-  ApiClubsJoinCreateResponses,
-  ApiClubsListData,
-  ApiClubsListResponses,
-  ApiClubsMembersRetrieveData,
-  ApiClubsMembersRetrieveResponses,
-  ApiClubsPartialUpdate2Data,
-  ApiClubsPartialUpdate2Responses,
-  ApiClubsPartialUpdateData,
-  ApiClubsPartialUpdateResponses,
-  ApiClubsPostsRetrieveData,
-  ApiClubsPostsRetrieveResponses,
-  ApiClubsRecommendedRetrieveData,
-  ApiClubsRecommendedRetrieveResponses,
-  ApiClubsRetrieve2Data,
-  ApiClubsRetrieve2Responses,
-  ApiClubsRetrieveData,
-  ApiClubsRetrieveResponses,
-  ApiClubsTestManagerRetrieveData,
-  ApiClubsTestManagerRetrieveResponses,
-  ApiClubsUpdate2Data,
-  ApiClubsUpdate2Responses,
-  ApiClubsUpdateData,
-  ApiClubsUpdateResponses,
-  ApiConnectionsBlockCreateData,
-  ApiConnectionsBlockCreateResponses,
-  ApiConnectionsBlockedRetrieveData,
-  ApiConnectionsBlockedRetrieveResponses,
-  ApiConnectionsFollowersRetrieveData,
-  ApiConnectionsFollowersRetrieveResponses,
-  ApiConnectionsFollowingRetrieveData,
-  ApiConnectionsFollowingRetrieveResponses,
-  ApiConnectionsMutualRetrieveData,
-  ApiConnectionsMutualRetrieveResponses,
-  ApiConnectionsRelationsConnectedRetrieveData,
-  ApiConnectionsRelationsConnectedRetrieveResponses,
-  ApiConnectionsRelationshipRetrieveData,
-  ApiConnectionsRelationshipRetrieveResponses,
-  ApiConnectionsRelationsPendingRetrieveData,
-  ApiConnectionsRelationsPendingRetrieveResponses,
-  ApiConnectionsRelationsRetrieveData,
-  ApiConnectionsRelationsRetrieveResponses,
-  ApiConnectionsRelationsSentRetrieveData,
-  ApiConnectionsRelationsSentRetrieveResponses,
-  ApiConnectionsRemoveDestroyData,
-  ApiConnectionsRemoveDestroyResponses,
-  ApiConnectionsRequestsAcceptCreateData,
-  ApiConnectionsRequestsAcceptCreateResponses,
-  ApiConnectionsRequestsRejectCreateData,
-  ApiConnectionsRequestsRejectCreateResponses,
-  ApiConnectionsRequestsRetrieveData,
-  ApiConnectionsRequestsRetrieveResponses,
-  ApiConnectionsStatusRetrieveData,
-  ApiConnectionsStatusRetrieveResponses,
-  ApiConnectionsSuggestionsRetrieveData,
-  ApiConnectionsSuggestionsRetrieveResponses,
-  ApiConnectionsToggleCreateData,
-  ApiConnectionsToggleCreateResponses,
-  ApiConnectionsUnblockCreateData,
-  ApiConnectionsUnblockCreateResponses,
-  ApiInstitutesCreateData,
-  ApiInstitutesCreateResponses,
-  ApiInstitutesDestroyData,
-  ApiInstitutesDestroyResponses,
-  ApiInstitutesListData,
-  ApiInstitutesListResponses,
-  ApiInstitutesPartialUpdateData,
-  ApiInstitutesPartialUpdateResponses,
-  ApiInstitutesRetrieveData,
-  ApiInstitutesRetrieveResponses,
-  ApiInstitutesUpdateData,
-  ApiInstitutesUpdateResponses,
-  ApiNotificationsClearDestroyData,
-  ApiNotificationsClearDestroyResponses,
-  ApiNotificationsCommentsRetrieveData,
-  ApiNotificationsCommentsRetrieveResponses,
-  ApiNotificationsCountsRetrieveData,
-  ApiNotificationsCountsRetrieveResponses,
-  ApiNotificationsDeleteDestroyData,
-  ApiNotificationsDeleteDestroyResponses,
-  ApiNotificationsDeliveriesRetrieveData,
-  ApiNotificationsDeliveriesRetrieveResponses,
-  ApiNotificationsFollowAcceptsRetrieveData,
-  ApiNotificationsFollowAcceptsRetrieveResponses,
-  ApiNotificationsFollowRequestsRetrieveData,
-  ApiNotificationsFollowRequestsRetrieveResponses,
-  ApiNotificationsLikesRetrieveData,
-  ApiNotificationsLikesRetrieveResponses,
-  ApiNotificationsMarkAllReadCreateData,
-  ApiNotificationsMarkAllReadCreateResponses,
-  ApiNotificationsMarkAllSeenCreateData,
-  ApiNotificationsMarkAllSeenCreateResponses,
-  ApiNotificationsPostsRetrieveData,
-  ApiNotificationsPostsRetrieveResponses,
-  ApiNotificationsReadCreateData,
-  ApiNotificationsReadCreateResponses,
-  ApiNotificationsRetrieve2Data,
-  ApiNotificationsRetrieve2Responses,
-  ApiNotificationsRetrieveData,
-  ApiNotificationsRetrieveResponses,
-  ApiNotificationsSeenCreateData,
-  ApiNotificationsSeenCreateResponses,
-  ApiPostsCreateData,
-  ApiPostsCreateResponses,
-  ApiPostsDestroyData,
-  ApiPostsDestroyResponses,
-  ApiPostsFeedRetrieveData,
-  ApiPostsFeedRetrieveResponses,
-  ApiPostsListData,
-  ApiPostsListResponses,
-  ApiPostsPartialUpdateData,
-  ApiPostsPartialUpdateResponses,
-  ApiPostsRetrieveData,
-  ApiPostsRetrieveResponses,
-  ApiPostsUpdateData,
-  ApiPostsUpdateResponses,
-  ApiSchemaRetrieveData,
-  ApiSchemaRetrieveResponses,
+  AccountsAuthAllPartialUpdateData,
+  AccountsAuthAllPartialUpdateResponses,
+  AccountsAuthAllRetrieveData,
+  AccountsAuthAllRetrieveResponses,
+  AccountsAuthAllUpdateData,
+  AccountsAuthAllUpdateResponses,
+  AccountsAuthJwtCreateCreateData,
+  AccountsAuthJwtCreateCreateResponses,
+  AccountsAuthJwtRefreshCreateData,
+  AccountsAuthJwtRefreshCreateResponses,
+  AccountsAuthJwtVerifyCreateData,
+  AccountsAuthJwtVerifyCreateResponses,
+  AccountsAuthLogoutCreateData,
+  AccountsAuthLogoutCreateResponses,
+  AccountsAuthMeRetrieveData,
+  AccountsAuthMeRetrieveResponses,
+  AccountsAuthPostsRetrieveData,
+  AccountsAuthPostsRetrieveResponses,
+  AccountsAuthRefreshCreateData,
+  AccountsAuthRefreshCreateResponses,
+  AccountsAuthRequestInfoRetrieveData,
+  AccountsAuthRequestInfoRetrieveResponses,
+  AccountsAuthUsersActivationCreateData,
+  AccountsAuthUsersActivationCreateResponses,
+  AccountsAuthUsersCreateData,
+  AccountsAuthUsersCreateResponses,
+  AccountsAuthUsersDestroyData,
+  AccountsAuthUsersDestroyResponses,
+  AccountsAuthUsersListData,
+  AccountsAuthUsersListResponses,
+  AccountsAuthUsersMeDestroyData,
+  AccountsAuthUsersMeDestroyResponses,
+  AccountsAuthUsersMePartialUpdateData,
+  AccountsAuthUsersMePartialUpdateResponses,
+  AccountsAuthUsersMeRetrieveData,
+  AccountsAuthUsersMeRetrieveResponses,
+  AccountsAuthUsersMeUpdateData,
+  AccountsAuthUsersMeUpdateResponses,
+  AccountsAuthUsersPartialUpdateData,
+  AccountsAuthUsersPartialUpdateResponses,
+  AccountsAuthUsersResendActivationCreateData,
+  AccountsAuthUsersResendActivationCreateResponses,
+  AccountsAuthUsersResetPasswordConfirmCreateData,
+  AccountsAuthUsersResetPasswordConfirmCreateResponses,
+  AccountsAuthUsersResetPasswordCreateData,
+  AccountsAuthUsersResetPasswordCreateResponses,
+  AccountsAuthUsersResetUsernameConfirmCreateData,
+  AccountsAuthUsersResetUsernameConfirmCreateResponses,
+  AccountsAuthUsersResetUsernameCreateData,
+  AccountsAuthUsersResetUsernameCreateResponses,
+  AccountsAuthUsersRetrieveData,
+  AccountsAuthUsersRetrieveResponses,
+  AccountsAuthUsersSetPasswordCreateData,
+  AccountsAuthUsersSetPasswordCreateResponses,
+  AccountsAuthUsersSetUsernameCreateData,
+  AccountsAuthUsersSetUsernameCreateResponses,
+  AccountsAuthUsersUpdateData,
+  AccountsAuthUsersUpdateResponses,
+  AccountsAuthUsersUserActivityRetrieveData,
+  AccountsAuthUsersUserActivityRetrieveResponses,
+  AccountsAuthUsersUserClubsRetrieveData,
+  AccountsAuthUsersUserClubsRetrieveResponses,
+  AccountsAuthUsersUserDestroyData,
+  AccountsAuthUsersUserDestroyResponses,
+  AccountsAuthUsersUserPartialUpdateData,
+  AccountsAuthUsersUserPartialUpdateResponses,
+  AccountsAuthUsersUserRetrieveData,
+  AccountsAuthUsersUserRetrieveResponses,
+  AccountsAuthUsersUserUpdateData,
+  AccountsAuthUsersUserUpdateResponses,
+  ActivitiesCommentsCreateCreateData,
+  ActivitiesCommentsCreateCreateResponses,
+  ActivitiesCommentsDestroyData,
+  ActivitiesCommentsDestroyResponses,
+  ActivitiesCommentsPartialUpdateData,
+  ActivitiesCommentsPartialUpdateResponses,
+  ActivitiesCommentsRepliesRetrieveData,
+  ActivitiesCommentsRepliesRetrieveResponses,
+  ActivitiesCommentsRetrieve2Data,
+  ActivitiesCommentsRetrieve2Responses,
+  ActivitiesCommentsRetrieveData,
+  ActivitiesCommentsRetrieveResponses,
+  ActivitiesLikesCheckRetrieveData,
+  ActivitiesLikesCheckRetrieveResponses,
+  ActivitiesLikesRetrieveData,
+  ActivitiesLikesRetrieveResponses,
+  ActivitiesLikesToggleCreateData,
+  ActivitiesLikesToggleCreateResponses,
+  ClaimAffiliationData,
+  ClaimAffiliationErrors,
+  ClaimAffiliationResponses,
+  ClubsApplicationFormsCreateData,
+  ClubsApplicationFormsCreateResponses,
+  ClubsApplicationFormsListData,
+  ClubsApplicationFormsListResponses,
+  ClubsApplicationsApproveCreateData,
+  ClubsApplicationsApproveCreateResponses,
+  ClubsApplicationsCreate2Data,
+  ClubsApplicationsCreate2Responses,
+  ClubsApplicationsCreateData,
+  ClubsApplicationsCreateResponses,
+  ClubsApplicationsList2Data,
+  ClubsApplicationsList2Responses,
+  ClubsApplicationsListData,
+  ClubsApplicationsListResponses,
+  ClubsApplicationsRejectCreateData,
+  ClubsApplicationsRejectCreateResponses,
+  ClubsApplicationsWithdrawCreateData,
+  ClubsApplicationsWithdrawCreateResponses,
+  ClubsCreateData,
+  ClubsCreateResponses,
+  ClubsDestroy2Data,
+  ClubsDestroy2Responses,
+  ClubsDestroyData,
+  ClubsDestroyResponses,
+  ClubsEventsRetrieveData,
+  ClubsEventsRetrieveResponses,
+  ClubsJoinCreateData,
+  ClubsJoinCreateResponses,
+  ClubsLeaveDestroyData,
+  ClubsLeaveDestroyResponses,
+  ClubsListData,
+  ClubsListResponses,
+  ClubsMembersRetrieve2Data,
+  ClubsMembersRetrieve2Responses,
+  ClubsMembersRetrieveData,
+  ClubsMembersRetrieveResponses,
+  ClubsOriginRetrieveData,
+  ClubsOriginRetrieveResponses,
+  ClubsPartialUpdate2Data,
+  ClubsPartialUpdate2Responses,
+  ClubsPartialUpdateData,
+  ClubsPartialUpdateResponses,
+  ClubsPostsRetrieveData,
+  ClubsPostsRetrieveResponses,
+  ClubsRecommendedRetrieveData,
+  ClubsRecommendedRetrieveResponses,
+  ClubsRetrieve2Data,
+  ClubsRetrieve2Responses,
+  ClubsRetrieveData,
+  ClubsRetrieveResponses,
+  ClubsSearchRetrieveData,
+  ClubsSearchRetrieveResponses,
+  ClubsStatsRetrieveData,
+  ClubsStatsRetrieveResponses,
+  ClubsTestManagerRetrieveData,
+  ClubsTestManagerRetrieveResponses,
+  ClubsTrendingRetrieveData,
+  ClubsTrendingRetrieveResponses,
+  ClubsUpdate2Data,
+  ClubsUpdate2Responses,
+  ClubsUpdateData,
+  ClubsUpdateResponses,
+  CommunicationsEmailsCreateData,
+  CommunicationsEmailsCreateResponses,
+  CommunicationsEmailsListData,
+  CommunicationsEmailsListResponses,
+  ConnectionsBlockCreateData,
+  ConnectionsBlockCreateResponses,
+  ConnectionsBlockedRetrieveData,
+  ConnectionsBlockedRetrieveResponses,
+  ConnectionsFollowersRetrieveData,
+  ConnectionsFollowersRetrieveResponses,
+  ConnectionsFollowingRetrieveData,
+  ConnectionsFollowingRetrieveResponses,
+  ConnectionsMutualRetrieveData,
+  ConnectionsMutualRetrieveResponses,
+  ConnectionsRelationsConnectedRetrieveData,
+  ConnectionsRelationsConnectedRetrieveResponses,
+  ConnectionsRelationshipRetrieveData,
+  ConnectionsRelationshipRetrieveResponses,
+  ConnectionsRelationsPendingRetrieveData,
+  ConnectionsRelationsPendingRetrieveResponses,
+  ConnectionsRelationsRetrieveData,
+  ConnectionsRelationsRetrieveResponses,
+  ConnectionsRelationsSentRetrieveData,
+  ConnectionsRelationsSentRetrieveResponses,
+  ConnectionsRemoveDestroyData,
+  ConnectionsRemoveDestroyResponses,
+  ConnectionsRequestsAcceptCreateData,
+  ConnectionsRequestsAcceptCreateResponses,
+  ConnectionsRequestsRejectCreateData,
+  ConnectionsRequestsRejectCreateResponses,
+  ConnectionsRequestsRetrieveData,
+  ConnectionsRequestsRetrieveResponses,
+  ConnectionsStatusRetrieveData,
+  ConnectionsStatusRetrieveResponses,
+  ConnectionsSuggestionsRetrieveData,
+  ConnectionsSuggestionsRetrieveResponses,
+  ConnectionsToggleCreateData,
+  ConnectionsToggleCreateResponses,
+  ConnectionsUnblockCreateData,
+  ConnectionsUnblockCreateResponses,
+  CreateAffiliationData,
+  CreateAffiliationErrors,
+  CreateAffiliationResponses,
+  GetMyAffiliationsData,
+  GetMyAffiliationsErrors,
+  GetMyAffiliationsResponses,
+  GetMyEmailsData,
+  GetMyEmailsErrors,
+  GetMyEmailsResponses,
+  InstitutesAffiliationsPartialUpdateData,
+  InstitutesAffiliationsPartialUpdateResponses,
+  InstitutesAffiliationsRetrieveData,
+  InstitutesAffiliationsRetrieveResponses,
+  InstitutesAffiliationsUpdateData,
+  InstitutesAffiliationsUpdateResponses,
+  InstitutesCreateData,
+  InstitutesCreateResponses,
+  InstitutesDestroyData,
+  InstitutesDestroyResponses,
+  InstitutesListData,
+  InstitutesListResponses,
+  InstitutesPartialUpdateData,
+  InstitutesPartialUpdateResponses,
+  InstitutesRetrieveData,
+  InstitutesRetrieveResponses,
+  InstitutesUpdateData,
+  InstitutesUpdateResponses,
+  ListAffiliationsData,
+  ListAffiliationsErrors,
+  ListAffiliationsResponses,
   ListUsers2Data,
   ListUsers2Errors,
   ListUsers2Responses,
@@ -248,6 +241,59 @@ import type {
   LoginData,
   LoginErrors,
   LoginResponses,
+  MediaCreateData,
+  MediaCreateResponses,
+  MediaListData,
+  MediaListResponses,
+  NotificationsClearDestroyData,
+  NotificationsClearDestroyResponses,
+  NotificationsCommentsRetrieveData,
+  NotificationsCommentsRetrieveResponses,
+  NotificationsCountsRetrieveData,
+  NotificationsCountsRetrieveResponses,
+  NotificationsDeleteDestroyData,
+  NotificationsDeleteDestroyResponses,
+  NotificationsDeliveriesRetrieveData,
+  NotificationsDeliveriesRetrieveResponses,
+  NotificationsFollowAcceptsRetrieveData,
+  NotificationsFollowAcceptsRetrieveResponses,
+  NotificationsFollowRequestsRetrieveData,
+  NotificationsFollowRequestsRetrieveResponses,
+  NotificationsLikesRetrieveData,
+  NotificationsLikesRetrieveResponses,
+  NotificationsMarkAllReadCreateData,
+  NotificationsMarkAllReadCreateResponses,
+  NotificationsMarkAllSeenCreateData,
+  NotificationsMarkAllSeenCreateResponses,
+  NotificationsPostsRetrieveData,
+  NotificationsPostsRetrieveResponses,
+  NotificationsReadCreateData,
+  NotificationsReadCreateResponses,
+  NotificationsRetrieve2Data,
+  NotificationsRetrieve2Responses,
+  NotificationsRetrieveData,
+  NotificationsRetrieveResponses,
+  NotificationsSeenCreateData,
+  NotificationsSeenCreateResponses,
+  PostsCreateData,
+  PostsCreateResponses,
+  PostsDestroyData,
+  PostsDestroyResponses,
+  PostsFeedRetrieveData,
+  PostsFeedRetrieveResponses,
+  PostsListData,
+  PostsListResponses,
+  PostsPartialUpdateData,
+  PostsPartialUpdateResponses,
+  PostsRetrieveData,
+  PostsRetrieveResponses,
+  PostsUpdateData,
+  PostsUpdateResponses,
+  SchemaRetrieveData,
+  SchemaRetrieveResponses,
+  VerifyAffiliationData,
+  VerifyAffiliationErrors,
+  VerifyAffiliationResponses,
 } from "./types.gen";
 
 export type Options<
@@ -268,13 +314,11 @@ export type Options<
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-export const apiAccountsAuthAllRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthAllRetrieveData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthAllRetrieveResponses, unknown, ThrowOnError> =>
+export const accountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthAllRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthAllRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiAccountsAuthAllRetrieveResponses,
+    AccountsAuthAllRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -290,17 +334,17 @@ export const apiAccountsAuthAllRetrieve = <
     ...options,
   });
 
-export const apiAccountsAuthAllPartialUpdate = <
+export const accountsAuthAllPartialUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthAllPartialUpdateData, ThrowOnError>,
+  options: Options<AccountsAuthAllPartialUpdateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthAllPartialUpdateResponses,
+  AccountsAuthAllPartialUpdateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).patch<
-    ApiAccountsAuthAllPartialUpdateResponses,
+    AccountsAuthAllPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -320,11 +364,11 @@ export const apiAccountsAuthAllPartialUpdate = <
     },
   });
 
-export const apiAccountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiAccountsAuthAllUpdateData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthAllUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthAllUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthAllUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    ApiAccountsAuthAllUpdateResponses,
+    AccountsAuthAllUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -350,17 +394,11 @@ export const apiAccountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
  * - source: all|user|club (default: all)
  * - post_type: TEXT|IMAGE|VIDEO (default: all)
  */
-export const apiAccountsAuthPostsRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthPostsRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthPostsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const accountsAuthPostsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthPostsRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthPostsRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiAccountsAuthPostsRetrieveResponses,
+    AccountsAuthPostsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -433,17 +471,13 @@ export const listUsers2 = <ThrowOnError extends boolean = false>(
  * Takes a set of user credentials and returns an access and refresh JSON web
  * token pair to prove the authentication of those credentials.
  */
-export const apiAccountsAuthJwtCreateCreate = <
+export const accountsAuthJwtCreateCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthJwtCreateCreateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthJwtCreateCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<AccountsAuthJwtCreateCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthJwtCreateCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiAccountsAuthJwtCreateCreateResponses,
+    AccountsAuthJwtCreateCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -460,17 +494,17 @@ export const apiAccountsAuthJwtCreateCreate = <
  * Takes a refresh type JSON web token and returns an access type JSON web
  * token if the refresh token is valid.
  */
-export const apiAccountsAuthJwtRefreshCreate = <
+export const accountsAuthJwtRefreshCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiAccountsAuthJwtRefreshCreateData, ThrowOnError>,
+  options?: Options<AccountsAuthJwtRefreshCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthJwtRefreshCreateResponses,
+  AccountsAuthJwtRefreshCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).post<
-    ApiAccountsAuthJwtRefreshCreateResponses,
+    AccountsAuthJwtRefreshCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -483,17 +517,13 @@ export const apiAccountsAuthJwtRefreshCreate = <
  * Takes a token and indicates if it is valid.  This view provides no
  * information about a token's fitness for a particular use.
  */
-export const apiAccountsAuthJwtVerifyCreate = <
+export const accountsAuthJwtVerifyCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthJwtVerifyCreateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthJwtVerifyCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<AccountsAuthJwtVerifyCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthJwtVerifyCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiAccountsAuthJwtVerifyCreateResponses,
+    AccountsAuthJwtVerifyCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -523,13 +553,11 @@ export const login = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const apiAccountsAuthLogoutCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiAccountsAuthLogoutCreateData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthLogoutCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthLogoutCreate = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthLogoutCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthLogoutCreateResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).post<
-    ApiAccountsAuthLogoutCreateResponses,
+    AccountsAuthLogoutCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -547,11 +575,11 @@ export const apiAccountsAuthLogoutCreate = <
 /**
  * Get current authenticated user's profile
  */
-export const apiAccountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiAccountsAuthMeRetrieveData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthMeRetrieveResponses, unknown, ThrowOnError> =>
+export const accountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthMeRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthMeRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiAccountsAuthMeRetrieveResponses,
+    AccountsAuthMeRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -567,20 +595,68 @@ export const apiAccountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * List current user's institute affiliations
+ *
+ * Returns every InstituteAffiliate row owned by the authenticated user, with the affiliated institute inlined.
+ */
+export const getMyAffiliations = <ThrowOnError extends boolean = false>(
+  options?: Options<GetMyAffiliationsData, ThrowOnError>,
+): RequestResult<
+  GetMyAffiliationsResponses,
+  GetMyAffiliationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    GetMyAffiliationsResponses,
+    GetMyAffiliationsErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/accounts/auth/me/affiliations/",
+    ...options,
+  });
+
+/**
+ * List current user's email addresses
+ *
+ * Returns the allauth EmailAddress rows belonging to the authenticated user. Used to populate the email selector on the affiliation-claim form.
+ */
+export const getMyEmails = <ThrowOnError extends boolean = false>(
+  options?: Options<GetMyEmailsData, ThrowOnError>,
+): RequestResult<GetMyEmailsResponses, GetMyEmailsErrors, ThrowOnError> =>
+  (options?.client ?? client).get<
+    GetMyEmailsResponses,
+    GetMyEmailsErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/accounts/auth/me/emails/",
+    ...options,
+  });
+
+/**
  * Takes a refresh type JSON web token and returns an access type JSON web
  * token if the refresh token is valid.
  */
-export const apiAccountsAuthRefreshCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiAccountsAuthRefreshCreateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthRefreshCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const accountsAuthRefreshCreate = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthRefreshCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthRefreshCreateResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).post<
-    ApiAccountsAuthRefreshCreateResponses,
+    AccountsAuthRefreshCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -589,17 +665,17 @@ export const apiAccountsAuthRefreshCreate = <
     ...options,
   });
 
-export const apiAccountsAuthRequestInfoRetrieve = <
+export const accountsAuthRequestInfoRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiAccountsAuthRequestInfoRetrieveData, ThrowOnError>,
+  options?: Options<AccountsAuthRequestInfoRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthRequestInfoRetrieveResponses,
+  AccountsAuthRequestInfoRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiAccountsAuthRequestInfoRetrieveResponses,
+    AccountsAuthRequestInfoRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -614,11 +690,11 @@ export const apiAccountsAuthRequestInfoRetrieve = <
     ...options,
   });
 
-export const apiAccountsAuthUsersList = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiAccountsAuthUsersListData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthUsersListResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersList = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsAuthUsersListData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersListResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiAccountsAuthUsersListResponses,
+    AccountsAuthUsersListResponses,
     unknown,
     ThrowOnError
   >({
@@ -634,13 +710,11 @@ export const apiAccountsAuthUsersList = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiAccountsAuthUsersCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthUsersCreateData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthUsersCreateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersCreateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersCreateResponses,
+    AccountsAuthUsersCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -660,13 +734,11 @@ export const apiAccountsAuthUsersCreate = <
     },
   });
 
-export const apiAccountsAuthUsersDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthUsersDestroyData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthUsersDestroyResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersDestroyData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiAccountsAuthUsersDestroyResponses,
+    AccountsAuthUsersDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -681,17 +753,11 @@ export const apiAccountsAuthUsersDestroy = <
     ...options,
   });
 
-export const apiAccountsAuthUsersRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthUsersRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthUsersRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const accountsAuthUsersRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiAccountsAuthUsersRetrieveResponses,
+    AccountsAuthUsersRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -707,17 +773,17 @@ export const apiAccountsAuthUsersRetrieve = <
     ...options,
   });
 
-export const apiAccountsAuthUsersPartialUpdate = <
+export const accountsAuthUsersPartialUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersPartialUpdateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersPartialUpdateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersPartialUpdateResponses,
+  AccountsAuthUsersPartialUpdateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).patch<
-    ApiAccountsAuthUsersPartialUpdateResponses,
+    AccountsAuthUsersPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -737,13 +803,11 @@ export const apiAccountsAuthUsersPartialUpdate = <
     },
   });
 
-export const apiAccountsAuthUsersUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthUsersUpdateData, ThrowOnError>,
-): RequestResult<ApiAccountsAuthUsersUpdateResponses, unknown, ThrowOnError> =>
+export const accountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    ApiAccountsAuthUsersUpdateResponses,
+    AccountsAuthUsersUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -763,17 +827,17 @@ export const apiAccountsAuthUsersUpdate = <
     },
   });
 
-export const apiAccountsAuthUsersActivationCreate = <
+export const accountsAuthUsersActivationCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersActivationCreateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersActivationCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersActivationCreateResponses,
+  AccountsAuthUsersActivationCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersActivationCreateResponses,
+    AccountsAuthUsersActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -793,17 +857,13 @@ export const apiAccountsAuthUsersActivationCreate = <
     },
   });
 
-export const apiAccountsAuthUsersMeDestroy = <
+export const accountsAuthUsersMeDestroy = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiAccountsAuthUsersMeDestroyData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthUsersMeDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<AccountsAuthUsersMeDestroyData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeDestroyResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).delete<
-    ApiAccountsAuthUsersMeDestroyResponses,
+    AccountsAuthUsersMeDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -818,17 +878,13 @@ export const apiAccountsAuthUsersMeDestroy = <
     ...options,
   });
 
-export const apiAccountsAuthUsersMeRetrieve = <
+export const accountsAuthUsersMeRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiAccountsAuthUsersMeRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthUsersMeRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<AccountsAuthUsersMeRetrieveData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiAccountsAuthUsersMeRetrieveResponses,
+    AccountsAuthUsersMeRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -844,17 +900,17 @@ export const apiAccountsAuthUsersMeRetrieve = <
     ...options,
   });
 
-export const apiAccountsAuthUsersMePartialUpdate = <
+export const accountsAuthUsersMePartialUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiAccountsAuthUsersMePartialUpdateData, ThrowOnError>,
+  options?: Options<AccountsAuthUsersMePartialUpdateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersMePartialUpdateResponses,
+  AccountsAuthUsersMePartialUpdateResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).patch<
-    ApiAccountsAuthUsersMePartialUpdateResponses,
+    AccountsAuthUsersMePartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -874,17 +930,11 @@ export const apiAccountsAuthUsersMePartialUpdate = <
     },
   });
 
-export const apiAccountsAuthUsersMeUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthUsersMeUpdateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthUsersMeUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const accountsAuthUsersMeUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<AccountsAuthUsersMeUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersMeUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    ApiAccountsAuthUsersMeUpdateResponses,
+    AccountsAuthUsersMeUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -904,20 +954,17 @@ export const apiAccountsAuthUsersMeUpdate = <
     },
   });
 
-export const apiAccountsAuthUsersResendActivationCreate = <
+export const accountsAuthUsersResendActivationCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<
-    ApiAccountsAuthUsersResendActivationCreateData,
-    ThrowOnError
-  >,
+  options: Options<AccountsAuthUsersResendActivationCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersResendActivationCreateResponses,
+  AccountsAuthUsersResendActivationCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersResendActivationCreateResponses,
+    AccountsAuthUsersResendActivationCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -937,17 +984,17 @@ export const apiAccountsAuthUsersResendActivationCreate = <
     },
   });
 
-export const apiAccountsAuthUsersResetPasswordCreate = <
+export const accountsAuthUsersResetPasswordCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersResetPasswordCreateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersResetPasswordCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersResetPasswordCreateResponses,
+  AccountsAuthUsersResetPasswordCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersResetPasswordCreateResponses,
+    AccountsAuthUsersResetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -967,20 +1014,20 @@ export const apiAccountsAuthUsersResetPasswordCreate = <
     },
   });
 
-export const apiAccountsAuthUsersResetPasswordConfirmCreate = <
+export const accountsAuthUsersResetPasswordConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
   options: Options<
-    ApiAccountsAuthUsersResetPasswordConfirmCreateData,
+    AccountsAuthUsersResetPasswordConfirmCreateData,
     ThrowOnError
   >,
 ): RequestResult<
-  ApiAccountsAuthUsersResetPasswordConfirmCreateResponses,
+  AccountsAuthUsersResetPasswordConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersResetPasswordConfirmCreateResponses,
+    AccountsAuthUsersResetPasswordConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1000,17 +1047,17 @@ export const apiAccountsAuthUsersResetPasswordConfirmCreate = <
     },
   });
 
-export const apiAccountsAuthUsersResetUsernameCreate = <
+export const accountsAuthUsersResetUsernameCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersResetUsernameCreateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersResetUsernameCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersResetUsernameCreateResponses,
+  AccountsAuthUsersResetUsernameCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersResetUsernameCreateResponses,
+    AccountsAuthUsersResetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1030,20 +1077,20 @@ export const apiAccountsAuthUsersResetUsernameCreate = <
     },
   });
 
-export const apiAccountsAuthUsersResetUsernameConfirmCreate = <
+export const accountsAuthUsersResetUsernameConfirmCreate = <
   ThrowOnError extends boolean = false,
 >(
   options: Options<
-    ApiAccountsAuthUsersResetUsernameConfirmCreateData,
+    AccountsAuthUsersResetUsernameConfirmCreateData,
     ThrowOnError
   >,
 ): RequestResult<
-  ApiAccountsAuthUsersResetUsernameConfirmCreateResponses,
+  AccountsAuthUsersResetUsernameConfirmCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersResetUsernameConfirmCreateResponses,
+    AccountsAuthUsersResetUsernameConfirmCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1063,17 +1110,17 @@ export const apiAccountsAuthUsersResetUsernameConfirmCreate = <
     },
   });
 
-export const apiAccountsAuthUsersSetPasswordCreate = <
+export const accountsAuthUsersSetPasswordCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersSetPasswordCreateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersSetPasswordCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersSetPasswordCreateResponses,
+  AccountsAuthUsersSetPasswordCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersSetPasswordCreateResponses,
+    AccountsAuthUsersSetPasswordCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1093,17 +1140,17 @@ export const apiAccountsAuthUsersSetPasswordCreate = <
     },
   });
 
-export const apiAccountsAuthUsersSetUsernameCreate = <
+export const accountsAuthUsersSetUsernameCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersSetUsernameCreateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersSetUsernameCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersSetUsernameCreateResponses,
+  AccountsAuthUsersSetUsernameCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiAccountsAuthUsersSetUsernameCreateResponses,
+    AccountsAuthUsersSetUsernameCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1126,17 +1173,17 @@ export const apiAccountsAuthUsersSetUsernameCreate = <
 /**
  * User Detail View
  */
-export const apiAccountsAuthUsersUserDestroy = <
+export const accountsAuthUsersUserDestroy = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserDestroyData, ThrowOnError>,
+  options: Options<AccountsAuthUsersUserDestroyData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersUserDestroyResponses,
+  AccountsAuthUsersUserDestroyResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).delete<
-    ApiAccountsAuthUsersUserDestroyResponses,
+    AccountsAuthUsersUserDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1154,17 +1201,17 @@ export const apiAccountsAuthUsersUserDestroy = <
 /**
  * User Detail View
  */
-export const apiAccountsAuthUsersUserRetrieve = <
+export const accountsAuthUsersUserRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserRetrieveData, ThrowOnError>,
+  options: Options<AccountsAuthUsersUserRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersUserRetrieveResponses,
+  AccountsAuthUsersUserRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiAccountsAuthUsersUserRetrieveResponses,
+    AccountsAuthUsersUserRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1183,17 +1230,17 @@ export const apiAccountsAuthUsersUserRetrieve = <
 /**
  * User Detail View
  */
-export const apiAccountsAuthUsersUserPartialUpdate = <
+export const accountsAuthUsersUserPartialUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserPartialUpdateData, ThrowOnError>,
+  options: Options<AccountsAuthUsersUserPartialUpdateData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersUserPartialUpdateResponses,
+  AccountsAuthUsersUserPartialUpdateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).patch<
-    ApiAccountsAuthUsersUserPartialUpdateResponses,
+    AccountsAuthUsersUserPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1216,17 +1263,13 @@ export const apiAccountsAuthUsersUserPartialUpdate = <
 /**
  * User Detail View
  */
-export const apiAccountsAuthUsersUserUpdate = <
+export const accountsAuthUsersUserUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserUpdateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthUsersUserUpdateResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<AccountsAuthUsersUserUpdateData, ThrowOnError>,
+): RequestResult<AccountsAuthUsersUserUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    ApiAccountsAuthUsersUserUpdateResponses,
+    AccountsAuthUsersUserUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1249,17 +1292,17 @@ export const apiAccountsAuthUsersUserUpdate = <
 /**
  * Get user's recent activity (likes, comments, shares)
  */
-export const apiAccountsAuthUsersUserActivityRetrieve = <
+export const accountsAuthUsersUserActivityRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserActivityRetrieveData, ThrowOnError>,
+  options: Options<AccountsAuthUsersUserActivityRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersUserActivityRetrieveResponses,
+  AccountsAuthUsersUserActivityRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiAccountsAuthUsersUserActivityRetrieveResponses,
+    AccountsAuthUsersUserActivityRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1277,17 +1320,17 @@ export const apiAccountsAuthUsersUserActivityRetrieve = <
 /**
  * Get all clubs a user has joined
  */
-export const apiAccountsAuthUsersUserClubsRetrieve = <
+export const accountsAuthUsersUserClubsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiAccountsAuthUsersUserClubsRetrieveData, ThrowOnError>,
+  options: Options<AccountsAuthUsersUserClubsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiAccountsAuthUsersUserClubsRetrieveResponses,
+  AccountsAuthUsersUserClubsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiAccountsAuthUsersUserClubsRetrieveResponses,
+    AccountsAuthUsersUserClubsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1303,39 +1346,6 @@ export const apiAccountsAuthUsersUserClubsRetrieve = <
   });
 
 /**
- * Validate user type and institute.
- */
-export const apiAccountsAuthValidateCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiAccountsAuthValidateCreateData, ThrowOnError>,
-): RequestResult<
-  ApiAccountsAuthValidateCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options.client ?? client).post<
-    ApiAccountsAuthValidateCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: "json",
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/accounts/auth/validate/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-/**
  * Get all comments for a specific content object
  * Query params:
  * - content_type: app_label.model_name
@@ -1344,17 +1354,13 @@ export const apiAccountsAuthValidateCreate = <
  *
  * Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
  */
-export const apiActivitiesCommentsRetrieve = <
+export const activitiesCommentsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiActivitiesCommentsRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiActivitiesCommentsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<ActivitiesCommentsRetrieveData, ThrowOnError>,
+): RequestResult<ActivitiesCommentsRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiActivitiesCommentsRetrieveResponses,
+    ActivitiesCommentsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1375,17 +1381,11 @@ export const apiActivitiesCommentsRetrieve = <
  * - PATCH: Only author can edit
  * - DELETE: Author can delete
  */
-export const apiActivitiesCommentsDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiActivitiesCommentsDestroyData, ThrowOnError>,
-): RequestResult<
-  ApiActivitiesCommentsDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const activitiesCommentsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ActivitiesCommentsDestroyData, ThrowOnError>,
+): RequestResult<ActivitiesCommentsDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiActivitiesCommentsDestroyResponses,
+    ActivitiesCommentsDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1406,17 +1406,13 @@ export const apiActivitiesCommentsDestroy = <
  * - PATCH: Only author can edit
  * - DELETE: Author can delete
  */
-export const apiActivitiesCommentsRetrieve2 = <
+export const activitiesCommentsRetrieve2 = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiActivitiesCommentsRetrieve2Data, ThrowOnError>,
-): RequestResult<
-  ApiActivitiesCommentsRetrieve2Responses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<ActivitiesCommentsRetrieve2Data, ThrowOnError>,
+): RequestResult<ActivitiesCommentsRetrieve2Responses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiActivitiesCommentsRetrieve2Responses,
+    ActivitiesCommentsRetrieve2Responses,
     unknown,
     ThrowOnError
   >({
@@ -1437,17 +1433,17 @@ export const apiActivitiesCommentsRetrieve2 = <
  * - PATCH: Only author can edit
  * - DELETE: Author can delete
  */
-export const apiActivitiesCommentsPartialUpdate = <
+export const activitiesCommentsPartialUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiActivitiesCommentsPartialUpdateData, ThrowOnError>,
+  options: Options<ActivitiesCommentsPartialUpdateData, ThrowOnError>,
 ): RequestResult<
-  ApiActivitiesCommentsPartialUpdateResponses,
+  ActivitiesCommentsPartialUpdateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).patch<
-    ApiActivitiesCommentsPartialUpdateResponses,
+    ActivitiesCommentsPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1465,17 +1461,17 @@ export const apiActivitiesCommentsPartialUpdate = <
 /**
  * Get all replies to a specific comment
  */
-export const apiActivitiesCommentsRepliesRetrieve = <
+export const activitiesCommentsRepliesRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiActivitiesCommentsRepliesRetrieveData, ThrowOnError>,
+  options: Options<ActivitiesCommentsRepliesRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiActivitiesCommentsRepliesRetrieveResponses,
+  ActivitiesCommentsRepliesRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiActivitiesCommentsRepliesRetrieveResponses,
+    ActivitiesCommentsRepliesRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1499,17 +1495,17 @@ export const apiActivitiesCommentsRepliesRetrieve = <
  * "parent": null  // Optional: ID of parent comment for replies
  * }
  */
-export const apiActivitiesCommentsCreateCreate = <
+export const activitiesCommentsCreateCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiActivitiesCommentsCreateCreateData, ThrowOnError>,
+  options?: Options<ActivitiesCommentsCreateCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiActivitiesCommentsCreateCreateResponses,
+  ActivitiesCommentsCreateCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).post<
-    ApiActivitiesCommentsCreateCreateResponses,
+    ActivitiesCommentsCreateCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1532,13 +1528,11 @@ export const apiActivitiesCommentsCreateCreate = <
  *
  * Example: /api/v1/activities/likes/?content_type=clubs.clubpost&object_id=123
  */
-export const apiActivitiesLikesRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiActivitiesLikesRetrieveData, ThrowOnError>,
-): RequestResult<ApiActivitiesLikesRetrieveResponses, unknown, ThrowOnError> =>
+export const activitiesLikesRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ActivitiesLikesRetrieveData, ThrowOnError>,
+): RequestResult<ActivitiesLikesRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiActivitiesLikesRetrieveResponses,
+    ActivitiesLikesRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1561,17 +1555,17 @@ export const apiActivitiesLikesRetrieve = <
  *
  * Returns: { "is_liked": true/false }
  */
-export const apiActivitiesLikesCheckRetrieve = <
+export const activitiesLikesCheckRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiActivitiesLikesCheckRetrieveData, ThrowOnError>,
+  options?: Options<ActivitiesLikesCheckRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiActivitiesLikesCheckRetrieveResponses,
+  ActivitiesLikesCheckRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiActivitiesLikesCheckRetrieveResponses,
+    ActivitiesLikesCheckRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1595,17 +1589,13 @@ export const apiActivitiesLikesCheckRetrieve = <
  *
  * Returns: { "is_liked": true/false, "like_count": 42 }
  */
-export const apiActivitiesLikesToggleCreate = <
+export const activitiesLikesToggleCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiActivitiesLikesToggleCreateData, ThrowOnError>,
-): RequestResult<
-  ApiActivitiesLikesToggleCreateResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<ActivitiesLikesToggleCreateData, ThrowOnError>,
+): RequestResult<ActivitiesLikesToggleCreateResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).post<
-    ApiActivitiesLikesToggleCreateResponses,
+    ActivitiesLikesToggleCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1631,23 +1621,21 @@ export const apiActivitiesLikesToggleCreate = <
  * - origin: Filter by specific origin
  * - joined: Set to 'true' to only show clubs user is member of
  */
-export const apiClubsList = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiClubsListData, ThrowOnError>,
-): RequestResult<ApiClubsListResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<ApiClubsListResponses, unknown, ThrowOnError>(
-    {
-      responseType: "json",
-      security: [
-        {
-          in: "cookie",
-          name: "sessionid",
-          type: "apiKey",
-        },
-      ],
-      url: "/api/clubs/",
-      ...options,
-    },
-  );
+export const clubsList = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsListData, ThrowOnError>,
+): RequestResult<ClubsListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<ClubsListResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/",
+    ...options,
+  });
 
 /**
  * List & create clubs visible to the authenticated user:
@@ -1660,14 +1648,10 @@ export const apiClubsList = <ThrowOnError extends boolean = false>(
  * - origin: Filter by specific origin
  * - joined: Set to 'true' to only show clubs user is member of
  */
-export const apiClubsCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsCreateData, ThrowOnError>,
-): RequestResult<ApiClubsCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    ApiClubsCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const clubsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsCreateData, ThrowOnError>,
+): RequestResult<ClubsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<ClubsCreateResponses, unknown, ThrowOnError>({
     responseType: "json",
     security: [
       {
@@ -1687,11 +1671,11 @@ export const apiClubsCreate = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsDestroyData, ThrowOnError>,
-): RequestResult<ApiClubsDestroyResponses, unknown, ThrowOnError> =>
+export const clubsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsDestroyData, ThrowOnError>,
+): RequestResult<ClubsDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiClubsDestroyResponses,
+    ClubsDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -1709,34 +1693,32 @@ export const apiClubsDestroy = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    ApiClubsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: "json",
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/clubs/{id}/",
-    ...options,
-  });
+export const clubsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<ClubsRetrieveResponses, unknown, ThrowOnError>(
+    {
+      responseType: "json",
+      security: [
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/clubs/{id}/",
+      ...options,
+    },
+  );
 
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsPartialUpdateData, ThrowOnError>,
-): RequestResult<ApiClubsPartialUpdateResponses, unknown, ThrowOnError> =>
+export const clubsPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPartialUpdateData, ThrowOnError>,
+): RequestResult<ClubsPartialUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    ApiClubsPartialUpdateResponses,
+    ClubsPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1759,14 +1741,10 @@ export const apiClubsPartialUpdate = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsUpdateData, ThrowOnError>,
-): RequestResult<ApiClubsUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    ApiClubsUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const clubsUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsUpdateData, ThrowOnError>,
+): RequestResult<ClubsUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<ClubsUpdateResponses, unknown, ThrowOnError>({
     responseType: "json",
     security: [
       {
@@ -1783,11 +1761,65 @@ export const apiClubsUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const apiClubsApplicationsList = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsApplicationsListData, ThrowOnError>,
-): RequestResult<ApiClubsApplicationsListResponses, unknown, ThrowOnError> =>
+/**
+ * GET - Get all application forms
+ * POST - Create a new application form
+ */
+export const clubsApplicationFormsList = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationFormsListData, ThrowOnError>,
+): RequestResult<ClubsApplicationFormsListResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsApplicationsListResponses,
+    ClubsApplicationFormsListResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{id}/application-forms/",
+    ...options,
+  });
+
+/**
+ * GET - Get all application forms
+ * POST - Create a new application form
+ */
+export const clubsApplicationFormsCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ClubsApplicationFormsCreateData, ThrowOnError>,
+): RequestResult<ClubsApplicationFormsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    ClubsApplicationFormsCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{id}/application-forms/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const clubsApplicationsList = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsListData, ThrowOnError>,
+): RequestResult<ClubsApplicationsListResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsApplicationsListResponses,
     unknown,
     ThrowOnError
   >({
@@ -1803,13 +1835,11 @@ export const apiClubsApplicationsList = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiClubsApplicationsCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiClubsApplicationsCreateData, ThrowOnError>,
-): RequestResult<ApiClubsApplicationsCreateResponses, unknown, ThrowOnError> =>
+export const clubsApplicationsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsCreateData, ThrowOnError>,
+): RequestResult<ClubsApplicationsCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiClubsApplicationsCreateResponses,
+    ClubsApplicationsCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1829,11 +1859,11 @@ export const apiClubsApplicationsCreate = <
     },
   });
 
-export const apiClubsApplicationsList2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsApplicationsList2Data, ThrowOnError>,
-): RequestResult<ApiClubsApplicationsList2Responses, unknown, ThrowOnError> =>
+export const clubsApplicationsList2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsList2Data, ThrowOnError>,
+): RequestResult<ClubsApplicationsList2Responses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsApplicationsList2Responses,
+    ClubsApplicationsList2Responses,
     unknown,
     ThrowOnError
   >({
@@ -1849,13 +1879,11 @@ export const apiClubsApplicationsList2 = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiClubsApplicationsCreate2 = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiClubsApplicationsCreate2Data, ThrowOnError>,
-): RequestResult<ApiClubsApplicationsCreate2Responses, unknown, ThrowOnError> =>
+export const clubsApplicationsCreate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsApplicationsCreate2Data, ThrowOnError>,
+): RequestResult<ClubsApplicationsCreate2Responses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiClubsApplicationsCreate2Responses,
+    ClubsApplicationsCreate2Responses,
     unknown,
     ThrowOnError
   >({
@@ -1875,17 +1903,17 @@ export const apiClubsApplicationsCreate2 = <
     },
   });
 
-export const apiClubsApplicationsApproveCreate = <
+export const clubsApplicationsApproveCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiClubsApplicationsApproveCreateData, ThrowOnError>,
+  options: Options<ClubsApplicationsApproveCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiClubsApplicationsApproveCreateResponses,
+  ClubsApplicationsApproveCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiClubsApplicationsApproveCreateResponses,
+    ClubsApplicationsApproveCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1905,17 +1933,17 @@ export const apiClubsApplicationsApproveCreate = <
     },
   });
 
-export const apiClubsApplicationsRejectCreate = <
+export const clubsApplicationsRejectCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiClubsApplicationsRejectCreateData, ThrowOnError>,
+  options: Options<ClubsApplicationsRejectCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiClubsApplicationsRejectCreateResponses,
+  ClubsApplicationsRejectCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiClubsApplicationsRejectCreateResponses,
+    ClubsApplicationsRejectCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1935,17 +1963,17 @@ export const apiClubsApplicationsRejectCreate = <
     },
   });
 
-export const apiClubsApplicationsWithdrawCreate = <
+export const clubsApplicationsWithdrawCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiClubsApplicationsWithdrawCreateData, ThrowOnError>,
+  options: Options<ClubsApplicationsWithdrawCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiClubsApplicationsWithdrawCreateResponses,
+  ClubsApplicationsWithdrawCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiClubsApplicationsWithdrawCreateResponses,
+    ClubsApplicationsWithdrawCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -1970,11 +1998,11 @@ export const apiClubsApplicationsWithdrawCreate = <
  * Query params:
  * - status: upcoming|ongoing|completed|cancelled
  */
-export const apiClubsEventsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsEventsRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsEventsRetrieveResponses, unknown, ThrowOnError> =>
+export const clubsEventsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsEventsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsEventsRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsEventsRetrieveResponses,
+    ClubsEventsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -1989,11 +2017,11 @@ export const apiClubsEventsRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiClubsJoinCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsJoinCreateData, ThrowOnError>,
-): RequestResult<ApiClubsJoinCreateResponses, unknown, ThrowOnError> =>
+export const clubsJoinCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsJoinCreateData, ThrowOnError>,
+): RequestResult<ClubsJoinCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiClubsJoinCreateResponses,
+    ClubsJoinCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2013,6 +2041,25 @@ export const apiClubsJoinCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
+export const clubsLeaveDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsLeaveDestroyData, ThrowOnError>,
+): RequestResult<ClubsLeaveDestroyResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ClubsLeaveDestroyResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{id}/leave/",
+    ...options,
+  });
+
 /**
  * List all members of a club with filtering options
  * Query params:
@@ -2021,11 +2068,11 @@ export const apiClubsJoinCreate = <ThrowOnError extends boolean = false>(
  * - sort: joined_at (default), username, role
  * - order: asc, desc (default)
  */
-export const apiClubsMembersRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsMembersRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsMembersRetrieveResponses, unknown, ThrowOnError> =>
+export const clubsMembersRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsMembersRetrieveData, ThrowOnError>,
+): RequestResult<ClubsMembersRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsMembersRetrieveResponses,
+    ClubsMembersRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2041,13 +2088,35 @@ export const apiClubsMembersRetrieve = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * Get detailed information about a specific member
+ */
+export const clubsMembersRetrieve2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsMembersRetrieve2Data, ThrowOnError>,
+): RequestResult<ClubsMembersRetrieve2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsMembersRetrieve2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{id}/members/{user_id}/",
+    ...options,
+  });
+
+/**
  * List all posts in a club with interaction counts
  */
-export const apiClubsPostsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsPostsRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsPostsRetrieveResponses, unknown, ThrowOnError> =>
+export const clubsPostsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPostsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsPostsRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsPostsRetrieveResponses,
+    ClubsPostsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2063,35 +2132,59 @@ export const apiClubsPostsRetrieve = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * Retrieve, update or delete a club instance.
+ * Get detailed statistics for a club.
+ *
+ * Member/owner see full stats; non-members only see public-club stats.
  */
-export const apiClubsDestroy2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsDestroy2Data, ThrowOnError>,
-): RequestResult<ApiClubsDestroy2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).delete<
-    ApiClubsDestroy2Responses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/clubs/{slug}/",
-    ...options,
-  });
-
-/**
- * Retrieve, update or delete a club instance.
- */
-export const apiClubsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsRetrieve2Data, ThrowOnError>,
-): RequestResult<ApiClubsRetrieve2Responses, unknown, ThrowOnError> =>
+export const clubsStatsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsStatsRetrieveData, ThrowOnError>,
+): RequestResult<ClubsStatsRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiClubsRetrieve2Responses,
+    ClubsStatsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{id}/stats/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsDestroy2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsDestroy2Data, ThrowOnError>,
+): RequestResult<ClubsDestroy2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).delete<
+    ClubsDestroy2Responses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/{slug}/",
+    ...options,
+  });
+
+/**
+ * Retrieve, update or delete a club instance.
+ */
+export const clubsRetrieve2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsRetrieve2Data, ThrowOnError>,
+): RequestResult<ClubsRetrieve2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsRetrieve2Responses,
     unknown,
     ThrowOnError
   >({
@@ -2110,11 +2203,11 @@ export const apiClubsRetrieve2 = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsPartialUpdate2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsPartialUpdate2Data, ThrowOnError>,
-): RequestResult<ApiClubsPartialUpdate2Responses, unknown, ThrowOnError> =>
+export const clubsPartialUpdate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsPartialUpdate2Data, ThrowOnError>,
+): RequestResult<ClubsPartialUpdate2Responses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    ApiClubsPartialUpdate2Responses,
+    ClubsPartialUpdate2Responses,
     unknown,
     ThrowOnError
   >({
@@ -2137,14 +2230,10 @@ export const apiClubsPartialUpdate2 = <ThrowOnError extends boolean = false>(
 /**
  * Retrieve, update or delete a club instance.
  */
-export const apiClubsUpdate2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiClubsUpdate2Data, ThrowOnError>,
-): RequestResult<ApiClubsUpdate2Responses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    ApiClubsUpdate2Responses,
-    unknown,
-    ThrowOnError
-  >({
+export const clubsUpdate2 = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsUpdate2Data, ThrowOnError>,
+): RequestResult<ClubsUpdate2Responses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<ClubsUpdate2Responses, unknown, ThrowOnError>({
     responseType: "json",
     security: [
       {
@@ -2162,19 +2251,41 @@ export const apiClubsUpdate2 = <ThrowOnError extends boolean = false>(
   });
 
 /**
- * Get recommended clubs for the authenticated user based on:
- * - Clubs with similar origin/type
- * - Clubs with friends/mutual connections
- * - Popular clubs in user's location
- * - Clubs related to user's interests (if available)
+ * Get all public clubs from a specific origin.
  */
-export const apiClubsRecommendedRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiClubsRecommendedRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsRecommendedRetrieveResponses, unknown, ThrowOnError> =>
+export const clubsOriginRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ClubsOriginRetrieveData, ThrowOnError>,
+): RequestResult<ClubsOriginRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<
+    ClubsOriginRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/origin/{origin}/",
+    ...options,
+  });
+
+/**
+ * Get recommended clubs for the authenticated user.
+ *
+ * Recommendation order:
+ * 1. Public/closed clubs the user is not already a member of.
+ * 2. Bias toward clubs sharing the user's existing club origins.
+ * 3. Fallback to clubs sharing the user's profile origin.
+ * 4. Final fallback: any active public club.
+ */
+export const clubsRecommendedRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsRecommendedRetrieveData, ThrowOnError>,
+): RequestResult<ClubsRecommendedRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiClubsRecommendedRetrieveResponses,
+    ClubsRecommendedRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2189,13 +2300,33 @@ export const apiClubsRecommendedRetrieve = <
     ...options,
   });
 
-export const apiClubsTestManagerRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiClubsTestManagerRetrieveData, ThrowOnError>,
-): RequestResult<ApiClubsTestManagerRetrieveResponses, unknown, ThrowOnError> =>
+/**
+ * Search clubs by name, origin, about, or slug.
+ */
+export const clubsSearchRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsSearchRetrieveData, ThrowOnError>,
+): RequestResult<ClubsSearchRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiClubsTestManagerRetrieveResponses,
+    ClubsSearchRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/search/",
+    ...options,
+  });
+
+export const clubsTestManagerRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsTestManagerRetrieveData, ThrowOnError>,
+): RequestResult<ClubsTestManagerRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ClubsTestManagerRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2211,15 +2342,83 @@ export const apiClubsTestManagerRetrieve = <
   });
 
 /**
+ * Get trending clubs (most active/popular in last 7 days).
+ */
+export const clubsTrendingRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<ClubsTrendingRetrieveData, ThrowOnError>,
+): RequestResult<ClubsTrendingRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    ClubsTrendingRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/trending/",
+    ...options,
+  });
+
+export const communicationsEmailsList = <ThrowOnError extends boolean = false>(
+  options?: Options<CommunicationsEmailsListData, ThrowOnError>,
+): RequestResult<CommunicationsEmailsListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    CommunicationsEmailsListResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/communications/emails/",
+    ...options,
+  });
+
+export const communicationsEmailsCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<CommunicationsEmailsCreateData, ThrowOnError>,
+): RequestResult<CommunicationsEmailsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<
+    CommunicationsEmailsCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/communications/emails/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
  * Block a user
  * - Removes any existing follow relationships
  * - Prevents future follows
  */
-export const apiConnectionsBlockCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiConnectionsBlockCreateData, ThrowOnError>,
-): RequestResult<ApiConnectionsBlockCreateResponses, unknown, ThrowOnError> =>
+export const connectionsBlockCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsBlockCreateData, ThrowOnError>,
+): RequestResult<ConnectionsBlockCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiConnectionsBlockCreateResponses,
+    ConnectionsBlockCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2237,17 +2436,17 @@ export const apiConnectionsBlockCreate = <ThrowOnError extends boolean = false>(
 /**
  * Get list of users following this user
  */
-export const apiConnectionsFollowersRetrieve = <
+export const connectionsFollowersRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiConnectionsFollowersRetrieveData, ThrowOnError>,
+  options: Options<ConnectionsFollowersRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsFollowersRetrieveResponses,
+  ConnectionsFollowersRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiConnectionsFollowersRetrieveResponses,
+    ConnectionsFollowersRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2265,17 +2464,17 @@ export const apiConnectionsFollowersRetrieve = <
 /**
  * Get list of users this user is following
  */
-export const apiConnectionsFollowingRetrieve = <
+export const connectionsFollowingRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiConnectionsFollowingRetrieveData, ThrowOnError>,
+  options: Options<ConnectionsFollowingRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsFollowingRetrieveResponses,
+  ConnectionsFollowingRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiConnectionsFollowingRetrieveResponses,
+    ConnectionsFollowingRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2293,17 +2492,11 @@ export const apiConnectionsFollowingRetrieve = <
 /**
  * Get mutual followers between current user and target user
  */
-export const apiConnectionsMutualRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiConnectionsMutualRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiConnectionsMutualRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const connectionsMutualRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsMutualRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsMutualRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiConnectionsMutualRetrieveResponses,
+    ConnectionsMutualRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2326,17 +2519,17 @@ export const apiConnectionsMutualRetrieve = <
  * - Mutual followers count
  * - Privacy status
  */
-export const apiConnectionsRelationshipRetrieve = <
+export const connectionsRelationshipRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiConnectionsRelationshipRetrieveData, ThrowOnError>,
+  options: Options<ConnectionsRelationshipRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRelationshipRetrieveResponses,
+  ConnectionsRelationshipRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiConnectionsRelationshipRetrieveResponses,
+    ConnectionsRelationshipRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2354,13 +2547,11 @@ export const apiConnectionsRelationshipRetrieve = <
 /**
  * Remove a follower (they were following you, you remove them)
  */
-export const apiConnectionsRemoveDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiConnectionsRemoveDestroyData, ThrowOnError>,
-): RequestResult<ApiConnectionsRemoveDestroyResponses, unknown, ThrowOnError> =>
+export const connectionsRemoveDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsRemoveDestroyData, ThrowOnError>,
+): RequestResult<ConnectionsRemoveDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiConnectionsRemoveDestroyResponses,
+    ConnectionsRemoveDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -2378,17 +2569,11 @@ export const apiConnectionsRemoveDestroy = <
 /**
  * Get follow status between current user and target user
  */
-export const apiConnectionsStatusRetrieve = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiConnectionsStatusRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiConnectionsStatusRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const connectionsStatusRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsStatusRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsStatusRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiConnectionsStatusRetrieveResponses,
+    ConnectionsStatusRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2409,13 +2594,11 @@ export const apiConnectionsStatusRetrieve = <
  * - If target user is public: creates accepted follow
  * - If already following: unfollows
  */
-export const apiConnectionsToggleCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiConnectionsToggleCreateData, ThrowOnError>,
-): RequestResult<ApiConnectionsToggleCreateResponses, unknown, ThrowOnError> =>
+export const connectionsToggleCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsToggleCreateData, ThrowOnError>,
+): RequestResult<ConnectionsToggleCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiConnectionsToggleCreateResponses,
+    ConnectionsToggleCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2433,13 +2616,11 @@ export const apiConnectionsToggleCreate = <
 /**
  * Unblock a user
  */
-export const apiConnectionsUnblockCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiConnectionsUnblockCreateData, ThrowOnError>,
-): RequestResult<ApiConnectionsUnblockCreateResponses, unknown, ThrowOnError> =>
+export const connectionsUnblockCreate = <ThrowOnError extends boolean = false>(
+  options: Options<ConnectionsUnblockCreateData, ThrowOnError>,
+): RequestResult<ConnectionsUnblockCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiConnectionsUnblockCreateResponses,
+    ConnectionsUnblockCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2457,17 +2638,13 @@ export const apiConnectionsUnblockCreate = <
 /**
  * Get list of users current user has blocked
  */
-export const apiConnectionsBlockedRetrieve = <
+export const connectionsBlockedRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsBlockedRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiConnectionsBlockedRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<ConnectionsBlockedRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsBlockedRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiConnectionsBlockedRetrieveResponses,
+    ConnectionsBlockedRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2491,17 +2668,17 @@ export const apiConnectionsBlockedRetrieve = <
  * - pending_received: Follow requests you received (pending)
  * - pending_sent: Follow requests you sent (pending)
  */
-export const apiConnectionsRelationsRetrieve = <
+export const connectionsRelationsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsRelationsRetrieveData, ThrowOnError>,
+  options?: Options<ConnectionsRelationsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRelationsRetrieveResponses,
+  ConnectionsRelationsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiConnectionsRelationsRetrieveResponses,
+    ConnectionsRelationsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2519,17 +2696,17 @@ export const apiConnectionsRelationsRetrieve = <
 /**
  * Get only mutual followers (users who follow each other with current user)
  */
-export const apiConnectionsRelationsConnectedRetrieve = <
+export const connectionsRelationsConnectedRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsRelationsConnectedRetrieveData, ThrowOnError>,
+  options?: Options<ConnectionsRelationsConnectedRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRelationsConnectedRetrieveResponses,
+  ConnectionsRelationsConnectedRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiConnectionsRelationsConnectedRetrieveResponses,
+    ConnectionsRelationsConnectedRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2548,17 +2725,17 @@ export const apiConnectionsRelationsConnectedRetrieve = <
  * Get only pending follow requests received by current user
  * (Others want to follow you, waiting for your approval)
  */
-export const apiConnectionsRelationsPendingRetrieve = <
+export const connectionsRelationsPendingRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsRelationsPendingRetrieveData, ThrowOnError>,
+  options?: Options<ConnectionsRelationsPendingRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRelationsPendingRetrieveResponses,
+  ConnectionsRelationsPendingRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiConnectionsRelationsPendingRetrieveResponses,
+    ConnectionsRelationsPendingRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2577,17 +2754,17 @@ export const apiConnectionsRelationsPendingRetrieve = <
  * Get only pending follow requests sent by current user
  * (You want to follow others, waiting for their approval)
  */
-export const apiConnectionsRelationsSentRetrieve = <
+export const connectionsRelationsSentRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsRelationsSentRetrieveData, ThrowOnError>,
+  options?: Options<ConnectionsRelationsSentRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRelationsSentRetrieveResponses,
+  ConnectionsRelationsSentRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiConnectionsRelationsSentRetrieveResponses,
+    ConnectionsRelationsSentRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2605,17 +2782,13 @@ export const apiConnectionsRelationsSentRetrieve = <
 /**
  * Get all pending follow requests for current user
  */
-export const apiConnectionsRequestsRetrieve = <
+export const connectionsRequestsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsRequestsRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiConnectionsRequestsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<ConnectionsRequestsRetrieveData, ThrowOnError>,
+): RequestResult<ConnectionsRequestsRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiConnectionsRequestsRetrieveResponses,
+    ConnectionsRequestsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2633,17 +2806,17 @@ export const apiConnectionsRequestsRetrieve = <
 /**
  * Accept a pending follow request
  */
-export const apiConnectionsRequestsAcceptCreate = <
+export const connectionsRequestsAcceptCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiConnectionsRequestsAcceptCreateData, ThrowOnError>,
+  options: Options<ConnectionsRequestsAcceptCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRequestsAcceptCreateResponses,
+  ConnectionsRequestsAcceptCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiConnectionsRequestsAcceptCreateResponses,
+    ConnectionsRequestsAcceptCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2661,17 +2834,17 @@ export const apiConnectionsRequestsAcceptCreate = <
 /**
  * Reject/delete a pending follow request
  */
-export const apiConnectionsRequestsRejectCreate = <
+export const connectionsRequestsRejectCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiConnectionsRequestsRejectCreateData, ThrowOnError>,
+  options: Options<ConnectionsRequestsRejectCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsRequestsRejectCreateResponses,
+  ConnectionsRequestsRejectCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).post<
-    ApiConnectionsRequestsRejectCreateResponses,
+    ConnectionsRequestsRejectCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2693,17 +2866,17 @@ export const apiConnectionsRequestsRejectCreate = <
  * - Users in same clubs
  * - Popular users
  */
-export const apiConnectionsSuggestionsRetrieve = <
+export const connectionsSuggestionsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiConnectionsSuggestionsRetrieveData, ThrowOnError>,
+  options?: Options<ConnectionsSuggestionsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiConnectionsSuggestionsRetrieveResponses,
+  ConnectionsSuggestionsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiConnectionsSuggestionsRetrieveResponses,
+    ConnectionsSuggestionsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2718,11 +2891,11 @@ export const apiConnectionsSuggestionsRetrieve = <
     ...options,
   });
 
-export const apiInstitutesList = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiInstitutesListData, ThrowOnError>,
-): RequestResult<ApiInstitutesListResponses, unknown, ThrowOnError> =>
+export const institutesList = <ThrowOnError extends boolean = false>(
+  options?: Options<InstitutesListData, ThrowOnError>,
+): RequestResult<InstitutesListResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiInstitutesListResponses,
+    InstitutesListResponses,
     unknown,
     ThrowOnError
   >({
@@ -2738,11 +2911,11 @@ export const apiInstitutesList = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiInstitutesCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiInstitutesCreateData, ThrowOnError>,
-): RequestResult<ApiInstitutesCreateResponses, unknown, ThrowOnError> =>
+export const institutesCreate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesCreateData, ThrowOnError>,
+): RequestResult<InstitutesCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiInstitutesCreateResponses,
+    InstitutesCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2762,11 +2935,11 @@ export const apiInstitutesCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const apiInstitutesDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<ApiInstitutesDestroyData, ThrowOnError>,
-): RequestResult<ApiInstitutesDestroyResponses, unknown, ThrowOnError> =>
+export const institutesDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesDestroyData, ThrowOnError>,
+): RequestResult<InstitutesDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiInstitutesDestroyResponses,
+    InstitutesDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -2781,11 +2954,11 @@ export const apiInstitutesDestroy = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiInstitutesRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiInstitutesRetrieveData, ThrowOnError>,
-): RequestResult<ApiInstitutesRetrieveResponses, unknown, ThrowOnError> =>
+export const institutesRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesRetrieveData, ThrowOnError>,
+): RequestResult<InstitutesRetrieveResponses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiInstitutesRetrieveResponses,
+    InstitutesRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2801,13 +2974,11 @@ export const apiInstitutesRetrieve = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiInstitutesPartialUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiInstitutesPartialUpdateData, ThrowOnError>,
-): RequestResult<ApiInstitutesPartialUpdateResponses, unknown, ThrowOnError> =>
+export const institutesPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesPartialUpdateData, ThrowOnError>,
+): RequestResult<InstitutesPartialUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    ApiInstitutesPartialUpdateResponses,
+    InstitutesPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2827,11 +2998,11 @@ export const apiInstitutesPartialUpdate = <
     },
   });
 
-export const apiInstitutesUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiInstitutesUpdateData, ThrowOnError>,
-): RequestResult<ApiInstitutesUpdateResponses, unknown, ThrowOnError> =>
+export const institutesUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<InstitutesUpdateData, ThrowOnError>,
+): RequestResult<InstitutesUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).put<
-    ApiInstitutesUpdateResponses,
+    InstitutesUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2852,6 +3023,256 @@ export const apiInstitutesUpdate = <ThrowOnError extends boolean = false>(
   });
 
 /**
+ * List affiliations
+ *
+ * Returns a list of all institute affiliations.
+ */
+export const listAffiliations = <ThrowOnError extends boolean = false>(
+  options?: Options<ListAffiliationsData, ThrowOnError>,
+): RequestResult<
+  ListAffiliationsResponses,
+  ListAffiliationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ListAffiliationsResponses,
+    ListAffiliationsErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/",
+    ...options,
+  });
+
+/**
+ * Create affiliation row
+ *
+ * Internal/admin — creates an InstituteAffiliate row directly.
+ */
+export const createAffiliation = <ThrowOnError extends boolean = false>(
+  options: Options<CreateAffiliationData, ThrowOnError>,
+): RequestResult<
+  CreateAffiliationResponses,
+  CreateAffiliationErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    CreateAffiliationResponses,
+    CreateAffiliationErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const institutesAffiliationsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<InstitutesAffiliationsRetrieveData, ThrowOnError>,
+): RequestResult<
+  InstitutesAffiliationsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    InstitutesAffiliationsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/{id}/",
+    ...options,
+  });
+
+export const institutesAffiliationsPartialUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<InstitutesAffiliationsPartialUpdateData, ThrowOnError>,
+): RequestResult<
+  InstitutesAffiliationsPartialUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    InstitutesAffiliationsPartialUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const institutesAffiliationsUpdate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<InstitutesAffiliationsUpdateData, ThrowOnError>,
+): RequestResult<
+  InstitutesAffiliationsUpdateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).put<
+    InstitutesAffiliationsUpdateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/{id}/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Verify an affiliation via email token
+ *
+ * Confirm the user's email-based affiliation claim using the token delivered in the verification email.
+ */
+export const verifyAffiliation = <ThrowOnError extends boolean = false>(
+  options: Options<VerifyAffiliationData, ThrowOnError>,
+): RequestResult<
+  VerifyAffiliationResponses,
+  VerifyAffiliationErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    VerifyAffiliationResponses,
+    VerifyAffiliationErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/affiliations/{id}/verify/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
+ * Claim institute affiliation
+ *
+ * Initiate an email-based affiliation claim. The user supplies the institute, the role they play there, one of their own verified email addresses, and their password. A verification email is sent to the chosen address; calling the verify endpoint confirms it.
+ */
+export const claimAffiliation = <ThrowOnError extends boolean = false>(
+  options: Options<ClaimAffiliationData, ThrowOnError>,
+): RequestResult<
+  ClaimAffiliationResponses,
+  ClaimAffiliationErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).post<
+    ClaimAffiliationResponses,
+    ClaimAffiliationErrors,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/institutes/claim/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+export const mediaList = <ThrowOnError extends boolean = false>(
+  options?: Options<MediaListData, ThrowOnError>,
+): RequestResult<MediaListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<MediaListResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/media/",
+    ...options,
+  });
+
+export const mediaCreate = <ThrowOnError extends boolean = false>(
+  options: Options<MediaCreateData, ThrowOnError>,
+): RequestResult<MediaCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<MediaCreateResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/media/",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+/**
  * Get all notifications for the current user.
  *
  * Query params:
@@ -2860,11 +3281,11 @@ export const apiInstitutesUpdate = <ThrowOnError extends boolean = false>(
  * - is_seen: Filter by seen status (true/false)
  * - page: Page number for pagination
  */
-export const apiNotificationsRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiNotificationsRetrieveData, ThrowOnError>,
-): RequestResult<ApiNotificationsRetrieveResponses, unknown, ThrowOnError> =>
+export const notificationsRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<NotificationsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiNotificationsRetrieveResponses,
+    NotificationsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2883,11 +3304,11 @@ export const apiNotificationsRetrieve = <ThrowOnError extends boolean = false>(
  * Get detailed information about a specific notification.
  * Automatically marks the notification as seen.
  */
-export const apiNotificationsRetrieve2 = <ThrowOnError extends boolean = false>(
-  options: Options<ApiNotificationsRetrieve2Data, ThrowOnError>,
-): RequestResult<ApiNotificationsRetrieve2Responses, unknown, ThrowOnError> =>
+export const notificationsRetrieve2 = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsRetrieve2Data, ThrowOnError>,
+): RequestResult<NotificationsRetrieve2Responses, unknown, ThrowOnError> =>
   (options.client ?? client).get<
-    ApiNotificationsRetrieve2Responses,
+    NotificationsRetrieve2Responses,
     unknown,
     ThrowOnError
   >({
@@ -2905,17 +3326,13 @@ export const apiNotificationsRetrieve2 = <ThrowOnError extends boolean = false>(
 /**
  * Delete a specific notification.
  */
-export const apiNotificationsDeleteDestroy = <
+export const notificationsDeleteDestroy = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiNotificationsDeleteDestroyData, ThrowOnError>,
-): RequestResult<
-  ApiNotificationsDeleteDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options: Options<NotificationsDeleteDestroyData, ThrowOnError>,
+): RequestResult<NotificationsDeleteDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiNotificationsDeleteDestroyResponses,
+    NotificationsDeleteDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -2933,17 +3350,17 @@ export const apiNotificationsDeleteDestroy = <
 /**
  * Get delivery status for a specific notification.
  */
-export const apiNotificationsDeliveriesRetrieve = <
+export const notificationsDeliveriesRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<ApiNotificationsDeliveriesRetrieveData, ThrowOnError>,
+  options: Options<NotificationsDeliveriesRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsDeliveriesRetrieveResponses,
+  NotificationsDeliveriesRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ApiNotificationsDeliveriesRetrieveResponses,
+    NotificationsDeliveriesRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -2961,13 +3378,11 @@ export const apiNotificationsDeliveriesRetrieve = <
 /**
  * Mark a specific notification as read.
  */
-export const apiNotificationsReadCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiNotificationsReadCreateData, ThrowOnError>,
-): RequestResult<ApiNotificationsReadCreateResponses, unknown, ThrowOnError> =>
+export const notificationsReadCreate = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsReadCreateData, ThrowOnError>,
+): RequestResult<NotificationsReadCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiNotificationsReadCreateResponses,
+    NotificationsReadCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -2985,13 +3400,11 @@ export const apiNotificationsReadCreate = <
 /**
  * Mark a specific notification as seen.
  */
-export const apiNotificationsSeenCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ApiNotificationsSeenCreateData, ThrowOnError>,
-): RequestResult<ApiNotificationsSeenCreateResponses, unknown, ThrowOnError> =>
+export const notificationsSeenCreate = <ThrowOnError extends boolean = false>(
+  options: Options<NotificationsSeenCreateData, ThrowOnError>,
+): RequestResult<NotificationsSeenCreateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).post<
-    ApiNotificationsSeenCreateResponses,
+    NotificationsSeenCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -3009,17 +3422,11 @@ export const apiNotificationsSeenCreate = <
 /**
  * Delete all notifications for the current user.
  */
-export const apiNotificationsClearDestroy = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ApiNotificationsClearDestroyData, ThrowOnError>,
-): RequestResult<
-  ApiNotificationsClearDestroyResponses,
-  unknown,
-  ThrowOnError
-> =>
+export const notificationsClearDestroy = <ThrowOnError extends boolean = false>(
+  options?: Options<NotificationsClearDestroyData, ThrowOnError>,
+): RequestResult<NotificationsClearDestroyResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).delete<
-    ApiNotificationsClearDestroyResponses,
+    NotificationsClearDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -3037,17 +3444,17 @@ export const apiNotificationsClearDestroy = <
 /**
  * Get all comment notifications.
  */
-export const apiNotificationsCommentsRetrieve = <
+export const notificationsCommentsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsCommentsRetrieveData, ThrowOnError>,
+  options?: Options<NotificationsCommentsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsCommentsRetrieveResponses,
+  NotificationsCommentsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiNotificationsCommentsRetrieveResponses,
+    NotificationsCommentsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3066,17 +3473,13 @@ export const apiNotificationsCommentsRetrieve = <
  * Get notification counts for the current user.
  * Returns total, unread, and unseen counts.
  */
-export const apiNotificationsCountsRetrieve = <
+export const notificationsCountsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsCountsRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiNotificationsCountsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<NotificationsCountsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsCountsRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiNotificationsCountsRetrieveResponses,
+    NotificationsCountsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3094,17 +3497,17 @@ export const apiNotificationsCountsRetrieve = <
 /**
  * Get all follow accept notifications.
  */
-export const apiNotificationsFollowAcceptsRetrieve = <
+export const notificationsFollowAcceptsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsFollowAcceptsRetrieveData, ThrowOnError>,
+  options?: Options<NotificationsFollowAcceptsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsFollowAcceptsRetrieveResponses,
+  NotificationsFollowAcceptsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiNotificationsFollowAcceptsRetrieveResponses,
+    NotificationsFollowAcceptsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3122,17 +3525,17 @@ export const apiNotificationsFollowAcceptsRetrieve = <
 /**
  * Get all follow request notifications.
  */
-export const apiNotificationsFollowRequestsRetrieve = <
+export const notificationsFollowRequestsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsFollowRequestsRetrieveData, ThrowOnError>,
+  options?: Options<NotificationsFollowRequestsRetrieveData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsFollowRequestsRetrieveResponses,
+  NotificationsFollowRequestsRetrieveResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ApiNotificationsFollowRequestsRetrieveResponses,
+    NotificationsFollowRequestsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3150,17 +3553,13 @@ export const apiNotificationsFollowRequestsRetrieve = <
 /**
  * Get all like notifications.
  */
-export const apiNotificationsLikesRetrieve = <
+export const notificationsLikesRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsLikesRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiNotificationsLikesRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<NotificationsLikesRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsLikesRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiNotificationsLikesRetrieveResponses,
+    NotificationsLikesRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3178,17 +3577,17 @@ export const apiNotificationsLikesRetrieve = <
 /**
  * Mark all notifications as read for the current user.
  */
-export const apiNotificationsMarkAllReadCreate = <
+export const notificationsMarkAllReadCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsMarkAllReadCreateData, ThrowOnError>,
+  options?: Options<NotificationsMarkAllReadCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsMarkAllReadCreateResponses,
+  NotificationsMarkAllReadCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).post<
-    ApiNotificationsMarkAllReadCreateResponses,
+    NotificationsMarkAllReadCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -3206,17 +3605,17 @@ export const apiNotificationsMarkAllReadCreate = <
 /**
  * Mark all notifications as seen for the current user.
  */
-export const apiNotificationsMarkAllSeenCreate = <
+export const notificationsMarkAllSeenCreate = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsMarkAllSeenCreateData, ThrowOnError>,
+  options?: Options<NotificationsMarkAllSeenCreateData, ThrowOnError>,
 ): RequestResult<
-  ApiNotificationsMarkAllSeenCreateResponses,
+  NotificationsMarkAllSeenCreateResponses,
   unknown,
   ThrowOnError
 > =>
   (options?.client ?? client).post<
-    ApiNotificationsMarkAllSeenCreateResponses,
+    NotificationsMarkAllSeenCreateResponses,
     unknown,
     ThrowOnError
   >({
@@ -3234,17 +3633,13 @@ export const apiNotificationsMarkAllSeenCreate = <
 /**
  * Get all post-related notifications (new posts from followed users/clubs).
  */
-export const apiNotificationsPostsRetrieve = <
+export const notificationsPostsRetrieve = <
   ThrowOnError extends boolean = false,
 >(
-  options?: Options<ApiNotificationsPostsRetrieveData, ThrowOnError>,
-): RequestResult<
-  ApiNotificationsPostsRetrieveResponses,
-  unknown,
-  ThrowOnError
-> =>
+  options?: Options<NotificationsPostsRetrieveData, ThrowOnError>,
+): RequestResult<NotificationsPostsRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiNotificationsPostsRetrieveResponses,
+    NotificationsPostsRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3259,32 +3654,26 @@ export const apiNotificationsPostsRetrieve = <
     ...options,
   });
 
-export const apiPostsList = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiPostsListData, ThrowOnError>,
-): RequestResult<ApiPostsListResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).get<ApiPostsListResponses, unknown, ThrowOnError>(
-    {
-      responseType: "json",
-      security: [
-        {
-          in: "cookie",
-          name: "sessionid",
-          type: "apiKey",
-        },
-      ],
-      url: "/api/posts/",
-      ...options,
-    },
-  );
+export const postsList = <ThrowOnError extends boolean = false>(
+  options?: Options<PostsListData, ThrowOnError>,
+): RequestResult<PostsListResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<PostsListResponses, unknown, ThrowOnError>({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/posts/",
+    ...options,
+  });
 
-export const apiPostsCreate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiPostsCreateData, ThrowOnError>,
-): RequestResult<ApiPostsCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<
-    ApiPostsCreateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const postsCreate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsCreateData, ThrowOnError>,
+): RequestResult<PostsCreateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).post<PostsCreateResponses, unknown, ThrowOnError>({
     responseType: "json",
     security: [
       {
@@ -3301,11 +3690,11 @@ export const apiPostsCreate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const apiPostsDestroy = <ThrowOnError extends boolean = false>(
-  options: Options<ApiPostsDestroyData, ThrowOnError>,
-): RequestResult<ApiPostsDestroyResponses, unknown, ThrowOnError> =>
+export const postsDestroy = <ThrowOnError extends boolean = false>(
+  options: Options<PostsDestroyData, ThrowOnError>,
+): RequestResult<PostsDestroyResponses, unknown, ThrowOnError> =>
   (options.client ?? client).delete<
-    ApiPostsDestroyResponses,
+    PostsDestroyResponses,
     unknown,
     ThrowOnError
   >({
@@ -3320,31 +3709,29 @@ export const apiPostsDestroy = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
-export const apiPostsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<ApiPostsRetrieveData, ThrowOnError>,
-): RequestResult<ApiPostsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    ApiPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: "json",
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/posts/{post_id}/",
-    ...options,
-  });
+export const postsRetrieve = <ThrowOnError extends boolean = false>(
+  options: Options<PostsRetrieveData, ThrowOnError>,
+): RequestResult<PostsRetrieveResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).get<PostsRetrieveResponses, unknown, ThrowOnError>(
+    {
+      responseType: "json",
+      security: [
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/posts/{post_id}/",
+      ...options,
+    },
+  );
 
-export const apiPostsPartialUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiPostsPartialUpdateData, ThrowOnError>,
-): RequestResult<ApiPostsPartialUpdateResponses, unknown, ThrowOnError> =>
+export const postsPartialUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsPartialUpdateData, ThrowOnError>,
+): RequestResult<PostsPartialUpdateResponses, unknown, ThrowOnError> =>
   (options.client ?? client).patch<
-    ApiPostsPartialUpdateResponses,
+    PostsPartialUpdateResponses,
     unknown,
     ThrowOnError
   >({
@@ -3364,14 +3751,10 @@ export const apiPostsPartialUpdate = <ThrowOnError extends boolean = false>(
     },
   });
 
-export const apiPostsUpdate = <ThrowOnError extends boolean = false>(
-  options: Options<ApiPostsUpdateData, ThrowOnError>,
-): RequestResult<ApiPostsUpdateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).put<
-    ApiPostsUpdateResponses,
-    unknown,
-    ThrowOnError
-  >({
+export const postsUpdate = <ThrowOnError extends boolean = false>(
+  options: Options<PostsUpdateData, ThrowOnError>,
+): RequestResult<PostsUpdateResponses, unknown, ThrowOnError> =>
+  (options.client ?? client).put<PostsUpdateResponses, unknown, ThrowOnError>({
     responseType: "json",
     security: [
       {
@@ -3401,11 +3784,11 @@ export const apiPostsUpdate = <ThrowOnError extends boolean = false>(
  * - From public profiles: Only show public posts (is_public=True)
  * - Never show posts from blocked users
  */
-export const apiPostsFeedRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiPostsFeedRetrieveData, ThrowOnError>,
-): RequestResult<ApiPostsFeedRetrieveResponses, unknown, ThrowOnError> =>
+export const postsFeedRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<PostsFeedRetrieveData, ThrowOnError>,
+): RequestResult<PostsFeedRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiPostsFeedRetrieveResponses,
+    PostsFeedRetrieveResponses,
     unknown,
     ThrowOnError
   >({
@@ -3426,11 +3809,11 @@ export const apiPostsFeedRetrieve = <ThrowOnError extends boolean = false>(
  * - YAML: application/vnd.oai.openapi
  * - JSON: application/vnd.oai.openapi+json
  */
-export const apiSchemaRetrieve = <ThrowOnError extends boolean = false>(
-  options?: Options<ApiSchemaRetrieveData, ThrowOnError>,
-): RequestResult<ApiSchemaRetrieveResponses, unknown, ThrowOnError> =>
+export const schemaRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<SchemaRetrieveData, ThrowOnError>,
+): RequestResult<SchemaRetrieveResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).get<
-    ApiSchemaRetrieveResponses,
+    SchemaRetrieveResponses,
     unknown,
     ThrowOnError
   >({

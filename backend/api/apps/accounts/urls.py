@@ -43,9 +43,6 @@ urlpatterns = [
     path("auth/request-info/", get_request_info, name="request_info"),
 
 
-
-
-
     # Authentication endpoints
     path("auth/logout/", LogoutView.as_view(), name="jwt_logout"),
     path("auth/login/", LoginView.as_view(),

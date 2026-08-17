@@ -85,15 +85,16 @@ class AffiliateService(BaseService[InstituteAffiliate, AffiliateRepository]):
             affiliate.id, professional_email)
         logger.info("Academic profile: %s", academic_profile.id)
 
-        EmailService().send_affiliate_confirmation_email(
-            affiliate, academic_profile.academic_email)
+        # EmailService().send_affiliate_confirmation_email(
+        #     affiliate, academic_profile.academic_email)
+        self.verify_affiliation(id=affiliate.id)
         return academic_profile
 
-    def has_valid_token(self, token: uuid.UUID) -> bool:
+    def has_valid_token(self, id: uuid.UUID) -> bool:
         """Verify token"""
         from django.utils import timezone
 
-        affiliate = self.repository.get(verification_token=token)
+        affiliate = self.repository.get(id=id)
         if not affiliate:
             raise ValueError("Affiliate not found.")
 
@@ -102,28 +103,28 @@ class AffiliateService(BaseService[InstituteAffiliate, AffiliateRepository]):
 
         return True
 
-    def is_verified(self, token: uuid.UUID) -> bool:
+    def is_verified(self, id: uuid.UUID) -> bool:
         """Check if affiliation is verified"""
         from django.utils import timezone
 
-        affiliate = self.repository.get(verification_token=token)
+        affiliate = self.repository.get(id=id)
         if not affiliate:
             raise ValueError("Affiliate not found.")
 
         return affiliate.status == AffiliationStatus.VERIFIED and affiliate.verified_at != None
 
-    def verify_affiliation(self, token: uuid.UUID) -> InstituteAffiliate:
+    def verify_affiliation(self, id) -> InstituteAffiliate:
         """Verify affiliation"""
         from django.utils import timezone
 
-        affiliate = self.repository.get(verification_token=token)
+        affiliate = self.repository.get(id=id)
         if not affiliate:
             raise ValueError("Affiliate not found.")
 
-        if self.is_verified(token):
+        if self.is_verified(id):
             raise ValueError("Affiliate is already verified.")
 
-        if not self.has_valid_token(token):
+        if not self.has_valid_token(id):
             raise ValueError("Affiliate token has expired.")
 
         affiliate.status = AffiliationStatus.VERIFIED

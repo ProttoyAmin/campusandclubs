@@ -118,12 +118,12 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "Campus & Clubs API",
     "DESCRIPTION": "Campus & Clubs Backend API",
-    "SCHEMA_PATH_PREFIX": r"/api/v1",
+    "SCHEMA_PATH_PREFIX": r"/api",
     "COMPONENT_SPLIT_REQUEST": True,
     "VERSION": "1.0.0",
-    "POSTPROCESSING_HOOKS": [
-        "core.openapi.hook.merge_allauth_spec",
-    ],
+    # "POSTPROCESSING_HOOKS": [
+    #     "core.openapi.hook.merge_allauth_spec",
+    # ],
 }
 
 SIMPLE_JWT = {

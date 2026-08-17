@@ -3,14 +3,18 @@ import type {
   ClubDetail,
   ClubCreateRequest,
   PatchedClubDetailRequest,
-  ApiClubsUpdate2Response,
+  ClubsUpdate2Response,
   MembershipApplicationCreateRequest,
   ClubJoinRequest,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
-export class ClubClient extends BaseClient<ClubDetail, ClubCreateRequest, PatchedClubDetailRequest> {
+export class ClubClient extends BaseClient<
+  ClubDetail,
+  ClubCreateRequest,
+  PatchedClubDetailRequest
+> {
   constructor() {
     super(config.api.v1.clubs.base);
   }
@@ -27,8 +31,14 @@ export class ClubClient extends BaseClient<ClubDetail, ClubCreateRequest, Patche
     return response;
   }
 
-  async updateClub(clubId: string, data: PatchedClubDetailRequest): Promise<AxiosResponse<ApiClubsUpdate2Response>> {
-    const response = await this.client.patch<ApiClubsUpdate2Response>(`${this.endpoint}${clubId}/`, data);
+  async updateClub(
+    clubId: string,
+    data: PatchedClubDetailRequest,
+  ): Promise<AxiosResponse<ClubsUpdate2Response>> {
+    const response = await this.client.patch<ClubsUpdate2Response>(
+      `${this.endpoint}${clubId}/`,
+      data,
+    );
     return response;
   }
 
@@ -41,9 +51,7 @@ export class ClubClient extends BaseClient<ClubDetail, ClubCreateRequest, Patche
     return response;
   }
 
-  async leaveClub(
-    clubId: string | number,
-  ): Promise<AxiosResponse> {
+  async leaveClub(clubId: string | number): Promise<AxiosResponse> {
     const response = await this.client.delete(
       `${this.endpoint}${clubId}/leave/`,
     );

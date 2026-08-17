@@ -9,7 +9,6 @@ function App() {
   const { data: users } = useUsers();
   const { data: clubs } = useGetClubs();
   const { data } = useSession();
-  console.log(users);
 
   return (
     <div>

@@ -85,7 +85,6 @@ class InstituteDetailUpdateDeleteView(
         return self.get_service(self.request).list_institutes()
 
 
-@claim_affiliation_schema
 class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView):
     """
     Validate user type and institute.
@@ -97,6 +96,7 @@ class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView
     def get_queryset(self) -> QuerySet[InstituteAffiliate]:
         return self.get_service(self.request).list()
 
+    @claim_affiliation_schema
     def post(self, request: Request) -> Response:
         affiliate_service = self.get_service(self.request)
 
@@ -149,12 +149,12 @@ class AffiliationRetreiveUpdateDeleteView(ServiceMixin[AffiliateService], generi
         return self.get_service(self.request).list()
 
 
-@verify_affiliation_schema
 class VerifyAffiliationView(ServiceMixin[AffiliateService], generics.GenericAPIView):
     service_class = AffiliateService
     serializer_class = VerifyAffiliateSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @verify_affiliation_schema
     def post(self, request: Request, **kwargs) -> Response:
         affiliate_service = self.get_service(self.request)
 

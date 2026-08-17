@@ -1,15 +1,14 @@
 import { BaseClient } from "@/settings/api";
 import type {
-  Institute,
-  ApiInstitutesListResponse,
-  UserTypeRequestWritable,
+  InstitutesListResponse,
+  ClaimAffiliateRequest,
   PatchedInstituteDetailRequest,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
 class InstituteClient extends BaseClient<
-  ApiInstitutesListResponse,
+  InstitutesListResponse,
   any,
   PatchedInstituteDetailRequest
 > {
@@ -18,14 +17,16 @@ class InstituteClient extends BaseClient<
   }
 
   //   use comma separated valeus for fields. eg. code,name,etc
-  async list_institutes(fields?: string): Promise<AxiosResponse> {
-    const response = await this.client.get(`${this.endpoint}?fields=${fields}`);
+  async list_institutes(
+    fields?: string,
+  ): Promise<AxiosResponse<InstitutesListResponse>> {
+    const response = await this.client.get<InstitutesListResponse>(
+      `${this.endpoint}?fields=${fields}`,
+    );
     return response;
   }
 
-  async claimAffiliation(
-    data: UserTypeRequestWritable,
-  ): Promise<AxiosResponse> {
+  async claimAffiliation(data: ClaimAffiliateRequest): Promise<AxiosResponse> {
     const response = await this.client.post(`${this.endpoint}claim/`, data);
     return response;
   }

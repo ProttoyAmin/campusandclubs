@@ -17,6 +17,15 @@ export type ActivationRequest = {
 export type BlankEnum = "";
 
 /**
+ * Serializer for assigning a role to a user in a club
+ */
+export type ClaimAffiliateRequest = {
+  role: Role63cEnum;
+  institute: string;
+  email: number;
+};
+
+/**
  * List clubs serializer
  *
  * Used for listing clubs, includes fields like name, owner, origin, about, avatar, banner, privacy, allow_public_posts, is_member, total_members, total_events, total_posts, is_public, club_url, join_url, leave_url, and members_url.
@@ -27,8 +36,10 @@ export type Club = {
   readonly owner: string;
   readonly origin: string;
   about?: string | null;
-  avatar?: string | string | null;
-  banner?: string | string | null;
+  readonly media: string;
+  slug?: string | string;
+  readonly avatar: string;
+  readonly banner: string;
   privacy?: PrivacyEnum;
   allow_public_posts?: boolean;
   readonly is_member: boolean;
@@ -71,8 +82,9 @@ export type ClubDetail = {
   origin?: string | null;
   slug?: string | string;
   about?: string | null;
-  readonly avatar: string | null;
-  readonly banner: string | null;
+  readonly avatar: string;
+  readonly banner: string;
+  readonly media: string;
   privacy?: PrivacyEnum;
   readonly is_public: boolean;
   allow_public_posts?: boolean;
@@ -86,7 +98,7 @@ export type ClubDetail = {
     username: string;
     profile_picture: string | null;
   };
-  readonly member_count: number;
+  readonly total_members: number;
   /**
    * How users join. Constrained by `privacy` — see clean().
    *
@@ -157,6 +169,7 @@ export type ClubDetailStatusEnum =
 export type ClubJoin = {
   readonly id: number;
   readonly joined_at: string;
+  left_at?: string | null;
   readonly user: string;
   readonly club: string;
   application?: string | null;
@@ -176,6 +189,7 @@ export type ClubJoin = {
  * Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
  */
 export type ClubJoinRequest = {
+  left_at?: string | null;
   application?: string | null;
   /**
    * Primary/display role for this membership
@@ -189,6 +203,56 @@ export type ClubJoinRequest = {
 
 export type CustomTokenObtainPairRequest = {
   username_or_email: string;
+};
+
+export type Email = {
+  readonly id: number;
+  club?: string | null;
+  sender?: string | null;
+  readonly recipients: string;
+  cc_recipients?: Array<number>;
+  bcc_recipients?: Array<number>;
+  subject?: string;
+  body: string;
+  attachments?: Array<number>;
+  status?: EmailStatusEnum;
+  readonly created_at: string;
+  readonly updated_at: string;
+  sent_at?: string | null;
+};
+
+/**
+ * * `pending` - Pending
+ * * `queued` - Queued
+ * * `sending` - Sending
+ * * `sent` - Sent
+ * * `partially_failed` - Partially Failed
+ * * `failed` - Failed
+ */
+export type EmailStatusEnum =
+  "pending" | "queued" | "sending" | "sent" | "partially_failed" | "failed";
+
+export type FormSerializers = {
+  readonly id: number;
+  questions: Array<QuestionSerializers>;
+  object_id: string;
+  title?: string;
+  is_active?: boolean;
+  readonly created_at: string;
+  readonly updated_at: string;
+  deleted_at?: string | null;
+  content_type: number;
+  created_by?: string | null;
+};
+
+export type FormSerializersRequest = {
+  questions: Array<QuestionSerializersRequest>;
+  object_id: string;
+  title?: string;
+  is_active?: boolean;
+  deleted_at?: string | null;
+  content_type: number;
+  created_by?: string | null;
 };
 
 /**
@@ -214,20 +278,31 @@ export type Institute = {
   readonly url: string;
 };
 
+export type InstituteAffiliate = {
+  readonly id: number;
+  institute: string;
+  user: string;
+  role?: Role988Enum;
+  readonly verification_token: string;
+  token_expires_at?: string | null;
+  status?: Status8EfEnum;
+  verification_method?: VerificationMethodEnum;
+};
+
 /**
  * Used in Institute details — shows which users (students) belong to it.
  */
 export type InstituteAffiliateForInstitute = {
   readonly id: number;
   user: UserMinimal;
-  role?: RoleEnum;
+  role?: Role988Enum;
 };
 
 /**
  * Used in Institute details — shows which users (students) belong to it.
  */
 export type InstituteAffiliateForInstituteRequest = {
-  role?: RoleEnum;
+  role?: Role988Enum;
 };
 
 /**
@@ -236,14 +311,25 @@ export type InstituteAffiliateForInstituteRequest = {
 export type InstituteAffiliateForUser = {
   readonly id: number;
   institute: Institute;
-  role?: RoleEnum;
+  role?: Role988Enum;
+  status?: Status8EfEnum;
 };
 
 /**
  * Used in User details — shows which institute the user belongs to.
  */
 export type InstituteAffiliateForUserRequest = {
-  role?: RoleEnum;
+  role?: Role988Enum;
+  status?: Status8EfEnum;
+};
+
+export type InstituteAffiliateRequest = {
+  institute: string;
+  user: string;
+  role?: Role988Enum;
+  token_expires_at?: string | null;
+  status?: Status8EfEnum;
+  verification_method?: VerificationMethodEnum;
 };
 
 export type InstituteDetail = {
@@ -322,11 +408,36 @@ export type InstituteRequest = {
  */
 export type JoinModeEnum = "instant" | "application" | "invite_only";
 
+export type MediaList = {
+  readonly id: number;
+  readonly file: string;
+  position?: number;
+  role: Role484Enum;
+};
+
 /**
  * * `IMAGE` - Image
  * * `VIDEO` - Video
  */
 export type MediaTypeEnum = "IMAGE" | "VIDEO";
+
+export type MediaUpload = {
+  readonly id: number;
+  role: Role484Enum;
+  /**
+   * Media
+   */
+  file: string;
+  readonly position: number;
+};
+
+export type MediaUploadRequest = {
+  role: Role484Enum;
+  /**
+   * Media
+   */
+  file: string;
+};
 
 export type MembershipApplication = {
   readonly id: string;
@@ -345,7 +456,7 @@ export type MembershipApplication = {
  */
 export type MembershipApplicationCreate = {
   readonly id: string;
-  readonly applicant: string;
+  applicant: UserMinimal;
   readonly club: string;
   status: Status99fEnum;
   readonly reviewed_by: string | null;
@@ -377,6 +488,20 @@ export type PaginatedClubList = {
   next?: string | null;
   previous?: string | null;
   results: Array<Club>;
+};
+
+export type PaginatedEmailList = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<Email>;
+};
+
+export type PaginatedInstituteList = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<Institute>;
 };
 
 export type PaginatedUserProfileList = {
@@ -422,6 +547,15 @@ export type PatchedClubDetailRequest = {
   status?: ClubDetailStatusEnum;
   scope?: ScopeEnum;
   category?: number | null;
+};
+
+export type PatchedInstituteAffiliateRequest = {
+  institute?: string;
+  user?: string;
+  role?: Role988Enum;
+  token_expires_at?: string | null;
+  status?: Status8EfEnum;
+  verification_method?: VerificationMethodEnum;
 };
 
 export type PatchedInstituteDetailRequest = {
@@ -481,7 +615,6 @@ export type PatchedUserMinimalRequest = {
    * Email address
    */
   email?: string | string;
-  avatar?: string | string | null;
   professional_email?: string | string | null;
   profile_picture?: Blob | File | null;
 };
@@ -500,7 +633,7 @@ export type PatchedUserProfileRequest = {
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -572,7 +705,7 @@ export type PatchedUserRequest = {
   location?: string | null;
   website?: string | string | null;
   date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -738,6 +871,38 @@ export type PreferredEmailEnum = "email" | "professional_email";
  */
 export type PrivacyEnum = "public" | "private" | "secret";
 
+export type QuestionSerializers = {
+  question: string;
+  type: QuestionSerializersTypeEnum;
+  required?: boolean;
+  order?: number;
+};
+
+export type QuestionSerializersRequest = {
+  question: string;
+  type: QuestionSerializersTypeEnum;
+  required?: boolean;
+  order?: number;
+};
+
+/**
+ * * `short_text` - Short Text
+ * * `long_text` - Long Text
+ * * `number` - Number
+ * * `email` - Email
+ * * `url` - URL
+ * * `single_choice` - Single Choice
+ * * `multiple_choice` - Multiple Choice
+ */
+export type QuestionSerializersTypeEnum =
+  | "short_text"
+  | "long_text"
+  | "number"
+  | "email"
+  | "url"
+  | "single_choice"
+  | "multiple_choice";
+
 export type RefreshToken = {
   readonly refresh: string;
   readonly access: string;
@@ -761,12 +926,32 @@ export type RegisterRequest = {
 };
 
 /**
+ * * `avatar` - Avatar
+ * * `cover` - Cover
+ * * `banner` - Banner
+ * * `logo` - Logo
+ * * `gallery` - Gallery
+ * * `attachment` - Attachment
+ */
+export type Role484Enum =
+  "avatar" | "cover" | "banner" | "logo" | "gallery" | "attachment";
+
+/**
+ * * `student` - Student
+ * * `faculty` - Faculty
+ * * `staff` - Staff
+ * * `alumni` - Alumni
+ * * `other` - Other
+ */
+export type Role63cEnum = "student" | "faculty" | "staff" | "alumni" | "other";
+
+/**
  * * `student` - Student
  * * `faculty` - Faculty
  * * `staff` - Staff
  * * `alumni` - Alumni
  */
-export type RoleEnum = "student" | "faculty" | "staff" | "alumni";
+export type Role988Enum = "student" | "faculty" | "staff" | "alumni";
 
 /**
  * * `global` - Global
@@ -774,6 +959,24 @@ export type RoleEnum = "student" | "faculty" | "staff" | "alumni";
  * * `cross_institute` - Cross Institute
  */
 export type ScopeEnum = "global" | "exclusive" | "cross_institute";
+
+export type SendEmail = {
+  receiver: string;
+  cc?: string | string;
+  bcc?: string | string;
+  subject?: string;
+  body: string;
+  club_id: string;
+};
+
+export type SendEmailRequest = {
+  receiver: string;
+  cc?: string | string;
+  bcc?: string | string;
+  subject?: string;
+  body: string;
+  club_id: string;
+};
 
 export type SendEmailReset = {
   email: string;
@@ -821,12 +1024,26 @@ export type SetUsernameRequest = {
 export type Status1A5Enum = "online" | "away" | "dnd";
 
 /**
+ * * `pending` - Pending Verification
+ * * `verified` - Verified
+ * * `rejected` - Rejected
+ */
+export type Status8EfEnum = "pending" | "verified" | "rejected";
+
+/**
  * * `pending` - Pending
  * * `approved` - Approved
  * * `rejected` - Rejected
  * * `withdrawn` - Withdrawn
  */
 export type Status99fEnum = "pending" | "approved" | "rejected" | "withdrawn";
+
+/**
+ * * `club` - club
+ * * `user` - user
+ * * `post` - post
+ */
+export type TargetTypeEnum = "club" | "user" | "post";
 
 export type TokenObtainPair = {
   readonly access: string;
@@ -849,7 +1066,7 @@ export type TokenVerifyRequest = {
  * * `alumni` - Alumni
  * * `other` - Other
  */
-export type TypeEnum = "student" | "faculty" | "staff" | "alumni" | "other";
+export type Type63cEnum = "student" | "faculty" | "staff" | "alumni" | "other";
 
 export type User = {
   readonly id: string;
@@ -896,7 +1113,7 @@ export type User = {
   location?: string | null;
   website?: string | string | null;
   date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -930,6 +1147,19 @@ export type User = {
   user_permissions?: Array<number>;
 };
 
+/**
+ * A flat, frontend-friendly representation of an allauth EmailAddress.
+ */
+export type UserEmail = {
+  readonly id: number;
+  /**
+   * Email address
+   */
+  email: string;
+  primary?: boolean;
+  verified?: boolean;
+};
+
 export type UserMinimal = {
   readonly id: string;
   /**
@@ -940,7 +1170,7 @@ export type UserMinimal = {
    * Email address
    */
   email?: string | string;
-  avatar?: string | string | null;
+  readonly avatar: string;
   professional_email?: string | string | null;
   profile_picture?: string | null;
 };
@@ -954,7 +1184,6 @@ export type UserMinimalRequest = {
    * Email address
    */
   email?: string | string;
-  avatar?: string | string | null;
   professional_email?: string | string | null;
   profile_picture?: Blob | File | null;
 };
@@ -975,15 +1204,15 @@ export type UserProfile = {
    */
   readonly email: string;
   readonly professional_email: string | null;
-  readonly institute: string;
-  readonly institute_id: string;
+  readonly avatar: string;
   readonly url: string;
   gender?: GenderEnum | BlankEnum | NullEnum | null;
   readonly affiliations: Array<InstituteAffiliateForUser>;
+  readonly emails: string;
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -991,8 +1220,7 @@ export type UserProfile = {
    * * `professional_email` - Professional Email
    */
   preferred_email?: PreferredEmailEnum;
-  readonly profile_picture_url: string;
-  readonly avatar: string;
+  readonly media: string;
   bio?: string | null;
   location?: string | null;
   website?: string | string | null;
@@ -1069,7 +1297,7 @@ export type UserProfileRequest = {
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -1141,7 +1369,7 @@ export type UserRequest = {
   location?: string | null;
   website?: string | string | null;
   date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -1173,33 +1401,6 @@ export type UserRequest = {
   user_permissions?: Array<number>;
 };
 
-/**
- * Serializer for assigning a role to a user in a club
- */
-export type UserType = {
-  user_type: UserTypeEnum;
-  institute: string;
-  professional_email: string;
-};
-
-/**
- * * `student` - Student
- * * `faculty` - Faculty
- * * `staff` - Staff
- * * `alumni` - Alumni
- * * `other` - Other
- */
-export type UserTypeEnum = "student" | "faculty" | "staff" | "alumni" | "other";
-
-/**
- * Serializer for assigning a role to a user in a club
- */
-export type UserTypeRequest = {
-  user_type: UserTypeEnum;
-  institute: string;
-  professional_email: string;
-};
-
 export type UsernameResetConfirm = {
   /**
    * Username
@@ -1219,6 +1420,26 @@ export type UsernameResetConfirmRequest = {
 };
 
 /**
+ * * `email` - Email Confirmation
+ * * `manual` - Manual Review
+ */
+export type VerificationMethodEnum = "email" | "manual";
+
+export type VerifyAffiliateRequest = {
+  token: string;
+};
+
+/**
+ * Serializer for assigning a role to a user in a club
+ */
+export type ClaimAffiliateRequestWritable = {
+  role: Role63cEnum;
+  institute: string;
+  email: number;
+  password: string;
+};
+
+/**
  * List clubs serializer
  *
  * Used for listing clubs, includes fields like name, owner, origin, about, avatar, banner, privacy, allow_public_posts, is_member, total_members, total_events, total_posts, is_public, club_url, join_url, leave_url, and members_url.
@@ -1226,8 +1447,7 @@ export type UsernameResetConfirmRequest = {
 export type ClubWritable = {
   name: string;
   about?: string | null;
-  avatar?: string | string | null;
-  banner?: string | string | null;
+  slug?: string | string;
   privacy?: PrivacyEnum;
   allow_public_posts?: boolean;
 };
@@ -1273,6 +1493,7 @@ export type ClubDetailWritable = {
  * Used for joining a club, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
  */
 export type ClubJoinWritable = {
+  left_at?: string | null;
   application?: string | null;
   /**
    * Primary/display role for this membership
@@ -1289,6 +1510,28 @@ export type CustomTokenObtainPairRequestWritable = {
   password: string;
 };
 
+export type EmailWritable = {
+  club?: string | null;
+  sender?: string | null;
+  cc_recipients?: Array<number>;
+  bcc_recipients?: Array<number>;
+  subject?: string;
+  body: string;
+  attachments?: Array<number>;
+  status?: EmailStatusEnum;
+  sent_at?: string | null;
+};
+
+export type FormSerializersWritable = {
+  questions: Array<QuestionSerializers>;
+  object_id: string;
+  title?: string;
+  is_active?: boolean;
+  deleted_at?: string | null;
+  content_type: number;
+  created_by?: string | null;
+};
+
 export type InstituteWritable = {
   name: string;
   code?: string | null;
@@ -1303,18 +1546,28 @@ export type InstituteWritable = {
   social_links?: unknown;
 };
 
+export type InstituteAffiliateWritable = {
+  institute: string;
+  user: string;
+  role?: Role988Enum;
+  token_expires_at?: string | null;
+  status?: Status8EfEnum;
+  verification_method?: VerificationMethodEnum;
+};
+
 /**
  * Used in Institute details — shows which users (students) belong to it.
  */
 export type InstituteAffiliateForInstituteWritable = {
-  role?: RoleEnum;
+  role?: Role988Enum;
 };
 
 /**
  * Used in User details — shows which institute the user belongs to.
  */
 export type InstituteAffiliateForUserWritable = {
-  role?: RoleEnum;
+  role?: Role988Enum;
+  status?: Status8EfEnum;
 };
 
 export type InstituteDetailWritable = {
@@ -1342,6 +1595,29 @@ export type InstituteDetailWritable = {
   social_links?: unknown;
 };
 
+export type MediaListWritable = {
+  position?: number;
+  role: Role484Enum;
+};
+
+export type MediaUploadWritable = {
+  role: Role484Enum;
+  /**
+   * Media
+   */
+  file: string;
+};
+
+export type MediaUploadRequestWritable = {
+  target_type: TargetTypeEnum;
+  object_id: string;
+  role: Role484Enum;
+  /**
+   * Media
+   */
+  file: string;
+};
+
 export type MembershipApplicationWritable = {
   club: string;
   applicant: string;
@@ -1364,6 +1640,20 @@ export type PaginatedClubListWritable = {
   next?: string | null;
   previous?: string | null;
   results: Array<ClubWritable>;
+};
+
+export type PaginatedEmailListWritable = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<EmailWritable>;
+};
+
+export type PaginatedInstituteListWritable = {
+  count: number;
+  next?: string | null;
+  previous?: string | null;
+  results: Array<InstituteWritable>;
 };
 
 export type PaginatedUserProfileListWritable = {
@@ -1476,7 +1766,7 @@ export type UserWritable = {
   location?: string | null;
   website?: string | string | null;
   date_of_birth?: string | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -1508,6 +1798,18 @@ export type UserWritable = {
   user_permissions?: Array<number>;
 };
 
+/**
+ * A flat, frontend-friendly representation of an allauth EmailAddress.
+ */
+export type UserEmailWritable = {
+  /**
+   * Email address
+   */
+  email: string;
+  primary?: boolean;
+  verified?: boolean;
+};
+
 export type UserMinimalWritable = {
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
@@ -1517,7 +1819,6 @@ export type UserMinimalWritable = {
    * Email address
    */
   email?: string | string;
-  avatar?: string | string | null;
   professional_email?: string | string | null;
   profile_picture?: string | null;
 };
@@ -1536,7 +1837,7 @@ export type UserProfileWritable = {
   student_id?: string | null;
   year?: number | null;
   level?: number | null;
-  type?: TypeEnum | BlankEnum | NullEnum | null;
+  type?: Type63cEnum | BlankEnum | NullEnum | null;
   /**
    * Which email address to use for notifications
    *
@@ -1564,17 +1865,7 @@ export type UserProfileWritable = {
   last_active?: string | null;
 };
 
-/**
- * Serializer for assigning a role to a user in a club
- */
-export type UserTypeRequestWritable = {
-  user_type: UserTypeEnum;
-  institute: string;
-  professional_email: string;
-  password: string;
-};
-
-export type ApiAccountsAuthAllRetrieveData = {
+export type AccountsAuthAllRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -1583,14 +1874,14 @@ export type ApiAccountsAuthAllRetrieveData = {
   url: "/api/accounts/auth/{user_id}/all/";
 };
 
-export type ApiAccountsAuthAllRetrieveResponses = {
+export type AccountsAuthAllRetrieveResponses = {
   200: User;
 };
 
-export type ApiAccountsAuthAllRetrieveResponse =
-  ApiAccountsAuthAllRetrieveResponses[keyof ApiAccountsAuthAllRetrieveResponses];
+export type AccountsAuthAllRetrieveResponse =
+  AccountsAuthAllRetrieveResponses[keyof AccountsAuthAllRetrieveResponses];
 
-export type ApiAccountsAuthAllPartialUpdateData = {
+export type AccountsAuthAllPartialUpdateData = {
   body?: PatchedUserRequest;
   path: {
     user_id: string;
@@ -1599,14 +1890,14 @@ export type ApiAccountsAuthAllPartialUpdateData = {
   url: "/api/accounts/auth/{user_id}/all/";
 };
 
-export type ApiAccountsAuthAllPartialUpdateResponses = {
+export type AccountsAuthAllPartialUpdateResponses = {
   200: User;
 };
 
-export type ApiAccountsAuthAllPartialUpdateResponse =
-  ApiAccountsAuthAllPartialUpdateResponses[keyof ApiAccountsAuthAllPartialUpdateResponses];
+export type AccountsAuthAllPartialUpdateResponse =
+  AccountsAuthAllPartialUpdateResponses[keyof AccountsAuthAllPartialUpdateResponses];
 
-export type ApiAccountsAuthAllUpdateData = {
+export type AccountsAuthAllUpdateData = {
   body: UserRequest;
   path: {
     user_id: string;
@@ -1615,14 +1906,14 @@ export type ApiAccountsAuthAllUpdateData = {
   url: "/api/accounts/auth/{user_id}/all/";
 };
 
-export type ApiAccountsAuthAllUpdateResponses = {
+export type AccountsAuthAllUpdateResponses = {
   200: User;
 };
 
-export type ApiAccountsAuthAllUpdateResponse =
-  ApiAccountsAuthAllUpdateResponses[keyof ApiAccountsAuthAllUpdateResponses];
+export type AccountsAuthAllUpdateResponse =
+  AccountsAuthAllUpdateResponses[keyof AccountsAuthAllUpdateResponses];
 
-export type ApiAccountsAuthPostsRetrieveData = {
+export type AccountsAuthPostsRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -1631,7 +1922,7 @@ export type ApiAccountsAuthPostsRetrieveData = {
   url: "/api/accounts/auth/{user_id}/posts/";
 };
 
-export type ApiAccountsAuthPostsRetrieveResponses = {
+export type AccountsAuthPostsRetrieveResponses = {
   /**
    * No response body
    */
@@ -1714,42 +2005,42 @@ export type ListUsers2Responses = {
 
 export type ListUsers2Response = ListUsers2Responses[keyof ListUsers2Responses];
 
-export type ApiAccountsAuthJwtCreateCreateData = {
+export type AccountsAuthJwtCreateCreateData = {
   body: TokenObtainPairRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/jwt/create/";
 };
 
-export type ApiAccountsAuthJwtCreateCreateResponses = {
+export type AccountsAuthJwtCreateCreateResponses = {
   200: TokenObtainPair;
 };
 
-export type ApiAccountsAuthJwtCreateCreateResponse =
-  ApiAccountsAuthJwtCreateCreateResponses[keyof ApiAccountsAuthJwtCreateCreateResponses];
+export type AccountsAuthJwtCreateCreateResponse =
+  AccountsAuthJwtCreateCreateResponses[keyof AccountsAuthJwtCreateCreateResponses];
 
-export type ApiAccountsAuthJwtRefreshCreateData = {
+export type AccountsAuthJwtRefreshCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/jwt/refresh/";
 };
 
-export type ApiAccountsAuthJwtRefreshCreateResponses = {
+export type AccountsAuthJwtRefreshCreateResponses = {
   200: RefreshToken;
 };
 
-export type ApiAccountsAuthJwtRefreshCreateResponse =
-  ApiAccountsAuthJwtRefreshCreateResponses[keyof ApiAccountsAuthJwtRefreshCreateResponses];
+export type AccountsAuthJwtRefreshCreateResponse =
+  AccountsAuthJwtRefreshCreateResponses[keyof AccountsAuthJwtRefreshCreateResponses];
 
-export type ApiAccountsAuthJwtVerifyCreateData = {
+export type AccountsAuthJwtVerifyCreateData = {
   body: TokenVerifyRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/jwt/verify/";
 };
 
-export type ApiAccountsAuthJwtVerifyCreateResponses = {
+export type AccountsAuthJwtVerifyCreateResponses = {
   /**
    * No response body
    */
@@ -1779,91 +2070,139 @@ export type LoginResponses = {
 
 export type LoginResponse = LoginResponses[keyof LoginResponses];
 
-export type ApiAccountsAuthLogoutCreateData = {
+export type AccountsAuthLogoutCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/logout/";
 };
 
-export type ApiAccountsAuthLogoutCreateResponses = {
+export type AccountsAuthLogoutCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiAccountsAuthMeRetrieveData = {
+export type AccountsAuthMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/me/";
 };
 
-export type ApiAccountsAuthMeRetrieveResponses = {
+export type AccountsAuthMeRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiAccountsAuthRefreshCreateData = {
+export type GetMyAffiliationsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/accounts/auth/me/affiliations/";
+};
+
+export type GetMyAffiliationsErrors = {
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type GetMyAffiliationsResponses = {
+  /**
+   * The authenticated user's affiliations.
+   */
+  200: Array<InstituteAffiliateForUser>;
+};
+
+export type GetMyAffiliationsResponse =
+  GetMyAffiliationsResponses[keyof GetMyAffiliationsResponses];
+
+export type GetMyEmailsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/accounts/auth/me/emails/";
+};
+
+export type GetMyEmailsErrors = {
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type GetMyEmailsResponses = {
+  /**
+   * The authenticated user's emails.
+   */
+  200: Array<UserEmail>;
+};
+
+export type GetMyEmailsResponse =
+  GetMyEmailsResponses[keyof GetMyEmailsResponses];
+
+export type AccountsAuthRefreshCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/refresh/";
 };
 
-export type ApiAccountsAuthRefreshCreateResponses = {
+export type AccountsAuthRefreshCreateResponses = {
   200: RefreshToken;
 };
 
-export type ApiAccountsAuthRefreshCreateResponse =
-  ApiAccountsAuthRefreshCreateResponses[keyof ApiAccountsAuthRefreshCreateResponses];
+export type AccountsAuthRefreshCreateResponse =
+  AccountsAuthRefreshCreateResponses[keyof AccountsAuthRefreshCreateResponses];
 
-export type ApiAccountsAuthRequestInfoRetrieveData = {
+export type AccountsAuthRequestInfoRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/request-info/";
 };
 
-export type ApiAccountsAuthRequestInfoRetrieveResponses = {
+export type AccountsAuthRequestInfoRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiAccountsAuthUsersListData = {
+export type AccountsAuthUsersListData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/";
 };
 
-export type ApiAccountsAuthUsersListResponses = {
+export type AccountsAuthUsersListResponses = {
   200: Array<UserMinimal>;
 };
 
-export type ApiAccountsAuthUsersListResponse =
-  ApiAccountsAuthUsersListResponses[keyof ApiAccountsAuthUsersListResponses];
+export type AccountsAuthUsersListResponse =
+  AccountsAuthUsersListResponses[keyof AccountsAuthUsersListResponses];
 
-export type ApiAccountsAuthUsersCreateData = {
+export type AccountsAuthUsersCreateData = {
   body: RegisterRequestWritable;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/";
 };
 
-export type ApiAccountsAuthUsersCreateResponses = {
+export type AccountsAuthUsersCreateResponses = {
   201: Register;
 };
 
-export type ApiAccountsAuthUsersCreateResponse =
-  ApiAccountsAuthUsersCreateResponses[keyof ApiAccountsAuthUsersCreateResponses];
+export type AccountsAuthUsersCreateResponse =
+  AccountsAuthUsersCreateResponses[keyof AccountsAuthUsersCreateResponses];
 
-export type ApiAccountsAuthUsersDestroyData = {
+export type AccountsAuthUsersDestroyData = {
   body?: never;
   path: {
     /**
@@ -1875,17 +2214,17 @@ export type ApiAccountsAuthUsersDestroyData = {
   url: "/api/accounts/auth/users/{id}/";
 };
 
-export type ApiAccountsAuthUsersDestroyResponses = {
+export type AccountsAuthUsersDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiAccountsAuthUsersDestroyResponse =
-  ApiAccountsAuthUsersDestroyResponses[keyof ApiAccountsAuthUsersDestroyResponses];
+export type AccountsAuthUsersDestroyResponse =
+  AccountsAuthUsersDestroyResponses[keyof AccountsAuthUsersDestroyResponses];
 
-export type ApiAccountsAuthUsersRetrieveData = {
+export type AccountsAuthUsersRetrieveData = {
   body?: never;
   path: {
     /**
@@ -1897,14 +2236,14 @@ export type ApiAccountsAuthUsersRetrieveData = {
   url: "/api/accounts/auth/users/{id}/";
 };
 
-export type ApiAccountsAuthUsersRetrieveResponses = {
+export type AccountsAuthUsersRetrieveResponses = {
   200: UserMinimal;
 };
 
-export type ApiAccountsAuthUsersRetrieveResponse =
-  ApiAccountsAuthUsersRetrieveResponses[keyof ApiAccountsAuthUsersRetrieveResponses];
+export type AccountsAuthUsersRetrieveResponse =
+  AccountsAuthUsersRetrieveResponses[keyof AccountsAuthUsersRetrieveResponses];
 
-export type ApiAccountsAuthUsersPartialUpdateData = {
+export type AccountsAuthUsersPartialUpdateData = {
   body?: PatchedUserMinimalRequest;
   path: {
     /**
@@ -1916,14 +2255,14 @@ export type ApiAccountsAuthUsersPartialUpdateData = {
   url: "/api/accounts/auth/users/{id}/";
 };
 
-export type ApiAccountsAuthUsersPartialUpdateResponses = {
+export type AccountsAuthUsersPartialUpdateResponses = {
   200: UserMinimal;
 };
 
-export type ApiAccountsAuthUsersPartialUpdateResponse =
-  ApiAccountsAuthUsersPartialUpdateResponses[keyof ApiAccountsAuthUsersPartialUpdateResponses];
+export type AccountsAuthUsersPartialUpdateResponse =
+  AccountsAuthUsersPartialUpdateResponses[keyof AccountsAuthUsersPartialUpdateResponses];
 
-export type ApiAccountsAuthUsersUpdateData = {
+export type AccountsAuthUsersUpdateData = {
   body: UserMinimalRequest;
   path: {
     /**
@@ -1935,185 +2274,185 @@ export type ApiAccountsAuthUsersUpdateData = {
   url: "/api/accounts/auth/users/{id}/";
 };
 
-export type ApiAccountsAuthUsersUpdateResponses = {
+export type AccountsAuthUsersUpdateResponses = {
   200: UserMinimal;
 };
 
-export type ApiAccountsAuthUsersUpdateResponse =
-  ApiAccountsAuthUsersUpdateResponses[keyof ApiAccountsAuthUsersUpdateResponses];
+export type AccountsAuthUsersUpdateResponse =
+  AccountsAuthUsersUpdateResponses[keyof AccountsAuthUsersUpdateResponses];
 
-export type ApiAccountsAuthUsersActivationCreateData = {
+export type AccountsAuthUsersActivationCreateData = {
   body: ActivationRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/activation/";
 };
 
-export type ApiAccountsAuthUsersActivationCreateResponses = {
+export type AccountsAuthUsersActivationCreateResponses = {
   200: Activation;
 };
 
-export type ApiAccountsAuthUsersActivationCreateResponse =
-  ApiAccountsAuthUsersActivationCreateResponses[keyof ApiAccountsAuthUsersActivationCreateResponses];
+export type AccountsAuthUsersActivationCreateResponse =
+  AccountsAuthUsersActivationCreateResponses[keyof AccountsAuthUsersActivationCreateResponses];
 
-export type ApiAccountsAuthUsersMeDestroyData = {
+export type AccountsAuthUsersMeDestroyData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/me/";
 };
 
-export type ApiAccountsAuthUsersMeDestroyResponses = {
+export type AccountsAuthUsersMeDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiAccountsAuthUsersMeDestroyResponse =
-  ApiAccountsAuthUsersMeDestroyResponses[keyof ApiAccountsAuthUsersMeDestroyResponses];
+export type AccountsAuthUsersMeDestroyResponse =
+  AccountsAuthUsersMeDestroyResponses[keyof AccountsAuthUsersMeDestroyResponses];
 
-export type ApiAccountsAuthUsersMeRetrieveData = {
+export type AccountsAuthUsersMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/me/";
 };
 
-export type ApiAccountsAuthUsersMeRetrieveResponses = {
+export type AccountsAuthUsersMeRetrieveResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersMeRetrieveResponse =
-  ApiAccountsAuthUsersMeRetrieveResponses[keyof ApiAccountsAuthUsersMeRetrieveResponses];
+export type AccountsAuthUsersMeRetrieveResponse =
+  AccountsAuthUsersMeRetrieveResponses[keyof AccountsAuthUsersMeRetrieveResponses];
 
-export type ApiAccountsAuthUsersMePartialUpdateData = {
+export type AccountsAuthUsersMePartialUpdateData = {
   body?: PatchedUserProfileRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/me/";
 };
 
-export type ApiAccountsAuthUsersMePartialUpdateResponses = {
+export type AccountsAuthUsersMePartialUpdateResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersMePartialUpdateResponse =
-  ApiAccountsAuthUsersMePartialUpdateResponses[keyof ApiAccountsAuthUsersMePartialUpdateResponses];
+export type AccountsAuthUsersMePartialUpdateResponse =
+  AccountsAuthUsersMePartialUpdateResponses[keyof AccountsAuthUsersMePartialUpdateResponses];
 
-export type ApiAccountsAuthUsersMeUpdateData = {
+export type AccountsAuthUsersMeUpdateData = {
   body: UserProfileRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/me/";
 };
 
-export type ApiAccountsAuthUsersMeUpdateResponses = {
+export type AccountsAuthUsersMeUpdateResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersMeUpdateResponse =
-  ApiAccountsAuthUsersMeUpdateResponses[keyof ApiAccountsAuthUsersMeUpdateResponses];
+export type AccountsAuthUsersMeUpdateResponse =
+  AccountsAuthUsersMeUpdateResponses[keyof AccountsAuthUsersMeUpdateResponses];
 
-export type ApiAccountsAuthUsersResendActivationCreateData = {
+export type AccountsAuthUsersResendActivationCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/resend_activation/";
 };
 
-export type ApiAccountsAuthUsersResendActivationCreateResponses = {
+export type AccountsAuthUsersResendActivationCreateResponses = {
   200: SendEmailReset;
 };
 
-export type ApiAccountsAuthUsersResendActivationCreateResponse =
-  ApiAccountsAuthUsersResendActivationCreateResponses[keyof ApiAccountsAuthUsersResendActivationCreateResponses];
+export type AccountsAuthUsersResendActivationCreateResponse =
+  AccountsAuthUsersResendActivationCreateResponses[keyof AccountsAuthUsersResendActivationCreateResponses];
 
-export type ApiAccountsAuthUsersResetPasswordCreateData = {
+export type AccountsAuthUsersResetPasswordCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/reset_password/";
 };
 
-export type ApiAccountsAuthUsersResetPasswordCreateResponses = {
+export type AccountsAuthUsersResetPasswordCreateResponses = {
   200: SendEmailReset;
 };
 
-export type ApiAccountsAuthUsersResetPasswordCreateResponse =
-  ApiAccountsAuthUsersResetPasswordCreateResponses[keyof ApiAccountsAuthUsersResetPasswordCreateResponses];
+export type AccountsAuthUsersResetPasswordCreateResponse =
+  AccountsAuthUsersResetPasswordCreateResponses[keyof AccountsAuthUsersResetPasswordCreateResponses];
 
-export type ApiAccountsAuthUsersResetPasswordConfirmCreateData = {
+export type AccountsAuthUsersResetPasswordConfirmCreateData = {
   body: PasswordResetConfirmRetypeRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/reset_password_confirm/";
 };
 
-export type ApiAccountsAuthUsersResetPasswordConfirmCreateResponses = {
+export type AccountsAuthUsersResetPasswordConfirmCreateResponses = {
   200: PasswordResetConfirmRetype;
 };
 
-export type ApiAccountsAuthUsersResetPasswordConfirmCreateResponse =
-  ApiAccountsAuthUsersResetPasswordConfirmCreateResponses[keyof ApiAccountsAuthUsersResetPasswordConfirmCreateResponses];
+export type AccountsAuthUsersResetPasswordConfirmCreateResponse =
+  AccountsAuthUsersResetPasswordConfirmCreateResponses[keyof AccountsAuthUsersResetPasswordConfirmCreateResponses];
 
-export type ApiAccountsAuthUsersResetUsernameCreateData = {
+export type AccountsAuthUsersResetUsernameCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/reset_username/";
 };
 
-export type ApiAccountsAuthUsersResetUsernameCreateResponses = {
+export type AccountsAuthUsersResetUsernameCreateResponses = {
   200: SendEmailReset;
 };
 
-export type ApiAccountsAuthUsersResetUsernameCreateResponse =
-  ApiAccountsAuthUsersResetUsernameCreateResponses[keyof ApiAccountsAuthUsersResetUsernameCreateResponses];
+export type AccountsAuthUsersResetUsernameCreateResponse =
+  AccountsAuthUsersResetUsernameCreateResponses[keyof AccountsAuthUsersResetUsernameCreateResponses];
 
-export type ApiAccountsAuthUsersResetUsernameConfirmCreateData = {
+export type AccountsAuthUsersResetUsernameConfirmCreateData = {
   body: UsernameResetConfirmRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/reset_username_confirm/";
 };
 
-export type ApiAccountsAuthUsersResetUsernameConfirmCreateResponses = {
+export type AccountsAuthUsersResetUsernameConfirmCreateResponses = {
   200: UsernameResetConfirm;
 };
 
-export type ApiAccountsAuthUsersResetUsernameConfirmCreateResponse =
-  ApiAccountsAuthUsersResetUsernameConfirmCreateResponses[keyof ApiAccountsAuthUsersResetUsernameConfirmCreateResponses];
+export type AccountsAuthUsersResetUsernameConfirmCreateResponse =
+  AccountsAuthUsersResetUsernameConfirmCreateResponses[keyof AccountsAuthUsersResetUsernameConfirmCreateResponses];
 
-export type ApiAccountsAuthUsersSetPasswordCreateData = {
+export type AccountsAuthUsersSetPasswordCreateData = {
   body: SetPasswordRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/set_password/";
 };
 
-export type ApiAccountsAuthUsersSetPasswordCreateResponses = {
+export type AccountsAuthUsersSetPasswordCreateResponses = {
   200: SetPassword;
 };
 
-export type ApiAccountsAuthUsersSetPasswordCreateResponse =
-  ApiAccountsAuthUsersSetPasswordCreateResponses[keyof ApiAccountsAuthUsersSetPasswordCreateResponses];
+export type AccountsAuthUsersSetPasswordCreateResponse =
+  AccountsAuthUsersSetPasswordCreateResponses[keyof AccountsAuthUsersSetPasswordCreateResponses];
 
-export type ApiAccountsAuthUsersSetUsernameCreateData = {
+export type AccountsAuthUsersSetUsernameCreateData = {
   body: SetUsernameRequest;
   path?: never;
   query?: never;
   url: "/api/accounts/auth/users/set_username/";
 };
 
-export type ApiAccountsAuthUsersSetUsernameCreateResponses = {
+export type AccountsAuthUsersSetUsernameCreateResponses = {
   200: SetUsername;
 };
 
-export type ApiAccountsAuthUsersSetUsernameCreateResponse =
-  ApiAccountsAuthUsersSetUsernameCreateResponses[keyof ApiAccountsAuthUsersSetUsernameCreateResponses];
+export type AccountsAuthUsersSetUsernameCreateResponse =
+  AccountsAuthUsersSetUsernameCreateResponses[keyof AccountsAuthUsersSetUsernameCreateResponses];
 
-export type ApiAccountsAuthUsersUserDestroyData = {
+export type AccountsAuthUsersUserDestroyData = {
   body?: never;
   path: {
     username: string;
@@ -2122,17 +2461,17 @@ export type ApiAccountsAuthUsersUserDestroyData = {
   url: "/api/accounts/auth/users/user/{username}/";
 };
 
-export type ApiAccountsAuthUsersUserDestroyResponses = {
+export type AccountsAuthUsersUserDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiAccountsAuthUsersUserDestroyResponse =
-  ApiAccountsAuthUsersUserDestroyResponses[keyof ApiAccountsAuthUsersUserDestroyResponses];
+export type AccountsAuthUsersUserDestroyResponse =
+  AccountsAuthUsersUserDestroyResponses[keyof AccountsAuthUsersUserDestroyResponses];
 
-export type ApiAccountsAuthUsersUserRetrieveData = {
+export type AccountsAuthUsersUserRetrieveData = {
   body?: never;
   path: {
     username: string;
@@ -2141,14 +2480,14 @@ export type ApiAccountsAuthUsersUserRetrieveData = {
   url: "/api/accounts/auth/users/user/{username}/";
 };
 
-export type ApiAccountsAuthUsersUserRetrieveResponses = {
+export type AccountsAuthUsersUserRetrieveResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersUserRetrieveResponse =
-  ApiAccountsAuthUsersUserRetrieveResponses[keyof ApiAccountsAuthUsersUserRetrieveResponses];
+export type AccountsAuthUsersUserRetrieveResponse =
+  AccountsAuthUsersUserRetrieveResponses[keyof AccountsAuthUsersUserRetrieveResponses];
 
-export type ApiAccountsAuthUsersUserPartialUpdateData = {
+export type AccountsAuthUsersUserPartialUpdateData = {
   body?: PatchedUserProfileRequest;
   path: {
     username: string;
@@ -2157,14 +2496,14 @@ export type ApiAccountsAuthUsersUserPartialUpdateData = {
   url: "/api/accounts/auth/users/user/{username}/";
 };
 
-export type ApiAccountsAuthUsersUserPartialUpdateResponses = {
+export type AccountsAuthUsersUserPartialUpdateResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersUserPartialUpdateResponse =
-  ApiAccountsAuthUsersUserPartialUpdateResponses[keyof ApiAccountsAuthUsersUserPartialUpdateResponses];
+export type AccountsAuthUsersUserPartialUpdateResponse =
+  AccountsAuthUsersUserPartialUpdateResponses[keyof AccountsAuthUsersUserPartialUpdateResponses];
 
-export type ApiAccountsAuthUsersUserUpdateData = {
+export type AccountsAuthUsersUserUpdateData = {
   body: UserProfileRequest;
   path: {
     username: string;
@@ -2173,14 +2512,14 @@ export type ApiAccountsAuthUsersUserUpdateData = {
   url: "/api/accounts/auth/users/user/{username}/";
 };
 
-export type ApiAccountsAuthUsersUserUpdateResponses = {
+export type AccountsAuthUsersUserUpdateResponses = {
   200: UserProfile;
 };
 
-export type ApiAccountsAuthUsersUserUpdateResponse =
-  ApiAccountsAuthUsersUserUpdateResponses[keyof ApiAccountsAuthUsersUserUpdateResponses];
+export type AccountsAuthUsersUserUpdateResponse =
+  AccountsAuthUsersUserUpdateResponses[keyof AccountsAuthUsersUserUpdateResponses];
 
-export type ApiAccountsAuthUsersUserActivityRetrieveData = {
+export type AccountsAuthUsersUserActivityRetrieveData = {
   body?: never;
   path: {
     username: string;
@@ -2189,14 +2528,14 @@ export type ApiAccountsAuthUsersUserActivityRetrieveData = {
   url: "/api/accounts/auth/users/user/{username}/activity/";
 };
 
-export type ApiAccountsAuthUsersUserActivityRetrieveResponses = {
+export type AccountsAuthUsersUserActivityRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiAccountsAuthUsersUserClubsRetrieveData = {
+export type AccountsAuthUsersUserClubsRetrieveData = {
   body?: never;
   path: {
     username: string;
@@ -2205,42 +2544,28 @@ export type ApiAccountsAuthUsersUserClubsRetrieveData = {
   url: "/api/accounts/auth/users/user/{username}/clubs/";
 };
 
-export type ApiAccountsAuthUsersUserClubsRetrieveResponses = {
+export type AccountsAuthUsersUserClubsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiAccountsAuthValidateCreateData = {
-  body: UserTypeRequestWritable;
-  path?: never;
-  query?: never;
-  url: "/api/accounts/auth/validate/";
-};
-
-export type ApiAccountsAuthValidateCreateResponses = {
-  200: UserType;
-};
-
-export type ApiAccountsAuthValidateCreateResponse =
-  ApiAccountsAuthValidateCreateResponses[keyof ApiAccountsAuthValidateCreateResponses];
-
-export type ApiActivitiesCommentsRetrieveData = {
+export type ActivitiesCommentsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/activities/comments/";
 };
 
-export type ApiActivitiesCommentsRetrieveResponses = {
+export type ActivitiesCommentsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesCommentsDestroyData = {
+export type ActivitiesCommentsDestroyData = {
   body?: never;
   path: {
     comment_id: number;
@@ -2249,17 +2574,17 @@ export type ApiActivitiesCommentsDestroyData = {
   url: "/api/activities/comments/{comment_id}/";
 };
 
-export type ApiActivitiesCommentsDestroyResponses = {
+export type ActivitiesCommentsDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiActivitiesCommentsDestroyResponse =
-  ApiActivitiesCommentsDestroyResponses[keyof ApiActivitiesCommentsDestroyResponses];
+export type ActivitiesCommentsDestroyResponse =
+  ActivitiesCommentsDestroyResponses[keyof ActivitiesCommentsDestroyResponses];
 
-export type ApiActivitiesCommentsRetrieve2Data = {
+export type ActivitiesCommentsRetrieve2Data = {
   body?: never;
   path: {
     comment_id: number;
@@ -2268,14 +2593,14 @@ export type ApiActivitiesCommentsRetrieve2Data = {
   url: "/api/activities/comments/{comment_id}/";
 };
 
-export type ApiActivitiesCommentsRetrieve2Responses = {
+export type ActivitiesCommentsRetrieve2Responses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesCommentsPartialUpdateData = {
+export type ActivitiesCommentsPartialUpdateData = {
   body?: never;
   path: {
     comment_id: number;
@@ -2284,14 +2609,14 @@ export type ApiActivitiesCommentsPartialUpdateData = {
   url: "/api/activities/comments/{comment_id}/";
 };
 
-export type ApiActivitiesCommentsPartialUpdateResponses = {
+export type ActivitiesCommentsPartialUpdateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesCommentsRepliesRetrieveData = {
+export type ActivitiesCommentsRepliesRetrieveData = {
   body?: never;
   path: {
     comment_id: number;
@@ -2300,70 +2625,70 @@ export type ApiActivitiesCommentsRepliesRetrieveData = {
   url: "/api/activities/comments/{comment_id}/replies/";
 };
 
-export type ApiActivitiesCommentsRepliesRetrieveResponses = {
+export type ActivitiesCommentsRepliesRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesCommentsCreateCreateData = {
+export type ActivitiesCommentsCreateCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/activities/comments/create/";
 };
 
-export type ApiActivitiesCommentsCreateCreateResponses = {
+export type ActivitiesCommentsCreateCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesLikesRetrieveData = {
+export type ActivitiesLikesRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/activities/likes/";
 };
 
-export type ApiActivitiesLikesRetrieveResponses = {
+export type ActivitiesLikesRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesLikesCheckRetrieveData = {
+export type ActivitiesLikesCheckRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/activities/likes/check/";
 };
 
-export type ApiActivitiesLikesCheckRetrieveResponses = {
+export type ActivitiesLikesCheckRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiActivitiesLikesToggleCreateData = {
+export type ActivitiesLikesToggleCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/activities/likes/toggle/";
 };
 
-export type ApiActivitiesLikesToggleCreateResponses = {
+export type ActivitiesLikesToggleCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiClubsListData = {
+export type ClubsListData = {
   body?: never;
   path?: never;
   query?: {
@@ -2379,28 +2704,27 @@ export type ApiClubsListData = {
   url: "/api/clubs/";
 };
 
-export type ApiClubsListResponses = {
+export type ClubsListResponses = {
   200: PaginatedClubList;
 };
 
-export type ApiClubsListResponse =
-  ApiClubsListResponses[keyof ApiClubsListResponses];
+export type ClubsListResponse = ClubsListResponses[keyof ClubsListResponses];
 
-export type ApiClubsCreateData = {
+export type ClubsCreateData = {
   body: ClubCreateRequest;
   path?: never;
   query?: never;
   url: "/api/clubs/";
 };
 
-export type ApiClubsCreateResponses = {
+export type ClubsCreateResponses = {
   201: ClubCreate;
 };
 
-export type ApiClubsCreateResponse =
-  ApiClubsCreateResponses[keyof ApiClubsCreateResponses];
+export type ClubsCreateResponse =
+  ClubsCreateResponses[keyof ClubsCreateResponses];
 
-export type ApiClubsDestroyData = {
+export type ClubsDestroyData = {
   body?: never;
   path: {
     id: string;
@@ -2409,17 +2733,17 @@ export type ApiClubsDestroyData = {
   url: "/api/clubs/{id}/";
 };
 
-export type ApiClubsDestroyResponses = {
+export type ClubsDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiClubsDestroyResponse =
-  ApiClubsDestroyResponses[keyof ApiClubsDestroyResponses];
+export type ClubsDestroyResponse =
+  ClubsDestroyResponses[keyof ClubsDestroyResponses];
 
-export type ApiClubsRetrieveData = {
+export type ClubsRetrieveData = {
   body?: never;
   path: {
     id: string;
@@ -2428,14 +2752,14 @@ export type ApiClubsRetrieveData = {
   url: "/api/clubs/{id}/";
 };
 
-export type ApiClubsRetrieveResponses = {
+export type ClubsRetrieveResponses = {
   200: ClubDetail;
 };
 
-export type ApiClubsRetrieveResponse =
-  ApiClubsRetrieveResponses[keyof ApiClubsRetrieveResponses];
+export type ClubsRetrieveResponse =
+  ClubsRetrieveResponses[keyof ClubsRetrieveResponses];
 
-export type ApiClubsPartialUpdateData = {
+export type ClubsPartialUpdateData = {
   body?: PatchedClubDetailRequest;
   path: {
     id: string;
@@ -2444,14 +2768,14 @@ export type ApiClubsPartialUpdateData = {
   url: "/api/clubs/{id}/";
 };
 
-export type ApiClubsPartialUpdateResponses = {
+export type ClubsPartialUpdateResponses = {
   200: ClubDetail;
 };
 
-export type ApiClubsPartialUpdateResponse =
-  ApiClubsPartialUpdateResponses[keyof ApiClubsPartialUpdateResponses];
+export type ClubsPartialUpdateResponse =
+  ClubsPartialUpdateResponses[keyof ClubsPartialUpdateResponses];
 
-export type ApiClubsUpdateData = {
+export type ClubsUpdateData = {
   body: ClubDetailRequest;
   path: {
     id: string;
@@ -2460,14 +2784,46 @@ export type ApiClubsUpdateData = {
   url: "/api/clubs/{id}/";
 };
 
-export type ApiClubsUpdateResponses = {
+export type ClubsUpdateResponses = {
   200: ClubDetail;
 };
 
-export type ApiClubsUpdateResponse =
-  ApiClubsUpdateResponses[keyof ApiClubsUpdateResponses];
+export type ClubsUpdateResponse =
+  ClubsUpdateResponses[keyof ClubsUpdateResponses];
 
-export type ApiClubsApplicationsListData = {
+export type ClubsApplicationFormsListData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/clubs/{id}/application-forms/";
+};
+
+export type ClubsApplicationFormsListResponses = {
+  200: Array<FormSerializers>;
+};
+
+export type ClubsApplicationFormsListResponse =
+  ClubsApplicationFormsListResponses[keyof ClubsApplicationFormsListResponses];
+
+export type ClubsApplicationFormsCreateData = {
+  body: FormSerializersRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/clubs/{id}/application-forms/";
+};
+
+export type ClubsApplicationFormsCreateResponses = {
+  201: FormSerializers;
+};
+
+export type ClubsApplicationFormsCreateResponse =
+  ClubsApplicationFormsCreateResponses[keyof ClubsApplicationFormsCreateResponses];
+
+export type ClubsApplicationsListData = {
   body?: never;
   path: {
     id: string;
@@ -2476,14 +2832,14 @@ export type ApiClubsApplicationsListData = {
   url: "/api/clubs/{id}/applications/";
 };
 
-export type ApiClubsApplicationsListResponses = {
+export type ClubsApplicationsListResponses = {
   200: Array<MembershipApplicationCreate>;
 };
 
-export type ApiClubsApplicationsListResponse =
-  ApiClubsApplicationsListResponses[keyof ApiClubsApplicationsListResponses];
+export type ClubsApplicationsListResponse =
+  ClubsApplicationsListResponses[keyof ClubsApplicationsListResponses];
 
-export type ApiClubsApplicationsCreateData = {
+export type ClubsApplicationsCreateData = {
   body: MembershipApplicationCreateRequest;
   path: {
     id: string;
@@ -2492,14 +2848,14 @@ export type ApiClubsApplicationsCreateData = {
   url: "/api/clubs/{id}/applications/";
 };
 
-export type ApiClubsApplicationsCreateResponses = {
+export type ClubsApplicationsCreateResponses = {
   201: MembershipApplicationCreate;
 };
 
-export type ApiClubsApplicationsCreateResponse =
-  ApiClubsApplicationsCreateResponses[keyof ApiClubsApplicationsCreateResponses];
+export type ClubsApplicationsCreateResponse =
+  ClubsApplicationsCreateResponses[keyof ClubsApplicationsCreateResponses];
 
-export type ApiClubsApplicationsList2Data = {
+export type ClubsApplicationsList2Data = {
   body?: never;
   path: {
     application_pk: string;
@@ -2509,14 +2865,14 @@ export type ApiClubsApplicationsList2Data = {
   url: "/api/clubs/{id}/applications/{application_pk}/";
 };
 
-export type ApiClubsApplicationsList2Responses = {
+export type ClubsApplicationsList2Responses = {
   200: Array<MembershipApplicationCreate>;
 };
 
-export type ApiClubsApplicationsList2Response =
-  ApiClubsApplicationsList2Responses[keyof ApiClubsApplicationsList2Responses];
+export type ClubsApplicationsList2Response =
+  ClubsApplicationsList2Responses[keyof ClubsApplicationsList2Responses];
 
-export type ApiClubsApplicationsCreate2Data = {
+export type ClubsApplicationsCreate2Data = {
   body: MembershipApplicationCreateRequest;
   path: {
     application_pk: string;
@@ -2526,14 +2882,14 @@ export type ApiClubsApplicationsCreate2Data = {
   url: "/api/clubs/{id}/applications/{application_pk}/";
 };
 
-export type ApiClubsApplicationsCreate2Responses = {
+export type ClubsApplicationsCreate2Responses = {
   201: MembershipApplicationCreate;
 };
 
-export type ApiClubsApplicationsCreate2Response =
-  ApiClubsApplicationsCreate2Responses[keyof ApiClubsApplicationsCreate2Responses];
+export type ClubsApplicationsCreate2Response =
+  ClubsApplicationsCreate2Responses[keyof ClubsApplicationsCreate2Responses];
 
-export type ApiClubsApplicationsApproveCreateData = {
+export type ClubsApplicationsApproveCreateData = {
   body: MembershipApplicationRequest;
   path: {
     application_pk: string;
@@ -2543,14 +2899,14 @@ export type ApiClubsApplicationsApproveCreateData = {
   url: "/api/clubs/{id}/applications/{application_pk}/approve/";
 };
 
-export type ApiClubsApplicationsApproveCreateResponses = {
+export type ClubsApplicationsApproveCreateResponses = {
   200: MembershipApplication;
 };
 
-export type ApiClubsApplicationsApproveCreateResponse =
-  ApiClubsApplicationsApproveCreateResponses[keyof ApiClubsApplicationsApproveCreateResponses];
+export type ClubsApplicationsApproveCreateResponse =
+  ClubsApplicationsApproveCreateResponses[keyof ClubsApplicationsApproveCreateResponses];
 
-export type ApiClubsApplicationsRejectCreateData = {
+export type ClubsApplicationsRejectCreateData = {
   body: MembershipApplicationRequest;
   path: {
     application_pk: string;
@@ -2560,14 +2916,14 @@ export type ApiClubsApplicationsRejectCreateData = {
   url: "/api/clubs/{id}/applications/{application_pk}/reject/";
 };
 
-export type ApiClubsApplicationsRejectCreateResponses = {
+export type ClubsApplicationsRejectCreateResponses = {
   200: MembershipApplication;
 };
 
-export type ApiClubsApplicationsRejectCreateResponse =
-  ApiClubsApplicationsRejectCreateResponses[keyof ApiClubsApplicationsRejectCreateResponses];
+export type ClubsApplicationsRejectCreateResponse =
+  ClubsApplicationsRejectCreateResponses[keyof ClubsApplicationsRejectCreateResponses];
 
-export type ApiClubsApplicationsWithdrawCreateData = {
+export type ClubsApplicationsWithdrawCreateData = {
   body: MembershipApplicationRequest;
   path: {
     application_pk: string;
@@ -2577,14 +2933,14 @@ export type ApiClubsApplicationsWithdrawCreateData = {
   url: "/api/clubs/{id}/applications/{application_pk}/withdraw/";
 };
 
-export type ApiClubsApplicationsWithdrawCreateResponses = {
+export type ClubsApplicationsWithdrawCreateResponses = {
   200: MembershipApplication;
 };
 
-export type ApiClubsApplicationsWithdrawCreateResponse =
-  ApiClubsApplicationsWithdrawCreateResponses[keyof ApiClubsApplicationsWithdrawCreateResponses];
+export type ClubsApplicationsWithdrawCreateResponse =
+  ClubsApplicationsWithdrawCreateResponses[keyof ClubsApplicationsWithdrawCreateResponses];
 
-export type ApiClubsEventsRetrieveData = {
+export type ClubsEventsRetrieveData = {
   body?: never;
   path: {
     id: string;
@@ -2593,14 +2949,14 @@ export type ApiClubsEventsRetrieveData = {
   url: "/api/clubs/{id}/events/";
 };
 
-export type ApiClubsEventsRetrieveResponses = {
+export type ClubsEventsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiClubsJoinCreateData = {
+export type ClubsJoinCreateData = {
   body?: ClubJoinRequest;
   path: {
     id: string;
@@ -2609,14 +2965,33 @@ export type ApiClubsJoinCreateData = {
   url: "/api/clubs/{id}/join/";
 };
 
-export type ApiClubsJoinCreateResponses = {
+export type ClubsJoinCreateResponses = {
   201: ClubJoin;
 };
 
-export type ApiClubsJoinCreateResponse =
-  ApiClubsJoinCreateResponses[keyof ApiClubsJoinCreateResponses];
+export type ClubsJoinCreateResponse =
+  ClubsJoinCreateResponses[keyof ClubsJoinCreateResponses];
 
-export type ApiClubsMembersRetrieveData = {
+export type ClubsLeaveDestroyData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/clubs/{id}/leave/";
+};
+
+export type ClubsLeaveDestroyResponses = {
+  /**
+   * No response body
+   */
+  204: void;
+};
+
+export type ClubsLeaveDestroyResponse =
+  ClubsLeaveDestroyResponses[keyof ClubsLeaveDestroyResponses];
+
+export type ClubsMembersRetrieveData = {
   body?: never;
   path: {
     id: string;
@@ -2625,14 +3000,31 @@ export type ApiClubsMembersRetrieveData = {
   url: "/api/clubs/{id}/members/";
 };
 
-export type ApiClubsMembersRetrieveResponses = {
+export type ClubsMembersRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiClubsPostsRetrieveData = {
+export type ClubsMembersRetrieve2Data = {
+  body?: never;
+  path: {
+    id: string;
+    user_id: string;
+  };
+  query?: never;
+  url: "/api/clubs/{id}/members/{user_id}/";
+};
+
+export type ClubsMembersRetrieve2Responses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsPostsRetrieveData = {
   body?: never;
   path: {
     id: string;
@@ -2641,14 +3033,30 @@ export type ApiClubsPostsRetrieveData = {
   url: "/api/clubs/{id}/posts/";
 };
 
-export type ApiClubsPostsRetrieveResponses = {
+export type ClubsPostsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiClubsDestroy2Data = {
+export type ClubsStatsRetrieveData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/api/clubs/{id}/stats/";
+};
+
+export type ClubsStatsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsDestroy2Data = {
   body?: never;
   path: {
     slug: string;
@@ -2657,17 +3065,17 @@ export type ApiClubsDestroy2Data = {
   url: "/api/clubs/{slug}/";
 };
 
-export type ApiClubsDestroy2Responses = {
+export type ClubsDestroy2Responses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiClubsDestroy2Response =
-  ApiClubsDestroy2Responses[keyof ApiClubsDestroy2Responses];
+export type ClubsDestroy2Response =
+  ClubsDestroy2Responses[keyof ClubsDestroy2Responses];
 
-export type ApiClubsRetrieve2Data = {
+export type ClubsRetrieve2Data = {
   body?: never;
   path: {
     slug: string;
@@ -2676,14 +3084,14 @@ export type ApiClubsRetrieve2Data = {
   url: "/api/clubs/{slug}/";
 };
 
-export type ApiClubsRetrieve2Responses = {
+export type ClubsRetrieve2Responses = {
   200: ClubDetail;
 };
 
-export type ApiClubsRetrieve2Response =
-  ApiClubsRetrieve2Responses[keyof ApiClubsRetrieve2Responses];
+export type ClubsRetrieve2Response =
+  ClubsRetrieve2Responses[keyof ClubsRetrieve2Responses];
 
-export type ApiClubsPartialUpdate2Data = {
+export type ClubsPartialUpdate2Data = {
   body?: PatchedClubDetailRequest;
   path: {
     slug: string;
@@ -2692,14 +3100,14 @@ export type ApiClubsPartialUpdate2Data = {
   url: "/api/clubs/{slug}/";
 };
 
-export type ApiClubsPartialUpdate2Responses = {
+export type ClubsPartialUpdate2Responses = {
   200: ClubDetail;
 };
 
-export type ApiClubsPartialUpdate2Response =
-  ApiClubsPartialUpdate2Responses[keyof ApiClubsPartialUpdate2Responses];
+export type ClubsPartialUpdate2Response =
+  ClubsPartialUpdate2Responses[keyof ClubsPartialUpdate2Responses];
 
-export type ApiClubsUpdate2Data = {
+export type ClubsUpdate2Data = {
   body: ClubDetailRequest;
   path: {
     slug: string;
@@ -2708,42 +3116,123 @@ export type ApiClubsUpdate2Data = {
   url: "/api/clubs/{slug}/";
 };
 
-export type ApiClubsUpdate2Responses = {
+export type ClubsUpdate2Responses = {
   200: ClubDetail;
 };
 
-export type ApiClubsUpdate2Response =
-  ApiClubsUpdate2Responses[keyof ApiClubsUpdate2Responses];
+export type ClubsUpdate2Response =
+  ClubsUpdate2Responses[keyof ClubsUpdate2Responses];
 
-export type ApiClubsRecommendedRetrieveData = {
+export type ClubsOriginRetrieveData = {
+  body?: never;
+  path: {
+    origin: string;
+  };
+  query?: never;
+  url: "/api/clubs/origin/{origin}/";
+};
+
+export type ClubsOriginRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsRecommendedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/clubs/recommended/";
 };
 
-export type ApiClubsRecommendedRetrieveResponses = {
+export type ClubsRecommendedRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiClubsTestManagerRetrieveData = {
+export type ClubsSearchRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/clubs/search/";
+};
+
+export type ClubsSearchRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type ClubsTestManagerRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/clubs/test/manager/";
 };
 
-export type ApiClubsTestManagerRetrieveResponses = {
+export type ClubsTestManagerRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsBlockCreateData = {
+export type ClubsTrendingRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/clubs/trending/";
+};
+
+export type ClubsTrendingRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type CommunicationsEmailsListData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    page_size?: number;
+  };
+  url: "/api/communications/emails/";
+};
+
+export type CommunicationsEmailsListResponses = {
+  200: PaginatedEmailList;
+};
+
+export type CommunicationsEmailsListResponse =
+  CommunicationsEmailsListResponses[keyof CommunicationsEmailsListResponses];
+
+export type CommunicationsEmailsCreateData = {
+  body: SendEmailRequest;
+  path?: never;
+  query?: never;
+  url: "/api/communications/emails/";
+};
+
+export type CommunicationsEmailsCreateResponses = {
+  201: SendEmail;
+};
+
+export type CommunicationsEmailsCreateResponse =
+  CommunicationsEmailsCreateResponses[keyof CommunicationsEmailsCreateResponses];
+
+export type ConnectionsBlockCreateData = {
   body?: never;
   path: {
     user_id: string;
@@ -2752,14 +3241,14 @@ export type ApiConnectionsBlockCreateData = {
   url: "/api/connections/{user_id}/block/";
 };
 
-export type ApiConnectionsBlockCreateResponses = {
+export type ConnectionsBlockCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsFollowersRetrieveData = {
+export type ConnectionsFollowersRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -2768,14 +3257,14 @@ export type ApiConnectionsFollowersRetrieveData = {
   url: "/api/connections/{user_id}/followers/";
 };
 
-export type ApiConnectionsFollowersRetrieveResponses = {
+export type ConnectionsFollowersRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsFollowingRetrieveData = {
+export type ConnectionsFollowingRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -2784,14 +3273,14 @@ export type ApiConnectionsFollowingRetrieveData = {
   url: "/api/connections/{user_id}/following/";
 };
 
-export type ApiConnectionsFollowingRetrieveResponses = {
+export type ConnectionsFollowingRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsMutualRetrieveData = {
+export type ConnectionsMutualRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -2800,14 +3289,14 @@ export type ApiConnectionsMutualRetrieveData = {
   url: "/api/connections/{user_id}/mutual/";
 };
 
-export type ApiConnectionsMutualRetrieveResponses = {
+export type ConnectionsMutualRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRelationshipRetrieveData = {
+export type ConnectionsRelationshipRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -2816,14 +3305,14 @@ export type ApiConnectionsRelationshipRetrieveData = {
   url: "/api/connections/{user_id}/relationship/";
 };
 
-export type ApiConnectionsRelationshipRetrieveResponses = {
+export type ConnectionsRelationshipRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRemoveDestroyData = {
+export type ConnectionsRemoveDestroyData = {
   body?: never;
   path: {
     user_id: string;
@@ -2832,17 +3321,17 @@ export type ApiConnectionsRemoveDestroyData = {
   url: "/api/connections/{user_id}/remove/";
 };
 
-export type ApiConnectionsRemoveDestroyResponses = {
+export type ConnectionsRemoveDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiConnectionsRemoveDestroyResponse =
-  ApiConnectionsRemoveDestroyResponses[keyof ApiConnectionsRemoveDestroyResponses];
+export type ConnectionsRemoveDestroyResponse =
+  ConnectionsRemoveDestroyResponses[keyof ConnectionsRemoveDestroyResponses];
 
-export type ApiConnectionsStatusRetrieveData = {
+export type ConnectionsStatusRetrieveData = {
   body?: never;
   path: {
     user_id: string;
@@ -2851,14 +3340,14 @@ export type ApiConnectionsStatusRetrieveData = {
   url: "/api/connections/{user_id}/status/";
 };
 
-export type ApiConnectionsStatusRetrieveResponses = {
+export type ConnectionsStatusRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsToggleCreateData = {
+export type ConnectionsToggleCreateData = {
   body?: never;
   path: {
     user_id: string;
@@ -2867,14 +3356,14 @@ export type ApiConnectionsToggleCreateData = {
   url: "/api/connections/{user_id}/toggle/";
 };
 
-export type ApiConnectionsToggleCreateResponses = {
+export type ConnectionsToggleCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsUnblockCreateData = {
+export type ConnectionsUnblockCreateData = {
   body?: never;
   path: {
     user_id: string;
@@ -2883,98 +3372,98 @@ export type ApiConnectionsUnblockCreateData = {
   url: "/api/connections/{user_id}/unblock/";
 };
 
-export type ApiConnectionsUnblockCreateResponses = {
+export type ConnectionsUnblockCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsBlockedRetrieveData = {
+export type ConnectionsBlockedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/blocked/";
 };
 
-export type ApiConnectionsBlockedRetrieveResponses = {
+export type ConnectionsBlockedRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRelationsRetrieveData = {
+export type ConnectionsRelationsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/relations/";
 };
 
-export type ApiConnectionsRelationsRetrieveResponses = {
+export type ConnectionsRelationsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRelationsConnectedRetrieveData = {
+export type ConnectionsRelationsConnectedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/relations/connected/";
 };
 
-export type ApiConnectionsRelationsConnectedRetrieveResponses = {
+export type ConnectionsRelationsConnectedRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRelationsPendingRetrieveData = {
+export type ConnectionsRelationsPendingRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/relations/pending/";
 };
 
-export type ApiConnectionsRelationsPendingRetrieveResponses = {
+export type ConnectionsRelationsPendingRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRelationsSentRetrieveData = {
+export type ConnectionsRelationsSentRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/relations/sent/";
 };
 
-export type ApiConnectionsRelationsSentRetrieveResponses = {
+export type ConnectionsRelationsSentRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRequestsRetrieveData = {
+export type ConnectionsRequestsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/requests/";
 };
 
-export type ApiConnectionsRequestsRetrieveResponses = {
+export type ConnectionsRequestsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRequestsAcceptCreateData = {
+export type ConnectionsRequestsAcceptCreateData = {
   body?: never;
   path: {
     user_id: string;
@@ -2983,14 +3472,14 @@ export type ApiConnectionsRequestsAcceptCreateData = {
   url: "/api/connections/requests/{user_id}/accept/";
 };
 
-export type ApiConnectionsRequestsAcceptCreateResponses = {
+export type ConnectionsRequestsAcceptCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsRequestsRejectCreateData = {
+export type ConnectionsRequestsRejectCreateData = {
   body?: never;
   path: {
     user_id: string;
@@ -2999,56 +3488,65 @@ export type ApiConnectionsRequestsRejectCreateData = {
   url: "/api/connections/requests/{user_id}/reject/";
 };
 
-export type ApiConnectionsRequestsRejectCreateResponses = {
+export type ConnectionsRequestsRejectCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiConnectionsSuggestionsRetrieveData = {
+export type ConnectionsSuggestionsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/connections/suggestions/";
 };
 
-export type ApiConnectionsSuggestionsRetrieveResponses = {
+export type ConnectionsSuggestionsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiInstitutesListData = {
+export type InstitutesListData = {
   body?: never;
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    page_size?: number;
+  };
   url: "/api/institutes/";
 };
 
-export type ApiInstitutesListResponses = {
-  200: Array<Institute>;
+export type InstitutesListResponses = {
+  200: PaginatedInstituteList;
 };
 
-export type ApiInstitutesListResponse =
-  ApiInstitutesListResponses[keyof ApiInstitutesListResponses];
+export type InstitutesListResponse =
+  InstitutesListResponses[keyof InstitutesListResponses];
 
-export type ApiInstitutesCreateData = {
+export type InstitutesCreateData = {
   body: InstituteRequest;
   path?: never;
   query?: never;
   url: "/api/institutes/";
 };
 
-export type ApiInstitutesCreateResponses = {
+export type InstitutesCreateResponses = {
   201: Institute;
 };
 
-export type ApiInstitutesCreateResponse =
-  ApiInstitutesCreateResponses[keyof ApiInstitutesCreateResponses];
+export type InstitutesCreateResponse =
+  InstitutesCreateResponses[keyof InstitutesCreateResponses];
 
-export type ApiInstitutesDestroyData = {
+export type InstitutesDestroyData = {
   body?: never;
   path: {
     id: string;
@@ -3057,17 +3555,17 @@ export type ApiInstitutesDestroyData = {
   url: "/api/institutes/{id}/";
 };
 
-export type ApiInstitutesDestroyResponses = {
+export type InstitutesDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiInstitutesDestroyResponse =
-  ApiInstitutesDestroyResponses[keyof ApiInstitutesDestroyResponses];
+export type InstitutesDestroyResponse =
+  InstitutesDestroyResponses[keyof InstitutesDestroyResponses];
 
-export type ApiInstitutesRetrieveData = {
+export type InstitutesRetrieveData = {
   body?: never;
   path: {
     id: string;
@@ -3076,14 +3574,14 @@ export type ApiInstitutesRetrieveData = {
   url: "/api/institutes/{id}/";
 };
 
-export type ApiInstitutesRetrieveResponses = {
+export type InstitutesRetrieveResponses = {
   200: InstituteDetail;
 };
 
-export type ApiInstitutesRetrieveResponse =
-  ApiInstitutesRetrieveResponses[keyof ApiInstitutesRetrieveResponses];
+export type InstitutesRetrieveResponse =
+  InstitutesRetrieveResponses[keyof InstitutesRetrieveResponses];
 
-export type ApiInstitutesPartialUpdateData = {
+export type InstitutesPartialUpdateData = {
   body?: PatchedInstituteDetailRequest;
   path: {
     id: string;
@@ -3092,14 +3590,14 @@ export type ApiInstitutesPartialUpdateData = {
   url: "/api/institutes/{id}/";
 };
 
-export type ApiInstitutesPartialUpdateResponses = {
+export type InstitutesPartialUpdateResponses = {
   200: InstituteDetail;
 };
 
-export type ApiInstitutesPartialUpdateResponse =
-  ApiInstitutesPartialUpdateResponses[keyof ApiInstitutesPartialUpdateResponses];
+export type InstitutesPartialUpdateResponse =
+  InstitutesPartialUpdateResponses[keyof InstitutesPartialUpdateResponses];
 
-export type ApiInstitutesUpdateData = {
+export type InstitutesUpdateData = {
   body: InstituteDetailRequest;
   path: {
     id: string;
@@ -3108,28 +3606,217 @@ export type ApiInstitutesUpdateData = {
   url: "/api/institutes/{id}/";
 };
 
-export type ApiInstitutesUpdateResponses = {
+export type InstitutesUpdateResponses = {
   200: InstituteDetail;
 };
 
-export type ApiInstitutesUpdateResponse =
-  ApiInstitutesUpdateResponses[keyof ApiInstitutesUpdateResponses];
+export type InstitutesUpdateResponse =
+  InstitutesUpdateResponses[keyof InstitutesUpdateResponses];
 
-export type ApiNotificationsRetrieveData = {
+export type ListAffiliationsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/institutes/affiliations/";
+};
+
+export type ListAffiliationsErrors = {
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type ListAffiliationsResponses = {
+  /**
+   * Paginated list of affiliations.
+   */
+  200: Array<InstituteAffiliate>;
+};
+
+export type ListAffiliationsResponse =
+  ListAffiliationsResponses[keyof ListAffiliationsResponses];
+
+export type CreateAffiliationData = {
+  body: InstituteAffiliateRequest;
+  path?: never;
+  query?: never;
+  url: "/api/institutes/affiliations/";
+};
+
+export type CreateAffiliationErrors = {
+  /**
+   * Validation failed.
+   */
+  400: unknown;
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type CreateAffiliationResponses = {
+  /**
+   * Affiliation created.
+   */
+  201: InstituteAffiliate;
+};
+
+export type CreateAffiliationResponse =
+  CreateAffiliationResponses[keyof CreateAffiliationResponses];
+
+export type InstitutesAffiliationsRetrieveData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/api/institutes/affiliations/{id}/";
+};
+
+export type InstitutesAffiliationsRetrieveResponses = {
+  200: InstituteAffiliate;
+};
+
+export type InstitutesAffiliationsRetrieveResponse =
+  InstitutesAffiliationsRetrieveResponses[keyof InstitutesAffiliationsRetrieveResponses];
+
+export type InstitutesAffiliationsPartialUpdateData = {
+  body?: PatchedInstituteAffiliateRequest;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/api/institutes/affiliations/{id}/";
+};
+
+export type InstitutesAffiliationsPartialUpdateResponses = {
+  200: InstituteAffiliate;
+};
+
+export type InstitutesAffiliationsPartialUpdateResponse =
+  InstitutesAffiliationsPartialUpdateResponses[keyof InstitutesAffiliationsPartialUpdateResponses];
+
+export type InstitutesAffiliationsUpdateData = {
+  body: InstituteAffiliateRequest;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/api/institutes/affiliations/{id}/";
+};
+
+export type InstitutesAffiliationsUpdateResponses = {
+  200: InstituteAffiliate;
+};
+
+export type InstitutesAffiliationsUpdateResponse =
+  InstitutesAffiliationsUpdateResponses[keyof InstitutesAffiliationsUpdateResponses];
+
+export type VerifyAffiliationData = {
+  body: VerifyAffiliateRequest;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: "/api/institutes/affiliations/{id}/verify/";
+};
+
+export type VerifyAffiliationErrors = {
+  /**
+   * Invalid or expired token.
+   */
+  400: unknown;
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type VerifyAffiliationResponses = {
+  /**
+   * Affiliation verified.
+   */
+  200: {
+    message: string;
+  };
+};
+
+export type VerifyAffiliationResponse =
+  VerifyAffiliationResponses[keyof VerifyAffiliationResponses];
+
+export type ClaimAffiliationData = {
+  body: ClaimAffiliateRequestWritable;
+  path?: never;
+  query?: never;
+  url: "/api/institutes/claim/";
+};
+
+export type ClaimAffiliationErrors = {
+  /**
+   * Validation failed (wrong domain, duplicate affiliation, weak password, etc.).
+   */
+  400: unknown;
+  /**
+   * Unauthorized.
+   */
+  401: unknown;
+};
+
+export type ClaimAffiliationResponses = {
+  /**
+   * Verification email dispatched.
+   */
+  200: {
+    message: string;
+  };
+};
+
+export type ClaimAffiliationResponse =
+  ClaimAffiliationResponses[keyof ClaimAffiliationResponses];
+
+export type MediaListData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/media/";
+};
+
+export type MediaListResponses = {
+  200: Array<MediaList>;
+};
+
+export type MediaListResponse = MediaListResponses[keyof MediaListResponses];
+
+export type MediaCreateData = {
+  body: MediaUploadRequestWritable;
+  path?: never;
+  query?: never;
+  url: "/api/media/";
+};
+
+export type MediaCreateResponses = {
+  201: MediaUpload;
+};
+
+export type MediaCreateResponse =
+  MediaCreateResponses[keyof MediaCreateResponses];
+
+export type NotificationsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/";
 };
 
-export type ApiNotificationsRetrieveResponses = {
+export type NotificationsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsRetrieve2Data = {
+export type NotificationsRetrieve2Data = {
   body?: never;
   path: {
     notification_id: number;
@@ -3138,14 +3825,14 @@ export type ApiNotificationsRetrieve2Data = {
   url: "/api/notifications/{notification_id}/";
 };
 
-export type ApiNotificationsRetrieve2Responses = {
+export type NotificationsRetrieve2Responses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsDeleteDestroyData = {
+export type NotificationsDeleteDestroyData = {
   body?: never;
   path: {
     notification_id: number;
@@ -3154,17 +3841,17 @@ export type ApiNotificationsDeleteDestroyData = {
   url: "/api/notifications/{notification_id}/delete/";
 };
 
-export type ApiNotificationsDeleteDestroyResponses = {
+export type NotificationsDeleteDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiNotificationsDeleteDestroyResponse =
-  ApiNotificationsDeleteDestroyResponses[keyof ApiNotificationsDeleteDestroyResponses];
+export type NotificationsDeleteDestroyResponse =
+  NotificationsDeleteDestroyResponses[keyof NotificationsDeleteDestroyResponses];
 
-export type ApiNotificationsDeliveriesRetrieveData = {
+export type NotificationsDeliveriesRetrieveData = {
   body?: never;
   path: {
     notification_id: number;
@@ -3173,14 +3860,14 @@ export type ApiNotificationsDeliveriesRetrieveData = {
   url: "/api/notifications/{notification_id}/deliveries/";
 };
 
-export type ApiNotificationsDeliveriesRetrieveResponses = {
+export type NotificationsDeliveriesRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsReadCreateData = {
+export type NotificationsReadCreateData = {
   body?: never;
   path: {
     notification_id: number;
@@ -3189,14 +3876,14 @@ export type ApiNotificationsReadCreateData = {
   url: "/api/notifications/{notification_id}/read/";
 };
 
-export type ApiNotificationsReadCreateResponses = {
+export type NotificationsReadCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsSeenCreateData = {
+export type NotificationsSeenCreateData = {
   body?: never;
   path: {
     notification_id: number;
@@ -3205,171 +3892,170 @@ export type ApiNotificationsSeenCreateData = {
   url: "/api/notifications/{notification_id}/seen/";
 };
 
-export type ApiNotificationsSeenCreateResponses = {
+export type NotificationsSeenCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsClearDestroyData = {
+export type NotificationsClearDestroyData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/clear/";
 };
 
-export type ApiNotificationsClearDestroyResponses = {
+export type NotificationsClearDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiNotificationsClearDestroyResponse =
-  ApiNotificationsClearDestroyResponses[keyof ApiNotificationsClearDestroyResponses];
+export type NotificationsClearDestroyResponse =
+  NotificationsClearDestroyResponses[keyof NotificationsClearDestroyResponses];
 
-export type ApiNotificationsCommentsRetrieveData = {
+export type NotificationsCommentsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/comments/";
 };
 
-export type ApiNotificationsCommentsRetrieveResponses = {
+export type NotificationsCommentsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsCountsRetrieveData = {
+export type NotificationsCountsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/counts/";
 };
 
-export type ApiNotificationsCountsRetrieveResponses = {
+export type NotificationsCountsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsFollowAcceptsRetrieveData = {
+export type NotificationsFollowAcceptsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/follow-accepts/";
 };
 
-export type ApiNotificationsFollowAcceptsRetrieveResponses = {
+export type NotificationsFollowAcceptsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsFollowRequestsRetrieveData = {
+export type NotificationsFollowRequestsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/follow-requests/";
 };
 
-export type ApiNotificationsFollowRequestsRetrieveResponses = {
+export type NotificationsFollowRequestsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsLikesRetrieveData = {
+export type NotificationsLikesRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/likes/";
 };
 
-export type ApiNotificationsLikesRetrieveResponses = {
+export type NotificationsLikesRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsMarkAllReadCreateData = {
+export type NotificationsMarkAllReadCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/mark-all-read/";
 };
 
-export type ApiNotificationsMarkAllReadCreateResponses = {
+export type NotificationsMarkAllReadCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsMarkAllSeenCreateData = {
+export type NotificationsMarkAllSeenCreateData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/mark-all-seen/";
 };
 
-export type ApiNotificationsMarkAllSeenCreateResponses = {
+export type NotificationsMarkAllSeenCreateResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiNotificationsPostsRetrieveData = {
+export type NotificationsPostsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/notifications/posts/";
 };
 
-export type ApiNotificationsPostsRetrieveResponses = {
+export type NotificationsPostsRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiPostsListData = {
+export type PostsListData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/posts/";
 };
 
-export type ApiPostsListResponses = {
+export type PostsListResponses = {
   200: Array<Post>;
 };
 
-export type ApiPostsListResponse =
-  ApiPostsListResponses[keyof ApiPostsListResponses];
+export type PostsListResponse = PostsListResponses[keyof PostsListResponses];
 
-export type ApiPostsCreateData = {
+export type PostsCreateData = {
   body: PostCreateRequest;
   path?: never;
   query?: never;
   url: "/api/posts/";
 };
 
-export type ApiPostsCreateResponses = {
+export type PostsCreateResponses = {
   201: PostCreate;
 };
 
-export type ApiPostsCreateResponse =
-  ApiPostsCreateResponses[keyof ApiPostsCreateResponses];
+export type PostsCreateResponse =
+  PostsCreateResponses[keyof PostsCreateResponses];
 
-export type ApiPostsDestroyData = {
+export type PostsDestroyData = {
   body?: never;
   path: {
     post_id: string;
@@ -3378,17 +4064,17 @@ export type ApiPostsDestroyData = {
   url: "/api/posts/{post_id}/";
 };
 
-export type ApiPostsDestroyResponses = {
+export type PostsDestroyResponses = {
   /**
    * No response body
    */
   204: void;
 };
 
-export type ApiPostsDestroyResponse =
-  ApiPostsDestroyResponses[keyof ApiPostsDestroyResponses];
+export type PostsDestroyResponse =
+  PostsDestroyResponses[keyof PostsDestroyResponses];
 
-export type ApiPostsRetrieveData = {
+export type PostsRetrieveData = {
   body?: never;
   path: {
     post_id: string;
@@ -3397,14 +4083,14 @@ export type ApiPostsRetrieveData = {
   url: "/api/posts/{post_id}/";
 };
 
-export type ApiPostsRetrieveResponses = {
+export type PostsRetrieveResponses = {
   200: Post;
 };
 
-export type ApiPostsRetrieveResponse =
-  ApiPostsRetrieveResponses[keyof ApiPostsRetrieveResponses];
+export type PostsRetrieveResponse =
+  PostsRetrieveResponses[keyof PostsRetrieveResponses];
 
-export type ApiPostsPartialUpdateData = {
+export type PostsPartialUpdateData = {
   body?: PatchedPostRequest;
   path: {
     post_id: string;
@@ -3413,14 +4099,14 @@ export type ApiPostsPartialUpdateData = {
   url: "/api/posts/{post_id}/";
 };
 
-export type ApiPostsPartialUpdateResponses = {
+export type PostsPartialUpdateResponses = {
   200: Post;
 };
 
-export type ApiPostsPartialUpdateResponse =
-  ApiPostsPartialUpdateResponses[keyof ApiPostsPartialUpdateResponses];
+export type PostsPartialUpdateResponse =
+  PostsPartialUpdateResponses[keyof PostsPartialUpdateResponses];
 
-export type ApiPostsUpdateData = {
+export type PostsUpdateData = {
   body: PostRequest;
   path: {
     post_id: string;
@@ -3429,28 +4115,28 @@ export type ApiPostsUpdateData = {
   url: "/api/posts/{post_id}/";
 };
 
-export type ApiPostsUpdateResponses = {
+export type PostsUpdateResponses = {
   200: Post;
 };
 
-export type ApiPostsUpdateResponse =
-  ApiPostsUpdateResponses[keyof ApiPostsUpdateResponses];
+export type PostsUpdateResponse =
+  PostsUpdateResponses[keyof PostsUpdateResponses];
 
-export type ApiPostsFeedRetrieveData = {
+export type PostsFeedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/api/posts/feed/";
 };
 
-export type ApiPostsFeedRetrieveResponses = {
+export type PostsFeedRetrieveResponses = {
   /**
    * No response body
    */
   200: unknown;
 };
 
-export type ApiSchemaRetrieveData = {
+export type SchemaRetrieveData = {
   body?: never;
   path?: never;
   query?: {
@@ -3560,11 +4246,11 @@ export type ApiSchemaRetrieveData = {
   url: "/api/schema/";
 };
 
-export type ApiSchemaRetrieveResponses = {
+export type SchemaRetrieveResponses = {
   200: {
     [key: string]: unknown;
   };
 };
 
-export type ApiSchemaRetrieveResponse =
-  ApiSchemaRetrieveResponses[keyof ApiSchemaRetrieveResponses];
+export type SchemaRetrieveResponse =
+  SchemaRetrieveResponses[keyof SchemaRetrieveResponses];
