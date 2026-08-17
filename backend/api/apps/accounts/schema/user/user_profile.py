@@ -4,8 +4,12 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 from apps.accounts.serialize.user import (
     UserProfileSerializer,
     PrivateUserSerializer,
+    UserEmailSerializer,
     # UserProfileWritableSerializer,       # adjust import path/name to match yours
     # PatchedUserProfileWritableSerializer,  # adjust import path/name to match yours
+)
+from apps.institutes.serializers.affiliates.affiliates_serializer import (
+    InstituteAffiliateForUserSerializer,
 )
 
 # ── List ──────────────────────────────────────────────────────────
@@ -137,5 +141,44 @@ destroy_user_by_username_schema = extend_schema(
         204: OpenApiResponse(description="User deleted."),
         403: OpenApiResponse(description="Not permitted to delete this user."),
         404: OpenApiResponse(description="User not found."),
+    },
+)
+
+
+# ── Current-user: affiliations ─────────────────────────────────────
+my_affiliations_schema = extend_schema(
+    operation_id="get_my_affiliations",
+    summary="List current user's institute affiliations",
+    description=(
+        "Returns every InstituteAffiliate row owned by the authenticated "
+        "user, with the affiliated institute inlined."
+    ),
+    tags=["Users · Me"],
+    responses={
+        200: OpenApiResponse(
+            response=InstituteAffiliateForUserSerializer(many=True),
+            description="The authenticated user's affiliations.",
+        ),
+        401: OpenApiResponse(description="Unauthorized."),
+    },
+)
+
+
+# ── Current-user: emails ────────────────────────────────────────────
+my_emails_schema = extend_schema(
+    operation_id="get_my_emails",
+    summary="List current user's email addresses",
+    description=(
+        "Returns the allauth EmailAddress rows belonging to the "
+        "authenticated user. Used to populate the email selector on the "
+        "affiliation-claim form."
+    ),
+    tags=["Users · Me"],
+    responses={
+        200: OpenApiResponse(
+            response=UserEmailSerializer(many=True),
+            description="The authenticated user's emails.",
+        ),
+        401: OpenApiResponse(description="Unauthorized."),
     },
 )

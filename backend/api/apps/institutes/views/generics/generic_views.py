@@ -1,3 +1,4 @@
+from core.pagination import StandardResultsSetPagination
 from apps.institutes.serializers import VerifyAffiliateSerializer
 from rest_framework.request import Request
 from apps.institutes.models import InstituteAffiliate
@@ -20,6 +21,19 @@ from core.views import ServiceMixin
 from apps.institutes.services import InstituteService
 from apps.institutes.services import AffiliateService
 
+from drf_spectacular.utils import extend_schema_view
+
+from apps.institutes.schema import (
+    claim_affiliation_schema,
+    verify_affiliation_schema,
+    list_affiliations_schema,
+    create_affiliation_schema,
+    retrieve_affiliation_schema,
+    update_affiliation_schema,
+    partial_update_affiliation_schema,
+    destroy_affiliation_schema,
+)
+
 
 class InstituteListCreateView(
     ServiceMixin[InstituteService],
@@ -27,10 +41,34 @@ class InstituteListCreateView(
 ):
     service_class = InstituteService
     serializer_class = InstituteSerializer
+    pagination_class = StandardResultsSetPagination
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[Institute]:
         return self.get_service(self.request).list_institutes()
+
+    def list(self, request: Request) -> Response:
+
+        requested_fields = request.query_params.get('fields')
+
+        field_list = None
+
+        if requested_fields:
+            field_list = [field.strip()
+                          for field in requested_fields.split(',')]
+            if 'id' not in field_list:
+                field_list.append('id')
+
+        institutes = self.get_queryset()
+        serializer = self.get_serializer(institutes, many=True, context={
+                                         'request': request, 'fields': field_list})
+
+        paginated_response = self.paginate_queryset(institutes)
+        if paginated_response is not None:
+            serializer = self.get_serializer(paginated_response, many=True, context={
+                'request': request, 'fields': field_list})
+            return self.get_paginated_response(serializer.data)
+        return Response(paginated_response.data)
 
 
 class InstituteDetailUpdateDeleteView(
@@ -47,6 +85,7 @@ class InstituteDetailUpdateDeleteView(
         return self.get_service(self.request).list_institutes()
 
 
+@claim_affiliation_schema
 class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView):
     """
     Validate user type and institute.
@@ -58,17 +97,11 @@ class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView
     def get_queryset(self) -> QuerySet[InstituteAffiliate]:
         return self.get_service(self.request).list()
 
-    # def get(self, request: Request) -> Response:
-    #     serializer = self.get_serializer()
-    #     return Response(serializer.data)
-
     def post(self, request: Request) -> Response:
         affiliate_service = self.get_service(self.request)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # if request.data:
-        #     return Response(request.data)
 
         user: User = request.user
         validated_data = serializer.validated_data
@@ -84,6 +117,10 @@ class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView
         }, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    get=list_affiliations_schema,
+    post=create_affiliation_schema,
+)
 class AffiliationStatusView(ServiceMixin[AffiliateService], generics.ListCreateAPIView):
     service_class = AffiliateService
     permission_classes = [permissions.IsAuthenticated]
@@ -95,6 +132,12 @@ class AffiliationStatusView(ServiceMixin[AffiliateService], generics.ListCreateA
         return InstituteAffiliateSerializer
 
 
+@extend_schema_view(
+    retrieve=retrieve_affiliation_schema,
+    update=update_affiliation_schema,
+    partial_update=partial_update_affiliation_schema,
+    destroy=destroy_affiliation_schema,
+)
 class AffiliationRetreiveUpdateDeleteView(ServiceMixin[AffiliateService], generics.RetrieveUpdateAPIView):
     service_class = AffiliateService
     serializer_class = InstituteAffiliateSerializer
@@ -106,6 +149,7 @@ class AffiliationRetreiveUpdateDeleteView(ServiceMixin[AffiliateService], generi
         return self.get_service(self.request).list()
 
 
+@verify_affiliation_schema
 class VerifyAffiliationView(ServiceMixin[AffiliateService], generics.GenericAPIView):
     service_class = AffiliateService
     serializer_class = VerifyAffiliateSerializer

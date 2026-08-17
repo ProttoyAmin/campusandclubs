@@ -8,6 +8,11 @@ from django.shortcuts import get_object_or_404
 from apps.accounts.models import User
 from apps.connections.models import Follow
 from apps.accounts.serialize.user.profile import UserProfileSerializer
+from apps.accounts.serialize.user.email import UserEmailSerializer
+from apps.accounts.schema import my_affiliations_schema, my_emails_schema
+from apps.institutes.serializers.affiliates.affiliates_serializer import (
+    InstituteAffiliateForUserSerializer,
+)
 from apps.accounts.policies.user import UserPolicy
 from core.policies.utils import current_user
 
@@ -183,3 +188,33 @@ def get_user_clubs(request, username) -> Response:
         'club_count': memberships.count(),
         'clubs': serializer.data
     })
+
+
+@my_affiliations_schema
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_my_affiliations(request: Request) -> Response:
+    """List the authenticated user's institute affiliations."""
+    user: User = request.user
+    affiliations = user.affiliations.all()
+    serializer = InstituteAffiliateForUserSerializer(
+        affiliations, many=True, context={'request': request}
+    )
+    return Response(serializer.data)
+
+
+@my_emails_schema
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_my_emails(request: Request) -> Response:
+    """
+    List the authenticated user's email addresses (allauth EmailAddress
+    rows). Used to populate the email selector on the affiliation-claim
+    form.
+    """
+    user: User = request.user
+    emails = user.emailaddress_set.all()
+    serializer = UserEmailSerializer(
+        emails, many=True, context={'request': request}
+    )
+    return Response(serializer.data)
