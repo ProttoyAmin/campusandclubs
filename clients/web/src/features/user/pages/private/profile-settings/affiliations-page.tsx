@@ -13,12 +13,14 @@ import ClaimAffiliationForm from "@/features/institute/forms/claim-affiliation-f
 import { useEmails } from "@/features/user/hooks/user.hooks";
 import type { AffiliationClaimInput } from "validation/institute";
 import { toast } from "design/components/ui/toast";
+import { useState } from "react";
 
 const UserAffiliationsPage = () => {
   const { me } = useSettingsOutlet();
   const { institutes } = useInstitutes("code,name");
   const { data: emails } = useEmails();
   const { claim } = useAffiliation();
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = (data: AffiliationClaimInput) => {
     const email = emails.find((email) => email.email === data.email);
@@ -38,6 +40,7 @@ const UserAffiliationsPage = () => {
         console.log(error.response?.data);
       },
     });
+    setOpen(false);
   };
 
   if (!me.affiliations || me.affiliations.length === 0) {
@@ -47,6 +50,8 @@ const UserAffiliationsPage = () => {
         description="Add your affiliations to get started."
         children={
           <AffiliationDialog
+            open={open}
+            onOpenChange={setOpen}
             trigger={
               <Button variant={"ghost"}>
                 <Plus /> Claim affiliation

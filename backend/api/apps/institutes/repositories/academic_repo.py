@@ -28,6 +28,12 @@ class AcademicRepository(BaseRepository[AcademicProfile]):
             academic_email=academic_email,
         )
 
+    def academic_email_exists(self, email: str) -> bool:
+        return self.get_queryset().filter(academic_email=email).exists()
+
+    def exists_by_user(self, user_id: uuid.UUID) -> bool:
+        return self.get_queryset().filter(user_id=user_id).exists()
+
     def set_email(self, user_id: uuid.UUID, email: str, institute_id: uuid.UUID) -> AcademicProfile:
         profile = self.get_queryset().filter(user_id=user_id).first()
         if not profile:

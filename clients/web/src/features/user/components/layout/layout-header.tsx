@@ -1,6 +1,12 @@
 import { paths } from "@/settings/routes";
 import { Button } from "design/components/ui/button";
-import { Search, CircleEllipsis, LockIcon, SettingsIcon } from "lucide-react";
+import {
+  Search,
+  CircleEllipsis,
+  LockIcon,
+  SettingsIcon,
+  Plus,
+} from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavigateButtons from "@/shared/components/navigate-buttons";
 import type { UserResponse } from "../../api/user.client";
@@ -13,6 +19,8 @@ import { EditProfileDialog } from "../profile/edit-profile-dialog";
 import type { UserProfile } from "@campus/api";
 import type { AuthSession } from "@/features/auth/services/authentication";
 import ProfileDropdown from "../profile/profile-dropdown";
+import AppDialog from "@/shared/components/app-dialog";
+import ClubCreateForm from "@/features/club/forms/create-club-form";
 
 const ProfileLayoutHeader = ({
   user,
@@ -59,11 +67,23 @@ const ProfileLayoutHeader = ({
             </div>
             <div className="flex gap-2 items-center">
               {user?.id === currentUser?.data.user.id ? (
-                <EditProfileDialog
-                  trigger={<Button variant={"outline"}>Edit</Button>}
-                  title="Edit Profile"
-                  data={user as UserProfile}
-                />
+                <>
+                  <EditProfileDialog
+                    trigger={<Button variant={"outline"}>Edit</Button>}
+                    title="Edit Profile"
+                    data={user as UserProfile}
+                  />
+                  <AppDialog
+                    trigger={
+                      <Button variant={"outline"} size={"icon"}>
+                        <Plus />
+                      </Button>
+                    }
+                    description="Tell us a bit about your club."
+                  >
+                    <ClubCreateForm />
+                  </AppDialog>
+                </>
               ) : (
                 <>
                   <Button variant={"outline"}>Follow</Button>

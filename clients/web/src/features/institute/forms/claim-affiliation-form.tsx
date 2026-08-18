@@ -233,12 +233,10 @@ const ClaimAffiliationForm = ({
         <Button type="submit" disabled={isPending} className="w-full">
           {isPending ? (
             <>
-              <Spinner /> Sending verification email…
+              <Spinner /> Claiming affiliation…
             </>
           ) : (
-            <>
-              <Plus /> Claim affiliation
-            </>
+            <>Claim affiliation</>
           )}
         </Button>
       </FieldGroup>

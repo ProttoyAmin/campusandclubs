@@ -12,14 +12,14 @@ type DialogProps = {
   trigger: React.ReactElement;
   title?: string;
   description?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
 };
 
 const AffiliationDialog = (props: DialogProps) => {
-  const [open, setOpen] = React.useState(false);
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogTrigger render={props.trigger}></DialogTrigger>
       <DialogContent>
         <DialogHeader>

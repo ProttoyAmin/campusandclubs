@@ -40,7 +40,7 @@ const ClubPage: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent>
-        {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
+        <pre>{JSON.stringify(club, null, 2)}</pre>
         Comming soon...
       </CardContent>
     </div>

@@ -34,4 +34,15 @@ export const userMenu: (username: string) => MenuItemType[] = (
       isRouteActive(routes.user.public.profile, currentPath) &&
       currentPath.includes(username),
   },
+  {
+    id: 3,
+    label: "Clubs",
+    icon: <LayoutList size={18} />,
+    iconActive: (
+      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+    ),
+    link: () => paths.private.club.list,
+    isActive: (currentPath) =>
+      isRouteActive(routes.club.private.list, currentPath),
+  },
 ];

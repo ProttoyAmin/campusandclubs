@@ -6,6 +6,7 @@ import type {
   ClubsUpdate2Response,
   MembershipApplicationCreateRequest,
   ClubJoinRequest,
+  PaginatedClubList,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
@@ -19,8 +20,8 @@ export class ClubClient extends BaseClient<
     super(config.api.v1.clubs.base);
   }
 
-  async getClubs(): Promise<AxiosResponse> {
-    const response = await this.client.get<AxiosResponse>(this.endpoint);
+  async getClubs(): Promise<AxiosResponse<PaginatedClubList>> {
+    const response = await this.client.get<PaginatedClubList>(this.endpoint);
     return response;
   }
 

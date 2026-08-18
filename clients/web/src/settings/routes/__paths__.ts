@@ -46,6 +46,8 @@ export const paths = {
     },
 
     club: {
+      list: routes.club.private.list,
+      create: routes.club.private.create,
       config: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.base, {
           slug,
@@ -91,7 +93,7 @@ export const paths = {
           uid,
           token,
         }),
-    }
+    },
   },
 
   public: {

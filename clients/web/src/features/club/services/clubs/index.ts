@@ -1,6 +1,7 @@
 import type {
   ClubDetail,
   MembershipApplicationCreateRequest,
+  PaginatedClubList,
   PatchedClubDetailRequest,
 } from "@campus/api";
 import { clubClient } from "../../http/club.http";
@@ -13,7 +14,7 @@ class ClubService {
   public members = membershipService;
   constructor() {}
 
-  async clubs(): Promise<any> {
+  async clubs(): Promise<PaginatedClubList> {
     const res = await this.clubClient.getClubs();
     return res.data;
   }

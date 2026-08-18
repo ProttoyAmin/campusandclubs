@@ -33,3 +33,6 @@ class AffiliateRepository(BaseRepository[InstituteAffiliate]):
 
     def exists_by_user_and_institute(self, user_id: uuid.UUID, institute_id: uuid.UUID) -> bool:
         return self.get_queryset().filter(user_id=user_id, institute_id=institute_id).exists()
+
+    def does_email_exist_with_institute(self, email: str, institute_id: uuid.UUID) -> bool:
+        return self.get_queryset().filter(email=email, institute_id=institute_id).exists()

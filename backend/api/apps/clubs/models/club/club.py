@@ -145,13 +145,12 @@ class Club(models.Model):
             from django.utils.text import slugify
 
             base_slug = slugify(self.name)
-            self.slug = f"{self.origin.code if self.origin else 'global'}-{base_slug}".lower()
+            self.slug = f"{self.origin.code if self.origin else 'local'}-{base_slug}".lower()
 
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.origin})"
-
 
     # --- DB-touching methods removed from the model ---
     # These belong in ClubRepository / ClubService now, paired with ClubPolicy

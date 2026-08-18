@@ -8,7 +8,6 @@ import { ClubApplicationWithdrawDialog } from "@/features/club/components/club/c
 import ClubLayoutHeader from "@/features/club/components/layout/layout-header";
 import { Card } from "design/components/ui/card";
 import { toast } from "design/components/ui/toast";
-import { generateId } from "@/utils/id";
 import { useSectionId } from "@/shared/hooks/id";
 
 export const ClubMainLayout: React.FC = () => {

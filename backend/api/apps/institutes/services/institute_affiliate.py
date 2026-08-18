@@ -32,6 +32,12 @@ class AffiliateService(BaseService[InstituteAffiliate, AffiliateRepository]):
         )
         return self.repository.create_affiliation(dto)
 
+    def does_exist(self, user_id: uuid.UUID, institute_id: uuid.UUID) -> bool:
+        return self.repository.exists_by_user_and_institute(user_id, institute_id)
+
+    def email_exists(self, email: str, institute_id: uuid.UUID) -> bool:
+        return self.repository.does_email_exist_with_institute(email, institute_id)
+
     def get(self, id: uuid.UUID) -> InstituteAffiliate:
         return self.repository.get_queryset().get(id=id)
 

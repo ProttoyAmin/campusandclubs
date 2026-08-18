@@ -1,8 +1,10 @@
 import ClubRequestsLayout from "@/layouts/club/club-config/requests-layout";
+import ClubsLayout from "@/layouts/club/clubs-layout";
 import ClubConfigLayout from "@/layouts/club/config-layout";
 import { routes } from "@/settings/routes";
 import React from "react";
 
+const Clubs = React.lazy(() => import("./pages/private/clubs"));
 const ClubPage = React.lazy(() => import("./pages/public/club-page"));
 const Settings = React.lazy(
   () => import("./pages/private/config-club/settings-page"),
@@ -31,6 +33,12 @@ const Rejected = React.lazy(
 );
 
 export const clubRoutes = [
+  {
+    id: "clubs-page-layout",
+    path: routes.club.private.list,
+    element: <ClubsLayout />,
+    children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
+  },
   { id: "club-main", path: routes.club.public.base, element: <ClubPage /> },
   {
     id: "club-config-layout",

@@ -62,9 +62,8 @@ class ClaimAffiliateSerializer(serializers.Serializer):
         required=True,
         allow_null=False
     )
-    # professional_email = serializers.EmailField(required=True)
     email = serializers.PrimaryKeyRelatedField(
-        queryset=EmailAddress.objects.none(),  # replaced per-request in __init__
+        queryset=EmailAddress.objects.none(),
         required=True,
         allow_null=False,
     )
@@ -84,7 +83,11 @@ class ClaimAffiliateSerializer(serializers.Serializer):
     def validate(self, attrs: AffiliateCreateDTO):
         from apps.institutes.utils import get_email_domain_list
         from apps.accounts.services import AccountService
+        from apps.institutes.services import AffiliateService
+        from apps.institutes.repositories import AcademicRepository
 
+        academic_repository = AcademicRepository()
+        affiliate_service = AffiliateService()
         account_service = AccountService()
         request = self.get_request()
         user: User = request.user
@@ -94,24 +97,24 @@ class ClaimAffiliateSerializer(serializers.Serializer):
         institute = attrs.get('institute')
         role = attrs.get('role')
 
-        if account_service.affiliation_exists(user, institute.id):
+        if affiliate_service.does_exist(user.id, institute.id):
             raise serializers.ValidationError({
                 "email": "You already have an affiliation with this institute.",
-            })
-
-        if account_service.has_professional_email(user.id):
-            raise serializers.ValidationError({
-                "email": "You already have a professional email associated with your account.",
             })
 
         if not user or not check_password(password, user.password):
             raise serializers.ValidationError(
                 {"password": "Password does not match our records."})
 
-        if account_service.professional_email_exists(professional_email):
+        if academic_repository.academic_email_exists(professional_email):
             raise serializers.ValidationError({
-                "email": "This professional email is already associated with another account."
+                "email": "This email is already associated with another user."
             })
+
+        # if affiliate_service.email_exists(professional_email, institute.id):
+        #     raise serializers.ValidationError({
+        #         "email": "This email is already associated with another user in this institute."
+        #     })
 
         domain_map = get_email_domain_list(institute.id)
         if not domain_map:
@@ -136,7 +139,7 @@ class ClaimAffiliateSerializer(serializers.Serializer):
 
         if best_type is None:
             raise serializers.ValidationError({
-                "email": f"This email domain is not authorized for {institute.name}."
+                "email": f"This email domain is not authorized for {institute.name}. Add your authorized email to resume"
             })
 
         if best_type != role:
