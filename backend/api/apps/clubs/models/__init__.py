@@ -1,5 +1,5 @@
-from .club import Club, Category
-from .membership import Membership
+from .club import Club, Category, ClubDepartment, DepartmentTemplate
+from .membership import Membership, MembershipDepartment
 from .role import Role
 from .invite import Invite
 from .event import Event
@@ -23,7 +23,11 @@ from .enums import (
 
 __all__ = [
     'Club',
+
     'Membership',
+    'MembershipDepartment',
+    'ClubDepartment',
+    'DepartmentTemplate',
     'Role',
     'Invite',
     'Event',

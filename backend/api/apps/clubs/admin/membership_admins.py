@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.clubs.models import Membership, Form, Role, MembershipApplication, MembershipApplicationResponse
+from apps.clubs.models import Membership, MembershipDepartment, Role, MembershipApplication, MembershipApplicationResponse
 
 class MembershipInline(admin.TabularInline):
     model = Membership
@@ -15,6 +15,8 @@ class MembershipApplicationResponseInline(admin.TabularInline):
     fields = ("question", "answer")
     raw_id_fields = ("question",)
 
+
+admin.site.register(MembershipDepartment)
 
 @admin.register(MembershipApplication)
 class MembershipApplicationAdmin(admin.ModelAdmin):

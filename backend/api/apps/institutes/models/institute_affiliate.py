@@ -35,6 +35,8 @@ class InstituteAffiliate(models.Model):
         default=AffiliationStatus.PENDING,
     )
 
+    is_active = models.BooleanField(default=False)
+
     verification_method = models.CharField(
         max_length=20,
         choices=VerificationMethod.choices,
@@ -71,7 +73,12 @@ class InstituteAffiliate(models.Model):
             models.UniqueConstraint(
                 fields=["institute", "user"],
                 name="unique_institute_affiliation",
-            )
+            ),
+            models.UniqueConstraint(
+                fields=["user"],
+                condition=models.Q(is_active=True),
+                name="unique_active_affiliation_per_user",
+            ),
         ]
 
     def __str__(self) -> str:

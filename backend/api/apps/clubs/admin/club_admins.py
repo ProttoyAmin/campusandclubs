@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.clubs.models import Club, Category
+from apps.clubs.models import Club, Category, ClubDepartment, DepartmentTemplate
 from .role_admins import RoleInline
 from .membership_admins import MembershipInline
 from .form_admin import FormInline, FormQuestionInline
@@ -14,7 +14,8 @@ class ClubAdmin(admin.ModelAdmin):
 
     inlines = [RoleInline, MembershipInline, FormInline]
 
-
+admin.site.register(ClubDepartment)
+admin.site.register(DepartmentTemplate)
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "created_at")

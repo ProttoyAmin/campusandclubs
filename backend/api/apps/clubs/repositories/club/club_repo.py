@@ -6,6 +6,8 @@ from django.db.models import (
     QuerySet
 )
 
+from apps.accounts.models.user import User
+from django.contrib.auth.models import AnonymousUser
 from core.repositories import BaseRepository
 from apps.clubs.models import Club, Membership, Visibility, ClubStatus
 from apps.clubs.repositories.role.role_repo import RoleRepository
@@ -19,8 +21,10 @@ class ClubRepository(BaseRepository[Club]):
     def get_queryset(self) -> QuerySet[Club]:
         return super().get_queryset().filter(deleted_at__isnull=True)
 
-    def visible_to(self, user) -> QuerySet[Club]:
+    def visible_to(self, user: User | AnonymousUser) -> QuerySet[Club]:
         """Public clubs, plus any club the user is a member of."""
+        if isinstance(user, AnonymousUser):
+            return self.get_queryset().filter(privacy=Visibility.PUBLIC)
         return self.get_queryset().filter(Q(privacy=Visibility.PUBLIC) | Q(members=user) | Q(privacy=Visibility.PRIVATE))
 
     def joined_by(self, user) -> QuerySet[Club]:
@@ -35,6 +39,8 @@ class ClubRepository(BaseRepository[Club]):
         )
 
     def with_list_annotations(self, queryset: QuerySet[Club], viewer) -> QuerySet[Club]:
+        if isinstance(viewer, AnonymousUser):
+            return queryset.filter(privacy=Visibility.PUBLIC)
         return (
             queryset.distinct()
             .annotate(

@@ -5,12 +5,20 @@ from django.utils.text import slugify
 from rest_framework import serializers
 from rest_framework.request import Request
 
-from apps.clubs.models import Club, Visibility, MembershipScope, Membership
+from apps.clubs.models import Club, Visibility, MembershipScope, Membership, JoinMode
 from apps.institutes.models import Institute
+from apps.clubs.models.club import DepartmentTemplate
+from apps.clubs.dtos.club_create import ClubCreateDTO
 from core.policies.utils import current_user
 
 
 MAX_SIZE = 5 * 1024 * 1024
+
+
+class DepartmentTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DepartmentTemplate
+        fields = ["id", "name", "description"]
 
 
 class ClubCreateSerializer(serializers.ModelSerializer):
@@ -19,16 +27,27 @@ class ClubCreateSerializer(serializers.ModelSerializer):
     """
 
     name = serializers.CharField(max_length=100)
-    about = serializers.CharField(max_length=500)
+    about = serializers.CharField(required=False, max_length=500)
     privacy = serializers.ChoiceField(choices=Visibility.choices)
     scope = serializers.ChoiceField(choices=MembershipScope.choices)
     origin = serializers.PrimaryKeyRelatedField[Institute](
         queryset=Institute.objects.all(), required=False, allow_null=True)
+    join_mode = serializers.ChoiceField(
+        choices=JoinMode.choices, required=False, default=JoinMode.INSTANT)
+    department_templates = serializers.PrimaryKeyRelatedField(
+        queryset=DepartmentTemplate.objects.all(),
+        many=True,
+        required=False,
+        write_only=True,
+    )
+    avatar = serializers.FileField(required=False, allow_null=True)
+    banner = serializers.FileField(required=False, allow_null=True)
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'about', 'privacy', 'scope', 'origin']
-        read_only_fields = ['id']
+        fields = ['id', 'name', 'about', 'privacy',
+                  'scope', 'join_mode', 'origin', 'department_templates', 'slug', 'avatar', 'banner']
+        read_only_fields = ['id', 'slug']
 
     def _get_request(self) -> Request:
         return self.context.get('request')     # type: ignore
@@ -43,6 +62,7 @@ class ClubCreateSerializer(serializers.ModelSerializer):
         if self._get_request() and self._get_request().user.is_authenticated:
             self.fields['origin'].queryset = institute_service.get_distinct_affiliate_institutes(
                 current_user(self._get_request()))     # type: ignore
+
 
     def get_validators(self):
         """
@@ -59,12 +79,39 @@ class ClubCreateSerializer(serializers.ModelSerializer):
         ]
         return validators
 
-    def validate(self, attrs):
+    def validate(self, attrs: ClubCreateDTO):
         """Check for duplicate club name + origin combination (robust)"""
         from apps.clubs.dtos.club_create import ClubDuplicateCheckDTO
+        from apps.clubs.utils.club import allowed_join_modes
 
         name = attrs.get('name')
         origin = attrs.get('origin')
+        privacy = attrs.get('privacy')
+        scope = attrs.get('scope')
+        join_mode = attrs.get('join_mode')
+
+        allowed_join_modes(privacy, join_mode)
+
+        
+        user = current_user(self._get_request())
+        user_affiliation = user.affiliations.filter(user=user, institute=origin).first()
+
+        if scope != MembershipScope.GLOBAL:
+            if not origin:
+                raise serializers.ValidationError({
+                    'origin': 'Origin institute is required for a non-global club.'
+                })
+
+            if not user_affiliation or user_affiliation.institute_id != origin.id:
+                raise serializers.ValidationError({
+                    'origin': f'You are not affiliated with {origin.name}.'
+                })
+
+        if origin:
+            if user_affiliation is None:
+                raise serializers.ValidationError({
+                    'origin': f'Claim affiliation with {origin.name} to create a club with this origin.'
+                })
 
         if name:
             check = ClubDuplicateCheckDTO(
@@ -73,9 +120,9 @@ class ClubCreateSerializer(serializers.ModelSerializer):
                 exclude_pk=self.instance.pk if self.instance else None,
             )
             if self._club_repository.exists_similar_name(check):
-                origin_name = origin.name if origin else "Global"
+                origin_name = origin.name if origin else "Local"
                 raise serializers.ValidationError({
-                    'name': f'A club with a very similar name already exists for "{origin_name}". '
+                    'name': f'A club with a very similar name already exists for a "{origin_name} club". '
                     f'Please choose a more distinct name.'
                 })
         return attrs
@@ -85,7 +132,7 @@ class ClubCreateSerializer(serializers.ModelSerializer):
         if 'name' in validated_data or 'origin' in validated_data:
             name = validated_data.get('name', instance.name)
             origin = validated_data.get('origin', instance.origin)
-            origin_str = str(origin.id) if origin else "global"
+            origin_str = str(origin.id) if origin else "local"
             instance.slug = slugify(f"{name.strip()}-{origin_str}")
         return super().update(instance, validated_data)
 

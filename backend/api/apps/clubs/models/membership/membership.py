@@ -31,6 +31,13 @@ class Membership(models.Model):
         help_text="User's roles in the club"
     )
 
+    departments = models.ManyToManyField(
+        "clubs.ClubDepartment",
+        through="clubs.MembershipDepartment",
+        related_name="members",
+        blank=True,
+    )
+
     application = models.OneToOneField(
         "clubs.MembershipApplication",
         on_delete=models.SET_NULL,

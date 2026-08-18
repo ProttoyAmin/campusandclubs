@@ -1,7 +1,7 @@
 # clubs.http
 # REST Client file for testing Club API endpoints
 ### Variables
-@baseUrl = http://127.0.0.1:8000/api/v1/clubs/
+@baseUrl = http://127.0.0.1:8000/api/clubs/
 @accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg2MTU4MDg3LCJpYXQiOjE3ODYxNTQ0ODcsImp0aSI6IjExNDVjYmI2Mzc2ZTRhYWNhYWUyOGE0ZTExMmU5NmMwIiwidXNlcl9pZCI6ImIwYWVjNzU0LTUyMDEtNDZhMS05ZTc5LWQ0YWUyODNmNGJlOSJ9.yYqhB6UV_kUL20flJHqre-9N16nD5cmuY8t8nfmaCOc
 @clubId = b4779dfd-22ed-4ed6-a19a-e623eb78bf31
 @postId = 7391907467086532608
@@ -19,12 +19,11 @@ Authorization: Bearer {{accessToken}}
 
 ### List All Clubs  -----WORKS---
 GET {{baseUrl}}
-Authorization: Bearer {{accessToken}}
+# Authorization: Bearer {{accessToken}}
 
 ### Create Club   -----WORKS---
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
 {
   "name" : "Film Club",

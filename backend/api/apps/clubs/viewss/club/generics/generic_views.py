@@ -7,6 +7,7 @@ from typing import Any
 
 from core.pagination import StandardResultsSetPagination
 from core.views import PolicyMixin, ServiceMixin
+from apps.clubs.models.club.department_templates import DepartmentTemplate
 from apps.clubs.serializer import ClubDetailSerializer, ClubSerializer, ClubCreateSerializer
 from apps.clubs.models import Club
 from apps.clubs.schema import club_list_schema
@@ -15,12 +16,16 @@ from apps.clubs.dtos import ClubListFilters
 from core.policies.utils import current_user
 from apps.clubs.policies.club import ClubPolicy
 from core.views import PrivateResponseMixin
-from apps.clubs.serializer.club.club import ClubPrivateSerializer
+from apps.clubs.serializer.club.club import ClubPrivateSerializer, DepartmentTemplateSerializer
+
+
+class DepartmentTemplateListView(generics.ListAPIView):
+    queryset = DepartmentTemplate.objects.all()
+    serializer_class = DepartmentTemplateSerializer
+
 
 
 # Club List & Create Generic View
-
-
 class ClubListCreateView(
     ServiceMixin[ClubService],
     generics.ListCreateAPIView[Club]
@@ -39,7 +44,7 @@ class ClubListCreateView(
         """
     # serializer_class = ClubSerializer
     service_class = ClubService
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     pagination_class = StandardResultsSetPagination
 
     def get_serializer_class(self) -> type[ClubCreateSerializer] | type[ClubSerializer]:
@@ -50,6 +55,13 @@ class ClubListCreateView(
 
     def get_queryset(self) -> QuerySet[Club]:
         return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
+
+    def get_permissions(self) -> list[permissions.BasePermission]:
+        if self.request.method == "POST":
+            self.permission_classes = [permissions.IsAuthenticated]
+        else:
+            self.permission_classes = [permissions.AllowAny]
+        return super().get_permissions()
 
     @club_list_schema
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -68,7 +80,7 @@ class ClubListCreateView(
         return self.get_paginated_response(serializer.data)
 
     def create(self, request: Request, *args, **kwargs) -> Response:
-        serializer = ClubCreateSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         service = self.get_service(request)

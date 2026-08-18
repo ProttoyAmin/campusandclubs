@@ -1,5 +1,6 @@
 
 from apps.clubs.policies.club import ClubPolicy
+from apps.clubs.dtos.club_create import ClubCreateDTO
 from core.views import PolicyMixin
 import logging
 from django.contrib.auth.models import AnonymousUser
@@ -64,21 +65,49 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
 
         return self.repository.with_list_annotations(clubs, viewer)
 
-    def create_club(self, owner: User, **validated_data) -> Club:
+    def create_club(self, owner: User, **validated_data: ClubCreateDTO) -> Club:
+        from apps.clubs.models import ClubDepartment
+        from apps.media.models import Media, MediaRole
+        from django.contrib.contenttypes.models import ContentType
+
+        logger.info(f"Creating club with data: {validated_data}")
+        avatar = validated_data.pop("avatar")
+        banner = validated_data.pop("banner")
 
         with transaction.atomic():
-            join_mode = JoinMode.INSTANT
-            
-            if validated_data.get("privacy") == Visibility.PRIVATE:
-                join_mode = JoinMode.INVITE_ONLY
 
+            department_templates = validated_data.pop("department_templates", [])
+            logger.info(f"Department templates: {department_templates}")
 
             club = self.repository.create(
                 owner=owner,
-                **validated_data,
-                join_mode=join_mode
+                **validated_data
             )
+            
+            for department_template in department_templates:
+                ClubDepartment.objects.create(
+                    club=club,
+                    name=department_template.name,
+                )
 
+            club_content_type = ContentType.objects.get_for_model(club)
+
+            if avatar:
+                Media.objects.create(
+                    content_type=club_content_type,
+                    object_id=club.id,
+                    file=avatar,
+                    role=MediaRole.AVATAR
+                )
+
+            if banner:
+                Media.objects.create(
+                    content_type=club_content_type,
+                    object_id=club.id,
+                    file=banner,
+                    role=MediaRole.BANNER
+                )
+            
             role = self.role_repository.get_or_create_default_owner_role(club)
             membership = self.membership_repository.create(user=owner, club=club)
             self.membership_repository.add_role(membership, role, set_as_primary=True)
