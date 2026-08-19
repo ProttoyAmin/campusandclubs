@@ -59,10 +59,14 @@ export type Club = {
 export type ClubCreate = {
   readonly id: string;
   name: string;
-  about: string;
+  about?: string;
   privacy: PrivacyEnum;
   scope: ScopeEnum;
+  join_mode?: JoinModeEnum;
   origin?: string | null;
+  readonly slug: string;
+  avatar?: string | null;
+  banner?: string | null;
 };
 
 /**
@@ -70,10 +74,13 @@ export type ClubCreate = {
  */
 export type ClubCreateRequest = {
   name: string;
-  about: string;
+  about?: string;
   privacy: PrivacyEnum;
   scope: ScopeEnum;
+  join_mode?: JoinModeEnum;
   origin?: string | null;
+  avatar?: Blob | File | null;
+  banner?: Blob | File | null;
 };
 
 export type ClubDetail = {
@@ -181,6 +188,7 @@ export type ClubJoin = {
    * User's roles in the club
    */
   roles?: Array<string>;
+  readonly departments: Array<string>;
 };
 
 /**
@@ -203,6 +211,12 @@ export type ClubJoinRequest = {
 
 export type CustomTokenObtainPairRequest = {
   username_or_email: string;
+};
+
+export type DepartmentTemplate = {
+  readonly id: string;
+  name: string;
+  description?: string;
 };
 
 export type Email = {
@@ -1457,10 +1471,28 @@ export type ClubWritable = {
  */
 export type ClubCreateWritable = {
   name: string;
-  about: string;
+  about?: string;
   privacy: PrivacyEnum;
   scope: ScopeEnum;
+  join_mode?: JoinModeEnum;
   origin?: string | null;
+  avatar?: string | null;
+  banner?: string | null;
+};
+
+/**
+ * Create club serializer
+ */
+export type ClubCreateRequestWritable = {
+  name: string;
+  about?: string;
+  privacy: PrivacyEnum;
+  scope: ScopeEnum;
+  join_mode?: JoinModeEnum;
+  origin?: string | null;
+  department_templates?: Array<string>;
+  avatar?: Blob | File | null;
+  banner?: Blob | File | null;
 };
 
 export type ClubDetailWritable = {
@@ -1508,6 +1540,11 @@ export type ClubJoinWritable = {
 export type CustomTokenObtainPairRequestWritable = {
   username_or_email: string;
   password: string;
+};
+
+export type DepartmentTemplateWritable = {
+  name: string;
+  description?: string;
 };
 
 export type EmailWritable = {
@@ -2711,7 +2748,7 @@ export type ClubsListResponses = {
 export type ClubsListResponse = ClubsListResponses[keyof ClubsListResponses];
 
 export type ClubsCreateData = {
-  body: ClubCreateRequest;
+  body: ClubCreateRequestWritable;
   path?: never;
   query?: never;
   url: "/api/clubs/";
@@ -3122,6 +3159,20 @@ export type ClubsUpdate2Responses = {
 
 export type ClubsUpdate2Response =
   ClubsUpdate2Responses[keyof ClubsUpdate2Responses];
+
+export type ClubsDepartmentTemplatesListData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/clubs/department-templates/";
+};
+
+export type ClubsDepartmentTemplatesListResponses = {
+  200: Array<DepartmentTemplate>;
+};
+
+export type ClubsDepartmentTemplatesListResponse =
+  ClubsDepartmentTemplatesListResponses[keyof ClubsDepartmentTemplatesListResponses];
 
 export type ClubsOriginRetrieveData = {
   body?: never;

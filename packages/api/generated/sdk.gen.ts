@@ -120,6 +120,8 @@ import type {
   ClubsApplicationsWithdrawCreateResponses,
   ClubsCreateData,
   ClubsCreateResponses,
+  ClubsDepartmentTemplatesListData,
+  ClubsDepartmentTemplatesListResponses,
   ClubsDestroy2Data,
   ClubsDestroy2Responses,
   ClubsDestroyData,
@@ -2248,6 +2250,32 @@ export const clubsUpdate2 = <ThrowOnError extends boolean = false>(
       "Content-Type": "application/json",
       ...options.headers,
     },
+  });
+
+export const clubsDepartmentTemplatesList = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ClubsDepartmentTemplatesListData, ThrowOnError>,
+): RequestResult<
+  ClubsDepartmentTemplatesListResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ClubsDepartmentTemplatesListResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseType: "json",
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/clubs/department-templates/",
+    ...options,
   });
 
 /**

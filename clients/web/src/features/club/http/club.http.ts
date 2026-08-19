@@ -1,27 +1,40 @@
 import { BaseClient } from "@/settings/api";
 import type {
   ClubDetail,
-  ClubCreateRequest,
+  ClubCreateRequestWritable,
   PatchedClubDetailRequest,
   ClubsUpdate2Response,
   MembershipApplicationCreateRequest,
   ClubJoinRequest,
   PaginatedClubList,
+  DepartmentTemplate,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
 
 export class ClubClient extends BaseClient<
   ClubDetail,
-  ClubCreateRequest,
+  ClubCreateRequestWritable,
   PatchedClubDetailRequest
 > {
   constructor() {
     super(config.api.v1.clubs.base);
   }
 
+  async createClub(data: ClubCreateRequestWritable) {
+    const response = await this.client.post<ClubDetail>(this.endpoint, data);
+    return response;
+  }
+
   async getClubs(): Promise<AxiosResponse<PaginatedClubList>> {
     const response = await this.client.get<PaginatedClubList>(this.endpoint);
+    return response;
+  }
+
+  async getDepartmentTemplates(): Promise<AxiosResponse<DepartmentTemplate[]>> {
+    const response = await this.client.get<DepartmentTemplate[]>(
+      `${this.endpoint}department-templates/`,
+    );
     return response;
   }
 

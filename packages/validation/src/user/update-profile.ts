@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { PatchedUserProfileRequest } from "@campus/api";
 
-export const updateProfileSchema: z.ZodType<PatchedUserProfileRequest> =
+export const updateProfileSchema =
   z.object({
     first_name: z.string().max(50).optional().nullable(),
     last_name: z.string().max(50).optional().nullable(),

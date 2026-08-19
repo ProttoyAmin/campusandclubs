@@ -1,11 +1,7 @@
 import { z } from "zod";
 import type { ClubDetailRequest } from "@campus/api";
+import { StatusOptions, PrivacyOptions, ScopeOptions, JoinModeOptions } from "./enums";
 
-// Single source of truth for options
-export const StatusOptions = ["active", "paused", "archived", "suspended"] as const;
-export const PrivacyOptions = ["public", "private", "secret"] as const;
-export const ScopeOptions = ["global", "exclusive", "cross_institute"] as const;
-export const JoinModeOptions = ["instant", "application", "invite_only"] as const;
 
 export type ClubSettingsRequest = Pick<
     ClubDetailRequest,

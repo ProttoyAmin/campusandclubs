@@ -1,5 +1,7 @@
 import type {
+  ClubCreateRequestWritable,
   ClubDetail,
+  DepartmentTemplate,
   MembershipApplicationCreateRequest,
   PaginatedClubList,
   PatchedClubDetailRequest,
@@ -14,8 +16,18 @@ class ClubService {
   public members = membershipService;
   constructor() {}
 
+  async create(data: ClubCreateRequestWritable) {
+    const res = await this.clubClient.createClub(data);
+    return res.data;
+  }
+
   async clubs(): Promise<PaginatedClubList> {
     const res = await this.clubClient.getClubs();
+    return res.data;
+  }
+
+  async department_templates(): Promise<DepartmentTemplate[]> {
+    const res = await this.clubClient.getDepartmentTemplates();
     return res.data;
   }
 

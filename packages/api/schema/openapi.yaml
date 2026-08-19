@@ -1148,6 +1148,7 @@ paths:
       - clubs
       security:
       - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -1850,6 +1851,22 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/clubs/department-templates/:
+    get:
+      operationId: clubs_department_templates_list
+      tags:
+      - clubs
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DepartmentTemplate'
+          description: ''
   /api/clubs/origin/{origin}/:
     get:
       operationId: clubs_origin_retrieve
@@ -3356,16 +3373,32 @@ components:
           $ref: '#/components/schemas/PrivacyEnum'
         scope:
           $ref: '#/components/schemas/ScopeEnum'
+        join_mode:
+          allOf:
+          - $ref: '#/components/schemas/JoinModeEnum'
+          default: instant
         origin:
           type: string
           format: uuid
           nullable: true
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        banner:
+          type: string
+          format: uri
+          nullable: true
       required:
-      - about
       - id
       - name
       - privacy
       - scope
+      - slug
     ClubCreateRequest:
       type: object
       description: Create club serializer
@@ -3382,12 +3415,30 @@ components:
           $ref: '#/components/schemas/PrivacyEnum'
         scope:
           $ref: '#/components/schemas/ScopeEnum'
+        join_mode:
+          allOf:
+          - $ref: '#/components/schemas/JoinModeEnum'
+          default: instant
         origin:
           type: string
           format: uuid
           nullable: true
+        department_templates:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+        avatar:
+          type: string
+          format: binary
+          nullable: true
+        banner:
+          type: string
+          format: binary
+          nullable: true
       required:
-      - about
       - name
       - privacy
       - scope
@@ -3644,8 +3695,15 @@ components:
             type: string
             format: uuid
           description: User's roles in the club
+        departments:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
       required:
       - club
+      - departments
       - id
       - joined_at
       - user
@@ -3688,6 +3746,21 @@ components:
       required:
       - password
       - username_or_email
+    DepartmentTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+      required:
+      - id
+      - name
     Email:
       type: object
       properties:

@@ -1,6 +1,7 @@
 import { ClubApplicationDialog } from "@/features/club/components/club/club-apply-dialog";
 import {
   useClub,
+  useDepartmentTemplates,
   useGetClubs,
   useJoin,
 } from "@/features/club/hooks/club.hooks";
@@ -16,6 +17,7 @@ import { generateId } from "@/utils/id";
 import { useSectionId } from "@/shared/hooks/id";
 import ClubsLayoutHeader from "@/features/club/components/layout/clubs-layout-header";
 import { useLocation } from "react-router-dom";
+import { useInstitutes } from "@/features/institute/hooks/institute.hooks";
 
 export const ClubsLayout: React.FC = () => {
   const { data } = useGetClubs();
@@ -39,14 +41,7 @@ export const ClubsLayout: React.FC = () => {
     pageHeader.setActions(
       <ClubsLayoutHeader clubs={clubs} onCreateClub={handleCreateClub} />,
     );
-  }, [
-    data,
-    clubs,
-    location.pathname,
-    navigate,
-    pageHeader.setActions,
-    pageHeader.clearActions,
-  ]);
+  }, [data, clubs, navigate, pageHeader.setActions, pageHeader.clearActions]);
 
   return (
     <section

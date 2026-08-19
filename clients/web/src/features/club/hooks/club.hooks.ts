@@ -3,7 +3,9 @@ import { club } from "../services/clubs";
 import { queryClient } from "@/config/query-client";
 import type { ClubJoinErrorResponse } from "@/features/club/types/club-join";
 import type {
+  ClubCreateRequestWritable,
   ClubDetail,
+  DepartmentTemplate,
   MembershipApplicationCreateRequest,
   PaginatedClubList,
   PatchedClubDetailRequest,
@@ -18,6 +20,13 @@ export const useGetClubs = () => {
       const response = club.clubs();
       return response;
     },
+  });
+};
+
+export const useDepartmentTemplates = () => {
+  return useQuery<DepartmentTemplate[], AppError<{}>>({
+    queryKey: ["department-templates"],
+    queryFn: () => club.department_templates(),
   });
 };
 
@@ -106,4 +115,22 @@ export const useWithdraw = (
       console.log("Error withdrawing application:", error.detail);
     },
   });
+};
+
+export const useClubs = () => {
+  const clubs = useGetClubs();
+
+  const create = useMutation({
+    mutationFn: (data: ClubCreateRequestWritable) => {
+      return club.create(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clubs"] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error creating club:", error.response.data.detail);
+    },
+  });
+
+  return { clubs: clubs.data, create };
 };

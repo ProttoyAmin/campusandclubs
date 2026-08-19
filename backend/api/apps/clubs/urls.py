@@ -80,7 +80,7 @@ urlpatterns = [
 
 
     #     # ==================== MEMBER MANAGEMENT ====================
-    path('<uuid:pk>/members/', views_members_views.list_members,
+    path('<uuid:pk>/members/', list_members,
          name='list_members'),    # ---- checked
     # path('<int:pk>/members/search/', views_members_views.search_members,
     #      name='search_members'),  # NEW
