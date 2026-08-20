@@ -1,4 +1,3 @@
-
 from apps.clubs.policies.club import ClubPolicy
 from apps.clubs.dtos.club_create import ClubCreateDTO
 from core.views import PolicyMixin
@@ -12,7 +11,7 @@ from django.db.models import QuerySet
 from django.views.generic.dates import timezone_today
 from rest_framework.exceptions import ValidationError
 
-from apps.clubs.models import Membership, ApplicationStatus
+from apps.clubs.models import Membership, ApplicationStatus, Role
 from apps.clubs.repositories.form import FormRepository
 from core.services import BaseService
 from apps.clubs.models import Club, Visibility, MembershipApplication, JoinMode
@@ -118,7 +117,25 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
         return self.repository.with_list_annotations(self.repository.get_queryset().filter(pk=club_pk), viewer).get()
 
     def join_club(self, club: Club, user: User) -> Membership:
+
+        existing = self.membership_repository.filter(club=club, user=user).first()
+
+        if existing:
+            if existing.left_at is None:
+                raise ValidationError({"detail": "You are already an active member of this club."})
+            return self.rejoin(existing)
+
         return self.membership_repository.create_membership(club, user)
+
+    @staticmethod
+    def rejoin(membership: Membership) -> Membership:
+        with transaction.atomic():
+            membership.left_at = None
+            # membership.roles.
+            # membership.primary_role = default_role
+            membership.full_clean()
+            membership.save(update_fields=["left_at"])
+        return membership
 
     def leave_club(self, club: Club, actor: User):
         decision = self.get_policy(actor, club).can_leave()
@@ -193,10 +210,11 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
         return self.repository.by_origin(origin)
 
     def get_club_stats(self, club: Club, *, since) -> dict:
-        from apps.clubs.models import Post, Event
+        from apps.clubs.models import Event
+        from apps.posts.models import Post
 
         member_count = club.members.count()
-        post_count = club.club_posts.count()
+        post_count = club.posts.count()
         event_count = club.events.count()
 
         roles_data = [

@@ -52,12 +52,18 @@ export const ClubMainLayout: React.FC = () => {
     joinClub(null, {
       onSuccess: () => {
         console.log("Joined successfully");
+        toast.add({
+          description: "Joined",
+          type: "success",
+        });
       },
 
       onError: (error) => {
-        setJoinDialogData(
-          (error as { detail: string; application_url: string }) ?? null,
-        );
+        toast.add({
+          description: error.response?.data.detail,
+          type: "error",
+        });
+        console.log(error.response?.data.detail)
       },
     });
   };

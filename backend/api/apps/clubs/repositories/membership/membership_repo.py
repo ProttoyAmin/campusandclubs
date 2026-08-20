@@ -25,6 +25,9 @@ class MembershipRepository(BaseRepository[Membership]):
             membership.save(update_fields=["primary_role"])
         return membership
 
+    def get_membership(self, club: Club, user: User) -> Membership:
+        return self.get_queryset().get(club=club, user=user)
+
     def create_membership(
         self,
         club: Club,
@@ -36,7 +39,7 @@ class MembershipRepository(BaseRepository[Membership]):
         )
         return self.get_queryset().get(club=club, user=user)
     
-    def exists(self, club: Club, user: User):
+    def membership_exists(self, club: Club, user: User) -> bool:
         return self.filter(club=club, user=user, left_at__isnull=True).exists()
     
     def leave(self, membership: Membership) -> None:

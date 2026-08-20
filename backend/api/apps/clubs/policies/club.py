@@ -75,6 +75,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         if club.join_mode == JoinMode.APPLICATION:
             return JoinDecision(True, True, "This club is taking submissions to join. Submit an application from the url below to apply for membership.")
 
+
         return JoinDecision(False, False, "Joining is not currently available for this club.")
 
     def can_leave(self) -> LeaveDecision:
@@ -110,7 +111,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return False, "This club is exclusive to members of a specific institute."
 
         if club.scope == MembershipScope.CROSS_INSTITUTE:
-            if actor.institute_affiliations.exists():  # type: ignore
+            if actor.affiliations.filter(institute=club.origin).exists():
                 return True, ""
             return False, "This club requires a verified institute affiliation."
 

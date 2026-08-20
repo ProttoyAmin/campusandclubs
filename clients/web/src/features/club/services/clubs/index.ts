@@ -46,7 +46,7 @@ class ClubService {
 
   async join(clubId: string) {
     const res = await this.clubClient.joinClub(clubId);
-    if (res.status !== 200) {
+    if (res.status < 200 || res.status >= 300) {
       console.log("Error joining club:", res.data);
     }
     return res.data;
@@ -54,7 +54,7 @@ class ClubService {
 
   async leave(clubId: string) {
     const res = await this.clubClient.leaveClub(clubId);
-    if (res.status !== 200) {
+    if (res.status < 200 || res.status >= 300) {
       console.log("Error leaving club:", res.data);
     }
     return res.data;

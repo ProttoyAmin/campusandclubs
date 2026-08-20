@@ -5,6 +5,9 @@ import type { ClubJoinErrorResponse } from "@/features/club/types/club-join";
 import type {
   ClubCreateRequestWritable,
   ClubDetail,
+  ClubJoin,
+  ClubJoinWritable,
+  ClubsJoinCreateResponse,
   DepartmentTemplate,
   MembershipApplicationCreateRequest,
   PaginatedClubList,
@@ -69,7 +72,7 @@ export const useUpdateClub = (slug: string, id: string) => {
 };
 
 export const useJoin = (id: string, slug: string) => {
-  return useMutation({
+  return useMutation<any, AppError<ClubJoinErrorResponse>, any>({
     mutationFn: () => {
       const response = club.join(id);
       return response;
@@ -77,8 +80,8 @@ export const useJoin = (id: string, slug: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["club", slug] });
     },
-    onError: (error: ClubJoinErrorResponse) => {
-      console.log("Error joining club:", error.detail);
+    onError: (error) => {
+      console.log("Error joining club:", error.response.data.detail);
     },
   });
 };

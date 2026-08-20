@@ -33,8 +33,8 @@ const ClubLayoutHeader = ({
     leave.mutate(undefined, {
       onSuccess: () => {
         toast.add({
-          title: "Club",
-          description: "Club left successfully",
+          title: "Left",
+          // description: "Club left successfully",
           type: "success",
         });
       },

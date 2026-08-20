@@ -153,6 +153,7 @@ def member_detail(request, pk, user_id):
             'last_name': user.last_name,
             'profile_picture': user.profile_picture.url if user.profile_picture else None,
             'joined_at': membership.joined_at,
+            'left_at': membership.left_at,
             'post_count': post_count
         },
         'roles': [
