@@ -5,7 +5,6 @@ import {
   CircleEllipsis,
   LockIcon,
   SettingsIcon,
-  Plus,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavigateButtons from "@/shared/components/navigate-buttons";
@@ -16,17 +15,9 @@ import {
   AvatarImage,
 } from "design/components/ui/avatar";
 import { EditProfileDialog } from "../profile/edit-profile-dialog";
-import type { ClubCreateRequestWritable, UserProfile } from "@campus/api";
+import type { UserProfile } from "@campus/api";
 import type { AuthSession } from "@/features/auth/services/authentication";
 import ProfileDropdown from "../profile/profile-dropdown";
-import AppDialog from "@/shared/components/app-dialog";
-import ClubCreateForm from "@/features/club/forms/create-club-form";
-import { useInstitutes } from "@/features/institute/hooks/institute.hooks";
-import {
-  useClubs,
-  useDepartmentTemplates,
-} from "@/features/club/hooks/club.hooks";
-import { toast } from "design/components/ui/toast";
 
 const ProfileLayoutHeader = ({
   user,
@@ -37,27 +28,6 @@ const ProfileLayoutHeader = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { institutes } = useInstitutes("id, name, code");
-  const { data: templates } = useDepartmentTemplates();
-  const { create } = useClubs();
-
-  const handleClubCreate = async (data: ClubCreateRequestWritable) => {
-    await create.mutateAsync(data, {
-      onSuccess: () => {
-        toast.add({
-          title: "Club created successfully",
-          type: "success",
-        });
-      },
-      onError: (error) => {
-        toast.add({
-          title: "Failed to create club",
-          type: "error",
-          description: error.response?.data?.detail,
-        });
-      },
-    });
-  };
 
   return (
     <>
@@ -100,22 +70,6 @@ const ProfileLayoutHeader = ({
                     title="Edit Profile"
                     data={user as UserProfile}
                   />
-                  <AppDialog
-                    trigger={
-                      <Button variant={"outline"} size={"icon"}>
-                        <Plus />
-                      </Button>
-                    }
-                    description="Tell us a bit about your club."
-                  >
-                    <ClubCreateForm
-                      onSubmit={(data) => {
-                        console.log(data);
-                      }}
-                      institutes={institutes?.data?.results}
-                      templates={templates}
-                    />
-                  </AppDialog>
                 </>
               ) : (
                 <>

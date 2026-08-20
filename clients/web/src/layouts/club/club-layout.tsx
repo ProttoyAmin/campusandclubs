@@ -63,7 +63,7 @@ export const ClubMainLayout: React.FC = () => {
   };
 
   React.useEffect(() => {
-    document.title = `${slug} - Club`;
+    document.title = `${slug ? slug + '- Clubs' : 'Clubs'}`;
   }, [slug]);
 
   React.useEffect(() => {

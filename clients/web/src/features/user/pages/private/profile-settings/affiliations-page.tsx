@@ -35,12 +35,12 @@ const UserAffiliationsPage = () => {
           title: "Affiliation claimed successfully",
           type: "success",
         });
+        setOpen(false);
       },
       onError: (error) => {
         console.log(error.response?.data);
       },
     });
-    setOpen(false);
   };
 
   if (!me.affiliations || me.affiliations.length === 0) {

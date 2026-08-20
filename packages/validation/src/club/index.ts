@@ -19,6 +19,7 @@ export {
   PrivacyOptions,
   ScopeOptions,
   JoinModeOptions,
+  StatusOptions,
   Privacy,
   JoinMode,
   Scope,

@@ -31,6 +31,7 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
         const active = item.isActive(pathname);
 
         return (
+          <>
           <NavLink
             key={item.id}
             to={link}
@@ -43,6 +44,7 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
           >
             {renderLabel(item, active)}
           </NavLink>
+          </>
         );
       })}
     </nav>

@@ -1,7 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Plus } from "lucide-react";
-
 import { Field, FieldError, FieldGroup } from "design/components/ui/field";
 import {
   Combobox,
@@ -56,10 +54,7 @@ const ClaimAffiliationForm = ({
     },
   });
 
-  // useServerErrors(serverErrors, form.setError);
   const formId = useComponentId("claim-affiliation-form");
-
-  // Only verified emails are accepted by the backend.
   const verifiedEmails = emails.filter((e) => e.verified);
 
   const instituteList = institutes.map((institute) => ({
@@ -74,7 +69,6 @@ const ClaimAffiliationForm = ({
       className="space-y-4"
     >
       <FieldGroup>
-        {/* Institute typeahead */}
         <Controller
           name="institute"
           control={form.control}
@@ -112,7 +106,6 @@ const ClaimAffiliationForm = ({
           )}
         />
 
-        {/* Role */}
         <Controller
           name="role"
           control={form.control}
@@ -153,7 +146,6 @@ const ClaimAffiliationForm = ({
           )}
         />
 
-        {/* Email (verified allauth addresses) */}
         <Controller
           name="email"
           control={form.control}
@@ -202,7 +194,6 @@ const ClaimAffiliationForm = ({
           )}
         />
 
-        {/* Password confirmation */}
         <Controller
           name="password"
           control={form.control}
@@ -233,7 +224,7 @@ const ClaimAffiliationForm = ({
         <Button type="submit" disabled={isPending} className="w-full">
           {isPending ? (
             <>
-              <Spinner /> Claiming affiliation…
+              <Spinner /> Claiming...
             </>
           ) : (
             <>Claim affiliation</>
