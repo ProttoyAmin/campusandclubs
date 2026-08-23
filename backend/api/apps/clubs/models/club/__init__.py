@@ -6,6 +6,6 @@ from .department_templates import DepartmentTemplate
 __all__ = [
     'Club',
     'ClubDepartment',
-    'DepartmentTemplate'
+    'DepartmentTemplate',
     'Category'
 ]

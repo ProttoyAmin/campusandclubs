@@ -100,6 +100,37 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
           )}
         />
         <Controller
+          name="origin"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Origin</FieldLabel>
+              <Select
+                name={field.name}
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <SelectTrigger
+                  id="scope"
+                  aria-invalid={fieldState.invalid}
+                  className="min-w-30"
+                >
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectSeparator />
+                  {props.institutes.map((institute) => (
+                    <SelectItem key={institute.id} value={institute.id}>
+                      {`${formatLabel(institute.name)} (${institute.code})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
           name="scope"
           control={form.control}
           render={({ field, fieldState }) => (

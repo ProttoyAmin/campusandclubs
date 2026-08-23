@@ -38,22 +38,23 @@ const SideBar: React.FC<SideBarProps> = (props) => {
     currentUser?.clubs || [];
 
   const handleClubCreate = async (data: ClubCreateRequestWritable) => {
-    await create.mutateAsync(data, {
-      onSuccess: () => {
-        toast.add({
-          title: "Club created successfully",
-          type: "success",
-        });
-        setIsCreating(false);
-      },
-      onError: (error) => {
-        toast.add({
-          title: "Failed to create club",
-          type: "error",
-          description: error.response?.data?.detail,
-        });
-      },
-    });
+    console.log(data)
+    // await create.mutateAsync(data, {
+    //   onSuccess: () => {
+    //     toast.add({
+    //       title: "Club created successfully",
+    //       type: "success",
+    //     });
+    //     setIsCreating(false);
+    //   },
+    //   onError: (error) => {
+    //     toast.add({
+    //       title: "Failed to create club",
+    //       type: "error",
+    //       description: error.response?.data?.detail,
+    //     });
+    //   },
+    // });
   };
 
   if (props.main) {
