@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from apps.media.models import Media
     from apps.clubs.models import Event, Membership, MembershipApplication, Role
     from django.db.models.fields.related_descriptors import RelatedManager
+    from .club_preferences import ClubPreference
 
 
 # Visibility -> allowed JoinMode values, and the default for each.
@@ -126,7 +127,7 @@ class Club(models.Model):
         events: RelatedManager["Event"]
         memberships: RelatedManager["Membership"]
         applications: RelatedManager["MembershipApplication"]
-        media: RelatedManager["Media"]
+        preferences: RelatedManager["ClubPreference"]
 
     def clean(self) -> None:
         allowed = _ALLOWED_JOIN_MODES.get(self.privacy, ())

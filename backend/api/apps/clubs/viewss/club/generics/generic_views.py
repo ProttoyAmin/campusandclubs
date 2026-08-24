@@ -24,7 +24,6 @@ class DepartmentTemplateListView(generics.ListAPIView):
     serializer_class = DepartmentTemplateSerializer
 
 
-
 # Club List & Create Generic View
 class ClubListCreateView(
     ServiceMixin[ClubService],
@@ -80,12 +79,14 @@ class ClubListCreateView(
         return self.get_paginated_response(serializer.data)
 
     def create(self, request: Request, *args, **kwargs) -> Response:
+        from apps.clubs.dtos.club_create import ClubCreateDTO
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         service = self.get_service(request)
         club = service.create_club(owner=current_user(
-            request), **serializer.validated_data)
+            request), dto=ClubCreateDTO.from_validated_data(serializer.validated_data))
         club = service.get_club_detail(club.pk, viewer=current_user(request))
 
         detail_serializer = self.get_serializer(
@@ -123,7 +124,6 @@ class ClubRetrieveUpdateDestroyAPIView(
 
         if not decision.allowed and self.get_object().privacy == Visibility.PRIVATE:
             return self.get_private_payload(self.get_object(), request)
-
 
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)

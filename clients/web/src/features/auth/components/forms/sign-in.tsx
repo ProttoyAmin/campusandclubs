@@ -4,12 +4,14 @@ import { CardAction, CardContent } from "design/components/ui/card";
 import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
+import { Separator } from "design/components/ui/separator";
 
 import { Field, FieldError, FieldGroup } from "design/components/ui/field";
 import { useNavigate } from "react-router-dom";
 import type { AllauthError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { routes } from "@/settings/routes";
+import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 
 type SignInFormProps = {
   onSubmit: (data: SignInSchemaType) => void;
@@ -95,7 +97,7 @@ const SignInForm = (props: SignInFormProps) => {
                 navigate(routes.auth.private.forgot_password);
               }}
             >
-              Forgot password?
+              Forgotten password?
             </Button>
             <Button
               variant="link"
@@ -107,7 +109,13 @@ const SignInForm = (props: SignInFormProps) => {
               Sign up
             </Button>
           </CardAction>
-          <Button type="submit" disabled={props.pending}>
+          <Button
+            type="submit"
+            variant="glass"
+            className={"rounded-full"}
+            size="lg"
+            disabled={props.pending}
+          >
             {props.pending && (
               <Spinner className="size-4" data-icon="inline-start" />
             )}
@@ -115,6 +123,20 @@ const SignInForm = (props: SignInFormProps) => {
           </Button>
         </FieldGroup>
       </form>
+      <Separator className="my-4" />
+      <div className="flex flex-col gap-2 items-center">
+        <Button
+        type="button"
+        variant="glass"
+        className={"rounded-full w-full"}
+        size="lg"
+        onClick={() => {
+          console.log("Initiated google sign in")
+        }}
+      >
+        <img src={googleIconLogo} alt="" className="mr-2" width={14} height={14} /> Google
+      </Button>
+      </div>
     </CardContent>
   );
 };

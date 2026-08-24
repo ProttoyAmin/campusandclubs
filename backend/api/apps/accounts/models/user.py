@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     from django.db.models.fields.related_descriptors import RelatedManager
     from apps.institutes.models import InstituteAffiliate
     from apps.media.models import Media
+    from allauth.account.models import EmailAddress
+    from .user_preference import UserPreference
 
 
 class User(AbstractUser):
@@ -62,7 +64,7 @@ class User(AbstractUser):
 
     # GENERIC RELATION FIELDS
 
-    media = GenericRelation('media.Media', related_query_name='users')
+    media = GenericRelation('media.Media', related_query_name='users')      # type: ignore
 
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(
@@ -109,6 +111,8 @@ class User(AbstractUser):
         memberships: RelatedManager["Post"]
         affiliations: RelatedManager["InstituteAffiliate"]
         media: RelatedManager["Media"]
+        emailaddress_set: RelatedManager["EmailAddress"]
+        preferences: RelatedManager["UserPreference"]
 
     def __str__(self):
         return f'{self.username} - {self.id}'

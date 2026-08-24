@@ -21,10 +21,12 @@ from apps.clubs.repositories.role.role_repo import RoleRepository
 from apps.clubs.repositories import MembershipRepository, MembershipApplicationRepository
 
 from apps.accounts.models import User
+from django.core.files.uploadedfile import UploadedFile
+
 
 logger = logging.getLogger(__name__)
 
-class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRepository]):
+class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepository]):
     """Club service class for managing club operations"""
 
     repository_class = ClubRepository
@@ -64,23 +66,24 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
 
         return self.repository.with_list_annotations(clubs, viewer)
 
-    def create_club(self, owner: User, **validated_data: ClubCreateDTO) -> Club:
-        from apps.clubs.models import ClubDepartment
-        from apps.media.models import Media, MediaRole
-        from django.contrib.contenttypes.models import ContentType
+    def create_club(self, owner: User, dto: ClubCreateDTO) -> Club:
+        from apps.clubs.models import ClubDepartment, ClubPreference
 
-        logger.info(f"Creating club with data: {validated_data}")
-        avatar = validated_data.pop("avatar")
-        banner = validated_data.pop("banner")
+        logger.info(f"Creating club with data: {dto}")
 
         with transaction.atomic():
 
-            department_templates = validated_data.pop("department_templates", [])
+            department_templates = dto.departments
             logger.info(f"Department templates: {department_templates}")
 
             club = self.repository.create(
                 owner=owner,
-                **validated_data
+                name=dto.name,
+                about=dto.about,
+                privacy=dto.privacy,
+                scope=dto.scope,
+                join_mode=dto.join_mode,
+                origin=dto.origin,
             )
             
             for department_template in department_templates:
@@ -89,23 +92,12 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
                     name=department_template.name,
                 )
 
-            club_content_type = ContentType.objects.get_for_model(club)
+            self.upload_media(club, dto.avatar, "avatar")
+            self.upload_media(club, dto.banner, "banner")
 
-            if avatar:
-                Media.objects.create(
-                    content_type=club_content_type,
-                    object_id=club.id,
-                    file=avatar,
-                    role=MediaRole.AVATAR
-                )
-
-            if banner:
-                Media.objects.create(
-                    content_type=club_content_type,
-                    object_id=club.id,
-                    file=banner,
-                    role=MediaRole.BANNER
-                )
+            ClubPreference.objects.create(
+                club=club
+            )
             
             role = self.role_repository.get_or_create_default_owner_role(club)
             membership = self.membership_repository.create(user=owner, club=club)
@@ -131,6 +123,8 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
     def rejoin(membership: Membership) -> Membership:
         with transaction.atomic():
             membership.left_at = None
+            # TODO: Re-add default role to membership
+
             # membership.roles.
             # membership.primary_role = default_role
             membership.full_clean()
@@ -138,7 +132,14 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
         return membership
 
     def leave_club(self, club: Club, actor: User):
+        from apps.clubs.models import ClubPreference
+
         decision = self.get_policy(actor, club).can_leave()
+
+        preferences = ClubPreference.objects.filter(club=club).first()
+
+        if preferences and preferences.leave_application:
+            ...    # TODO: Implement leave application
 
         if decision.allowed:
             membership = self.membership_repository.get_queryset().get(
@@ -249,40 +250,40 @@ class ClubService(PolicyMixin[ClubPolicy, Membership], BaseService[Club, ClubRep
 
     # ---------- Media ----------
 
-    def upload_media(self, club: Club, file, kind: str) -> Club:
-        """Persist the uploaded media file and update the club's avatar/banner.
+    def upload_media(self, club: Club, file: UploadedFile | None, kind: str) -> Club:
+        from apps.media.models import Media, MediaRole
+        from django.contrib.contenttypes.models import ContentType
 
-        `kind` is either "avatar" or "banner". Returns the updated club.
-        """
-        import os
-        import time
-        from django.core.files.storage import default_storage
-        from django.core.files.base import ContentFile
+        if file is None:
+            return club
 
-        upload_path_prefix = "images/club-pictures"
-        ext = os.path.splitext(file.name)[1]
-        filename = f"club_{club.id}_{kind}_{int(time.time())}{ext}"
-        file_path = os.path.join(upload_path_prefix, filename)
+        role_map = {"avatar": MediaRole.AVATAR, "banner": MediaRole.BANNER}
+        role = role_map.get(kind, MediaRole.OTHER)
 
-        saved_path = default_storage.save(file_path, ContentFile(file.read()))
-
-        from django.conf import settings
-        file_url = os.path.join(settings.MEDIA_URL, saved_path).replace("\\", "/")
-
-        if kind == "avatar":
-            club.avatar = file_url
-        else:
-            club.banner = file_url
-        club.save()
+        Media.objects.create(
+            content_type=ContentType.objects.get_for_model(club),
+            object_id=club.id,
+            file=file,
+            role=role,
+        )
         return club
 
     def clear_media(self, club: Club, kind: str) -> Club:
-        """Clear the club's avatar or banner (no file deletion; just DB column)."""
-        if kind == "avatar":
-            club.avatar = None
-        else:
-            club.banner = None
-        club.save()
+        """Remove the club's avatar or banner Media record (row only, no storage/Cloudinary deletion)."""
+        from apps.media.models import Media, MediaRole
+        from django.contrib.contenttypes.models import ContentType
+
+        role_map = {"avatar": MediaRole.AVATAR, "banner": MediaRole.BANNER}
+        role = role_map.get(kind)
+        if role is None:
+            return club
+
+        Media.objects.filter(
+            content_type=ContentType.objects.get_for_model(club),
+            object_id=club.id,
+            role=role,
+        ).delete()
+
         return club
 
     # ---------- Membership ----------

@@ -50,7 +50,7 @@ class InstituteAffiliateForUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InstituteAffiliate
-        fields = ['id', 'institute', 'role', 'status']
+        fields = ['id', 'institute', 'role', 'status', 'is_active']
 
 
 class ClaimAffiliateSerializer(serializers.Serializer):

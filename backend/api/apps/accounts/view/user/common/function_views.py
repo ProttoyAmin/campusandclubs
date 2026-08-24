@@ -17,70 +17,6 @@ from apps.accounts.policies.user import UserPolicy
 from core.policies.utils import current_user
 
 
-@api_view(['GET'])
-@permission_classes([permissions.AllowAny])
-def get_user_by_username(request: Request, username: str) -> Response:
-    """Get user profile by username"""
-    user = get_object_or_404(User, username=username)
-
-    policy = UserPolicy(current_user(request), user)
-
-    can_view = policy.can_view_profile(viewer=current_user(request))
-
-    if not can_view:
-        return Response(
-            {
-                'detail': 'This profile is private.',
-                'id': str(user.id),
-                'username': user.username,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'avatar' : request.build_absolute_uri(user.profile_picture.url if user.profile_picture else None),
-                'following_count' : user.following_count,
-                'follower_count' : user.follower_count,
-                'user_post_count' : user.user_post_count,
-                'is_private': True,
-                'is_following': user.is_followed_by(request.user) if hasattr(user, 'is_followed_by') else False,
-                'follow_status': Follow.get_follow_status(request.user, user) if hasattr(Follow, 'get_follow_status') else None
-            },
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    serializer = UserProfileSerializer(
-        user, context={'request': request})
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-@permission_classes([permissions.AllowAny])
-def get_users(request: Request) -> Response:
-    """Get any user's public profile"""
-    users = User.objects.all()
-
-    if not users:
-        return Response(
-            {'detail': 'No users right now in your database.'},
-            status=status.HTTP_204_NO_CONTENT
-        )
-
-    visible_fields = [
-        'id',
-        'username',
-        'email',
-        'avatar',
-        'url', 
-        'password'
-    ]
-
-    serializer = UserProfileSerializer(
-        users,
-        many=True,
-        context={'request': request},
-        fields=visible_fields
-    )
-    return Response(serializer.data)
-
-
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -152,7 +88,7 @@ def get_user_clubs(request, username) -> Response:
         return Response(
             {'detail': 'This profile is private.',
              'username': user.username,
-             'avatar' : request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+             'avatar' : request.build_absolute_uri(user.avatar.url) if user.avatar else None,
              'is_private': user.is_private
              },
             status=status.HTTP_403_FORBIDDEN
@@ -195,8 +131,8 @@ def get_user_clubs(request, username) -> Response:
 @permission_classes([permissions.IsAuthenticated])
 def get_my_affiliations(request: Request) -> Response:
     """List the authenticated user's institute affiliations."""
-    user: User = request.user
-    affiliations = user.affiliations.all()
+    user: User = current_user(request)
+    affiliations = user.affiliations.filter(is_active=True)
     serializer = InstituteAffiliateForUserSerializer(
         affiliations, many=True, context={'request': request}
     )
@@ -212,8 +148,8 @@ def get_my_emails(request: Request) -> Response:
     rows). Used to populate the email selector on the affiliation-claim
     form.
     """
-    user: User = request.user
-    emails = user.emailaddress_set.all()
+    user: User = current_user(request)
+    emails = user.emailaddress_set.filter(verified=True)
     serializer = UserEmailSerializer(
         emails, many=True, context={'request': request}
     )

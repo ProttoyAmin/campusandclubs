@@ -7,3 +7,4 @@ class MediaRole(models.TextChoices):
     LOGO = "logo"
     GALLERY = "gallery"
     ATTACHMENT = "attachment"
+    OTHER = "other"

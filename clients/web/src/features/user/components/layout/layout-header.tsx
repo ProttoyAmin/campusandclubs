@@ -66,7 +66,7 @@ const ProfileLayoutHeader = ({
               {user?.id === currentUser?.data.user.id ? (
                 <>
                   <EditProfileDialog
-                    trigger={<Button variant={"outline"}>Edit</Button>}
+                    trigger={<Button variant={"glass"}>Edit</Button>}
                     title="Edit Profile"
                     data={user as UserProfile}
                   />

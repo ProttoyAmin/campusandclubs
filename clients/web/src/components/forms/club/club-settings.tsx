@@ -179,7 +179,7 @@ const ClubSettingsForm = (props: ClubSettingsFormProps) => {
             )}
           />
           <div className="w-full flex flex-col gap-2">
-            <Button type="submit" variant="outline" disabled={props.pending}>
+            <Button type="submit" variant="glass" className={'rounded-full'} size="lg" disabled={props.pending}>
               {props.pending && (
                 <Spinner className="size-4" data-icon="inline-start" />
               )}

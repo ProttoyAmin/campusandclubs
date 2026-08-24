@@ -18,7 +18,7 @@ ServiceT = TypeVar("ServiceT", bound=BaseService)
 class PolicyMixin(Generic[PolicyT, RecordT]):
     policy_class: ClassVar[Optional[type[Policy]]] = None
 
-    def get_policy(self, request: Request, record: RecordT) -> PolicyT:
+    def get_policy(self, request: Request | User, record: RecordT) -> PolicyT:
         assert self.policy_class is not None, f"{type(self).__name__} has no policy_class set"
         if isinstance(request, User):
             return cast(PolicyT, self.policy_class(request, record))

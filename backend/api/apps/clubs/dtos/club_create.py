@@ -27,3 +27,17 @@ class ClubCreateDTO:
     departments: list[DepartmentTemplate]
     avatar: Optional[UploadedFile]
     banner: Optional[UploadedFile]
+
+    @classmethod
+    def from_validated_data(cls, data: dict) -> "ClubCreateDTO":
+        return cls(
+            name=data["name"],
+            about=data.get("about", ""),
+            privacy=data["privacy"],
+            scope=data["scope"],
+            join_mode=data["join_mode"],
+            origin=data.get("origin"),
+            departments=data.get("department_templates", []),
+            avatar=data.get("avatar"),
+            banner=data.get("banner"),
+        )

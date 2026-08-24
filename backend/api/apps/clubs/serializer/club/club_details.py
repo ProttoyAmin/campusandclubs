@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.request import Request
 
 
-from apps.clubs.models import Club, Membership, Role
+from apps.clubs.models import Club, Membership, Role, ClubPreference
 from apps.accounts.models import User
 from apps.clubs.serializer.membership.m_serializers import MembershipApplicationSerializer
 
@@ -19,6 +19,11 @@ class UserRoleDetails(TypedDict):
     id: int
     name: str
     permissions: list[str]
+
+class ClubPreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClubPreference
+        fields = '__all__'
 
 
 class ClubDetailSerializer(serializers.ModelSerializer):
@@ -39,6 +44,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     is_public = serializers.SerializerMethodField()
     application = serializers.SerializerMethodField()
+    preferences = ClubPreferenceSerializer()
 
     url = serializers.SerializerMethodField()
     members_url = serializers.SerializerMethodField()
@@ -53,7 +59,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
             'total_members', 'join_mode', 'status', 'scope', 'category', 'application',
-            'user_role', 'is_member', 'is_owner',
+            'user_role', 'is_member', 'is_owner', 'preferences',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
         ]

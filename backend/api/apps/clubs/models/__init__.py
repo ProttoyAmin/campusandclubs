@@ -1,4 +1,4 @@
-from .club import Club, Category, ClubDepartment, DepartmentTemplate
+from .club import Club, Category, ClubDepartment, DepartmentTemplate, ClubPreference
 from .membership import Membership, MembershipDepartment
 from .role import Role
 from .invite import Invite
@@ -23,6 +23,7 @@ from .enums import (
 
 __all__ = [
     'Club',
+    'ClubPreference',
 
     'Membership',
     'MembershipDepartment',

@@ -11,10 +11,12 @@ import {
   FieldGroup,
   FieldLabel,
 } from "design/components/ui/field";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "design/components/ui/spinner";
 import type { SignUpError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "design/components/ui/separator";
+import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 
 type SignUpFormProps = {
   onSubmit: (data: SignUpSchemaType) => void;
@@ -23,6 +25,7 @@ type SignUpFormProps = {
 };
 
 const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
+  const navigate = useNavigate();
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
@@ -169,13 +172,21 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
               </Field>
             )}
           />
-          <Link
-            className="text-sm hover:underline text-right"
-            to="../@/auth/sign-in"
+          <Button
+            type="button"
+            className="place-items-end-safe"
+            onClick={() => navigate("../@/auth/sign-in")}
+            variant="link"
           >
             Already have an account?
-          </Link>
-          <Button type="submit" disabled={props.pending}>
+          </Button>
+          <Button
+            type="submit"
+            variant="glass"
+            className={"rounded-full"}
+            size="lg"
+            disabled={props.pending}
+          >
             {props.pending ? (
               <>
                 <Spinner className="size-4" /> Signing up...
@@ -186,6 +197,25 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
           </Button>
         </FieldGroup>
       </form>
+      <Separator className="my-4" />
+      <Button
+        type="button"
+        variant="glass"
+        className={"rounded-full w-full"}
+        size="lg"
+        onClick={() => {
+          console.log("Initiated google sign in");
+        }}
+      >
+        <img
+          src={googleIconLogo}
+          alt=""
+          className="mr-2"
+          width={14}
+          height={14}
+        />{" "}
+        Google
+      </Button>
     </CardContent>
   );
 };

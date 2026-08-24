@@ -16,8 +16,6 @@ from apps.accounts.view.user.generics import (
 )
 
 from apps.accounts.view.user.common import (
-    get_user_by_username,
-    get_users,
     get_current_user,
     get_user_activity,
     get_user_clubs,

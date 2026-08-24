@@ -27,3 +27,7 @@ class MembershipScope(models.TextChoices):
     GLOBAL = 'global', 'Global'
     EXCLUSIVE = 'exclusive', 'Exclusive'
     CROSS_INSTITUTE = 'cross_institute', 'Cross Institute'
+
+class ApplicationDecision(models.TextChoices):
+    MANUAL = "manual", "Manual Review"
+    AUTO_ACCEPT = "auto_accept", "Auto Accept"

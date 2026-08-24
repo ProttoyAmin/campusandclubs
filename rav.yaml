@@ -1,4 +1,7 @@
 scripts:
+  superuser: cd backend/api && uv run python manage.py createsuperuser
+
+  backend:check: cd backend/api && uv run python manage.py check
   backend:migrations: cd backend/api && uv run python manage.py makemigrations
   backend:build:migrations: cd backend/api && $env:DEBUG="False"; uv run python manage.py makemigrations
   backend:migrate: cd backend/api && uv run python manage.py migrate

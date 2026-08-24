@@ -87,7 +87,7 @@ const UserAccountPage = () => {
         open={open}
         onOpenChange={setOpen}
         trigger={
-          <Button>
+          <Button variant={"glass"} size="lg" className={'rounded-full'}>
             <Plus /> Add Email
           </Button>
         }
