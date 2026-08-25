@@ -20,6 +20,7 @@ const AUTH_PATTERNS = [
   routes.auth.public.sign_in,
   routes.auth.public.sign_up,
   routes.auth.private.forgot_password,
+  routes.auth.public.social_callback,
   routes.auth.private.activation,
   routes.auth.private.reset_password,
 ];

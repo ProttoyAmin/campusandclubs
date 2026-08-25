@@ -2,6 +2,8 @@ export const authRoutes = {
   public: {
     sign_in: "/@/auth/sign-in",
     sign_up: "/@/auth/sign-up",
+    social_callback: "/@/auth/callback",
+    
   },
   private: {
     activation: "/activate/:uuid/:token",

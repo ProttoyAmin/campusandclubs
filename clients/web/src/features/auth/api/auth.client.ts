@@ -9,6 +9,8 @@ import type {
 import { AxiosError, type AxiosResponse } from "axios";
 import { config } from "@/settings/app";
 import type { SignInSchemaType } from "validation/auth";
+import { cookie } from "@/settings/storage/cookie";
+import { routes } from "@/settings/routes";
 
 export type AllauthError = {
   errors: {
@@ -76,6 +78,34 @@ export class AuthClient extends BaseAuthClient {
         data,
       );
     return response;
+  }
+
+  async loginWithGoogle() {
+    await this.getSession();
+    const form = document.createElement("form");
+    form.method = "POST";
+    // form.action = `http://127.0.0.1:8000/api/${this.allauthBrowser}auth/provider/redirect`;
+    form.action = `/api/${this.allauthBrowser}auth/provider/redirect`;
+    form.style.display = "none";
+
+    const fields: Record<string, string> = {
+      provider: "google",
+      process: "login",
+      callback_url: `${window.location.origin}${routes.auth.public.social_callback}`,
+      csrfmiddlewaretoken: cookie.get("csrftoken") ?? "", // 'csrftoken' cookie, same as your allauthClient setup
+    };
+
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    console.log(form)
+    form.submit();
   }
 
   async logout(): Promise<AxiosResponse> {

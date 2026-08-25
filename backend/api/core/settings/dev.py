@@ -11,6 +11,7 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
     "http://localhost:4000",
+    "http://localhost:8000",
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:4000",
@@ -47,6 +48,7 @@ HEADLESS_FRONTEND_URLS = {
     "account_reset_password_from_key": "http://localhost:3000/@/auth/account/reset-password/{key}",
     "account_confirm_email": "http://localhost:3000/@/auth/account/verify-email/{key}",
     "account_signup": "http://localhost:3000/@/auth/sign-up",
+    "socialaccount_login_error": "http://localhost:3000/@/auth/callback",
 }
 
 # Resend requires a verified sending domain before it'll deliver to arbitrary

@@ -17,6 +17,9 @@ import type { SignUpError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "design/components/ui/separator";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
+import facebookIconLogo from "../../../../assets/Facebook-f_Logo-Blue-Logo.wine.svg";
+
+import { useSocials } from "../../hooks/session.hook";
 
 type SignUpFormProps = {
   onSubmit: (data: SignUpSchemaType) => void;
@@ -25,6 +28,7 @@ type SignUpFormProps = {
 };
 
 const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
+  const { socialLogin } = useSocials();
   const navigate = useNavigate();
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
@@ -198,24 +202,51 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
         </FieldGroup>
       </form>
       <Separator className="my-4" />
-      <Button
-        type="button"
-        variant="glass"
-        className={"rounded-full w-full"}
-        size="lg"
-        onClick={() => {
-          console.log("Initiated google sign in");
-        }}
-      >
-        <img
-          src={googleIconLogo}
-          alt=""
-          className="mr-2"
-          width={14}
-          height={14}
-        />{" "}
-        Google
-      </Button>
+      <div className="flex gap-2 items-center">
+        <Button
+          type="button"
+          variant="glass"
+          className={"rounded-full w-1/2"}
+          size="lg"
+          onClick={() => {
+            socialLogin.mutate("google");
+          }}
+        >
+          {socialLogin.isPending && (
+            <Spinner className="size-4" data-icon="inline-start" />
+          )}
+          <img
+            src={googleIconLogo}
+            alt=""
+            className="mr-2"
+            width={14}
+            height={14}
+          />{" "}
+          Google
+        </Button>
+        <Button
+          type="button"
+          variant="glass"
+          className={"rounded-full w-1/2"}
+          size="lg"
+          onClick={() => {
+            // socialLogin.mutate("google");
+            console.log('facebook login attempt')
+          }}
+        >
+          {socialLogin.isPending && (
+            <Spinner className="size-4" data-icon="inline-start" />
+          )}
+          <img
+            src={facebookIconLogo}
+            alt=""
+            className=""
+            width={34}
+            height={34}
+          />{" "}
+          Facebook
+        </Button>
+      </div>
     </CardContent>
   );
 };

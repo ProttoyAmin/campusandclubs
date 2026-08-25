@@ -41,7 +41,7 @@ export const PublicProfile: React.FC<{
             )}
           </div>
           <Avatar size="3xl">
-            <AvatarImage src={data.avatar || undefined} alt={data.username} />
+            <AvatarImage src={data?.avatar} alt={data?.username} />
             <AvatarFallback>{data.username[0]}</AvatarFallback>
           </Avatar>
         </CardTitle>

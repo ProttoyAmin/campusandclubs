@@ -277,4 +277,21 @@ LOGGING = {
         "handlers": ["console"],
         "level": "DEBUG",
     },
+    "loggers": {
+        "allauth": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "allauth.socialaccount": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "propagate": False,
+            "level": "DEBUG",
+        },
+    },
 }

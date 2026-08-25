@@ -50,7 +50,7 @@ const ProfileLayoutHeader = ({
                 }}
               >
                 <AvatarImage
-                  src={user.avatar || undefined}
+                  src={user.avatar}
                   alt={user.username}
                 />
                 <AvatarFallback>{user.username[0]}</AvatarFallback>

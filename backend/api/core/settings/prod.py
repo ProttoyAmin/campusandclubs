@@ -36,12 +36,12 @@ tmpPostgres = urlparse(getenv("PG_DATABASE_URL"))
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": tmpPostgres.path.replace('/', ''),
+        "NAME": tmpPostgres.path.replace('/', ''),      #type: ignore # // priority: low
         "USER": tmpPostgres.username,
         "PASSWORD": tmpPostgres.password,
         "HOST": tmpPostgres.hostname,
         "PORT": tmpPostgres.port,
-        "OPTIONS": dict(parse_qsl(tmpPostgres.query)),
+        "OPTIONS": dict(parse_qsl(tmpPostgres.query)),      #type: ignore # // priority: low
     }
 }
 

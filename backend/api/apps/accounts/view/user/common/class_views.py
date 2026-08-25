@@ -56,7 +56,6 @@ class UserRetrieveUpdateDestroyView(
         return self.get_service(self.request).get_by_username(username=self.kwargs['username'])
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        print(request.COOKIES)
         user: User = self.get_object()
         policy = self.get_policy(request, user)
 

@@ -195,7 +195,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj: models.User):
         from apps.media.models import MediaRole
-        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+        from allauth.socialaccount.models import SocialAccount
+
+        social_account = SocialAccount.objects.filter(user=obj).first()
+        if social_account and social_account.extra_data:
+            return social_account.get_avatar_url()
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None       #type: ignore
 
     def get_media(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer
@@ -205,31 +210,31 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/accounts/auth/users/user/{obj.username}/')
+            return request.build_absolute_uri(f'/api/accounts/auth/users/user/{obj.username}/')
         return None
 
     def get_clubs_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/accounts/auth/users/user/{obj.username}/clubs/')
+            return request.build_absolute_uri(f'/api/accounts/auth/users/user/{obj.username}/clubs/')
         return None
 
     def get_posts_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/accounts/auth/{obj.id}/posts/')
+            return request.build_absolute_uri(f'/api/accounts/auth/{obj.id}/posts/')
         return None
 
     def get_followers_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/connections/{obj.id}/followers/')
+            return request.build_absolute_uri(f'/api/connections/{obj.id}/followers/')
         return None
 
     def get_following_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/connections/{obj.id}/following/')
+            return request.build_absolute_uri(f'/api/connections/{obj.id}/following/')
         return None
 
     def get_clubs(self, obj: models.User):

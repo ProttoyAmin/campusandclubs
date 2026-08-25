@@ -12,6 +12,7 @@ import type { AllauthError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { routes } from "@/settings/routes";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
+import { useSocials } from "@/features/auth/hooks/session.hook";
 
 type SignInFormProps = {
   onSubmit: (data: SignInSchemaType) => void;
@@ -20,6 +21,7 @@ type SignInFormProps = {
 };
 
 const SignInForm = (props: SignInFormProps) => {
+  const { socialLogin } = useSocials();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -126,16 +128,26 @@ const SignInForm = (props: SignInFormProps) => {
       <Separator className="my-4" />
       <div className="flex flex-col gap-2 items-center">
         <Button
-        type="button"
-        variant="glass"
-        className={"rounded-full w-full"}
-        size="lg"
-        onClick={() => {
-          console.log("Initiated google sign in")
-        }}
-      >
-        <img src={googleIconLogo} alt="" className="mr-2" width={14} height={14} /> Google
-      </Button>
+          type="button"
+          variant="glass"
+          className={"rounded-full w-full"}
+          size="lg"
+          onClick={() => {
+            socialLogin.mutate("google");
+          }}
+        >
+          {socialLogin.isPending && (
+            <Spinner className="size-4" data-icon="inline-start" />
+          )}
+          <img
+            src={googleIconLogo}
+            alt=""
+            className="mr-2"
+            width={14}
+            height={14}
+          />{" "}
+          Google
+        </Button>
       </div>
     </CardContent>
   );

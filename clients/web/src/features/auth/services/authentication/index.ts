@@ -2,6 +2,7 @@ import type { ActivationRequest } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
 import { authClient } from "../../api/auth.client";
 import type { SignInSchemaType } from "validation/auth";
+import { cookie } from "@/settings/storage/cookie";
 
 export type AuthUser = {
   id: string;
@@ -22,6 +23,8 @@ export type AuthSession = {
   };
 };
 
+export type SocialProvider = "google" | "facebook" | "github";
+
 export class Authentication {
   public authenticated: boolean = false;
 
@@ -41,6 +44,28 @@ export class Authentication {
     }
 
     return response;
+  }
+
+  submitSocialLogin(provider: SocialProvider) {
+    const csrfToken = cookie.get("csrftoken");
+    console.log(csrfToken)
+    if (!csrfToken) {
+      throw new Error(
+        "Missing CSRF token — session must be initialized before social login.",
+      );
+    }
+
+    const form = document.getElementById(
+      `social-login-form-${provider}`,
+    ) as HTMLFormElement | null;
+    if (!form) throw new Error(`No registered form for provider "${provider}"`);
+
+    const csrfInput = form.querySelector(
+      'input[name="csrfmiddlewaretoken"]',
+    ) as HTMLInputElement;
+    csrfInput.value = csrfToken; // set right before submit, always fresh
+
+    form.requestSubmit();
   }
 
   async sign_up(data: RegisterRequestWritable) {
