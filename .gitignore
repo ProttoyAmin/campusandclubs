@@ -5,6 +5,9 @@ services/api/requirements.txt
 services/api/FEED_ALGORITHM.md
 services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
 
+clients/v1/web/.vscode
+clients/v1/web/.vscode/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -64,3 +67,7 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+
+# Angular
+.angular/
