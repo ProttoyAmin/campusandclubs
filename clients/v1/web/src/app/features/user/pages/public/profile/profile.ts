@@ -12,6 +12,15 @@ export class Profile {
   private route = inject(ActivatedRoute);
   private meta = inject(Meta);
   private title = inject(Title);
+  
+  ngOnInit() {
+    this.meta.addTags([
+      { name: 'description', content: 'Profile page' },
+      { name: 'keywords', content: 'profile, page' },
+      { name: 'author', content: 'CQlubs' },
+    ]);
+    this.title.setTitle('Profile');
+  }
 
   
   username = this.route.snapshot.paramMap.get('username');

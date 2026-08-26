@@ -1,0 +1,49 @@
+<aside class="flex h-full flex-col">
+  <!-- Header -->
+  <div class="flex h-16 shrink-0 items-center border-b px-4">
+    <a routerLink="/" class="text-lg font-semibold"> CQlubs </a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
+    <a
+      routerLink="/"
+      routerLinkActive="bg-accent text-accent-foreground"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
+    >
+      Home
+    </a>
+
+    <a
+      routerLink="@/prottoy"
+      routerLinkActive="bg-accent text-accent-foreground"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
+    >
+      Profile
+    </a>
+
+    <a
+      routerLink="@/auth/sign-in"
+      routerLinkActive="bg-accent text-accent-foreground"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
+    >
+      Sign in
+    </a>
+
+    <a
+      routerLink="@/auth/sign-up"
+      routerLinkActive="bg-accent text-accent-foreground"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
+    >
+      Sign up
+    </a>
+
+  </nav>
+
+  <!-- Footer -->
+  <div class="shrink-0 border-t p-3">Footer</div>
+</aside>

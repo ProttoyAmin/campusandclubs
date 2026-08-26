@@ -1,8 +1,14 @@
 packages:
+  - clients/*
   - clients/*/*
   - packages/*
 allowBuilds:
   '@parcel/watcher': false
   esbuild: true
+  less: true
   lmdb: false
   msgpackr-extract: false
+  nx: true
+
+overrides:
+  typescript: 6.0.2

@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { Profile } from './features/user/pages/public/profile/profile';
 import { RootLayout } from './layouts/root/root-layout/root-layout';
 import { AuthLayout } from './layouts/auth/auth-layout/auth-layout';
 import { UserLayout } from './layouts/user/user-layout/user-layout';
@@ -9,6 +8,10 @@ export const routes: Routes = [
     path: '',
     component: RootLayout,
     children: [
+      // {
+      //   path: '',
+      //   component: App,
+      // },
       {
         path: '@/auth',
         component: AuthLayout,
@@ -17,7 +20,7 @@ export const routes: Routes = [
       {
         path: '@/:username',
         component: UserLayout,
-        children: [{ path: '', component: Profile }],
+        loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes),
       },
     ],
   },

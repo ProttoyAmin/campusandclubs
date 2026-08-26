@@ -1,11 +1,9 @@
-<header>
-  Main Header
-</header>
-
-<main>
-  <router-outlet />
-</main>
-
-<footer>
-  Main Footer
-</footer>
+<div class="flex relative">
+   <app-sidebar class="sticky top-0 md:w-1/6 hidden md:block border-r shadow-md h-screen p-4"/>
+  <div class="w-full md:w-5/6 place-items-center">
+    <main class="w-full md:w-1/2">
+      <router-outlet />
+    </main>
+    <footer>Main Footer</footer>
+  </div>
+</div>

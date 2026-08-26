@@ -3,7 +3,7 @@ import { useSession } from "./features/auth/hooks";
 import { Link } from "react-router-dom";
 import { paths } from "./settings/routes";
 import { useGetClubs } from "./features/club/hooks/club.hooks";
-import type { ClubDetail } from "@campus/api";
+import type { Club } from "@campus/api";
 
 function App() {
   const { data: users } = useUsers();
@@ -21,7 +21,7 @@ function App() {
         ))}
       </div>
       <div className="flex gap-4 w-full flex-wrap">
-        {clubs?.results.map((club: ClubDetail) => (
+        {clubs?.results.map((club: Club) => (
           <Link key={club?.id} to={paths.public.club.slug(club?.slug || "")}>
             <p>{club.name}</p>
           </Link>
