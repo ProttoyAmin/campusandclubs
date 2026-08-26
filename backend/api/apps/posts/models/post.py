@@ -75,6 +75,9 @@ class Post(models.Model):
         default=False,
         help_text="For club posts: whether the post is pinned in the club"
     )
+    
+    edited_at = models.DateTimeField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -88,7 +91,7 @@ class Post(models.Model):
             models.Index(fields=['club', '-created_at']),
             models.Index(fields=['post_type']),
             models.Index(fields=['is_public', '-created_at']),
-            models.Index(fields=['is_deleted']),
+            models.Index(fields=['deleted_at']),
             models.Index(fields=['club', 'is_pinned', '-created_at']),
         ]
 

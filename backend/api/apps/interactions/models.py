@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 import uuid
-
 
 # Create your models here.
 
@@ -12,7 +12,7 @@ class Like(models.Model):
     Uses Django's ContentType framework for flexibility
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
 
     # Generic relation to any content type, allows liking different models (Post, ClubPost, etc)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

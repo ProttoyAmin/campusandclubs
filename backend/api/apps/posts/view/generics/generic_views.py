@@ -1,4 +1,7 @@
 from typing import Any
+
+from rest_framework.request import Request
+from rest_framework.response import Response
 from apps.posts.models.post import Post
 
 from django.db.models import QuerySet
@@ -9,17 +12,16 @@ from apps.posts.serializer import PostSerializer, PostCreateSerializer
 from apps.posts.services import PostService
 from core.views import ServiceMixin
 
-class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView):
-    serializer_class = PostSerializer
+class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[Post]):
     service_class = PostService
 
     def get_queryset(self) -> QuerySet[Post]:
         return self.get_service(self.request).list_posts()
 
-    def get_serializer(self, *args: Any, **kwargs: Any):
+    def get_serializer_class(self, *args: Any, **kwargs: Any) -> type[PostCreateSerializer] | type[PostSerializer]:
         if (self.request.method == 'POST'):
-            return PostCreateSerializer(*args, **kwargs)
-        return PostSerializer(*args, **kwargs)
+            return PostCreateSerializer
+        return PostSerializer
 
 
 class PostUpdateDestroyView(ServiceMixin[PostService], generics.RetrieveUpdateDestroyAPIView[Post]):

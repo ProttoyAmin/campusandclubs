@@ -3,6 +3,9 @@ export const userRoutes = {
         me: '/me',
         profile: {
             username: '/@/:username',
+            posts: '/@/:username/posts',
+            reels: '/@/:username/reels',
+            reposts: '/@/:username/reposts',
         },
         settings: {
             base: '/@/u/:username/settings',

@@ -12,7 +12,8 @@ from apps.posts.serializer import PostMediaSerializer
 
 class PostCreateSerializer(serializers.ModelSerializer):
     content = serializers.CharField()
-    media = PostMediaSerializer(many=True, required=False)
+    # media = serializers.FileField(required=False, allow_null=True)
+    
 
 
     class Meta:
@@ -20,5 +21,5 @@ class PostCreateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'content',
-            'media',
+            # 'media',
         ]
