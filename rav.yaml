@@ -15,3 +15,5 @@ scripts:
   web:generate: pnpm --filter @campus/api generate
   web:build: pnpm -r build
   web:start: pnpm --filter web start
+
+  web:v1:dev: pnpm --filter @campusandclubs/web-v1 dev
