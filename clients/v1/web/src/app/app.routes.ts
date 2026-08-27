@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { RootLayout } from './layouts/root/root-layout/root-layout';
 import { AuthLayout } from './layouts/auth/auth-layout/auth-layout';
 import { UserLayout } from './layouts/user/user-layout/user-layout';
+import { USettingsLayout } from './layouts/user/u-settings-layout/u-settings-layout';
 
 export const routes: Routes = [
   {
@@ -13,14 +14,20 @@ export const routes: Routes = [
       //   component: App,
       // },
       {
-        path: '@/auth',
+        path: 'auth',
         component: AuthLayout,
         loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
       },
       {
         path: '@/:username',
         component: UserLayout,
-        loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes),
+        loadChildren: () => import('./features/accounts/accounts.routes').then((m) => m.userRoutes),
+      },
+      {
+        path: 'settings',
+        component: USettingsLayout,
+        loadChildren: () =>
+          import('./features/accounts/accounts.routes').then((m) => m.userSettingsRoutes),
       },
     ],
   },

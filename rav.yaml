@@ -17,3 +17,6 @@ scripts:
   web:start: pnpm --filter web start
 
   web:v1:dev: pnpm --filter @campusandclubs/web-v1 dev
+  angular: cd clients/v1/web && pnpm exec ng
+  angular:serve: cd clients/v1/web && pnpm exec ng serve
+  angular:build: cd clients/v1/web && pnpm exec ng build
