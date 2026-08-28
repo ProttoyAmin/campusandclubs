@@ -4,14 +4,12 @@ import { ActivatedRoute, RouterOutlet, NavigationEnd, Router } from '@angular/ro
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { userSettingsMenu } from '@/app/config/menu/user/settings';
 import { filter } from 'rxjs';
-import { RouterLink } from '@angular/router';
-import { AppNavigator } from '@/app/shared/components/ui/app-navigator/app-navigator';
 import { NgClass } from '@angular/common';
 import { Menu } from '@/app/shared/components/ui/menu/menu';
 import { LayoutHeader } from '@/app/features/accounts/components/layout-header/layout-header';
 
 @Component({
-  imports: [RouterOutlet, HlmCardImports, RouterLink, AppNavigator, NgClass, Menu, LayoutHeader],
+  imports: [RouterOutlet, HlmCardImports, NgClass, Menu, LayoutHeader],
   selector: 'app-u-settings-layout',
   styleUrl: './u-settings-layout.css',
   templateUrl: './u-settings-layout.html',

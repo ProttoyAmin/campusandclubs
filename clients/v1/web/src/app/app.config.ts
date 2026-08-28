@@ -2,12 +2,17 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
+import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@angular/common/http';
+import { csrfInterceptor } from './core/http/interceptors/csrf-interceptor';
+import { CookieService } from 'ngx-cookie-service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(), provideHttpClient(),
-    provideRouter(routes), provideClientHydration()
-  ]
+    CookieService,
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideClientHydration(),
+
+    provideHttpClient(withInterceptors([csrfInterceptor])),
+  ],
 };

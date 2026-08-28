@@ -3,15 +3,11 @@ import { inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet, NavigationEnd, Router } from '@angular/router';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { filter } from 'rxjs';
-import { RouterLink } from '@angular/router';
-import { AppNavigator } from '@/app/shared/components/ui/app-navigator/app-navigator';
-import { NgClass } from '@angular/common';
 import { Menu } from '@/app/shared/components/ui/menu/menu';
-import { LayoutHeader } from '@/app/features/accounts/components/layout-header/layout-header';
 import { clubSettingsMenu } from '@/app/config/menu/club/settings';
 
 @Component({
-  imports: [RouterOutlet, HlmCardImports, RouterLink, AppNavigator, NgClass, Menu, LayoutHeader],
+  imports: [RouterOutlet, HlmCardImports, Menu],
   selector: 'app-c-settings-layout',
   styleUrl: './c-settings-layout.css',
   templateUrl: './c-settings-layout.html',

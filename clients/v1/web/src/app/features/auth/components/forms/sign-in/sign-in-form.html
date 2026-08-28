@@ -1,0 +1,96 @@
+<!-- <hlm-card> -->
+
+<div hlmCardContent>
+  <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" [className]="'flex flex-col gap-4'">
+    <!-- Username Field -->
+    <hlm-field>
+      <!-- <label hlmFieldLabel>Username</label> -->
+      <input hlmInput formControlName="username" [placeholder]="'Username'" />
+
+      @let usernameControl = signInForm.get('username');
+      @if (usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)) {
+        <hlm-field-error>
+          @if (usernameControl?.errors?.['required']) {
+            <span>Username is required</span>
+          }
+        </hlm-field-error>
+      }
+    </hlm-field>
+
+    <!-- Password Field -->
+    <hlm-field>
+      <!-- <label hlmFieldLabel>Password</label> -->
+      <input hlmInput formControlName="password" type="password" [placeholder]="'Password'" />
+
+      @let passwordControl = signInForm.get('password');
+      @if (passwordControl?.invalid && (passwordControl?.dirty || passwordControl?.touched)) {
+        <hlm-field-error>
+          @if (passwordControl?.errors?.['required']) {
+            <span>Password is required</span>
+          } @else if (passwordControl?.errors?.['minlength']) {
+            <span>Password must be at least 8 characters</span>
+          }
+        </hlm-field-error>
+      }
+    </hlm-field>
+
+    <button hlmBtn type="button" variant="link" (click)="navigateToSignUp()">
+      <span>Don't have an account?</span>
+    </button>
+
+    <!-- <div hlmCardAction className="w-full"> -->
+    <button
+      hlmBtn
+      [variant]="'outline'"
+      type="submit"
+      [size]="'lg'"
+      [disabled]="signInForm.invalid"
+      [className]="'w-full'"
+    >
+      @if (pending()) {
+        <hlm-spinner class="size-4"></hlm-spinner>
+        <span>Signing in...</span>
+      } @else {
+        <span>Sign in</span>
+      }
+    </button>
+    <!-- </div> -->
+  </form>
+  <hlm-separator class="my-4"></hlm-separator>
+  <div class="flex gap-2 items-center">
+    <button
+      hlmBtn
+      type="button"
+      variant="outline"
+      class="rounded-full w-1/2"
+      size="lg"
+      (click)="handleGoogleLogin()"
+    >
+      @if (socialLoginPending) {
+        <hlm-spinner class="size-4"></hlm-spinner>
+      } @else {
+        <img [src]="googleIconLogo" alt="" width="14" height="14" />
+      }
+      Google
+    </button>
+
+    <button
+      hlmBtn
+      type="button"
+      variant="outline"
+      class="rounded-full w-1/2"
+      size="lg"
+      (click)="handleFacebookLogin()"
+    >
+      @if (socialLoginPending) {
+        <hlm-spinner class="size-4"></hlm-spinner>
+      } @else {
+        <img [src]="facebookIconLogo" alt="" width="14" height="14" />
+      }
+      Facebook
+    </button>
+  </div>
+</div>
+
+<!-- <hlm-card-footer>Card Footer</hlm-card-footer> -->
+<!-- </hlm-card> -->
