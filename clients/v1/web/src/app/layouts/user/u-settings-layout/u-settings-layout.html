@@ -1,2 +1,29 @@
-<p>u-settings-layout works!</p>
-<router-outlet />
+<div
+  class="mx-auto h-svh flex flex-col px-4"
+  [ngClass]="rootPath() ? 'w-full md:w-3/6' : 'w-full md:w-2/3'"
+>
+  <app-accounts-layout-header />
+  <hlm-card class="h-full [--card-spacing:--spacing(2)] md:[--card-spacing:--spacing(6)]">
+    <div hlmCardContent class="flex flex-col md:flex-row gap-4 overflow-y-auto">
+      @if (rootPath()) {
+        <div class="w-full">
+          <app-menu
+            [visibleArrow]="true"
+            [items]="menu"
+            [class]="'w-full flex flex-col'"
+            [itemClassName]="'p-4 gap-4 hover:bg-accent hover:text-accent-foreground'"
+          />
+        </div>
+      } @else {
+        <app-menu
+          [items]="menu"
+          [itemClassName]="'px-3 py-2 hover:bg-accent hover:text-accent-foreground gap-2'"
+          [class]="'w-full md:w-3xs sticky top-0'"
+        />
+        <div class="w-2/3 h-full">
+          <router-outlet />
+        </div>
+      }
+    </div>
+  </hlm-card>
+</div>

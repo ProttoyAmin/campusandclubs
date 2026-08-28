@@ -1,0 +1,16 @@
+<hlm-dialog [state]="open ? 'open' : 'closed'" (stateChanged)="onStateChange($event)">
+  <ng-content select="[trigger]" />
+  <hlm-dialog-content *hlmDialogPortal="let ctx">
+    @if (title || description) {
+      <hlm-dialog-header>
+        @if (title) {
+          <h3 hlmDialogTitle>{{ title }}</h3>
+        }
+        @if (description) {
+          <p hlmDialogDescription>{{ description }}</p>
+        }
+      </hlm-dialog-header>
+    }
+    <ng-content />
+  </hlm-dialog-content>
+</hlm-dialog>

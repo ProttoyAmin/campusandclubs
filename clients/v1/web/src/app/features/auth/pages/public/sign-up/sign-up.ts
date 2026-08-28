@@ -9,19 +9,17 @@ import { ApiClient } from '@/app/core/http/api-client';
   templateUrl: './sign-up.html',
 })
 export class SignUp {
-  api = inject(ApiClient)
+  api = inject(ApiClient);
   constructor() {}
 
-
   hit() {
-  this.api.get('http://localhost:8000/api/_allauth/browser/v1/auth/session').subscribe({
-    next: (res) => {
-      console.log(res);
-    },
-    error: (err) => {
-      console.error(err);
-    },
-  });
-}
-
+    this.api.get('http://localhost:8000/api/accounts/auth/users/user/prottoy').subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 }

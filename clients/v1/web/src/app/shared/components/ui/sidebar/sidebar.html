@@ -1,49 +1,37 @@
-<aside class="flex h-full flex-col">
-  <!-- Header -->
-  <div class="flex h-16 shrink-0 items-center border-b px-4">
-    <a routerLink="/" class="text-lg font-semibold"> CQlubs </a>
-  </div>
+@if (root()) {
+  <aside class="flex h-full flex-col justify-between p-2">
+    <!-- Header -->
+    <div>
+      <div class="flex h-16 shrink-0 items-center px-4">
+        <a routerLink="/" class="text-lg font-semibold"> CQlubs </a>
+      </div>
 
-  <!-- Navigation -->
+      <!-- Navigation -->
+      <div>
+        <app-menu [items]="items()" [itemClassName]="'px-3 py-2 hover:bg-accent'"></app-menu>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div>
+      <button hlmBtn [size]="'icon'" variant="ghost">
+        <lucide-icon [img]="ellipsis" [size]="22" />
+      </button>
+    </div>
+  </aside>
+} @else {
+  <!-- <aside> -->
   <nav class="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
-    <a
-      routerLink="/"
-      routerLinkActive="bg-accent text-accent-foreground"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
-    >
-      Home
-    </a>
-
-    <a
-      routerLink="@/prottoy"
-      routerLinkActive="bg-accent text-accent-foreground"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
-    >
-      Profile
-    </a>
-
-    <a
-      routerLink="auth/sign-in"
-      routerLinkActive="bg-accent text-accent-foreground"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
-    >
-      Sign in
-    </a>
-
-    <a
-      routerLink="auth/sign-up"
-      routerLinkActive="bg-accent text-accent-foreground"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="rounded-md px-3 py-2 text-sm hover:bg-accent"
-    >
-      Sign up
-    </a>
-
+    @for (item of items(); track item.id) {
+      <a
+        [routerLink]="item.link"
+        routerLinkActive="bg-accent text-accent-foreground"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="rounded-md px-3 py-2 text-sm hover:bg-accent flex items-center gap-2"
+      >
+        <lucide-icon [img]="item.icon" [size]="18" />
+        <span>{{ item.label }}</span>
+      </a>
+    }
   </nav>
-
-  <!-- Footer -->
-  <div class="shrink-0 border-t p-3">Footer</div>
-</aside>
+  <!-- </aside> -->
+}

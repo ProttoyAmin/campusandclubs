@@ -3,6 +3,7 @@ import { RootLayout } from './layouts/root/root-layout/root-layout';
 import { AuthLayout } from './layouts/auth/auth-layout/auth-layout';
 import { UserLayout } from './layouts/user/user-layout/user-layout';
 import { USettingsLayout } from './layouts/user/u-settings-layout/u-settings-layout';
+import { ClubLayout } from './layouts/club/club-layout/club-layout';
 
 export const routes: Routes = [
   {
@@ -22,6 +23,11 @@ export const routes: Routes = [
         path: '@/:username',
         component: UserLayout,
         loadChildren: () => import('./features/accounts/accounts.routes').then((m) => m.userRoutes),
+      },
+      {
+        path: 'clubs',
+        // component: ClubLayout,
+        loadChildren: () => import('./features/clubs/clubs.routes').then((m) => m.clubRoutes),
       },
       {
         path: 'settings',
