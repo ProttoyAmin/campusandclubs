@@ -4,6 +4,7 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@angular/common/http';
 import { csrfInterceptor } from './core/http/interceptors/csrf-interceptor';
+import { ssrCookieInterceptor } from './core/http/ssr-interceptors/ssr-interceptor';
 import { CookieService } from 'ngx-cookie-service';
 
 export const appConfig: ApplicationConfig = {
@@ -13,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
 
-    provideHttpClient(withInterceptors([csrfInterceptor])),
+    provideHttpClient(withInterceptors([csrfInterceptor, ssrCookieInterceptor])),
   ],
 };

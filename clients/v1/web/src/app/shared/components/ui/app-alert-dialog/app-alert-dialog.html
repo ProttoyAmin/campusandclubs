@@ -1,0 +1,16 @@
+<hlm-alert-dialog [state]="open ? 'open' : 'closed'" (stateChanged)="onStateChanged($event)">
+  <hlm-alert-dialog-content *brnAlertDialogContent="let ctx" [size]="'sm'">
+    <hlm-alert-dialog-header>
+      <h2 hlmAlertDialogTitle>{{ title }}</h2>
+      <p hlmAlertDialogDescription>{{ description }}</p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel variant="ghost" (click)="cancelled.emit()">
+        {{ cancelText }}
+      </button>
+      <button hlmAlertDialogAction variant="destructive" (click)="confirmed.emit()">
+        {{ confirmText }}
+      </button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppAlert } from './app-alert';
+import { AppDropdownMenu } from './dropdown-menu';
 
-describe('AppAlert', () => {
-  let component: AppAlert;
-  let fixture: ComponentFixture<AppAlert>;
+describe('DropdownMenu', () => {
+  let component: AppDropdownMenu;
+  let fixture: ComponentFixture<AppDropdownMenu>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppAlert],
+      imports: [AppDropdownMenu],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppAlert);
+    fixture = TestBed.createComponent(AppDropdownMenu);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -13,9 +13,26 @@
     </div>
     <!-- Footer -->
     <div>
-      <button hlmBtn [size]="'icon'" variant="ghost">
-        <lucide-icon [img]="ellipsis" [size]="22" />
-      </button>
+      <app-dropdown-menu
+        [items]="sidebarDropdown"
+        align="end"
+        (itemClick)="onSidebarMenuClick($event)"
+        [showLogout]="true"
+        (logout)="alertOpen.set(true)"
+      >
+        <button hlmBtn [size]="'icon'" variant="ghost">
+          <lucide-icon [img]="ellipsis" [size]="22" />
+        </button>
+      </app-dropdown-menu>
+      <app-alert-dialog
+        [(open)]="alertOpen"
+        title="Logout?"
+        description="Are you sure you want to end your session?"
+        cancelText="Cancel"
+        confirmText="Logout"
+        (cancelled)="handleCancel()"
+        (confirmed)="onLogoutClick()"
+      />
     </div>
   </aside>
 } @else {

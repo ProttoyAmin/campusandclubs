@@ -51,7 +51,7 @@ export class SignInForm {
   ) {
     this.signInForm = this.fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required]],
     });
   }
 

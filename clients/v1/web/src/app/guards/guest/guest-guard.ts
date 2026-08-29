@@ -1,19 +1,20 @@
-import { inject, signal } from '@angular/core';
+// guest-guard.ts
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '@/app/features/auth/services/auth';
 import { map } from 'rxjs';
 
-export const authGuard: CanActivateFn = (route, state) => {
+export const guestGuard: CanActivateFn = () => {
   const router = inject(Router);
   const auth = inject(Auth);
 
   return auth.session().pipe(
     map((session) => {
-      console.log('SESSION FROM AUTH GUARD: ', session);
+      console.log('SESSION FROM GUEST GUARD: ', session);
       if (session.meta.is_authenticated) {
-        return true;
+        return router.createUrlTree(['']);
       }
-      return router.createUrlTree(['auth/sign-in']);
+      return true;
     }),
   );
 };

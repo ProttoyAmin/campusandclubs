@@ -1,5 +1,6 @@
 import { ApiClient } from '@/app/core/http/api-client';
 import { inject, Service } from '@angular/core';
+import { environment } from '@/environments/environment.development';
 
 export type AuthSession = {
   status: number;
@@ -18,21 +19,21 @@ export class Auth {
 
   session() {
     console.log('Getting session...');
-    return this.api.get<AuthSession>('http://localhost:8000/api/_allauth/browser/v1/auth/session');
+    return this.api.get<AuthSession>(`${environment.apiUrl}/api/_allauth/browser/v1/auth/session`);
   }
 
-  sign_out() {
+  logout() {
     console.log('Signing out...');
-    return this.api.delete('http://localhost:8000/api/_allauth/browser/v1/auth/session');
+    return this.api.delete(`${environment.apiUrl}/api/_allauth/browser/v1/auth/session`);
   }
 
-  sign_in(data: any) {
+  login(data: any) {
     console.log('Signing in...', data);
-    return this.api.post('http://localhost:8000/api/_allauth/browser/v1/auth/login', data);
+    return this.api.post(`${environment.apiUrl}/api/_allauth/browser/v1/auth/login`, data);
   }
 
   sign_up(data: any) {
     console.log('Signing up...', data);
-    return this.api.post('http://localhost:8000/api/_allauth/browser/v1/auth/signup', data);
+    return this.api.post(`${environment.apiUrl}/api/_allauth/browser/v1/auth/signup`, data);
   }
 }

@@ -6,6 +6,21 @@
 
 <div hlmCardContent>
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" [className]="'flex flex-col gap-4'">
+    <!-- Username Field -->
+    <hlm-field>
+      <!-- <label hlmFieldLabel>Username</label> -->
+      <input hlmInput formControlName="username" [placeholder]="'Username'" />
+
+      @let usernameControl = signUpForm.get('username');
+      @if (usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)) {
+        <hlm-field-error class="text-red-700">
+          @if (usernameControl?.errors?.['required']) {
+            <span>Username is required</span>
+          }
+        </hlm-field-error>
+      }
+    </hlm-field>
+
     <!-- Email Field -->
     <hlm-field>
       <!-- <label hlmFieldLabel>Email</label> -->
@@ -13,7 +28,7 @@
 
       @let emailControl = signUpForm.get('email');
       @if (emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)) {
-        <hlm-field-error>
+        <hlm-field-error class="text-red-700">
           @if (emailControl?.errors?.['required']) {
             <span>Email is required</span>
           } @else if (emailControl?.errors?.['email']) {
@@ -30,7 +45,7 @@
 
       @let passwordControl = signUpForm.get('password');
       @if (passwordControl?.invalid && (passwordControl?.dirty || passwordControl?.touched)) {
-        <hlm-field-error>
+        <hlm-field-error class="text-red-700">
           @if (passwordControl?.errors?.['required']) {
             <span>Password is required</span>
           } @else if (passwordControl?.errors?.['minlength']) {
@@ -60,21 +75,6 @@
           }
         </hlm-field-error>
       } -->
-    </hlm-field>
-
-    <!-- Username Field -->
-    <hlm-field>
-      <!-- <label hlmFieldLabel>Username</label> -->
-      <input hlmInput formControlName="username" [placeholder]="'Username'" />
-
-      @let usernameControl = signUpForm.get('username');
-      @if (usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)) {
-        <hlm-field-error>
-          @if (usernameControl?.errors?.['required']) {
-            <span>Username is required</span>
-          }
-        </hlm-field-error>
-      }
     </hlm-field>
 
     <button hlmBtn type="button" variant="link" (click)="navigateToSignIn()">
@@ -114,7 +114,7 @@
       } @else {
         <img [src]="googleIconLogo" alt="" width="14" height="14" />
       }
-      Google
+      <span class="ml-1">Google</span>
     </button>
 
     <button
@@ -130,7 +130,7 @@
       } @else {
         <img [src]="facebookIconLogo" alt="" width="14" height="14" />
       }
-      Facebook
+      <span class="ml-1">Facebook</span>
     </button>
   </div>
 </div>

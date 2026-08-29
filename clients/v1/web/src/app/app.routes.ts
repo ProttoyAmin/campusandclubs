@@ -5,6 +5,7 @@ import { UserLayout } from './layouts/user/user-layout/user-layout';
 import { USettingsLayout } from './layouts/user/u-settings-layout/u-settings-layout';
 import { ClubLayout } from './layouts/club/club-layout/club-layout';
 import { authGuard } from './guards/auth/auth-guard';
+import { guestGuard } from './guards/guest/guest-guard';
 
 export const routes: Routes = [
   {

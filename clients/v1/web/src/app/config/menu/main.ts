@@ -20,16 +20,4 @@ export const mainMenu: MenuItem[] = [
     icon: UserIcon,
     link: 'clubs',
   },
-  {
-    id: 4,
-    label: 'Sign In',
-    icon: UserIcon,
-    link: 'auth/sign-in',
-  },
-  {
-    id: 5,
-    label: 'Sign Up',
-    icon: UserIcon,
-    link: 'auth/sign-up',
-  },
 ];
