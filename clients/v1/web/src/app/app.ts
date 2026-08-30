@@ -4,7 +4,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 
 @Component({
-  imports: [RouterOutlet, RouterLink, HlmButtonImports],
+  imports: [RouterOutlet, HlmButtonImports],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

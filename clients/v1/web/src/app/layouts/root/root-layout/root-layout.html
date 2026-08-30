@@ -1,9 +1,19 @@
-<div class="flex relative">
-   <app-sidebar class="sticky top-0 md:w-1/6 hidden md:block border-r shadow-md h-screen p-4"/>
-  <div class="w-full md:w-5/6 place-items-center">
-    <main class="w-full md:w-1/2">
+<div class="h-svh flex overflow-hidden">
+  <!-- Sidebar -->
+  <app-sidebar
+    [items]="menu"
+    [root]="true"
+    class="hidden md:block md:w-1/6 shrink-0 border-r shadow-md"
+  />
+
+  <!-- Right side -->
+  <div class="flex flex-col flex-1 min-w-0">
+    <!-- ONLY THIS SCROLLS -->
+    <main class="flex-1 min-h-0">
       <router-outlet />
     </main>
-    <footer>Main Footer</footer>
+
+    <!-- Footer -->
+    <footer class="flex-0">Main Footer</footer>
   </div>
 </div>
