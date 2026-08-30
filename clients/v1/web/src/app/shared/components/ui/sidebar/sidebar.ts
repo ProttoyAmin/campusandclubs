@@ -10,6 +10,7 @@ import { AppDropdownMenu } from '../dropdown-menu/dropdown-menu';
 import { Auth } from '@/app/features/auth/services/auth';
 import { catchError, of, tap } from 'rxjs';
 import { SideBarDropdownMenu } from '@/app/config/menu';
+import { AuthQueries } from '@/app/features/auth/queries/auth.queries';
 
 @Component({
   imports: [
@@ -27,6 +28,7 @@ import { SideBarDropdownMenu } from '@/app/config/menu';
 })
 export class Sidebar {
   private auth = inject(Auth);
+  private queries = inject(AuthQueries);
   private router = inject(Router);
   items = input.required<MenuItem[]>();
 
@@ -41,19 +43,11 @@ export class Sidebar {
   }
 
   onLogoutClick() {
-    this.auth
-      .logout()
-      .pipe(
-        tap(() => console.log('Session deleted on server')),
-        catchError((err) => {
-          console.error('Logout request failed', err);
-          return of(null); // swallow error so subscribe still completes
-        }),
-      )
-      .subscribe(() => {
-        // navigate away, clear tokens, etc.
+    this.queries.logout.mutate(undefined, {
+      onSuccess: () => {
         this.router.navigate(['auth/sign-in']);
-      });
+      },
+    });
   }
 
   handleCancel(): void {
