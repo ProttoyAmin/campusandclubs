@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { SignInForm } from '../../../components/forms/sign-in/sign-in-form';
 import { Auth } from '../../../services/auth';
 import { Router } from '@angular/router';
+import { AuthQueries } from '../../../queries/auth.queries';
 
 @Component({
   standalone: true,
@@ -13,17 +14,10 @@ import { Router } from '@angular/router';
 export class SignIn {
   private readonly auth = inject(Auth);
   private router = inject(Router);
+  readonly authQueries = inject(AuthQueries);
 
   onSubmit(data: any) {
     console.log('submitting from sign in page', data);
-    this.auth.login(data).subscribe({
-      next: (res) => {
-        console.log('Sign in successful', res);
-        this.router.navigate(['']);
-      },
-      error: (err) => {
-        console.error('Sign in failed', err);
-      },
-    });
+    this.authQueries.login.mutate(data);
   }
 }

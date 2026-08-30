@@ -38,6 +38,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthLayout,
+    canActivate: [guestGuard],
     title: 'CQlubs',
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },

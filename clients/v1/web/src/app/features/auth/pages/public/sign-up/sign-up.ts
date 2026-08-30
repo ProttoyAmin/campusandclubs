@@ -16,19 +16,6 @@ export class SignUp {
   constructor() {}
 
   hit() {
-    this.auth
-      .sign_up({
-        username: 'prottoy',
-        password: '123456',
-        email: 'prottoy@gmail.com',
-      })
-      .subscribe({
-        next: (res) => {
-          console.log(res);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
+    console.log('sign up hit');
   }
 }

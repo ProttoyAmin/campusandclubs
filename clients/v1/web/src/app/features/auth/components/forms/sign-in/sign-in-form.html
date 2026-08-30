@@ -44,7 +44,7 @@
       [variant]="'outline'"
       type="submit"
       [size]="'lg'"
-      [disabled]="signInForm.invalid"
+      [disabled]="signInForm.invalid || pending()"
       [className]="'w-full'"
     >
       @if (pending()) {
