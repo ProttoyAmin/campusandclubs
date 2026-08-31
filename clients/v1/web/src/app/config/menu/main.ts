@@ -12,12 +12,12 @@ export const mainMenu: MenuItem[] = [
     id: 2,
     label: 'Profile',
     icon: UserIcon,
-    link: '@/prottoy',
+    link: '/@/md_jahid_bin',
   },
   {
     id: 3,
     label: 'Clubs',
     icon: UserIcon,
-    link: 'clubs',
+    link: '/@/clubs',
   },
 ];

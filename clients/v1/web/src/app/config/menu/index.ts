@@ -6,7 +6,7 @@ const SideBarDropdownMenu: MenuItem[] = [
     id: 1,
     label: 'Settings',
     icon: SettingsIcon,
-    link: 'settings',
+    link: '/@/settings',
   },
 ];
 

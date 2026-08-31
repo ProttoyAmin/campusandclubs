@@ -6,18 +6,18 @@ export const userSettingsMenu: MenuItem[] = [
     id: 1,
     label: 'Account',
     icon: CircleUserIcon,
-    link: 'account',
+    link: '/@/settings/account',
   },
   {
     id: 2,
     label: 'Privacy',
     icon: LockIcon,
-    link: 'privacy',
+    link: '/@/settings/privacy',
   },
   {
     id: 3,
     label: 'Affiliations',
     icon: GitCompareIcon,
-    link: 'affiliations',
+    link: '/@/settings/affiliations',
   },
 ];

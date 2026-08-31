@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth } from '../services/auth';
+import { Auth, SocialProvider } from '../services/auth';
 import { injectQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClientService } from '@/app/config/tanstack';
 
@@ -29,4 +29,19 @@ export class AuthQueries {
       this.queryClient.queryClient.invalidateQueries({ queryKey: ['auth', 'session'] });
     },
   }));
+
+  readonly socialLogin = injectMutation(() => ({
+  mutationFn: (provider: SocialProvider) => {
+    return this.auth.social_login(provider);
+  },
+
+  onSuccess: () => {
+    this.queryClient.queryClient.invalidateQueries({
+      queryKey: ['auth', 'session'],
+    });
+  },
+  onError: (error) => {
+    console.error('mutation error:', error);
+  },
+}));
 }

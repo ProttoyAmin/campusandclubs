@@ -1,4 +1,3 @@
-// guest-guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -10,10 +9,10 @@ export const guestGuard: CanActivateFn = () => {
   const auth = inject(AuthQueries);
 
   return toObservable(auth.session.status).pipe(
-    filter((status) => status !== 'pending'), // wait until success or error
+    filter((status) => status === 'success' || status === 'error'),
     take(1),
     map(() => {
-      const isAuthenticated = !!auth.session.data();
+      const isAuthenticated = !!auth.session.data()?.meta.is_authenticated;
       return isAuthenticated ? router.createUrlTree(['']) : true;
     }),
   );

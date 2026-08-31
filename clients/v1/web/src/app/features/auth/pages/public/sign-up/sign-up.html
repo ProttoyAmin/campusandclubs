@@ -1,3 +1,6 @@
 <div class="">
   <app-sign-up-form></app-sign-up-form>
+  <hlm-separator class="my-4"></hlm-separator>
+  <app-social-login (providerClicked)="handleProviderClick($event)" [providers]="['google', 'facebook']"
+    [socialLoginPending]="socialLoginPending"></app-social-login>
 </div>

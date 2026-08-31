@@ -179,6 +179,7 @@ ACCOUNT_SIGNUP_FIELDS = [
 ]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+SOCIALACCOUNT_ADAPTER = "apps.accounts.adapters.CustomSocialAccountAdapter"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -281,16 +282,13 @@ LOGGING = {
         "allauth": {
             "handlers": ["console"],
             "level": "DEBUG",
-            "propagate": False,
         },
         "allauth.socialaccount": {
             "handlers": ["console"],
             "level": "DEBUG",
-            "propagate": False,
         },
         "django.request": {
             "handlers": ["console"],
-            "propagate": False,
             "level": "DEBUG",
         },
     },

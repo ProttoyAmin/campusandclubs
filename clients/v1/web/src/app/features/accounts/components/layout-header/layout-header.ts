@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { Location } from '@angular/common';
 import { HlmButtonImports } from '@/components/ui/button/src';
 import { LucideAngularModule } from 'lucide-angular';
@@ -9,6 +9,9 @@ import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/rout
 import { lucideSettings } from '@ng-icons/lucide';
 import { AppNavigator } from '@/app/shared/components/ui/app-navigator/app-navigator';
 import { filter } from 'rxjs';
+import { UserLayoutContext } from '../../context/layout-context/user-layout-context';
+
+import { AccountQueries } from '@/app/features/accounts/queries/account.queries';
 
 @Component({
   imports: [
@@ -29,23 +32,20 @@ import { filter } from 'rxjs';
 export class LayoutHeader {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  username = this.route.snapshot.paramMap.get('username');
+  private readonly queries = inject(AccountQueries);
+  readonly context = inject(UserLayoutContext);
+  // username = this.route.snapshot.paramMap.get('username');
   isDialogOpen = signal<boolean>(false);
   path = signal(this.router.url);
   rootPath = signal(!this.route.firstChild);
 
-  user = input<any>({
-    id: '1',
-    username: 'prottoy',
-    avatar: 'avatar-url',
-  });
-  currentUser = input<any>({
-    id: '1',
-    username: 'username',
-    avatar: 'avatar-url',
-  });
+  user = this.context.user;
+  currentUser = this.queries.me;
 
   constructor() {
+    effect(() => {
+      console.log(this.currentUser.data());
+    });
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
@@ -55,11 +55,11 @@ export class LayoutHeader {
   }
 
   toggleDialog() {
-    this.isDialogOpen.set(!this.isDialogOpen());
-    console.log(this.isDialogOpen());
+    this.context.isDialogOpen.update((value) => !value);
+    console.log(this.context.isDialogOpen());
   }
 
   goToSettings() {
-    this.router.navigate(['/settings']);
+    this.router.navigate(['@/settings']);
   }
 }

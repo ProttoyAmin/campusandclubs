@@ -1,6 +1,6 @@
 <div>
-  <app-sign-in-form
-    (formSubmit)="onSubmit($event)"
-    [pending]="authQueries.login.isPending()"
-  ></app-sign-in-form>
+  <app-sign-in-form (formSubmit)="onSubmit($event)" [pending]="authQueries.login.isPending()"></app-sign-in-form>
+  <hlm-separator class="my-4"></hlm-separator>
+  <app-social-login (providerClicked)="handleProviderClick($event)" [providers]="['google', 'facebook']"
+    [socialLoginPending]="authQueries.socialLogin.isPending()"></app-social-login>
 </div>

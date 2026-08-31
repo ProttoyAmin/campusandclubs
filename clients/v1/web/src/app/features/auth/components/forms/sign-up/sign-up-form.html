@@ -13,11 +13,11 @@
 
       @let usernameControl = signUpForm.get('username');
       @if (usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)) {
-        <hlm-field-error class="text-red-700">
-          @if (usernameControl?.errors?.['required']) {
-            <span>Username is required</span>
-          }
-        </hlm-field-error>
+      <hlm-field-error class="text-red-700">
+        @if (usernameControl?.errors?.['required']) {
+        <span>Username is required</span>
+        }
+      </hlm-field-error>
       }
     </hlm-field>
 
@@ -28,13 +28,13 @@
 
       @let emailControl = signUpForm.get('email');
       @if (emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)) {
-        <hlm-field-error class="text-red-700">
-          @if (emailControl?.errors?.['required']) {
-            <span>Email is required</span>
-          } @else if (emailControl?.errors?.['email']) {
-            <span>Invalid email format</span>
-          }
-        </hlm-field-error>
+      <hlm-field-error class="text-red-700">
+        @if (emailControl?.errors?.['required']) {
+        <span>Email is required</span>
+        } @else if (emailControl?.errors?.['email']) {
+        <span>Invalid email format</span>
+        }
+      </hlm-field-error>
       }
     </hlm-field>
 
@@ -45,25 +45,20 @@
 
       @let passwordControl = signUpForm.get('password');
       @if (passwordControl?.invalid && (passwordControl?.dirty || passwordControl?.touched)) {
-        <hlm-field-error class="text-red-700">
-          @if (passwordControl?.errors?.['required']) {
-            <span>Password is required</span>
-          } @else if (passwordControl?.errors?.['minlength']) {
-            <span>Password must be at least 8 characters</span>
-          }
-        </hlm-field-error>
+      <hlm-field-error class="text-red-700">
+        @if (passwordControl?.errors?.['required']) {
+        <span>Password is required</span>
+        } @else if (passwordControl?.errors?.['minlength']) {
+        <span>Password must be at least 8 characters</span>
+        }
+      </hlm-field-error>
       }
     </hlm-field>
 
     <!-- Password Field -->
     <hlm-field>
       <!-- <label hlmFieldLabel>Confirm Password</label> -->
-      <input
-        hlmInput
-        formControlName="re_password"
-        type="password"
-        [placeholder]="'Confirm Password'"
-      />
+      <input hlmInput formControlName="re_password" type="password" [placeholder]="'Confirm Password'" />
 
       <!-- @let rePasswordControl = signUpForm.get('re_password');
       @if (rePasswordControl?.invalid && (rePasswordControl?.dirty || rePasswordControl?.touched)) {
@@ -82,57 +77,17 @@
     </button>
 
     <!-- <div hlmCardAction className="w-full"> -->
-    <button
-      hlmBtn
-      [variant]="'outline'"
-      type="submit"
-      [size]="'lg'"
-      [disabled]="signUpForm.invalid"
-      [className]="'w-full'"
-    >
+    <button hlmBtn [variant]="'outline'" type="submit" [size]="'lg'" [disabled]="signUpForm.invalid"
+      [className]="'w-full'">
       @if (pending()) {
-        <hlm-spinner class="size-4"></hlm-spinner>
-        <span>Signing up...</span>
+      <hlm-spinner class="size-4"></hlm-spinner>
+      <span>Signing up...</span>
       } @else {
-        <span>Sign up</span>
+      <span>Sign up</span>
       }
     </button>
     <!-- </div> -->
   </form>
-  <hlm-separator class="my-4"></hlm-separator>
-  <div class="flex gap-2 items-center">
-    <button
-      hlmBtn
-      type="button"
-      variant="outline"
-      class="rounded-full w-1/2"
-      size="lg"
-      (click)="handleGoogleLogin()"
-    >
-      @if (socialLoginPending) {
-        <hlm-spinner class="size-4"></hlm-spinner>
-      } @else {
-        <img [src]="googleIconLogo" alt="" width="14" height="14" />
-      }
-      <span class="ml-1">Google</span>
-    </button>
-
-    <button
-      hlmBtn
-      type="button"
-      variant="outline"
-      class="rounded-full w-1/2"
-      size="lg"
-      (click)="handleFacebookLogin()"
-    >
-      @if (socialLoginPending) {
-        <hlm-spinner class="size-4"></hlm-spinner>
-      } @else {
-        <img [src]="facebookIconLogo" alt="" width="14" height="14" />
-      }
-      <span class="ml-1">Facebook</span>
-    </button>
-  </div>
 </div>
 
 <!-- <hlm-card-footer>Card Footer</hlm-card-footer> -->

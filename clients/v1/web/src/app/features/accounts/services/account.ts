@@ -1,21 +1,25 @@
 import { inject, Service } from '@angular/core';
 import { ApiClient } from '@/app/core/http/api-client';
 import { environment } from '@/environments/environment.development';
+import { UserProfile, PaginatedUserProfileList } from '@campus/api';
+import { Observable } from 'rxjs';
 
 @Service()
 export class Account {
   private readonly api = inject(ApiClient);
 
-  me() {
-    return this.api.get(`${environment.apiUrl}/api/accounts/auth/me/`);
+  me(): Observable<UserProfile> {
+    return this.api.get<UserProfile>(`${environment.apiUrl}/api/accounts/auth/me/`);
   }
 
-  users() {
-    return this.api.get(`${environment.apiUrl}/api/accounts/auth/all/`);
+  users(): Observable<PaginatedUserProfileList> {
+    return this.api.get<PaginatedUserProfileList>(`${environment.apiUrl}/api/accounts/auth/all/`);
   }
 
-  user(username: string) {
-    return this.api.get(`${environment.apiUrl}/api/accounts/auth/users/user/${username}/`);
+  user(username: string): Observable<UserProfile> {
+    return this.api.get<UserProfile>(
+      `${environment.apiUrl}/api/accounts/auth/users/user/${username}/`,
+    );
   }
 
   request_password_reset(email: string) {

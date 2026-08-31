@@ -9,11 +9,14 @@ export const authGuard: CanActivateFn = (route, state) => {
   const auth = inject(AuthQueries);
 
   return toObservable(auth.session.status).pipe(
-    filter((status) => status !== 'pending'), // wait until success or error
+    filter((status) => status === 'success' || status === 'error'),
     take(1),
     map(() => {
-      const isAuthenticated = !!auth.session.data();
-      return isAuthenticated ? true : router.createUrlTree(['/auth/sign-in']);
+      const isAuthenticated = auth.session.data()?.meta.is_authenticated;
+      if (!isAuthenticated) {
+        return router.createUrlTree(['/@/auth/sign-in']);
+      }
+      return true;
     }),
   );
 };

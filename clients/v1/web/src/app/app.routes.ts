@@ -10,36 +10,55 @@ import { guestGuard } from './guards/guest/guest-guard';
 export const routes: Routes = [
   {
     path: '',
-    component: RootLayout,
-    canActivate: [authGuard],
     children: [
-      // {
-      //   path: '',
-      //   component: App,
-      // },
       {
-        path: '@/:username',
-        component: UserLayout,
-        loadChildren: () => import('./features/accounts/accounts.routes').then((m) => m.userRoutes),
-      },
-      {
-        path: 'clubs',
-        // component: ClubLayout,
-        loadChildren: () => import('./features/clubs/clubs.routes').then((m) => m.clubRoutes),
-      },
-      {
-        path: 'settings',
-        component: USettingsLayout,
-        loadChildren: () =>
-          import('./features/accounts/accounts.routes').then((m) => m.userSettingsRoutes),
+        path: '@',
+        children: [
+          // /@/auth/*
+          {
+            path: 'auth',
+            component: AuthLayout,
+            canActivate: [guestGuard],
+            title: 'CQlubs',
+            loadChildren: () =>
+              import('./features/auth/auth.routes')
+                .then(m => m.authRoutes),
+          },
+
+          {
+            path: '',
+            component: RootLayout,
+            canActivate: [authGuard],
+            children: [
+              // /@/clubs/*
+          {
+            path: 'clubs',
+            loadChildren: () =>
+              import('./features/clubs/clubs.routes')
+                .then(m => m.clubRoutes),
+          },
+
+          // /@/u/:username/settings/*
+          {
+            path: 'settings',
+            component: USettingsLayout,
+            loadChildren: () =>
+              import('./features/accounts/accounts.routes')
+                .then(m => m.userSettingsRoutes),
+          },
+
+          // /@/:username/*
+          {
+            path: ':username',
+            component: UserLayout,
+            loadChildren: () =>
+              import('./features/accounts/accounts.routes')
+                .then(m => m.userRoutes),
+          },
+            ]
+          }
+        ],
       },
     ],
-  },
-  {
-    path: 'auth',
-    component: AuthLayout,
-    canActivate: [guestGuard],
-    title: 'CQlubs',
-    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
 ];
