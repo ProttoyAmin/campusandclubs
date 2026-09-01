@@ -1,7 +1,7 @@
 from typing import Any
 from apps.accounts import models
 from rest_framework import serializers
-
+from rest_framework.reverse import reverse
 from core.policies.utils import current_user
 
 from .club_membership import UserClubMembershipSerializer
@@ -200,7 +200,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         social_account = SocialAccount.objects.filter(user=obj).first()
         if social_account and social_account.extra_data:
             return social_account.get_avatar_url()
-        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None       #type: ignore
+        # type: ignore
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
     def get_media(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer
@@ -210,31 +211,49 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/accounts/auth/users/user/{obj.username}/')
+            return reverse(
+                'accounts:user_details_by_username',
+                kwargs={
+                    'username': obj.username
+                },
+                request=request,
+            )
         return None
 
     def get_clubs_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/accounts/auth/users/user/{obj.username}/clubs/')
+            return reverse(
+                'accounts:user_clubs',
+                kwargs={
+                    'username': obj.username
+                },
+                request=request,
+            )
         return None
 
     def get_posts_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/accounts/auth/{obj.id}/posts/')
+            return reverse(
+                'accounts:user_posts',
+                kwargs={
+                    'user_id': obj.id
+                },
+                request=request,
+            )
         return None
 
     def get_followers_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/connections/{obj.id}/followers/')
+            return request.build_absolute_uri(f'/api/v1/connections/{obj.id}/followers/')
         return None
 
     def get_following_url(self, obj: models.User):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/connections/{obj.id}/following/')
+            return request.build_absolute_uri(f'/api/v1/connections/{obj.id}/following/')
         return None
 
     def get_clubs(self, obj: models.User):

@@ -9,6 +9,18 @@ export const paths = {
         generateRouteFromPath(routes.user.private.profile.username, {
           username,
         }),
+      posts: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.posts, {
+          username,
+        }),
+      reels: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.reels, {
+          username,
+        }),
+      reposts: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.reposts, {
+          username,
+        }),
       settings: {
         base: (username: string) =>
           generateRouteFromPath(routes.user.private.settings.base, {

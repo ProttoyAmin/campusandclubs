@@ -12,6 +12,7 @@ from apps.posts.serializer import PostSerializer, PostCreateSerializer
 from apps.posts.services import PostService
 from core.views import ServiceMixin
 
+
 class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[Post]):
     service_class = PostService
 
@@ -23,6 +24,34 @@ class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[P
             return PostCreateSerializer
         return PostSerializer
 
+    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        from apps.media.models import Media, MediaRole
+        from apps.posts.models import Post
+        from django.contrib.contenttypes.models import ContentType
+        import cloudinary
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        media = serializer.validated_data.pop('media')
+
+        post = Post.objects.create(
+            author=request.user,
+            content=serializer.validated_data.pop('content'),
+        )
+
+        if media:
+            upload = cloudinary.uploader.upload(
+                media, folder=f"posts/{post.id}", file_name=media.name)
+            Media.objects.create(
+                content_type=ContentType.objects.get_for_model(post),
+                object_id=post.id,
+                file=upload['url'],
+                role=MediaRole.POST,
+            )
+
+        response = PostSerializer(post).data
+        return Response({"message": "Post created successfully", 'data': response})
+
 
 class PostUpdateDestroyView(ServiceMixin[PostService], generics.RetrieveUpdateDestroyAPIView[Post]):
     serializer_class = PostSerializer
@@ -33,5 +62,6 @@ class PostUpdateDestroyView(ServiceMixin[PostService], generics.RetrieveUpdateDe
     def get_queryset(self) -> QuerySet[Post]:
         return self.get_service(self.request).list_posts()
 
-    def perform_destroy(self, instance: Post) -> None:          # type: ignore[override]
+    # type: ignore[override]
+    def perform_destroy(self, instance: Post) -> None:
         self.get_service(self.request).soft_delete(instance)

@@ -21,6 +21,41 @@ class DepartmentTemplateSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description"]
 
 
+class ClubMinimalSerializer(serializers.ModelSerializer):
+    """
+    Club mini serializer
+
+    Used for listing private clubs, includes fields like id, name, origin, about, avatar, banner, privacy, and allow_public_posts.
+    """
+    avatar = serializers.SerializerMethodField()
+    banner = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+    origin = serializers.CharField()
+    slug = serializers.CharField()
+
+    class Meta:
+        model = Club
+        fields = ['id', 'name', 'origin',
+                  'avatar', 'banner', 'url', 'slug']
+        read_only_fields = ['id']
+
+    def get_url(self, obj: Club):
+        request = self._get_request()
+        # type: ignore
+        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))
+
+    def _get_request(self) -> Request | None:
+        return self.context.get('request')
+
+    def get_avatar(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+
+    def get_banner(self, obj: Club):
+        from apps.media.models import MediaRole
+        return obj.media.filter(role=MediaRole.BANNER).first().file.url if obj.media.filter(role=MediaRole.BANNER).exists() else None
+
+
 class ClubCreateSerializer(serializers.ModelSerializer):
     """
     Create club serializer
@@ -63,7 +98,6 @@ class ClubCreateSerializer(serializers.ModelSerializer):
             self.fields['origin'].queryset = institute_service.get_distinct_affiliate_institutes(
                 current_user(self._get_request()))     # type: ignore
 
-
     def get_validators(self):
         """
         Remove the default UniqueTogetherValidator that DRF adds automatically
@@ -92,9 +126,9 @@ class ClubCreateSerializer(serializers.ModelSerializer):
 
         allowed_join_modes(privacy, join_mode)
 
-        
         user = current_user(self._get_request())
-        user_affiliation = user.affiliations.filter(user=user, institute=origin).first()
+        user_affiliation = user.affiliations.filter(
+            user=user, institute=origin).first()
 
         if scope != MembershipScope.GLOBAL:
             if not origin:
@@ -367,8 +401,13 @@ class ClubListSerializer(serializers.ModelSerializer):
                 }
         return None
 
-    def get_is_member(self, obj):
-        return bool(getattr(obj, 'user_memberships', []))
+    def get_is_member(self, obj: Club) -> bool:
+        request = self._get_request()
+        if hasattr(obj, 'user_memberships'):
+            return bool(obj.user_memberships)  # type: ignore[attr-defined]
+        return Membership.objects.filter(
+            user=request.user, club=obj, left_at__isnull=True
+        ).exists()
 
 
 class ClubAvatarUploadSerializer(serializers.Serializer):

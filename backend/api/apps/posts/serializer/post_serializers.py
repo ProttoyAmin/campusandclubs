@@ -1,38 +1,31 @@
-
-
-
-
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from apps.posts.models import Post
 from apps.interactions.models import (
-    Comment, 
-    Like, 
+    Comment,
+    Like,
     Share
 )
 from apps.posts.serializer import PostMediaSerializer
+from apps.media.serializers import MediaListSerializer
+
 
 class PostSerializer(serializers.ModelSerializer):
     """Detailed serializer for user posts with interaction data"""
     id = serializers.CharField()
-    author_id = serializers.UUIDField(source='author.id', read_only=True)
-    author_username = serializers.CharField(
-        source='author.username', read_only=True)
-    author_avatar = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
     author_url = serializers.SerializerMethodField()
 
     # Club info for club posts
-    club_id = serializers.CharField(
-        source='club.id', read_only=True, allow_null=True)
-    club_name = serializers.CharField(
-        source='club.name', read_only=True, allow_null=True)
+    club = serializers.SerializerMethodField()
     club_url = serializers.SerializerMethodField()
 
     # NEW: Multiple media support
-    images = serializers.SerializerMethodField()
-    videos = serializers.SerializerMethodField()
-    media_files = PostMediaSerializer(many=True, read_only=True)
+    # images = serializers.SerializerMethodField()
+    # videos = serializers.SerializerMethodField()
+    # media_files = PostMediaSerializer(many=True, read_only=True)
+    media = MediaListSerializer(many=True, read_only=True)
 
     # Interaction counts
     like_count = serializers.SerializerMethodField()
@@ -60,11 +53,10 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'id', 'url', 'author_id', 'author_username', 'author_avatar', 'author_url',
-            'club_id', 'club_name', 'club_url', 'title', 'is_pinned',
-            'post_type', 'content',
-            'image', 'video', 'image_file', 'video_file', 'image_url', 'video_url',
-            'images', 'videos', 'media_files',  # NEW: Multiple media arrays
+            'id', 'url',
+            'author', 'author_url',
+            'club', 'club_url',
+            'title', 'is_pinned', 'content', 'media',
             'original_post', 'original_post_data',
             'like_count', 'comment_count', 'share_count', 'repost_count',
             'is_liked', 'is_shared', 'can_edit',
@@ -72,48 +64,16 @@ class PostSerializer(serializers.ModelSerializer):
             'like_toggle_url', 'share_toggle_url', 'repost_url',
             'is_public', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['id', 'author', 'club_id',
-                            'club_name', 'repost_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'author', 'club', 'club_url',
+                            'repost_count', 'created_at', 'updated_at']
 
-    def get_images(self, obj):
-        """Get all image media for this post"""
-        images = []
+    def get_author(self, obj: Post):
+        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        return UserMinimalSerializer(obj.author, context=self.context).data
 
-        if obj.image_file or obj.image_url:
-            request = self.context.get('request')
-            images.append({
-                'file': obj.image_url,
-                'url': request.build_absolute_uri(obj.image_file.url) if obj.image_file and request else (obj.image_file.url if obj.image_file else None)
-            })
-
-        request = self.context.get('request')
-        for media in obj.media_files.filter(media_type='IMAGE'):
-            images.append({
-                'file': media.image_url,
-                'url': request.build_absolute_uri(media.image_file.url) if media.image_file and request else (media.image_file.url if media.image_file else None)
-            })
-
-        return images
-
-    def get_videos(self, obj):
-        """Get all video media for this post"""
-        videos = []
-
-        if obj.video_file or obj.video_url:
-            request = self.context.get('request')
-            videos.append({
-                'file': obj.video_url,
-                'url': request.build_absolute_uri(obj.video_file.url) if obj.video_file and request else (obj.video_file.url if obj.video_file else None)
-            })
-
-        request = self.context.get('request')
-        for media in obj.media_files.filter(media_type='VIDEO'):
-            videos.append({
-                'file': media.video_url,
-                'url': request.build_absolute_uri(media.video_file.url) if media.video_file and request else (media.video_file.url if media.video_file else None)
-            })
-
-        return videos
+    def get_club(self, obj: Post):
+        from apps.clubs.serializer.club.club import ClubMinimalSerializer
+        return ClubMinimalSerializer(obj.club, context=self.context).data if obj.club else None
 
     def get_author_avatar(self, obj):
         """Get author's avatar (profile picture or avatar URL)"""

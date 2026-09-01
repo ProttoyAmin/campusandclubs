@@ -10,6 +10,7 @@ from apps.posts.models.utils import (
     post_video_upload_path
 )
 
+
 class Post(models.Model):
     """Unified post model for both regular user posts and club posts"""
     POST_TYPE_CHOICES = [
@@ -75,7 +76,7 @@ class Post(models.Model):
         default=False,
         help_text="For club posts: whether the post is pinned in the club"
     )
-    
+
     edited_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -99,7 +100,7 @@ class Post(models.Model):
         if self.is_club_post:
             title_part = self.title or 'Untitled'
             return f"[Club: {self.club.name}] {title_part} by {self.author.username}"
-        return f"{self.author.username} - {self.post_type} - {self.id}"
+        return f"{self.author.username} - {self.id}"
 
     @property
     def is_club_post(self):

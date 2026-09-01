@@ -20,7 +20,7 @@ from apps.accounts.models.user import User
 from core.policies.utils import current_user
 from . import serializers, models
 from core.pagination import PageNumberPagination, StandardResultsSetPagination
-from apps.posts.serializers import PostSerializer, PostListSerializer
+from apps.posts.serializers import PostListSerializer
 from apps.clubs.models import Membership, Club, Role
 from apps.connections.models import Follow
 from apps.posts.models import Post
@@ -29,7 +29,6 @@ import logging
 # logger = logging.getLogger(__name__)
 
 # # Create your views here.
-
 
 
 # class ValidateTypeView(generics.GenericAPIView):
@@ -43,15 +42,15 @@ import logging
 #     def post(self, request):
 #         serializer = self.get_serializer(data=request.data)
 #         serializer.is_valid(raise_exception=True)
-        
+
 #         user = request.user
 #         validated_data = serializer.validated_data
-        
+
 #         user.institute = validated_data['institute']
 #         user.type = validated_data['user_type']
 #         user.professional_email = validated_data['professional_email']
 #         user.save()
-        
+
 #         return Response({
 #             "message": "Type and institute assigned successfully.",
 #             "user_type": user.type,
@@ -244,7 +243,7 @@ def upload_profile_picture(request: Request):
 # #     user = get_object_or_404(models.User, pk=user_id)
 # #     # params = list(request.query_params.keys())
 # #     params = request.query_params.get('fields').split(',') if request.query_params.get('fields') else None
-    
+
 # #     if not user.can_view_profile(request.user):
 # #         return Response(
 # #             {
@@ -276,7 +275,7 @@ def upload_profile_picture(request: Request):
 # def get_user_clubs(request, user_id):
 #     """Get all clubs a user has joined"""
 #     from apps.clubs.serializers import ClubListSerializer
-    
+
 #     user = get_object_or_404(models.User, pk=user_id)
 #     print("user", user)
 
@@ -298,7 +297,7 @@ def upload_profile_picture(request: Request):
 #                 {'detail': 'This profile is private. You must follow this user to view their clubs.'},
 #                 status=status.HTTP_403_FORBIDDEN
 #             )
-            
+
 #         return Response(
 #             {'detail': 'This profile is private.',
 #              'username': user.username,
@@ -307,9 +306,9 @@ def upload_profile_picture(request: Request):
 #              },
 #             status=status.HTTP_403_FORBIDDEN
 #         )
-        
+
 #     clubs = user.owned_clubs.all()
-    
+
 
 #     memberships = Membership.objects.filter(
 #         user=user
@@ -323,7 +322,7 @@ def upload_profile_picture(request: Request):
 #         many=True,
 #         context={'request': request}
 #     )
-    
+
 #     # serializer = ClubListSerializer(
 #     #     clubs,
 #     #     many=True,
@@ -348,11 +347,11 @@ def get_user_posts(request, user_id) -> Response:
     - post_type: TEXT|IMAGE|VIDEO (default: all)
     """
     from apps.accounts.policies.user import UserPolicy
+    from apps.posts.serializer import PostSerializer
+
     user = get_object_or_404(models.User, pk=user_id)
 
     user_policy = UserPolicy(actor=user, record=request.user)
-
-
 
     if request.user.is_authenticated:
         if not user_policy.can_view_posts(viewer=request.user):
@@ -360,7 +359,7 @@ def get_user_posts(request, user_id) -> Response:
                 {'detail': 'You do not have permission to view this user\'s posts.'},
                 status=status.HTTP_403_FORBIDDEN
             )
-    
+
     # Get query parameters
     post_type = request.query_params.get('post_type')
     post_source = request.query_params.get('source', 'all')
@@ -720,5 +719,3 @@ def get_user_posts(request, user_id) -> Response:
 #         'has_permission': has_permission,
 #         'roles': user.get_club_role_names(club)
 #     })
-
-

@@ -6,12 +6,14 @@ from .club.club import (
     ClubCreateSerializer,
     ClubAvatarUploadSerializer,
     ClubBannerUploadSerializer,
+    ClubMinimalSerializer
 )
 
 __all__ = [
     'ClubCreateSerializer',
     'ClubDetailSerializer',
     'ClubJoinSerializer',
+    'ClubMinimalSerializer'
     'ClubSerializer',
     'ClubAvatarUploadSerializer',
     'ClubBannerUploadSerializer',

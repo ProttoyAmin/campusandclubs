@@ -71,7 +71,7 @@ const ClubLayoutHeader = ({
               }}
             >
               <AvatarImage src={club.avatar || undefined} alt={club.name} />
-              <AvatarFallback>{club?.name[0]}</AvatarFallback>
+              <AvatarFallback>{club?.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <p className="text-lg">{club?.name}</p>
@@ -88,7 +88,7 @@ const ClubLayoutHeader = ({
                   club?.is_member
                     ? "ghost"
                     : club?.application &&
-                        club?.application?.status === "pending"
+                      club?.application?.status === "pending"
                       ? "secondary"
                       : "outline"
                 }

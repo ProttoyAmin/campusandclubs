@@ -29,7 +29,7 @@ const MainLayout: React.FC = () => {
             <div className="w-full md:w-1/6 md:container hidden md:block overflow-y-auto">
               <SideBar main />
             </div>
-            <div className="w-full md:w-5/6 md:ps-40 pt-2 overflow-y-auto">
+            <div className="w-full md:w-5/6 md:ps-40 pt-2">
               <Outlet />
             </div>
             <div className="absolute bottom-6 right-20">

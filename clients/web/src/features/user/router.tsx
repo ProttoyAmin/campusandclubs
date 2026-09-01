@@ -3,6 +3,9 @@ import { routes } from "@/settings/routes";
 import React from "react";
 
 const Profile = React.lazy(() => import("./pages/public/Profile"));
+const UserPosts = React.lazy(() => import("./pages/private/posts/user-posts"))
+const UserReels = React.lazy(() => import("./pages/private/reels/user-reels"))
+const UserReposts = React.lazy(() => import("./pages/private/reposts/user-reposts"))
 const Account = React.lazy(
   () => import("./pages/private/profile-settings/account-page"),
 );
@@ -14,15 +17,41 @@ const Privacy = React.lazy(
   () => import("./pages/private/profile-settings/privacy-page"),
 );
 
+const Settings = React.lazy(
+  () => import("./pages/private/profile-settings/settings-page"),
+);
+
 export const userRoutes = [
   {
     id: "user-profile",
     path: routes.user.public.profile,
     element: <Profile />,
+    children: [
+      {
+        id: "user-profile-posts",
+        path: routes.user.private.profile.posts,
+        element: <UserPosts />,
+      },
+      {
+        id: "user-profile-reels",
+        path: routes.user.private.profile.reels,
+        element: <UserReels />,
+      },
+      {
+        id: "user-profile-reposts",
+        path: routes.user.private.profile.reposts,
+        element: <UserReposts />,
+      },
+    ],
   },
 ];
 
 export const userSettingsRoutes = [
+  {
+    id: "user-settings",
+    path: routes.settings.base,
+    element: <Settings />,
+  },
   {
     id: "user-settings-account",
     path: routes.settings.account,

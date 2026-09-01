@@ -6,7 +6,7 @@ import { userSettingsMenu } from "@/config/menu/user/settings-menu";
 
 const UserSettingsLayout = () => {
   const params = useParams();
-  const { data: user } = useUser(params.username);
+  const { user } = useUser(params.username);
   return (
     <CardContent className="flex w-full gap-4">
       <div className="relative w-2/6 border-r pr-4">
@@ -17,7 +17,7 @@ const UserSettingsLayout = () => {
         />
       </div>
       <div className="w-3/5 overflow-hidden">
-        <Outlet context={{ user }} />
+        <Outlet context={{ user: user.data }} />
       </div>
     </CardContent>
   );

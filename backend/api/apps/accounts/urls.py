@@ -74,7 +74,8 @@ urlpatterns = [
     # # User profiles
     # path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
     # path('auth/users/<uuid:user_id>/clubs/', get_user_clubs, name='user_clubs'),
-    path('auth/<uuid:user_id>/posts/', views.get_user_posts, name='user_posts'),
+    path('auth/users/<uuid:user_id>/posts/',
+         views.get_user_posts, name='user_posts'),
     path('auth/users/user/<str:username>/activity/',
          get_user_activity, name='user_activity'),
 

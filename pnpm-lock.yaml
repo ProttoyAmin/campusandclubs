@@ -360,6 +360,9 @@ importers:
       design:
         specifier: workspace:*
         version: link:../../packages/design
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1(supports-color@8.1.1)
       lucide-react:
         specifier: ^1.28.0
         version: 1.28.0(react@19.2.7)
@@ -403,6 +406,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.101.4
         version: 5.102.3(@tanstack/react-query@5.102.3(react@19.2.7))(react@19.2.7)
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
       '@types/node':
         specifier: ^24.13.2
         version: 24.13.3

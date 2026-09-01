@@ -16,13 +16,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "design/components/ui/tabs";
+import Menu from "@/shared/components/menu";
+import { profileMenu } from "@/config/menu/user/profile-menu";
+import NavTabs from "@/components/nav-tabs";
 
 export const PublicProfile: React.FC<{
   data: UserProfile;
   currentUser: UserProfile;
 }> = ({ data }) => {
   return (
-    <div className="">
+    <>
       <CardHeader>
         <CardTitle className="flex justify-between ">
           <div>
@@ -45,6 +48,9 @@ export const PublicProfile: React.FC<{
             <AvatarFallback>{data.username[0]}</AvatarFallback>
           </Avatar>
         </CardTitle>
+      </CardHeader>
+      <CardContent className="">
+
         <div className="flex gap-2 items-center">
           <CardDescription className="text-sm">
             {data.follower_count}{" "}
@@ -59,20 +65,11 @@ export const PublicProfile: React.FC<{
             </CardDescription>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="posts">
-          <TabsList variant="line" className={"w-full"}>
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="reels">Reels</TabsTrigger>
-            <TabsTrigger value="reposts">Reposts</TabsTrigger>
-          </TabsList>
-          <TabsContent value="posts">Posts</TabsContent>
-          <TabsContent value="reels">Reels</TabsContent>
-          <TabsContent value="reposts">Reposts</TabsContent>
-        </Tabs>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
       </CardContent>
-    </div>
+
+      <div className="">
+        <NavTabs menu={profileMenu(data.username)} className="flex items-center justify-around text-center mb-4" />
+      </div>
+    </>
   );
 };

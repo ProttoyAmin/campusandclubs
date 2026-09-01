@@ -38,24 +38,24 @@ const ProfileLayoutHeader = ({
               <div>
                 {location.pathname !==
                   paths.private.user.profile(user.username) && (
-                  <NavigateButtons hideForward />
-                )}
+                    <NavigateButtons hideForward />
+                  )}
               </div>
-              <Avatar
-                size="lg"
-                className={"cursor-pointer"}
+              <div
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(paths.private.user.profile(user.username));
                 }}
-              >
-                <AvatarImage
-                  src={user.avatar}
-                  alt={user.username}
-                />
-                <AvatarFallback>{user.username[0]}</AvatarFallback>
-              </Avatar>
-              <div className="flex gap-2 items-center">
+                className="flex gap-2 items-center cursor-pointer">
+                <Avatar
+                  size="lg"
+                >
+                  <AvatarImage
+                    src={user.avatar}
+                    alt={user.username}
+                  />
+                  <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+                </Avatar>
                 <p className="text-lg">{user.username}</p>
                 {user.is_private && (
                   <LockIcon className="size-4 text-muted-foreground" />

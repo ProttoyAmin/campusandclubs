@@ -150,6 +150,13 @@ export class UserClient extends BaseClient<
       throw err;
     }
   }
+
+  async getUserPosts(userId: string) {
+    const response = await this.client.get(
+      this.endpoint + `users/${userId}/posts/`,
+    );
+    return response;
+  }
 }
 
 export const userClient = new UserClient();

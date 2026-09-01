@@ -8,7 +8,7 @@ export const config = {
     v1: {
       name: "v1",
       raw: import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL,
-      suffix: "/api/",
+      suffix: "/api/v1/",
       baseUrl: (import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL) + "/api/v1/",
       version: "1.0.0",
       account: {

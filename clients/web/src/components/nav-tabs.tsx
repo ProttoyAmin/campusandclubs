@@ -32,18 +32,17 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
 
         return (
           <>
-          <NavLink
-            key={item.id}
-            to={link}
-            end
-            className={`text-sm p-2 rounded-md font-medium transition-colors hover:text-primary hover:bg-accent ${
-              active && !onlyIcon
-                ? "text-primary bg-accent"
+            <NavLink
+              key={item.id}
+              to={link}
+              end
+              className={`border w-full text-sm p-2 rounded-md font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary ${active && !onlyIcon
+                ? "text-secondary-foreground bg-secondary"
                 : "text-muted-foreground border-b-2 border-transparent"
-            }`}
-          >
-            {renderLabel(item, active)}
-          </NavLink>
+                }`}
+            >
+              {renderLabel(item, active)}
+            </NavLink>
           </>
         );
       })}

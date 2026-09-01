@@ -6,6 +6,8 @@ import ProfileLayoutHeader from "@/features/user/components/layout/layout-header
 import { useUser } from "@/features/user/hooks/user.hooks";
 import type { UserResponse } from "@/features/user/api/user.client";
 import { useSession } from "@/features/auth/hooks";
+import NavTabs from "@/components/nav-tabs";
+import { profileMenu } from "@/config/menu/user/profile-menu";
 
 export type UserProfileLayoutProps = {
   user: UserResponse;
@@ -14,7 +16,7 @@ export type UserProfileLayoutProps = {
 
 export const UserProfileLayout: React.FC = () => {
   const { username } = useParams();
-  const { data: user } = useUser(username as string);
+  const { user } = useUser(username as string);
   const { data: currentUser } = useSession();
   const navigate = useNavigate();
   const pageHeader = usePageHeader();
@@ -26,7 +28,7 @@ export const UserProfileLayout: React.FC = () => {
   React.useEffect(() => {
     pageHeader.setActions(
       <>
-        <ProfileLayoutHeader user={user} currentUser={currentUser} />
+        <ProfileLayoutHeader user={user.data} currentUser={currentUser} />
       </>,
     );
 
@@ -35,19 +37,19 @@ export const UserProfileLayout: React.FC = () => {
     };
   }, [
     username,
-    user,
+    user.data,
     navigate,
     pageHeader.setActions,
     pageHeader.clearActions,
   ]);
 
   return (
-    <section className="flex flex-col gap-4 max-w-3xl justify-around overflow-x-hidden">
+    <section className="flex flex-col gap-4 max-w-3xl justify-around overflow-hidden">
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
-      <Card className="w-full bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
-        <Outlet context={{ user, currentUser }} />
+      <Card className="w-full bg-background overflow-x-hidden overflow-y-auto max-h-[calc(100vh-10rem)]">
+        <Outlet context={{ user: user.data, currentUser }} />
       </Card>
     </section>
   );

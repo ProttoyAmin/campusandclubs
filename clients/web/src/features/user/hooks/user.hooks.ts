@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { account } from "../services/user.service";
+import { user } from "../services/user.service";
+import { accounts } from "../services/account.service";
 import type {
   AccountsAuthUsersSetPasswordCreateResponse,
   PatchedUserProfileRequest,
@@ -14,7 +15,7 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],
     queryFn: () => {
-      return account.users();
+      return accounts.users();
     },
   });
 };
@@ -22,7 +23,7 @@ export const useUsers = () => {
 export const useAccount = () => {
   const addEmail = useMutation<UserEmail, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
-      return account.add_email(email);
+      return accounts.add_email(email);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -31,7 +32,7 @@ export const useAccount = () => {
 
   const deleteEmail = useMutation<UserEmail[], AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
-      return account.delete_email(email);
+      return accounts.delete_email(email);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -44,7 +45,7 @@ export const useAccount = () => {
     string
   >({
     mutationFn: (email: string) => {
-      return account.request_email_verification(email);
+      return accounts.request_email_verification(email);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -57,7 +58,7 @@ export const useAccount = () => {
     string
   >({
     mutationFn: (email: string) => {
-      return account.change_primary_email(email);
+      return accounts.change_primary_email(email);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -70,7 +71,7 @@ export const useAccount = () => {
     SetPasswordRequest
   >({
     mutationFn: (data) => {
-      return account.password_change(data);
+      return accounts.password_change(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -90,7 +91,7 @@ export const useEmails = () => {
   return useQuery<UserEmail[]>({
     queryKey: ["emails"],
     queryFn: () => {
-      return account.emails();
+      return accounts.user.emails();
     },
   });
 };
@@ -99,7 +100,7 @@ export const useAffiliations = () => {
   return useQuery({
     queryKey: ["affiliations"],
     queryFn: () => {
-      return account.affiliations();
+      return accounts.user.affiliations();
     },
   });
 };
@@ -120,25 +121,37 @@ export const useFeed = () => {
   return useQuery({
     queryKey: ["feed"],
     queryFn: () => {
-      return account.feed();
+      return accounts.user.feed();
     },
   });
 };
 
-export const useUser = (username: string) => {
-  return useQuery({
+export const useUser = (username: string, userId: string = "") => {
+  const user = useQuery({
     queryKey: ["users", username],
     queryFn: () => {
-      return account.userByUsername(username);
+      return accounts.user.userByUsername(username);
     },
   });
+
+  const posts = useQuery({
+    queryKey: ["users", username, "posts"],
+    queryFn: () => {
+      if (userId) {
+        return accounts.user.posts(userId);
+      }
+      return accounts.user.posts(username);
+    },
+  });
+
+  return { user, posts };
 };
 
 export const useMe = () => {
   return useQuery({
     queryKey: ["users", "me"],
     queryFn: () => {
-      return account.me();
+      return accounts.user.me();
     },
   });
 };
@@ -146,7 +159,7 @@ export const useMe = () => {
 export const useUpdateProfile = (username: string) => {
   return useMutation({
     mutationFn: (data: PatchedUserProfileRequest) => {
-      return account.update(data);
+      return accounts.user.update(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users", username] });

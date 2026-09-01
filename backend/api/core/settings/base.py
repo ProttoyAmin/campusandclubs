@@ -279,6 +279,11 @@ LOGGING = {
         "level": "DEBUG",
     },
     "loggers": {
+        # "PIL": {
+        #     "level": "INFO",
+        #     "handlers": ["console"],
+        #     "propagate": False,
+        # },
         "allauth": {
             "handlers": ["console"],
             "level": "DEBUG",

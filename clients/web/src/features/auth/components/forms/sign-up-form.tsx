@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { signUpSchema, type SignUpSchemaType } from "validation/auth";
-import { CardContent, CardHeader, CardTitle } from "design/components/ui/card";
+import { CardContent } from "design/components/ui/card";
 import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
 
@@ -9,16 +9,13 @@ import {
   Field,
   FieldError,
   FieldGroup,
-  FieldLabel,
 } from "design/components/ui/field";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Spinner } from "design/components/ui/spinner";
 import type { SignUpError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "design/components/ui/separator";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
-import facebookIconLogo from "../../../../assets/Facebook-f_Logo-Blue-Logo.wine.svg";
-
 import { useSocials } from "../../hooks/session.hook";
 
 type SignUpFormProps = {
@@ -206,7 +203,7 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
         <Button
           type="button"
           variant="glass"
-          className={"rounded-full w-1/2"}
+          className={"rounded-full w-full"}
           size="lg"
           onClick={() => {
             socialLogin.mutate("google");
@@ -224,7 +221,7 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
           />{" "}
           Google
         </Button>
-        <Button
+        {/* <Button
           type="button"
           variant="glass"
           className={"rounded-full w-1/2"}
@@ -245,7 +242,7 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             height={34}
           />{" "}
           Facebook
-        </Button>
+        </Button> */}
       </div>
     </CardContent>
   );
