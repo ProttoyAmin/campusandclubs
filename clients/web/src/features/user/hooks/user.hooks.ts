@@ -140,7 +140,6 @@ export const useUser = (username: string, userId: string = "") => {
       if (userId) {
         return accounts.user.posts(userId);
       }
-      return accounts.user.posts(username);
     },
   });
 

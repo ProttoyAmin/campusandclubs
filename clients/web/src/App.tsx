@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { paths } from "./settings/routes";
 import { useGetClubs } from "./features/club/hooks/club.hooks";
 import type { Club } from "@campus/api";
+import "./App.css"
 
 function App() {
   const { data: users } = useUsers();
@@ -12,7 +13,7 @@ function App() {
 
   return (
     <div>
-      <p>{data.meta.is_authenticated ? "true" : "false"}</p>
+      <p>{data?.meta?.is_authenticated ? "true" : "false"}</p>
       <div className="flex gap-4 w-full flex-wrap">
         {users?.data?.results.map((user) => (
           <Link key={user?.id} to={paths.private.user.profile(user.username)}>

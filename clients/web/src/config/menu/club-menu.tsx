@@ -4,15 +4,15 @@ import { isRouteActive } from "@/utils/route";
 
 export const clubMenu: (
   id: string,
-  icon: React.ReactNode,
+  icon: string,
   slug: string,
-) => MenuItemType[] = (id: string, icon: React.ReactNode, slug: string) => {
+) => MenuItemType[] = (id: string, icon: string, slug: string) => {
   const clubPath = paths.public.club.slug(slug);
   return [
     {
       id: id,
       label: slug,
-      icon: () => icon,
+      icon: icon,
       link: () => clubPath,
       isActive: (currentPath) => isRouteActive(clubPath, currentPath, false),
     },

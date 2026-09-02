@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "design/components/ui/dialog";
 
-type DialogProps = {
+export type DialogProps = {
   trigger: React.ReactElement;
   title?: string;
   description?: string;
@@ -21,7 +21,7 @@ const AppDialog = (props: DialogProps) => {
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogTrigger render={props.trigger}></DialogTrigger>
-      <DialogContent>
+      <DialogContent className={'bg-background'}>
         <DialogHeader>
           <DialogTitle>{props.title}</DialogTitle>
           <DialogDescription>{props.description}</DialogDescription>

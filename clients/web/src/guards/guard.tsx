@@ -1,19 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { matchPath, Navigate, useLocation } from "react-router-dom";
 import { useSession } from "@/features/auth/hooks/session.hook";
 import { paths, routes } from "@/settings/routes";
 
-// Route *patterns* (with :params), not resolved paths — matchPath needs patterns
 const PUBLIC_PATTERNS = [
-  //   routes.home,
-  //   routes.user.public.profile,
   routes.auth.public.sign_in,
   routes.auth.public.sign_up,
   routes.auth.private.forgot_password,
   routes.auth.private.activation,
   routes.auth.private.reset_password,
   routes.auth.private.verify_email,
-  //   routes.club.public.base,
 ];
 
 const AUTH_PATTERNS = [
@@ -31,6 +27,18 @@ const matchesAny = (patterns: string[], pathname: string) =>
 const Guard = ({ children }: { children: React.ReactNode }) => {
   const { data: session, isLoading } = useSession();
   const location = useLocation();
+
+  // On the server we skip all auth logic and just render children.
+  // We must do the SAME thing on the client's first render (before
+  // hydration finishes), or React will flag a hydration mismatch.
+  const [isHydrated, setIsHydrated] = useState(false);
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  if (!isHydrated) {
+    return <>{children}</>;
+  }
 
   const isPublicRoute = matchesAny(PUBLIC_PATTERNS, location.pathname);
   const isAuthRoute = matchesAny(AUTH_PATTERNS, location.pathname);

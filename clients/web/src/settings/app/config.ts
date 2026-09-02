@@ -3,6 +3,11 @@ import { PORT, VITE_PUBLIC_API_URL } from "./env";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 
 export const config = {
+  app: {
+    origin: "http://localhost:3000",
+    name: "campusandclubs",
+    description: "campusandclubs",
+  },
   port: PORT,
   api: {
     v1: {

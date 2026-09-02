@@ -431,34 +431,34 @@ def get_user_posts(request, user_id) -> Response:
 #     })
 
 
-# @api_view(['GET'])
-# @permission_classes([permissions.IsAuthenticated])
-# def search_users(request):
-#     """Search users by username or email"""
-#     query = request.query_params.get('q', '')
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def search_users(request):
+    """Search users by username or email"""
+    from apps.accounts.serialize.user.profile import UserMinimalSerializer
 
-#     if not query:
-#         return Response(
-#             {'detail': 'Query parameter "q" is required.'},
-#             status=status.HTTP_400_BAD_REQUEST
-#         )
+    query = request.query_params.get('q', '')
 
-#     users = models.User.objects.filter(
-#         Q(username__icontains=query) | Q(email__icontains=query)
-#     ).annotate(
-#         club_count=Count('clubs')
-#     )
+    if not query:
+        return Response(
+            {'detail': 'Query parameter "q" is required.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-#     paginator = StandardResultsSetPagination()
-#     paginated_users = paginator.paginate_queryset(users, request)
+    users = models.User.objects.filter(
+        Q(username__icontains=query) | Q(email__icontains=query)
+    )
 
-#     serializer = serializers.UserListSerializer(
-#         paginated_users,
-#         many=True,
-#         context={'request': request}
-#     )
+    paginator = StandardResultsSetPagination()
+    paginated_users = paginator.paginate_queryset(users, request)
 
-#     return paginator.get_paginated_response(serializer.data)
+    serializer = UserMinimalSerializer(
+        paginated_users,
+        many=True,
+        context={'request': request}
+    )
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 # # ============= NEW VIEWS =============

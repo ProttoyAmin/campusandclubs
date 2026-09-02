@@ -14,7 +14,7 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
 
   const renderLabel = (item: MenuItemType, active: boolean) => {
     if (!onlyIcon) return item.label;
-    if (typeof item.icon === "function") return item.icon(avatar || "");
+    if (typeof item.icon === "function") return item.icon;
     if (onlyIcon && active) {
       return typeof item.iconActive === "function"
         ? item.iconActive(avatar || "")
@@ -34,6 +34,7 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
           <>
             <NavLink
               key={item.id}
+              id={`sidebar-nav-${item.id}`}
               to={link}
               end
               className={`border w-full text-sm p-2 rounded-md font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary ${active && !onlyIcon
@@ -41,7 +42,7 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
                 : "text-muted-foreground border-b-2 border-transparent"
                 }`}
             >
-              {renderLabel(item, active)}
+              <span className="flex gap-2 items-center">{item.icon} {renderLabel(item, active)}</span>
             </NavLink>
           </>
         );

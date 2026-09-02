@@ -30,11 +30,11 @@ export class Authentication {
 
   private apiClient = authClient;
 
-  constructor() {
-    window.addEventListener("auth:logout", () => {
-      this.authenticated = false;
-    });
-  }
+  // constructor() {
+  //   window.addEventListener("auth:logout", () => {
+  //     this.authenticated = false;
+  //   });
+  // }
 
   async login(data: SignInSchemaType) {
     const response = await this.apiClient.login(data);
@@ -48,7 +48,7 @@ export class Authentication {
 
   submitSocialLogin(provider: SocialProvider) {
     const csrfToken = cookie.get("csrftoken");
-    console.log(csrfToken)
+    console.log(csrfToken);
     if (!csrfToken) {
       throw new Error(
         "Missing CSRF token — session must be initialized before social login.",

@@ -6,8 +6,6 @@ import ProfileLayoutHeader from "@/features/user/components/layout/layout-header
 import { useUser } from "@/features/user/hooks/user.hooks";
 import type { UserResponse } from "@/features/user/api/user.client";
 import { useSession } from "@/features/auth/hooks";
-import NavTabs from "@/components/nav-tabs";
-import { profileMenu } from "@/config/menu/user/profile-menu";
 
 export type UserProfileLayoutProps = {
   user: UserResponse;
@@ -44,7 +42,7 @@ export const UserProfileLayout: React.FC = () => {
   ]);
 
   return (
-    <section className="flex flex-col gap-4 max-w-3xl justify-around overflow-hidden">
+    <section className="flex flex-col gap-4 max-w-3xl justify-around">
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>

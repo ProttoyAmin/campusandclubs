@@ -153,7 +153,7 @@ export class UserClient extends BaseClient<
 
   async getUserPosts(userId: string) {
     const response = await this.client.get(
-      this.endpoint + `users/${userId}/posts/`,
+      this.endpoint + `users/${userId}/posts`,
     );
     return response;
   }

@@ -1,5 +1,6 @@
 // components/SocialLoginForms.tsx — rendered once, e.g. in your root auth layout
 import { routes } from "@/settings/routes";
+import { config } from "@/settings/app";
 
 const PROVIDERS = ["google", "facebook", "github"] as const;
 const ALLAUTH_BROWSER_PATH = "_allauth/browser/v1/";
@@ -20,7 +21,7 @@ export function SocialLoginForms() {
           <input
             type="hidden"
             name="callback_url"
-            value={`${window.location.origin}${routes.auth.public.social_callback}`}
+            value={`${config.app.origin}${routes.auth.public.social_callback}`}
           />
           <input type="hidden" name="csrfmiddlewaretoken" value="" />
         </form>

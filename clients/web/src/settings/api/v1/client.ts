@@ -64,7 +64,7 @@ export class V1Client {
                 withCredentials: true,
                 xsrfCookieName: "csrftoken",
                 xsrfHeaderName: "X-CSRFToken",
-              }
+              },
             );
 
             this.refreshSubscribers.forEach((cb) => cb(true));
@@ -76,7 +76,7 @@ export class V1Client {
             this.refreshSubscribers = [];
 
             // Dispatch event to clear auth state
-            window.dispatchEvent(new Event("auth:logout"));
+            // window.dispatchEvent(new Event("auth:logout"));
 
             return Promise.reject(refreshError);
           } finally {

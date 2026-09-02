@@ -1,5 +1,5 @@
 import { paths, routes } from "@/settings/routes";
-import { House, LayoutList } from "lucide-react";
+import { House, LayoutList, ImageIcon } from "lucide-react";
 import type { MenuItemType } from "../main-menu";
 import { isRouteActive } from "@/utils/route";
 
@@ -11,20 +11,20 @@ export const profileMenu: (username: string) => MenuItemType[] = (
       label: "Posts",
       icon: <House size={18} />,
       iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
-      link: () => paths.private.user.posts(username),
+      link: () => paths.private.user.profile(username),
       isActive: (currentPath) =>
-        isRouteActive(routes.user.private.profile.posts, currentPath),
+        isRouteActive(routes.user.private.profile.username, currentPath),
     },
     {
       id: 2,
-      label: "Reels",
-      icon: <LayoutList size={18} />,
+      label: "Media",
+      icon: <ImageIcon size={18} />,
       iconActive: (
-        <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+        <ImageIcon size={18} fill="currentColor" stroke="currentColor" />
       ),
-      link: () => paths.private.user.reels(username),
+      link: () => paths.private.user.media(username),
       isActive: (currentPath) =>
-        isRouteActive(routes.user.private.profile.reels, currentPath),
+        isRouteActive(routes.user.private.profile.media, currentPath),
     },
     {
       id: 3,

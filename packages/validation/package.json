@@ -8,7 +8,8 @@
     "./user": "./src/user/index.ts",
     "./club": "./src/club/index.ts",
     "./auth": "./src/auth/index.ts",
-    "./institute": "./src/institutes/index.ts"
+    "./institute": "./src/institutes/index.ts",
+    "./post": "./src/post/index.ts"
   },
   "dependencies": {
     "@campus/api": "workspace:*",

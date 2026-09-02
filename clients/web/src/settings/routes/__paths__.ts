@@ -21,6 +21,12 @@ export const paths = {
         generateRouteFromPath(routes.user.private.profile.reposts, {
           username,
         }),
+
+      media: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.media, {
+          username,
+        }),
+
       settings: {
         base: (username: string) =>
           generateRouteFromPath(routes.user.private.settings.base, {

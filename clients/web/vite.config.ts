@@ -8,10 +8,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      ssr: true,
+    },
     server: {
       port: Number(env.VITE_WEB_PORT),
       proxy: {
-        "/api/v1": {
+        "/api": {
           target: env.VITE_PUBLIC_API_URL,
           changeOrigin: true,
         },

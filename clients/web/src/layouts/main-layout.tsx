@@ -6,19 +6,9 @@ import Create from "@/components/create";
 import Guard from "@/guards/guard";
 import { Toaster } from "design/components/ui/toast";
 import BottomBar from "@/components/bottom-bar";
-
-export type MainLayoutContext = {
-  user: {
-    name: string;
-    role: string;
-  };
-  setUser: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      role: string;
-    }>
-  >;
-};
+import AppDialog from "@/shared/components/app-dialog";
+import { Button } from "design/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 const MainLayout: React.FC = () => {
   return (
@@ -33,7 +23,14 @@ const MainLayout: React.FC = () => {
               <Outlet />
             </div>
             <div className="absolute bottom-6 right-20">
+              {/* <AppDialog
+                trigger={<Button variant={"outline"} size={"icon-lg"} className={"shadow-2xl"}>
+                  <PlusIcon className="size-5" />
+                </Button>}
+                title="Create post"
+              > */}
               <Create />
+              {/* </AppDialog> */}
             </div>
             <div className="absolute bottom-0 w-full z-50 h-12 md:hidden ">
               <BottomBar className="flex h-full" />

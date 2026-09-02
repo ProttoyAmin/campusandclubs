@@ -6,6 +6,7 @@ const Profile = React.lazy(() => import("./pages/public/Profile"));
 const UserPosts = React.lazy(() => import("./pages/private/posts/user-posts"))
 const UserReels = React.lazy(() => import("./pages/private/reels/user-reels"))
 const UserReposts = React.lazy(() => import("./pages/private/reposts/user-reposts"))
+const UserMedia = React.lazy(() => import("./pages/private/media/user-media"))
 const Account = React.lazy(
   () => import("./pages/private/profile-settings/account-page"),
 );
@@ -29,7 +30,7 @@ export const userRoutes = [
     children: [
       {
         id: "user-profile-posts",
-        path: routes.user.private.profile.posts,
+        index: true,
         element: <UserPosts />,
       },
       {
@@ -41,6 +42,11 @@ export const userRoutes = [
         id: "user-profile-reposts",
         path: routes.user.private.profile.reposts,
         element: <UserReposts />,
+      },
+      {
+        id: "user-profile-media",
+        path: routes.user.private.profile.media,
+        element: <UserMedia />,
       },
     ],
   },

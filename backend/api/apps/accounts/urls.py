@@ -67,7 +67,7 @@ urlpatterns = [
     path('auth/me/affiliations/', get_my_affiliations, name='my_affiliations'),
     path('auth/me/emails/', get_my_emails, name='my_emails'),
     # path('auth/me/profile/', views.update_profile, name='update_profile'),
-    # path("auth/me/upload-profile-picture/", views.upload_profile_picture, name="upload_profile_picture"),
+    path("auth/me/upload-profile-picture/", views.upload_profile_picture, name="upload_profile_picture"),
     # path('auth/me/clear-profile-picture/', views.clear_profile_picture, name='clear_profile_picture'),
     # path('auth/me/email-preference/', views.manage_email_preference, name='email_preference'),
 
@@ -91,7 +91,7 @@ urlpatterns = [
     # path('clubs/<uuid:club_id>/roles/<str:role_name>/users/', views.get_users_with_role, name='users_with_role'),
 
     # # Search
-    # path('search/', views.search_users, name='search_users'),
+    path('search/', views.search_users, name='search_users'),
 
     # # Include router URLs
     # path('', include(router.urls)),

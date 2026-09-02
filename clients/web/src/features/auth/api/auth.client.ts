@@ -91,7 +91,7 @@ export class AuthClient extends BaseAuthClient {
     const fields: Record<string, string> = {
       provider: "google",
       process: "login",
-      callback_url: `${window.location.origin}${routes.auth.public.social_callback}`,
+      callback_url: `${config.app.origin}${routes.auth.public.social_callback}`,
       csrfmiddlewaretoken: cookie.get("csrftoken") ?? "", // 'csrftoken' cookie, same as your allauthClient setup
     };
 
@@ -104,7 +104,7 @@ export class AuthClient extends BaseAuthClient {
     }
 
     document.body.appendChild(form);
-    console.log(form)
+    console.log(form);
     form.submit();
   }
 
@@ -113,12 +113,12 @@ export class AuthClient extends BaseAuthClient {
       const response = await this.client.delete(
         `${this.allauthBrowser}auth/session`,
       );
-      window.dispatchEvent(new Event("auth:logout"));
+      // window.dispatchEvent(new Event("auth:logout"));
       return response;
     } catch (err) {
       const axiosErr = err as AxiosError;
       if (axiosErr.response?.status === 401) {
-        window.dispatchEvent(new Event("auth:logout"));
+        // window.dispatchEvent(new Event("auth:logout"));
         return axiosErr.response;
       }
       throw err;
