@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { user } from "../services/user.service";
 import { accounts } from "../services/account.service";
 import type {
   AccountsAuthUsersSetPasswordCreateResponse,
@@ -10,6 +9,9 @@ import type {
 import { queryClient } from "@/config/query-client";
 import type { AppError } from "@/settings/app/error";
 import type { AllauthError } from "@/features/auth/api/auth.client";
+import type { PostExtended } from "@/features/posts/components/post-card";
+import type { PaginaatedClubPostsResponse } from "@/features/club/http/club.http";
+import type { AxiosResponse } from "axios";
 
 export const useUsers = () => {
   return useQuery({
@@ -24,6 +26,32 @@ export const useAccount = () => {
   const addEmail = useMutation<UserEmail, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
       return accounts.add_email(email);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["emails"] });
+    },
+  });
+
+  const verifyAccountEmail = useMutation<
+    AxiosResponse<void>,
+    AppError<AllauthError>,
+    string
+  >({
+    mutationFn: (key: string) => {
+      return accounts.verify_email(key);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["emails"] });
+    },
+  });
+
+  const resendVerification = useMutation<
+    AxiosResponse<void>,
+    AppError<AllauthError>,
+    void
+  >({
+    mutationFn: () => {
+      return accounts.resend_email_verification();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["emails"] });
@@ -80,6 +108,8 @@ export const useAccount = () => {
 
   return {
     addEmail,
+    verifyAccountEmail,
+    resendVerification,
     deleteEmail,
     requestEmailVerification,
     changePrimaryEmail,
@@ -105,15 +135,36 @@ export const useAffiliations = () => {
   });
 };
 
-export const useProfile = () => {
+export const useProfile = (username?: string) => {
   const emails = useEmails();
   const affiliations = useAffiliations();
   const me = useMe();
 
+  const clubs = useQuery({
+    queryKey: ["me", "clubs"],
+    queryFn: () => {
+      return accounts.user.clubs();
+    },
+  });
+
+  const updateProfile = useMutation({
+    mutationFn: (data: PatchedUserProfileRequest) => {
+      return accounts.user.update(data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      if (username) {
+        queryClient.invalidateQueries({ queryKey: ["users", username] });
+      }
+    },
+  });
+
   return {
+    updateProfile,
     emails,
     affiliations,
     me,
+    clubs,
   };
 };
 
@@ -129,21 +180,24 @@ export const useFeed = () => {
 export const useUser = (username: string, userId: string = "") => {
   const user = useQuery({
     queryKey: ["users", username],
-    queryFn: () => {
-      return accounts.user.userByUsername(username);
-    },
+    queryFn: () => accounts.user.userByUsername(username),
   });
 
-  const posts = useQuery({
+  const posts = useQuery<PaginaatedClubPostsResponse, AppError>({
     queryKey: ["users", username, "posts"],
-    queryFn: () => {
-      if (userId) {
-        return accounts.user.posts(userId);
-      }
-    },
+    queryFn: () => accounts.user.posts(userId),
+    enabled: !!userId,
   });
 
-  return { user, posts };
+  const postsWithMedia = useQuery<PaginaatedClubPostsResponse, AppError>({
+    queryKey: ["users", username, "posts", "media"],
+    queryFn: () => {
+      return accounts.user.posts(userId, "True");
+    },
+    enabled: !!userId,
+  });
+
+  return { user, posts, postsWithMedia };
 };
 
 export const useMe = () => {
@@ -156,16 +210,14 @@ export const useMe = () => {
 };
 
 export const useUpdateProfile = (username: string) => {
+  console.log(username);
   return useMutation({
     mutationFn: (data: PatchedUserProfileRequest) => {
       return accounts.user.update(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users", username] });
-      console.log("Profile updated successfully");
-    },
-    onError: (error) => {
-      console.error("Update profile error:", error);
+      queryClient.invalidateQueries({ queryKey: ["users", "me"] });
     },
   });
 };

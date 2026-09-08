@@ -9,10 +9,17 @@ export const paths = {
         generateRouteFromPath(routes.user.private.profile.username, {
           username,
         }),
-      posts: (username: string) =>
-        generateRouteFromPath(routes.user.private.profile.posts, {
-          username,
-        }),
+      posts: {
+        list: (username: string) =>
+          generateRouteFromPath(routes.user.private.profile.posts.list, {
+            username,
+          }),
+        detail: (username: string, postId: string) =>
+          generateRouteFromPath(routes.user.private.profile.posts.detail, {
+            username,
+            postId,
+          }),
+      },
       reels: (username: string) =>
         generateRouteFromPath(routes.user.private.profile.reels, {
           username,
@@ -53,7 +60,7 @@ export const paths = {
       base: routes.settings.base,
       account: routes.settings.account,
       privacy: routes.settings.privacy,
-      affilications: routes.settings.affiliations,
+      affiliations: routes.settings.affiliations,
     },
 
     activity: {
@@ -66,6 +73,14 @@ export const paths = {
     club: {
       list: routes.club.private.list,
       create: routes.club.private.create,
+      posts: (slug: string) =>
+        generateRouteFromPath(routes.club.private.posts, {
+          slug,
+        }),
+      media: (slug: string) =>
+        generateRouteFromPath(routes.club.private.media, {
+          slug,
+        }),
       config: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.base, {
           slug,

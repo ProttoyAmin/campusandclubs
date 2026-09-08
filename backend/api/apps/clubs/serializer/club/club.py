@@ -42,7 +42,7 @@ class ClubMinimalSerializer(serializers.ModelSerializer):
     def get_url(self, obj: Club):
         request = self._get_request()
         # type: ignore
-        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))
+        return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk})) if request else None
 
     def _get_request(self) -> Request | None:
         return self.context.get('request')

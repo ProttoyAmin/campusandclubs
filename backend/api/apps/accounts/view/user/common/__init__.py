@@ -4,6 +4,7 @@ from .function_views import (
     get_user_clubs,
     get_my_affiliations,
     get_my_emails,
+    get_my_clubs
 )
 
 from .class_views import (
@@ -17,6 +18,7 @@ __all__ = [
     'get_user_clubs',
     'get_my_affiliations',
     'get_my_emails',
+    'get_my_clubs',
 
     'UserRetrieveUpdateDestroyView',
     'UserListCreateView'

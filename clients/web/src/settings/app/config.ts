@@ -4,7 +4,10 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
 
 export const config = {
   app: {
-    origin: "http://localhost:3000",
+    origin:
+      typeof window !== "undefined"
+        ? window.location.origin
+        : ((import.meta.env.VITE_APP_ORIGIN as string) || "http://localhost:3000"),
     name: "campusandclubs",
     description: "campusandclubs",
   },
@@ -30,6 +33,9 @@ export const config = {
         base: `clubs/`,
         create: `clubs/create/`,
         retrieve: `clubs/retrieve/`,
+      },
+      posts: {
+        base: "posts/",
       },
       events: {
         base: `events/`,

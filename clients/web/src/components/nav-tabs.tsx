@@ -4,12 +4,14 @@ import type { MenuItemType } from "@/config/menu/main-menu";
 interface NavTabsProps {
   menu: MenuItemType[];
   className?: string;
+  itemsClassName?: string;
+  variant?: "tab" | "link" | "default";
   onlyIcon?: boolean;
   avatar?: string;
   id?: string;
 }
 
-const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps) => {
+const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "default", onlyIcon = false }: NavTabsProps) => {
   const { pathname } = useLocation();
 
   const renderLabel = (item: MenuItemType, active: boolean) => {
@@ -22,6 +24,17 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
     }
     return item.icon;
   };
+
+  const classes = (variant: string) => {
+    switch (variant) {
+      case "tab":
+        return "w-full text-sm rounded-t-md p-2 font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary";
+      case "link":
+        return "";
+      case "default":
+        return "border w-full text-sm p-2 rounded-md font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary";
+    }
+  }
 
   return (
     <nav className={`${className}`}>
@@ -37,12 +50,12 @@ const NavTabs = ({ menu, className, avatar, id, onlyIcon = false }: NavTabsProps
               id={`sidebar-nav-${item.id}`}
               to={link}
               end
-              className={`border w-full text-sm p-2 rounded-md font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary ${active && !onlyIcon
-                ? "text-secondary-foreground bg-secondary"
+              className={`${classes(variant)} ${active && !onlyIcon
+                ? `text-secondary-foreground ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
                 : "text-muted-foreground border-b-2 border-transparent"
                 }`}
             >
-              <span className="flex gap-2 items-center">{item.icon} {renderLabel(item, active)}</span>
+              <span className={`flex gap-2 items-center ${itemsClassName}`}>{item.icon} {renderLabel(item, active)}</span>
             </NavLink>
           </>
         );

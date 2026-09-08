@@ -1,10 +1,7 @@
 import { paths } from "@/settings/routes";
 import { Button } from "design/components/ui/button";
 import {
-  Search,
-  CircleEllipsis,
-  LockIcon,
-  SettingsIcon,
+  CircleEllipsis
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavigateButtons from "@/shared/components/navigate-buttons";
@@ -18,6 +15,8 @@ import { EditProfileDialog } from "../profile/edit-profile-dialog";
 import type { UserProfile } from "@campus/api";
 import type { AuthSession } from "@/features/auth/services/authentication";
 import ProfileDropdown from "../profile/profile-dropdown";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, Settings01Icon, SquareLockIcon } from "@hugeicons/core-free-icons";
 
 const ProfileLayoutHeader = ({
   user,
@@ -58,7 +57,7 @@ const ProfileLayoutHeader = ({
                 </Avatar>
                 <p className="text-lg">{user.username}</p>
                 {user.is_private && (
-                  <LockIcon className="size-4 text-muted-foreground" />
+                  <HugeiconsIcon icon={SquareLockIcon} className="size-5 text-muted-foreground" />
                 )}
               </div>
             </div>
@@ -73,12 +72,13 @@ const ProfileLayoutHeader = ({
                 </>
               ) : (
                 <>
-                  <Button variant={"outline"}>Follow</Button>
-                  <Button variant={"outline"}>Message</Button>
+                  {/* <Button variant={"outline"}>Follow</Button>
+                  <Button variant={"outline"}>Message</Button> */}
                 </>
               )}
               <Button variant={"ghost"} className={"rounded-full"} size="icon">
-                <Search className="size-5" />
+                {/* <Search className="size-5" /> */}
+                <HugeiconsIcon icon={Search01Icon} className="size-5" />
               </Button>
               {user?.id === currentUser?.data.user.id ? (
                 <Button
@@ -86,10 +86,10 @@ const ProfileLayoutHeader = ({
                   className={"rounded-full group"}
                   size="icon"
                   onClick={() => {
-                    navigate(paths.private.settings.account);
+                    navigate(paths.private.settings.base);
                   }}
                 >
-                  <SettingsIcon className="size-5 transition-transform duration-200 group-hover:rotate-45" />
+                  <HugeiconsIcon icon={Settings01Icon} className="size-5 transition-transform duration-200 group-hover:rotate-45" />
                 </Button>
               ) : (
                 <ProfileDropdown

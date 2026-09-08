@@ -1,14 +1,15 @@
 import { ClubApplicationDialog } from "@/features/club/components/club/club-apply-dialog";
 import { useClub, useJoin } from "@/features/club/hooks/club.hooks";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
-import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { ClubApplicationWithdrawDialog } from "@/features/club/components/club/club-withdraw-dialog";
 import ClubLayoutHeader from "@/features/club/components/layout/layout-header";
 import { Card } from "design/components/ui/card";
 import { toast } from "design/components/ui/toast";
 import { useSectionId } from "@/shared/hooks/id";
+import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -24,6 +25,10 @@ export const ClubMainLayout: React.FC = () => {
     application_url: string;
   } | null>(null);
   const [isWithdrawing, setIsWithdrawing] = React.useState(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  useScrollRestoration(scrollRef, location.key);
 
   const handleJoin = () => {
     if (club?.is_member) return;
@@ -124,7 +129,10 @@ export const ClubMainLayout: React.FC = () => {
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
-      <Card className="w-full bg-background overflow-y-auto md:max-h-[calc(100vh-5rem)]">
+      {/* <div className="md:hidden">
+        <Header />
+      </div> */}
+      <Card ref={scrollRef} className="w-full shadow-lg shadow-gray-300 bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
         <Outlet context={{ club }} />
       </Card>
     </section>

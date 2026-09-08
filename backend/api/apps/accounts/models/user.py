@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from apps.media.models import Media
     from allauth.account.models import EmailAddress
     from .user_preference import UserPreference
+    from apps.clubs.models import Membership
 
 
 class User(AbstractUser):
@@ -108,7 +109,7 @@ class User(AbstractUser):
     if TYPE_CHECKING:
         posts: RelatedManager["Club"]
         events: RelatedManager["Event"]
-        memberships: RelatedManager["Post"]
+        memberships: RelatedManager["Membership"]
         affiliations: RelatedManager["InstituteAffiliate"]
         media: RelatedManager["Media"]
         emailaddress_set: RelatedManager["EmailAddress"]
@@ -280,13 +281,13 @@ class User(AbstractUser):
     def user_posts(self):
         """Get all user posts (non-club posts)"""
         from apps.posts.models import Post
-        return Post.objects.filter(author=self, club__isnull=True, is_deleted=False)
+        return Post.objects.filter(author=self, club__isnull=True, deleted_at__isnull=True)
 
     @property
     def user_post_count(self):
         """Count of user posts"""
         from apps.posts.models import Post
-        return Post.objects.filter(author=self, club__isnull=True, is_deleted=False).count()
+        return Post.objects.filter(author=self, club__isnull=True, deleted_at__isnull=True).count()
 
     # @property
     # def total_posts_count(self):
@@ -320,7 +321,7 @@ class User(AbstractUser):
         # All posts (both user posts and club posts) are now in the Post model
         content_type = ContentType.objects.get_for_model(Post)
         post_ids = Post.objects.filter(
-            author=self, is_deleted=False).values_list('id', flat=True)
+            author=self, deleted_at__isnull=True).values_list('id', flat=True)
         total_likes = Like.objects.filter(
             content_type=content_type,
             object_id__in=post_ids

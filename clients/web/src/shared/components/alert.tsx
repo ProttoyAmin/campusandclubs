@@ -13,11 +13,12 @@ type AppAlertDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  description: string;
-  cancelText: string;
-  confirmText: string;
-  onCancel: () => void;
-  onConfirm: () => void;
+  description?: string;
+  cancelText?: string;
+  confirmText?: string;
+  onCancel?: () => void;
+  onConfirm?: () => void;
+  variant?: "default" | "destructive" | "warning" | "success" | "info";
 };
 
 const AppAlertDialog = ({
@@ -29,20 +30,21 @@ const AppAlertDialog = ({
   confirmText,
   onCancel,
   onConfirm,
+  variant = "default",
 }: AppAlertDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogDescription>{description || "Are you sure?"}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel variant="ghost" onClick={onCancel}>
-            {cancelText}
+            {cancelText || "Cancel"}
           </AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={onConfirm}>
-            {confirmText}
+          <AlertDialogAction variant={variant === "destructive" ? "destructive" : "default"} onClick={onConfirm}>
+            {confirmText || "Continue"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -46,9 +46,17 @@ export class Authentication {
     return response;
   }
 
-  submitSocialLogin(provider: SocialProvider) {
-    const csrfToken = cookie.get("csrftoken");
-    console.log(csrfToken);
+  async submitSocialLogin(provider: SocialProvider) {
+    let csrfToken = cookie.get("csrftoken");
+    if (!csrfToken) {
+      try {
+        await this.apiClient.getSession();
+        csrfToken = cookie.get("csrftoken");
+      } catch (e) {
+        console.error("Failed to initialize session before social login:", e);
+      }
+    }
+
     if (!csrfToken) {
       throw new Error(
         "Missing CSRF token — session must be initialized before social login.",
@@ -63,7 +71,9 @@ export class Authentication {
     const csrfInput = form.querySelector(
       'input[name="csrfmiddlewaretoken"]',
     ) as HTMLInputElement;
-    csrfInput.value = csrfToken; // set right before submit, always fresh
+    if (csrfInput) {
+      csrfInput.value = csrfToken; // set right before submit, always fresh
+    }
 
     form.requestSubmit();
   }
@@ -74,6 +84,10 @@ export class Authentication {
 
   async verify_email(key: string) {
     return await this.apiClient.verifyEmail(key);
+  }
+
+  async resend_email_verification() {
+    return await this.apiClient.resendEmailVerification();
   }
 
   async activate(data: ActivationRequest) {

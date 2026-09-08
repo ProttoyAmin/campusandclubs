@@ -9,20 +9,24 @@ import {
 } from "design/components/ui/dropdown-menu";
 import { toast } from "design/components/ui/toast";
 import { InfoIcon, LinkIcon, CircleAlertIcon, LogOutIcon } from "lucide-react";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
+import AboutClub from "./about-club";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import AppAlertDialog from "@/shared/components/alert";
+import type { ClubDetail } from "@campus/api";
 
 type DropDownProps = {
   trigger: React.ReactElement;
   menu?: () => MenuItemType[];
   onLeave: () => void;
+  club: ClubDetail;
   isMember: boolean;
 };
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import AppAlertDialog from "@/shared/components/alert";
-
 const ClubDropdown = (props: DropDownProps) => {
   const [leaving, setIsLeaving] = React.useState(false);
+  const [aboutDialog, setAboutDialog] = React.useState(false);
   const navigate = useNavigate();
 
   const onCopy = () => {
@@ -59,7 +63,7 @@ const ClubDropdown = (props: DropDownProps) => {
             Copy link
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={() => setAboutDialog(true)}
             variant="default"
             className={"cursor-pointer p-2"}
           >
@@ -67,14 +71,14 @@ const ClubDropdown = (props: DropDownProps) => {
             About this club
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={() => { }}
             variant="destructive"
             className={"cursor-pointer p-2"}
           >
             <CircleAlertIcon className="size-4" />
             Report club
           </DropdownMenuItem>
-          {props.isMember && (
+          {props.club?.is_member && (
             <DropdownMenuItem
               onClick={() => setIsLeaving(true)}
               variant="destructive"
@@ -99,6 +103,17 @@ const ClubDropdown = (props: DropDownProps) => {
           setIsLeaving(false);
         }}
       />
+
+      <ResponsiveDialog
+        open={aboutDialog}
+        onOpenChange={setAboutDialog}
+        trigger={null}
+        showCloseButton={false}
+      // title={`About ${props.club.name}`}
+      // description={`Details about ${props.club.name}`}
+      >
+        <AboutClub club={props.club} />
+      </ResponsiveDialog>
     </DropdownMenu>
   );
 };

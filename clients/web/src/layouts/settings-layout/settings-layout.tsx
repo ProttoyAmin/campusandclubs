@@ -5,9 +5,10 @@ import { useMe } from "@/features/user/hooks/user.hooks";
 import { SettingsMenu } from "@/config/menu/settings-menu";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React from "react";
-import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
 import { useSession } from "@/features/auth/hooks";
 import type { UserProfile } from "@campus/api";
+import { routes } from "@/settings/routes";
+import NavTabs from "@/components/nav-tabs";
 
 export interface UserSettingsLayoutProps {
   me: UserProfile;
@@ -26,7 +27,13 @@ const SettingsLayout = () => {
 
   React.useEffect(() => {
     pageHeader.setActions(
-      <ProfileLayoutHeader user={me} currentUser={currentUser} />,
+      // <ProfileLayoutHeader user={me} currentUser={currentUser} />,
+      <div className="flex items-center gap-4">
+        {/* <NavigateButtons
+          hideForward
+        /> */}
+        <h1 className="text-lg font-semibold">Settings</h1>
+      </div>
     );
 
     return () => {
@@ -43,21 +50,43 @@ const SettingsLayout = () => {
   if (!me) return <div>Not found</div>;
 
   return (
-    <section className="flex flex-col gap-4 max-w-3xl justify-around">
-      <div className="flex justify-between items-center p-2">
-        {pageHeader.actions}
-      </div>
-      <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
-        <CardContent className="flex flex-col md:flex-row gap-4">
-          <div className="relative w-full md:w-2/6 pr-4 md:border-r">
-            <SideBar menu={SettingsMenu} className="sticky top-0 left-0" />
-          </div>
-          <div className="w-full overflow-hidden">
-            <Outlet context={{ me }} />
-          </div>
-        </CardContent>
-      </Card>
-    </section>
+    <>
+      {location.pathname === routes.settings.base ? (
+        <>
+          <section className="flex flex-col gap-4 max-w-3xl justify-around">
+            <div className="flex items-center p-2">
+              {pageHeader.actions}
+            </div>
+            <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
+              <CardContent className="w-full">
+                <NavTabs
+                  menu={SettingsMenu()}
+                  className="flex flex-col space-y-2"
+                />
+              </CardContent>
+            </Card>
+          </section>
+        </>
+      ) : (
+        <>
+          <section className="flex flex-col gap-4 max-w-3xl justify-around">
+            <div className="flex justify-between items-center p-2">
+              {pageHeader.actions}
+            </div>
+            <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
+              <CardContent className="flex flex-col md:flex-row gap-4">
+                <div className="relative w-full md:w-2/6 pr-4 md:border-r">
+                  <SideBar menu={SettingsMenu} className="sticky top-0 left-0" />
+                </div>
+                <div className="w-full overflow-hidden">
+                  <Outlet context={{ me }} />
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </>
+      )}
+    </>
   );
 };
 

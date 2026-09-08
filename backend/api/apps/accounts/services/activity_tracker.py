@@ -45,7 +45,7 @@ async def update_user_activity(user_id):
         redis_client.expire(key, settings.ACTIVITY_TIMEOUT + 60)
         return True
     except Exception as e:
-        logger.error(f"Error updating activity for user {user_id}: {str(e)}")
+        logger.error(f"Error updating activity for user {user_id}: {e}")
         return False
 
 
@@ -59,7 +59,7 @@ def get_last_activity(user_id):
         timestamp = redis_client.get(key)
         return int(timestamp) if timestamp else None
     except Exception as e:
-        logger.error(f"Error getting activity for user {user_id}: {str(e)}")
+        logger.error(f"Error getting activity for user {user_id}: {e}")
         return None
 
 
@@ -112,7 +112,7 @@ def mark_user_online(user_id, manual=False):
         logger.error(f"User {user_id} not found")
         return False
     except Exception as e:
-        logger.error(f"Error marking user {user_id} as online: {str(e)}")
+        logger.error(f"Error marking user {user_id} as online: {e}")
         return False
 
 
@@ -150,7 +150,7 @@ def mark_user_away(user_id, manual=False):
         logger.error(f"User {user_id} not found")
         return False
     except Exception as e:
-        logger.error(f"Error marking user {user_id} as away: {str(e)}")
+        logger.error(f"Error marking user {user_id} as away: {e}")
         return False
 
 
@@ -165,7 +165,7 @@ def increment_connection(user_id):
         return count
     except Exception as e:
         logger.error(
-            f"Error incrementing connections for user {user_id}: {str(e)}")
+            f"Error incrementing connections for user {user_id}: {e}")
         return 0
 
 
@@ -183,7 +183,7 @@ def decrement_connection(user_id):
         return count
     except Exception as e:
         logger.error(
-            f"Error decrementing connections for user {user_id}: {str(e)}")
+            f"Error decrementing connections for user {user_id}: {e}")
         return 0
 
 
@@ -197,7 +197,7 @@ def get_connection_count(user_id):
         return int(count) if count else 0
     except Exception as e:
         logger.error(
-            f"Error getting connection count for user {user_id}: {str(e)}")
+            f"Error getting connection count for user {user_id}: {e}")
         return 0
 
 
@@ -215,7 +215,7 @@ def broadcast_status_change(user_id, new_status):
             room_group_name,
             {
                 'type': 'status_update',
-                'user_id': str(user_id),
+                'user_id': user_id,
                 'status': new_status,
                 'is_status_manual': user.is_status_manual,
             }
@@ -229,7 +229,7 @@ def broadcast_status_change(user_id, new_status):
         return True
 
     except Exception as e:
-        logger.error(f"Error broadcasting status change: {str(e)}")
+        logger.error(f"Error broadcasting status change: {e}")
         return False
 
 
@@ -244,8 +244,8 @@ def check_inactive_users():
         marked_away_count = 0
 
         for user in online_users:
-            if is_user_inactive(str(user.id)):
-                if mark_user_away(str(user.id)):
+            if is_user_inactive(user.id):
+                if mark_user_away(user.id):
                     marked_away_count += 1
 
         logger.info(
@@ -253,5 +253,5 @@ def check_inactive_users():
         return marked_away_count
 
     except Exception as e:
-        logger.error(f"Error checking inactive users: {str(e)}")
+        logger.error(f"Error checking inactive users: {e}")
         return 0

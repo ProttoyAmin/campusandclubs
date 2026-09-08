@@ -9,7 +9,7 @@ class PostRepository(BaseRepository[Post]):
         return (
             super()
             .get_queryset()
-            .filter(is_deleted=False)
+            .filter(deleted_at__isnull=True)
         )
 
     def soft_delete(self, instance: Post) -> None:

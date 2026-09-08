@@ -1,6 +1,8 @@
 export const clubRoutes = {
   private: {
     list: "/@/clubs/",
+    posts: "/@/clubs/:slug/posts/",
+    media: "/@/clubs/:slug/media/",
     create: "/@/clubs/create/",
     config: {
       base: "/@/clubs/:slug/config/",

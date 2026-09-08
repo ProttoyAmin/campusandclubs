@@ -10,10 +10,9 @@ const BottomBar: React.FC<BottomBarProps> = (props) => {
 
   const tabs = [
     { id: 1, to: "/", label: "Home", icon: "Home" },
-    { id: 2, to: "/discover", label: "Discover", icon: "Search" },
-    { id: 3, to: "/notifications", label: "Notifications", icon: "Bell" },
+    { id: 2, to: "@/clubs", label: "Clubs", icon: "Clubs" },
     {
-      id: 4,
+      id: 3,
       to: `/@/${currentUser?.username}`,
       label: "Profile",
       icon: "User",

@@ -33,7 +33,7 @@ def list_posts(request):
     """
 
     # Show all posts (user, clubs) [ add this flag to get the club posts as well --- club__isnull=True
-    posts = Post.objects.filter(is_deleted=False, is_public=True).select_related(
+    posts = Post.objects.filter(deleted_at__isnull=True, is_public=True).select_related(
         'author').prefetch_related('media_files')
 
     post_type = request.query_params.get('post_type')
@@ -232,7 +232,7 @@ def repost(request, post_id):
 @permission_classes([AllowAny])
 def post_likes(request, post_id):
     """Get all likes on a post"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     content_type = ContentType.objects.get_for_model(Post)
     likes = Like.objects.filter(
@@ -258,50 +258,50 @@ def post_likes(request, post_id):
     })
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def toggle_post_like(request, post_id):
-    """Like or unlike a post (toggle)"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def toggle_post_like(request, post_id):
+#     """Like or unlike a post (toggle)"""
+#     post = get_object_or_404(Post, pk=post_id, is_deleted=False)
 
-    content_type = ContentType.objects.get_for_model(Post)
+#     content_type = ContentType.objects.get_for_model(Post)
 
-    like, created = Like.objects.get_or_create(
-        user=request.user,
-        content_type=content_type,
-        object_id=post.id
-    )
+#     like, created = Like.objects.get_or_create(
+#         user=request.user,
+#         content_type=content_type,
+#         object_id=post.id
+#     )
 
-    if not created:
-        like.delete()
-        like_count = Like.objects.filter(
-            content_type=content_type,
-            object_id=post.id
-        ).count()
+#     if not created:
+#         like.delete()
+#         like_count = Like.objects.filter(
+#             content_type=content_type,
+#             object_id=post.id
+#         ).count()
 
-        return Response({
-            'detail': 'Post unliked.',
-            'is_liked': False,
-            'like_count': like_count
-        })
+#         return Response({
+#             'detail': 'Post unliked.',
+#             'is_liked': False,
+#             'like_count': like_count
+#         })
 
-    like_count = Like.objects.filter(
-        content_type=content_type,
-        object_id=post.id
-    ).count()
+#     like_count = Like.objects.filter(
+#         content_type=content_type,
+#         object_id=post.id
+#     ).count()
 
-    return Response({
-        'detail': 'Post liked.',
-        'is_liked': True,
-        'like_count': like_count
-    }, status=status.HTTP_201_CREATED)
+#     return Response({
+#         'detail': 'Post liked.',
+#         'is_liked': True,
+#         'like_count': like_count
+#     }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def post_comments(request, post_id):
     """Get all comments on a post"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     content_type = ContentType.objects.get_for_model(Post)
 
@@ -356,7 +356,7 @@ def create_post_comment(request, post_id):
     Create a comment on a post
     Body: { "content": "Great post!", "parent": null }
     """
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     content = request.data.get('content')
     parent_id = request.data.get('parent')
@@ -403,7 +403,7 @@ def create_post_comment(request, post_id):
 @permission_classes([IsAuthenticated])
 def manage_post_comment(request, post_id, comment_id):
     """Update or delete a comment"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
     comment = get_object_or_404(Comment, pk=comment_id)
 
     # Verify comment belongs to this post
@@ -491,7 +491,7 @@ def toggle_comment_like(request, post_id, comment_id):
 @permission_classes([AllowAny])
 def get_comment_replies(request, post_id, comment_id):
     """Get all replies to a specific comment"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
     parent_comment = get_object_or_404(Comment, pk=comment_id)
 
     replies = Comment.objects.filter(parent=parent_comment).select_related(
@@ -541,7 +541,7 @@ def get_comment_replies(request, post_id, comment_id):
 @permission_classes([AllowAny])
 def post_shares(request, post_id):
     """Get all shares of a post"""
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     content_type = ContentType.objects.get_for_model(Post)
     shares = Share.objects.filter(
@@ -575,7 +575,7 @@ def toggle_post_share(request, post_id):
     Share or unshare a post
     Body: { "message": "Check this out!" }  // optional
     """
-    post = get_object_or_404(Post, pk=post_id, is_deleted=False)
+    post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     content_type = ContentType.objects.get_for_model(Post)
     message = request.data.get('message', '')
@@ -676,7 +676,7 @@ def get_feed(request):
             author__is_private=False,
             is_public=True
         ),
-        is_deleted=False,
+        deleted_at__isnull=True,
         club__isnull=True  # Exclude club posts from user feed
     ).exclude(
         # Exclude posts from blocked users
@@ -722,7 +722,7 @@ def trending_posts(request):
     time_threshold = timezone.now() - timedelta(hours=24)
 
     posts = Post.objects.filter(
-        is_deleted=False,
+        deleted_at__isnull=True,
         is_public=True,
         club__isnull=True,  # Exclude club posts from trending
         created_at__gte=time_threshold

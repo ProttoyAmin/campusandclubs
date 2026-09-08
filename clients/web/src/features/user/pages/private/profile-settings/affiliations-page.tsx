@@ -14,6 +14,7 @@ import { useEmails } from "@/features/user/hooks/user.hooks";
 import type { AffiliationClaimInput } from "validation/institute";
 import { toast } from "design/components/ui/toast";
 import { useState } from "react";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
 
 const UserAffiliationsPage = () => {
   const { me } = useSettingsOutlet();
@@ -49,7 +50,7 @@ const UserAffiliationsPage = () => {
         title="No affiliations yet"
         description="Add your affiliations to get started."
         children={
-          <AffiliationDialog
+          <ResponsiveDialog
             open={open}
             onOpenChange={setOpen}
             trigger={

@@ -8,9 +8,9 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
     """Serializer for user's club memberships"""
     from apps.clubs.models import Club, Membership
     
-    club_id = serializers.CharField(source='club.id', read_only=True)
-    club_name = serializers.CharField(source='club.name', read_only=True)
-    club_slug = serializers.CharField(source='club.slug', read_only=True)
+    id = serializers.CharField(source='club.id', read_only=True)
+    name = serializers.CharField(source='club.name', read_only=True)
+    slug = serializers.CharField(source='club.slug', read_only=True)
     # club_avatar = serializers.URLField(source='club.avatar', read_only=True)
     is_public = serializers.SerializerMethodField()
     is_visible = serializers.BooleanField(
@@ -20,12 +20,12 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     role_permissions = serializers.SerializerMethodField()
     club_url = serializers.SerializerMethodField()
-    club_avatar = serializers.SerializerMethodField()
-    club_banner = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
+    banner = serializers.SerializerMethodField()
 
     class Meta:
         model = Membership
-        fields = ['club_id', 'club_name', 'club_slug', 'club_avatar', 'club_banner', 'is_public', 'is_active',
+        fields = ['id', 'name', 'slug', 'avatar', 'banner', 'is_public', 'is_active',
                   'is_visible', 'club_url', 'is_owner', 'role_name', 'role_permissions', 'joined_at']
 
     def _get_request(self) -> Request | None:
@@ -47,7 +47,7 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(f'/api/v1/clubs/{obj.club.id}/')
         return None
 
-    def get_club_avatar(self, obj: Membership):
+    def get_avatar(self, obj: Membership):
         request = self._get_request()
         if obj.club.avatar:
             if request:
@@ -55,7 +55,7 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
         else:
             return None
 
-    def get_club_banner(self, obj: Membership):
+    def get_banner(self, obj: Membership):
         request = self._get_request()
         if obj.club.banner:
             if request:

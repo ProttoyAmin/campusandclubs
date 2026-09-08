@@ -9,7 +9,7 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 1,
       label: "Posts",
-      icon: <House size={18} />,
+      icon: '',
       iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
       link: () => paths.private.user.profile(username),
       isActive: (currentPath) =>
@@ -18,7 +18,7 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 2,
       label: "Media",
-      icon: <ImageIcon size={18} />,
+      icon: '',
       iconActive: (
         <ImageIcon size={18} fill="currentColor" stroke="currentColor" />
       ),
@@ -29,7 +29,7 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 3,
       label: "Reposts",
-      icon: <LayoutList size={18} />,
+      icon: '',
       iconActive: (
         <LayoutList size={18} fill="currentColor" stroke="currentColor" />
       ),

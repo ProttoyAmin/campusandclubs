@@ -54,7 +54,7 @@ class UserActivityConsumer(websocket.AsyncWebsocketConsumer):
 
             message = {
                 "type": "status_update",
-                "user_id": str(user.id),
+                "user_id": user.id,
                 "status": user.status,
                 "is_status_manual": user.is_status_manual,
             }

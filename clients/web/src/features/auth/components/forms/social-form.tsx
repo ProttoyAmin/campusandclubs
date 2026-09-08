@@ -13,7 +13,7 @@ export function SocialLoginForms() {
           key={provider}
           id={`social-login-form-${provider}`}
           method="POST"
-          action={`/api/${ALLAUTH_BROWSER_PATH}auth/provider/redirect`}
+          action={`${config.api.v1.baseUrl}${config.api.v1.allauth.base}auth/provider/redirect`}
           style={{ display: "none" }}
         >
           <input type="hidden" name="provider" value={provider} />

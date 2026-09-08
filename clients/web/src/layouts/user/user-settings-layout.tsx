@@ -2,7 +2,7 @@ import { Outlet, useParams } from "react-router-dom";
 import SideBar from "@/components/sidebar";
 import { CardContent } from "design/components/ui/card";
 import { useUser } from "@/features/user/hooks/user.hooks";
-import { userSettingsMenu } from "@/config/menu/user/settings-menu";
+import { SettingsMenu } from "@/config/menu/settings-menu";
 
 const UserSettingsLayout = () => {
   const params = useParams();
@@ -11,7 +11,7 @@ const UserSettingsLayout = () => {
     <CardContent className="flex w-full gap-4">
       <div className="relative w-2/6 border-r pr-4">
         <SideBar
-          menu={userSettingsMenu}
+          menu={SettingsMenu}
           menuParam={params.username}
           className="sticky top-0 left-0"
         />

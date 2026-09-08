@@ -1,5 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { authentication, type SocialProvider } from "../services/authentication";
+import {
+  authentication,
+  type SocialProvider,
+} from "../services/authentication";
 import { queryClient } from "@/config/query-client";
 import type {
   AccountsAuthJwtRefreshCreateResponse,
@@ -14,18 +17,17 @@ export const authKeys = {
   session: ["auth", "session"] as const,
 };
 
-
 export const useSocials = () => {
   const socialLogin = useMutation({
-    mutationFn: async (provider: SocialProvider) => authentication.submitSocialLogin(provider),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authKeys.session });
-    },
+    mutationFn: async (provider: SocialProvider) =>
+      authentication.submitSocialLogin(provider),
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries({ queryKey: authKeys.session });
+    // },
   });
 
   return { socialLogin };
 };
-
 
 export const useSession = () => {
   return useQuery({

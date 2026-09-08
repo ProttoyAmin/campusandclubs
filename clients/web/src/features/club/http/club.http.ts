@@ -8,9 +8,17 @@ import type {
   ClubJoinRequest,
   PaginatedClubList,
   DepartmentTemplate,
+  Post,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
+
+export type PaginaatedClubPostsResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Post[];
+};
 
 export class ClubClient extends BaseClient<
   ClubDetail,
@@ -41,6 +49,17 @@ export class ClubClient extends BaseClient<
   async fetchClub(slug: string): Promise<AxiosResponse<ClubDetail>> {
     const response = await this.client.get<ClubDetail>(
       `${this.endpoint}${slug}`,
+    );
+    return response;
+  }
+
+  async fetchClubPosts(
+    clubId: string,
+    media?: "True" | "False",
+  ): Promise<AxiosResponse<PaginaatedClubPostsResponse>> {
+    const response = await this.client.get<PaginaatedClubPostsResponse>(
+      `${this.endpoint}${clubId}/posts/`,
+      { params: { media: media } },
     );
     return response;
   }

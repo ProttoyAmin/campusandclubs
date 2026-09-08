@@ -9,6 +9,8 @@ import type {
   GetMyAffiliationsResponse,
   SetPasswordRequest,
   AccountsAuthUsersSetPasswordCreateResponse,
+  PostsListResponse,
+  Club,
 } from "@campus/api";
 
 import { AxiosError, type AxiosResponse } from "axios";
@@ -31,6 +33,13 @@ export type PrivateUserResponse = {
 export type UserResponse =
   | AccountsAuthUsersUserRetrieveResponse
   | PrivateUserResponse;
+
+export type PaginatedPostsResult = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Array<PostsListResponse>;
+};
 
 export class UserClient extends BaseClient<
   AxiosResponse,
@@ -82,6 +91,11 @@ export class UserClient extends BaseClient<
     }
   }
 
+  async getUserClubs() {
+    const response = await this.client.get<Club[]>(this.endpoint + "me/clubs");
+    return response;
+  }
+
   async get_my_emails() {
     const response = await this.client.get<UserEmail[]>(
       this.endpoint + "me/emails/",
@@ -108,7 +122,7 @@ export class UserClient extends BaseClient<
   }
 
   async changePrimaryEmail(email: string): Promise<AxiosResponse<UserEmail[]>> {
-    const response = await this.client.put<UserEmail[]>(
+    const response = await this.client.patch<UserEmail[]>(
       `${this.allauthBrowser}account/email`,
       { email: email, primary: true },
     );
@@ -151,9 +165,9 @@ export class UserClient extends BaseClient<
     }
   }
 
-  async getUserPosts(userId: string) {
+  async getUserPosts(userId: string, media?: "True" | "False") {
     const response = await this.client.get(
-      this.endpoint + `users/${userId}/posts`,
+      this.endpoint + `users/${userId}/posts?media=${media}`,
     );
     return response;
   }

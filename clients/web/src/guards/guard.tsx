@@ -10,6 +10,7 @@ const PUBLIC_PATTERNS = [
   routes.auth.private.activation,
   routes.auth.private.reset_password,
   routes.auth.private.verify_email,
+  routes.auth.public.social_callback,
 ];
 
 const AUTH_PATTERNS = [
@@ -44,7 +45,7 @@ const Guard = ({ children }: { children: React.ReactNode }) => {
   const isAuthRoute = matchesAny(AUTH_PATTERNS, location.pathname);
 
   if (isLoading) {
-    return null;
+    return <>{children}</>;
   }
 
   if (!session && !isPublicRoute) {

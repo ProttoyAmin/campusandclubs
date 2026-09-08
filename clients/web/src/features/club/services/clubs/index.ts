@@ -26,6 +26,11 @@ class ClubService {
     return res.data;
   }
 
+  async posts(clubId: string, media?: "True" | "False") {
+    const res = await this.clubClient.fetchClubPosts(clubId, media);
+    return res.data;
+  }
+
   async department_templates(): Promise<DepartmentTemplate[]> {
     const res = await this.clubClient.getDepartmentTemplates();
     return res.data;

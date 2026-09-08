@@ -15,6 +15,7 @@ import type {
 } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
+import { type PaginaatedClubPostsResponse } from "../http/club.http";
 
 export const useGetClubs = () => {
   return useQuery<PaginatedClubList, AppError<{}>>({
@@ -40,6 +41,31 @@ export const useClub = (slug: string) => {
       return club.club(slug);
     },
   });
+};
+
+export const useClubInfo = (slug: string) => {
+  const posts = useQuery<PaginaatedClubPostsResponse, AppError>({
+    queryKey: ["club", slug, "posts"],
+    queryFn: () => {
+      return club.posts(slug);
+    },
+  });
+
+  const postsWithMedia = useQuery<PaginaatedClubPostsResponse, AppError>({
+    queryKey: ["club", slug, "posts", "media"],
+    queryFn: () => {
+      return club.posts(slug, "True");
+    },
+  });
+
+  const postsWithoutMedia = useQuery<PaginaatedClubPostsResponse, AppError>({
+    queryKey: ["club", slug, "posts", "no-media"],
+    queryFn: () => {
+      return club.posts(slug, "False");
+    },
+  });
+
+  return { posts, postsWithMedia, postsWithoutMedia };
 };
 
 export const useUpdateClub = (slug: string, id: string) => {
@@ -129,6 +155,7 @@ export const useClubs = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clubs"] });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
     onError: (error: AppError<APIError>) => {
       console.log("Error creating club:", error.response.data.detail);

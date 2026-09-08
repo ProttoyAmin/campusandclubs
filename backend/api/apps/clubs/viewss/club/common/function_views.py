@@ -18,6 +18,83 @@ from apps.clubs.serializer.club.club import ClubSerializer
 from apps.clubs.serializer.club.club_details import ClubDetailSerializer
 
 
+
+# from rest_framework.decorators import api_view, permission_classes
+# from rest_framework import permissions, response, status
+# from django.db.models import Count, Prefetch
+# from django.shortcuts import get_object_or_404
+# from django.contrib.contenttypes.models import ContentType
+# from apps.interactions.models import Like, Comment, Share
+
+
+# from . import models, permissions as club_permissions
+# from core import pagination
+# from apps.posts.serializers import PostSerializer
+# from apps.posts.models import Post
+
+
+# # ==================== POST VIEWS ====================
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def list_posts(request: Request, pk:str)->response.Response:
+    """
+    List all posts in a club with interaction counts
+    """
+    from apps.posts.models import Post
+    from apps.posts.serializer.post_serializers import PostSerializer
+    from core import pagination
+    club: Club = get_object_or_404(Club, pk=pk)
+
+    media_only = request.query_params.get('media', 'False') == 'True'
+
+    # Check if user is owner or member
+    # if request.user != club.owner and not models.Membership.objects.filter(user=request.user, club=club).exists():
+    #     return response.Response(
+    #         {'detail': 'You must be a club member to view posts.'},
+    #         status=status.HTTP_403_FORBIDDEN
+    #     )
+    if request.user != club.owner and not club.privacy == Visibility.PUBLIC and not Membership.objects.filter(user=request.user, club=club).exists():
+        return response.Response(
+            {'detail': 'This is a private club. Join to view posts'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # Query Post model where club matches
+    if media_only:
+        posts = Post.objects.filter(
+            club=club, is_deleted=False, media__isnull=False).select_related('author', 'club')
+    else:
+        posts = Post.objects.filter(
+            club=club, is_deleted=False).select_related('author', 'club')
+
+    paginator = pagination.StandardResultsSetPagination()
+    paginated_posts = paginator.paginate_queryset(posts, request)
+
+    serializer = PostSerializer(
+        paginated_posts,
+        many=True,
+        context={'request': request}
+    )
+
+    # Efficiently fetch and map author roles
+    data = serializer.data
+    author_ids = [post.author_id for post in paginated_posts]
+
+    author_is_owner_map = {}
+    for user_id in author_ids:
+        if user_id == club.owner_id:
+            author_is_owner_map[user_id] = True
+
+    # Inject is_owner into response data
+    for item in data:
+        author_id = item.get('author_id')
+        item['is_owner'] = author_is_owner_map.get(author_id, False)
+
+    return paginator.get_paginated_response(data)
+
+
+
 # ---------------------------------------------------------------------------
 # recommended_clubs
 # ---------------------------------------------------------------------------

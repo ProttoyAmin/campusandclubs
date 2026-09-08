@@ -3,10 +3,11 @@ import type { UserProfile } from "@campus/api";
 import type { updateProfileSchema } from "validation/user";
 import type z from "zod";
 import React from "react";
-import { useUpdateProfile } from "../../hooks/user.hooks";
+import { useProfile, useUpdateProfile } from "../../hooks/user.hooks";
 import { useParams } from "react-router-dom";
 import { AvatarUpload } from "./avatar-upload";
 import AppDialog, { type DialogProps } from "@/shared/components/app-dialog";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
 
 type ProfileDialog = Omit<DialogProps, 'children'> & {
   data: UserProfile;
@@ -20,7 +21,7 @@ export function EditProfileDialog({
 }: ProfileDialog) {
   const [avatar, setAvatar] = React.useState<File | null>(null);
   const { username } = useParams();
-  const { mutate: updateProfile, isPending } = useUpdateProfile(username!);
+  const { updateProfile } = useProfile(username as string)
   const [open, setOpen] = React.useState(false);
 
   const handleSubmit = (avatar: File | null) => {
@@ -28,7 +29,7 @@ export function EditProfileDialog({
   };
 
   return (
-    <AppDialog
+    <ResponsiveDialog
       trigger={trigger}
       title={title}
       description={description}
@@ -41,19 +42,19 @@ export function EditProfileDialog({
         avatar={avatar}
         setAvatar={setAvatar}
         onSubmit={handleSubmit}
-        isPending={isPending}
+        isPending={updateProfile.isPending}
       />
       <ProfileUpdateForm
         onSubmit={(values: z.infer<typeof updateProfileSchema>) => {
-          updateProfile(values, {
+          updateProfile.mutate(values, {
             onSuccess: () => {
               setOpen(false);
             },
           });
         }}
         data={data}
-        isPending={isPending}
+        isPending={updateProfile.isPending}
       />
-    </AppDialog>
+    </ResponsiveDialog>
   );
 }

@@ -25,18 +25,16 @@ const ClubConfigLayout = () => {
   }
 
   return (
-    <CardContent className="flex md:flex-row flex-col w-full md:gap-4 px-1 md:px-6">
-      <div className="relative w-full md:w-2/6 md:border-r md:pr-4 pr-0 md:pb-4">
-        <SideBar
-          menu={clubConfigureMenu}
-          menuParam={slug}
-          className="sticky top-0 left-0"
-        />
-      </div>
-      <div className="w-full md:w-3/5">
-        <Outlet context={{ club }} />
-      </div>
-    </CardContent>
+    <section className="flex flex-col gap-4 max-w-3xl justify-around">
+      <CardContent className="flex flex-col md:flex-row gap-4">
+        <div className="relative w-full md:w-2/6 pr-4 md:border-r">
+          <SideBar menu={clubConfigureMenu} menuParam={slug} className="sticky top-0 left-0" />
+        </div>
+        <div className="w-full overflow-hidden">
+          <Outlet context={{ club }} />
+        </div>
+      </CardContent>
+    </section>
   );
 };
 

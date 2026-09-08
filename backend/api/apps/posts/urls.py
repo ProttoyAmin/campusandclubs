@@ -7,6 +7,12 @@ from apps.posts.view.generics import (
     PostUpdateDestroyView
 )
 
+from apps.posts.view.common import (
+    toggle_post_like,
+    post_likes,
+    post_comments
+)
+
 app_name = 'posts'
 
 urlpatterns = [
@@ -24,11 +30,11 @@ urlpatterns = [
     # path('<int:post_id>/repost/', views.repost, name='repost'),  # POST repost
     
     # # Post Likes
-    # path('<int:post_id>/likes/', views.post_likes, name='post_likes'),  # GET likes
-    # path('<int:post_id>/like/', views.toggle_post_like, name='toggle_post_like'),  # POST toggle
+    path('<uuid:post_id>/likes/', post_likes, name='post_likes'),  # GET likes
+    path('<uuid:post_id>/like/', toggle_post_like, name='toggle_post_like'),  # POST toggle
     
     # # Post Comments
-    # path('<int:post_id>/comments/', views.post_comments, name='post_comments'),  # GET comments
+    path('<uuid:post_id>/comments/', post_comments, name='post_comments'),  # GET comments
     # path('<int:post_id>/comments/create/', views.create_post_comment, name='create_post_comment'),  # POST create
     # path('<int:post_id>/comments/<int:comment_id>/', views.manage_post_comment, name='manage_post_comment'),  # PATCH/DELETE
     # path('<int:post_id>/comments/<int:comment_id>/like/', views.toggle_comment_like, name='toggle_comment_like'),  # POST toggle

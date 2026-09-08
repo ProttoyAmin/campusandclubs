@@ -173,10 +173,10 @@ class Post(models.Model):
 
     def soft_delete(self):
         """Soft delete the post"""
-        self.is_deleted = True
+        self.deleted_at = timezone.now()
         self.save()
 
     def restore(self):
         """Restore a soft-deleted post"""
-        self.is_deleted = False
+        self.deleted_at = None
         self.save()

@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Campus & Clubs Backend API
 paths:
-  /api/accounts/auth/{user_id}/all/:
+  /api/v1/accounts/auth/{user_id}/all/:
     get:
       operationId: accounts_auth_all_retrieve
       parameters:
@@ -88,30 +88,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
-  /api/accounts/auth/{user_id}/posts/:
-    get:
-      operationId: accounts_auth_posts_retrieve
-      description: |-
-        Get all posts created by a user (both user posts and club posts)
-        Query params:
-        - source: all|user|club (default: all)
-        - post_type: TEXT|IMAGE|VIDEO (default: all)
-      parameters:
-      - in: path
-        name: user_id
-        schema:
-          type: string
-          format: uuid
-        required: true
-      tags:
-      - accounts
-      security:
-      - cookieAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
-  /api/accounts/auth/all/:
+  /api/v1/accounts/auth/all/:
     get:
       operationId: list_users
       description: Returns a paginated list of users.
@@ -198,7 +175,7 @@ paths:
           description: Paginated list of users.
         '401':
           description: Unauthorized.
-  /api/accounts/auth/jwt/create/:
+  /api/v1/accounts/auth/jwt/create/:
     post:
       operationId: accounts_auth_jwt_create_create
       description: |-
@@ -225,7 +202,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenObtainPair'
           description: ''
-  /api/accounts/auth/jwt/refresh/:
+  /api/v1/accounts/auth/jwt/refresh/:
     post:
       operationId: accounts_auth_jwt_refresh_create
       description: |-
@@ -240,7 +217,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RefreshToken'
           description: ''
-  /api/accounts/auth/jwt/verify/:
+  /api/v1/accounts/auth/jwt/verify/:
     post:
       operationId: accounts_auth_jwt_verify_create
       description: |-
@@ -263,7 +240,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/accounts/auth/login/:
+  /api/v1/accounts/auth/login/:
     post:
       operationId: login
       description: Authenticates a user with email or username and returns tokens.
@@ -297,7 +274,7 @@ paths:
           description: Login succeeded.
         '401':
           description: Invalid credentials.
-  /api/accounts/auth/logout/:
+  /api/v1/accounts/auth/logout/:
     post:
       operationId: accounts_auth_logout_create
       tags:
@@ -307,7 +284,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/accounts/auth/me/:
+  /api/v1/accounts/auth/me/:
     get:
       operationId: accounts_auth_me_retrieve
       description: Get current authenticated user's profile
@@ -318,7 +295,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/accounts/auth/me/affiliations/:
+  /api/v1/accounts/auth/me/affiliations/:
     get:
       operationId: get_my_affiliations
       description: Returns every InstituteAffiliate row owned by the authenticated
@@ -339,7 +316,7 @@ paths:
           description: The authenticated user's affiliations.
         '401':
           description: Unauthorized.
-  /api/accounts/auth/me/emails/:
+  /api/v1/accounts/auth/me/emails/:
     get:
       operationId: get_my_emails
       description: Returns the allauth EmailAddress rows belonging to the authenticated
@@ -360,7 +337,18 @@ paths:
           description: The authenticated user's emails.
         '401':
           description: Unauthorized.
-  /api/accounts/auth/refresh/:
+  /api/v1/accounts/auth/me/upload-profile-picture/:
+    post:
+      operationId: accounts_auth_me_upload_profile_picture_create
+      description: Upload a new profile picture for the authenticated user
+      tags:
+      - accounts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/auth/refresh/:
     post:
       operationId: accounts_auth_refresh_create
       description: |-
@@ -375,7 +363,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RefreshToken'
           description: ''
-  /api/accounts/auth/request-info/:
+  /api/v1/accounts/auth/request-info/:
     get:
       operationId: accounts_auth_request_info_retrieve
       tags:
@@ -385,7 +373,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/accounts/auth/users/:
+  /api/v1/accounts/auth/users/:
     get:
       operationId: accounts_auth_users_list
       tags:
@@ -427,7 +415,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Register'
           description: ''
-  /api/accounts/auth/users/{id}/:
+  /api/v1/accounts/auth/users/{id}/:
     get:
       operationId: accounts_auth_users_retrieve
       parameters:
@@ -531,7 +519,30 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/accounts/auth/users/activation/:
+  /api/v1/accounts/auth/users/{user_id}/posts/:
+    get:
+      operationId: accounts_auth_users_posts_retrieve
+      description: |-
+        Get all posts created by a user (both user posts and club posts)
+        Query params:
+        - source: all|user|club (default: all)
+        - post_type: TEXT|IMAGE|VIDEO (default: all)
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - accounts
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/accounts/auth/users/activation/:
     post:
       operationId: accounts_auth_users_activation_create
       tags:
@@ -558,7 +569,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Activation'
           description: ''
-  /api/accounts/auth/users/me/:
+  /api/v1/accounts/auth/users/me/:
     get:
       operationId: accounts_auth_users_me_retrieve
       tags:
@@ -630,7 +641,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/accounts/auth/users/resend_activation/:
+  /api/v1/accounts/auth/users/resend_activation/:
     post:
       operationId: accounts_auth_users_resend_activation_create
       tags:
@@ -657,7 +668,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SendEmailReset'
           description: ''
-  /api/accounts/auth/users/reset_password/:
+  /api/v1/accounts/auth/users/reset_password/:
     post:
       operationId: accounts_auth_users_reset_password_create
       tags:
@@ -684,7 +695,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SendEmailReset'
           description: ''
-  /api/accounts/auth/users/reset_password_confirm/:
+  /api/v1/accounts/auth/users/reset_password_confirm/:
     post:
       operationId: accounts_auth_users_reset_password_confirm_create
       tags:
@@ -711,7 +722,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PasswordResetConfirmRetype'
           description: ''
-  /api/accounts/auth/users/reset_username/:
+  /api/v1/accounts/auth/users/reset_username/:
     post:
       operationId: accounts_auth_users_reset_username_create
       tags:
@@ -738,7 +749,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SendEmailReset'
           description: ''
-  /api/accounts/auth/users/reset_username_confirm/:
+  /api/v1/accounts/auth/users/reset_username_confirm/:
     post:
       operationId: accounts_auth_users_reset_username_confirm_create
       tags:
@@ -765,7 +776,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UsernameResetConfirm'
           description: ''
-  /api/accounts/auth/users/set_password/:
+  /api/v1/accounts/auth/users/set_password/:
     post:
       operationId: accounts_auth_users_set_password_create
       tags:
@@ -791,7 +802,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SetPassword'
           description: ''
-  /api/accounts/auth/users/set_username/:
+  /api/v1/accounts/auth/users/set_username/:
     post:
       operationId: accounts_auth_users_set_username_create
       tags:
@@ -817,7 +828,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SetUsername'
           description: ''
-  /api/accounts/auth/users/user/{username}/:
+  /api/v1/accounts/auth/users/user/{username}/:
     get:
       operationId: accounts_auth_users_user_retrieve
       description: User Detail View
@@ -917,7 +928,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/accounts/auth/users/user/{username}/activity/:
+  /api/v1/accounts/auth/users/user/{username}/activity/:
     get:
       operationId: accounts_auth_users_user_activity_retrieve
       description: Get user's recent activity (likes, comments, shares)
@@ -934,7 +945,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/accounts/auth/users/user/{username}/clubs/:
+  /api/v1/accounts/auth/users/user/{username}/clubs/:
     get:
       operationId: accounts_auth_users_user_clubs_retrieve
       description: Get all clubs a user has joined
@@ -951,7 +962,18 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/comments/:
+  /api/v1/accounts/search/:
+    get:
+      operationId: accounts_search_retrieve
+      description: Search users by username or email
+      tags:
+      - accounts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/activities/comments/:
     get:
       operationId: activities_comments_retrieve
       description: |-
@@ -969,7 +991,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/comments/{comment_id}/:
+  /api/v1/activities/comments/{comment_id}/:
     get:
       operationId: activities_comments_retrieve_2
       description: |-
@@ -1030,7 +1052,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/activities/comments/{comment_id}/replies/:
+  /api/v1/activities/comments/{comment_id}/replies/:
     get:
       operationId: activities_comments_replies_retrieve
       description: Get all replies to a specific comment
@@ -1048,7 +1070,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/comments/create/:
+  /api/v1/activities/comments/create/:
     post:
       operationId: activities_comments_create_create
       description: |-
@@ -1066,7 +1088,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/likes/:
+  /api/v1/activities/likes/:
     get:
       operationId: activities_likes_retrieve
       description: |-
@@ -1083,7 +1105,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/likes/check/:
+  /api/v1/activities/likes/check/:
     get:
       operationId: activities_likes_check_retrieve
       description: |-
@@ -1100,7 +1122,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/activities/likes/toggle/:
+  /api/v1/activities/likes/toggle/:
     post:
       operationId: activities_likes_toggle_create
       description: |-
@@ -1118,7 +1140,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/:
+  /api/v1/clubs/:
     get:
       operationId: clubs_list
       description: |-
@@ -1191,7 +1213,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClubCreate'
           description: ''
-  /api/clubs/{id}/:
+  /api/v1/clubs/{id}/:
     get:
       operationId: clubs_retrieve
       description: Retrieve, update or delete a club instance.
@@ -1295,7 +1317,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/clubs/{id}/application-forms/:
+  /api/v1/clubs/{id}/application-forms/:
     get:
       operationId: clubs_application_forms_list
       description: |-
@@ -1356,7 +1378,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/FormSerializers'
           description: ''
-  /api/clubs/{id}/applications/:
+  /api/v1/clubs/{id}/applications/:
     get:
       operationId: clubs_applications_list
       parameters:
@@ -1411,7 +1433,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipApplicationCreate'
           description: ''
-  /api/clubs/{id}/applications/{application_pk}/:
+  /api/v1/clubs/{id}/applications/{application_pk}/:
     get:
       operationId: clubs_applications_list_2
       parameters:
@@ -1478,7 +1500,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipApplicationCreate'
           description: ''
-  /api/clubs/{id}/applications/{application_pk}/approve/:
+  /api/v1/clubs/{id}/applications/{application_pk}/approve/:
     post:
       operationId: clubs_applications_approve_create
       parameters:
@@ -1517,7 +1539,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipApplication'
           description: ''
-  /api/clubs/{id}/applications/{application_pk}/reject/:
+  /api/v1/clubs/{id}/applications/{application_pk}/reject/:
     post:
       operationId: clubs_applications_reject_create
       parameters:
@@ -1556,7 +1578,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipApplication'
           description: ''
-  /api/clubs/{id}/applications/{application_pk}/withdraw/:
+  /api/v1/clubs/{id}/applications/{application_pk}/withdraw/:
     post:
       operationId: clubs_applications_withdraw_create
       parameters:
@@ -1595,7 +1617,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MembershipApplication'
           description: ''
-  /api/clubs/{id}/events/:
+  /api/v1/clubs/{id}/events/:
     get:
       operationId: clubs_events_retrieve
       description: |-
@@ -1616,7 +1638,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/{id}/join/:
+  /api/v1/clubs/{id}/join/:
     post:
       operationId: clubs_join_create
       parameters:
@@ -1648,7 +1670,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClubJoin'
           description: ''
-  /api/clubs/{id}/leave/:
+  /api/v1/clubs/{id}/leave/:
     delete:
       operationId: clubs_leave_destroy
       parameters:
@@ -1665,16 +1687,17 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/clubs/{id}/members/:
+  /api/v1/clubs/{id}/members/:
     get:
       operationId: clubs_members_retrieve
       description: |-
-        List all members of a club with filtering options
+        List all members of a club with filtering options.
+
         Query params:
         - role: Filter by role name
-        - search: Search members by username or email
+        - search: Search members by username / email / first / last name
         - sort: joined_at (default), username, role
-        - order: asc, desc (default)
+        - order: asc / desc (default)
       parameters:
       - in: path
         name: id
@@ -1689,7 +1712,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/{id}/members/{user_id}/:
+  /api/v1/clubs/{id}/members/{user_id}/:
     get:
       operationId: clubs_members_retrieve_2
       description: Get detailed information about a specific member
@@ -1713,7 +1736,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/{id}/posts/:
+  /api/v1/clubs/{id}/posts/:
     get:
       operationId: clubs_posts_retrieve
       description: List all posts in a club with interaction counts
@@ -1731,7 +1754,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/{id}/stats/:
+  /api/v1/clubs/{id}/stats/:
     get:
       operationId: clubs_stats_retrieve
       description: |-
@@ -1751,7 +1774,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/{slug}/:
+  /api/v1/clubs/{slug}/:
     get:
       operationId: clubs_retrieve_2
       description: Retrieve, update or delete a club instance.
@@ -1851,7 +1874,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/clubs/department-templates/:
+  /api/v1/clubs/department-templates/:
     get:
       operationId: clubs_department_templates_list
       tags:
@@ -1867,7 +1890,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/DepartmentTemplate'
           description: ''
-  /api/clubs/origin/{origin}/:
+  /api/v1/clubs/origin/{origin}/:
     get:
       operationId: clubs_origin_retrieve
       description: Get all public clubs from a specific origin.
@@ -1885,7 +1908,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/recommended/:
+  /api/v1/clubs/recommended/:
     get:
       operationId: clubs_recommended_retrieve
       description: |-
@@ -1903,7 +1926,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/search/:
+  /api/v1/clubs/search/:
     get:
       operationId: clubs_search_retrieve
       description: Search clubs by name, origin, about, or slug.
@@ -1915,7 +1938,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/test/manager/:
+  /api/v1/clubs/test/manager/:
     get:
       operationId: clubs_test_manager_retrieve
       tags:
@@ -1925,7 +1948,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/clubs/trending/:
+  /api/v1/clubs/trending/:
     get:
       operationId: clubs_trending_retrieve
       description: Get trending clubs (most active/popular in last 7 days).
@@ -1937,7 +1960,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/communications/emails/:
+  /api/v1/communications/emails/:
     get:
       operationId: communications_emails_list
       parameters:
@@ -1989,7 +2012,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SendEmail'
           description: ''
-  /api/connections/{user_id}/block/:
+  /api/v1/connections/{user_id}/block/:
     post:
       operationId: connections_block_create
       description: |-
@@ -2010,7 +2033,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/followers/:
+  /api/v1/connections/{user_id}/followers/:
     get:
       operationId: connections_followers_retrieve
       description: Get list of users following this user
@@ -2028,7 +2051,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/following/:
+  /api/v1/connections/{user_id}/following/:
     get:
       operationId: connections_following_retrieve
       description: Get list of users this user is following
@@ -2046,7 +2069,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/mutual/:
+  /api/v1/connections/{user_id}/mutual/:
     get:
       operationId: connections_mutual_retrieve
       description: Get mutual followers between current user and target user
@@ -2064,7 +2087,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/relationship/:
+  /api/v1/connections/{user_id}/relationship/:
     get:
       operationId: connections_relationship_retrieve
       description: |-
@@ -2088,7 +2111,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/remove/:
+  /api/v1/connections/{user_id}/remove/:
     delete:
       operationId: connections_remove_destroy
       description: Remove a follower (they were following you, you remove them)
@@ -2106,7 +2129,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/connections/{user_id}/status/:
+  /api/v1/connections/{user_id}/status/:
     get:
       operationId: connections_status_retrieve
       description: Get follow status between current user and target user
@@ -2124,7 +2147,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/toggle/:
+  /api/v1/connections/{user_id}/toggle/:
     post:
       operationId: connections_toggle_create
       description: |-
@@ -2146,7 +2169,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/{user_id}/unblock/:
+  /api/v1/connections/{user_id}/unblock/:
     post:
       operationId: connections_unblock_create
       description: Unblock a user
@@ -2164,7 +2187,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/blocked/:
+  /api/v1/connections/blocked/:
     get:
       operationId: connections_blocked_retrieve
       description: Get list of users current user has blocked
@@ -2175,7 +2198,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/relations/:
+  /api/v1/connections/relations/:
     get:
       operationId: connections_relations_retrieve
       description: |-
@@ -2193,7 +2216,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/relations/connected/:
+  /api/v1/connections/relations/connected/:
     get:
       operationId: connections_relations_connected_retrieve
       description: Get only mutual followers (users who follow each other with current
@@ -2205,7 +2228,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/relations/pending/:
+  /api/v1/connections/relations/pending/:
     get:
       operationId: connections_relations_pending_retrieve
       description: |-
@@ -2218,7 +2241,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/relations/sent/:
+  /api/v1/connections/relations/sent/:
     get:
       operationId: connections_relations_sent_retrieve
       description: |-
@@ -2231,7 +2254,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/requests/:
+  /api/v1/connections/requests/:
     get:
       operationId: connections_requests_retrieve
       description: Get all pending follow requests for current user
@@ -2242,7 +2265,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/requests/{user_id}/accept/:
+  /api/v1/connections/requests/{user_id}/accept/:
     post:
       operationId: connections_requests_accept_create
       description: Accept a pending follow request
@@ -2260,7 +2283,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/requests/{user_id}/reject/:
+  /api/v1/connections/requests/{user_id}/reject/:
     post:
       operationId: connections_requests_reject_create
       description: Reject/delete a pending follow request
@@ -2278,7 +2301,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/connections/suggestions/:
+  /api/v1/connections/suggestions/:
     get:
       operationId: connections_suggestions_retrieve
       description: |-
@@ -2294,7 +2317,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/institutes/:
+  /api/v1/institutes/:
     get:
       operationId: institutes_list
       parameters:
@@ -2346,7 +2369,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Institute'
           description: ''
-  /api/institutes/{id}/:
+  /api/v1/institutes/{id}/:
     get:
       operationId: institutes_retrieve
       parameters:
@@ -2446,7 +2469,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/institutes/affiliations/:
+  /api/v1/institutes/affiliations/:
     get:
       operationId: list_affiliations
       description: Returns a list of all institute affiliations.
@@ -2497,7 +2520,7 @@ paths:
           description: Validation failed.
         '401':
           description: Unauthorized.
-  /api/institutes/affiliations/{id}/:
+  /api/v1/institutes/affiliations/{id}/:
     get:
       operationId: institutes_affiliations_retrieve
       parameters:
@@ -2578,7 +2601,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InstituteAffiliate'
           description: ''
-  /api/institutes/affiliations/{id}/verify/:
+  /api/v1/institutes/affiliations/{id}/verify/:
     post:
       operationId: verify_affiliation
       description: Confirm the user's email-based affiliation claim using the token
@@ -2623,7 +2646,7 @@ paths:
           description: Invalid or expired token.
         '401':
           description: Unauthorized.
-  /api/institutes/claim/:
+  /api/v1/institutes/claim/:
     post:
       operationId: claim_affiliation
       description: Initiate an email-based affiliation claim. The user supplies the
@@ -2665,7 +2688,7 @@ paths:
             password, etc.).
         '401':
           description: Unauthorized.
-  /api/media/:
+  /api/v1/media/:
     get:
       operationId: media_list
       tags:
@@ -2706,7 +2729,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaUpload'
           description: ''
-  /api/notifications/:
+  /api/v1/notifications/:
     get:
       operationId: notifications_retrieve
       description: |-
@@ -2724,7 +2747,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/{notification_id}/:
+  /api/v1/notifications/{notification_id}/:
     get:
       operationId: notifications_retrieve_2
       description: |-
@@ -2743,7 +2766,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/{notification_id}/delete/:
+  /api/v1/notifications/{notification_id}/delete/:
     delete:
       operationId: notifications_delete_destroy
       description: Delete a specific notification.
@@ -2760,7 +2783,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/notifications/{notification_id}/deliveries/:
+  /api/v1/notifications/{notification_id}/deliveries/:
     get:
       operationId: notifications_deliveries_retrieve
       description: Get delivery status for a specific notification.
@@ -2777,7 +2800,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/{notification_id}/read/:
+  /api/v1/notifications/{notification_id}/read/:
     post:
       operationId: notifications_read_create
       description: Mark a specific notification as read.
@@ -2794,7 +2817,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/{notification_id}/seen/:
+  /api/v1/notifications/{notification_id}/seen/:
     post:
       operationId: notifications_seen_create
       description: Mark a specific notification as seen.
@@ -2811,7 +2834,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/clear/:
+  /api/v1/notifications/clear/:
     delete:
       operationId: notifications_clear_destroy
       description: Delete all notifications for the current user.
@@ -2822,7 +2845,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/notifications/comments/:
+  /api/v1/notifications/comments/:
     get:
       operationId: notifications_comments_retrieve
       description: Get all comment notifications.
@@ -2833,7 +2856,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/counts/:
+  /api/v1/notifications/counts/:
     get:
       operationId: notifications_counts_retrieve
       description: |-
@@ -2846,7 +2869,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/follow-accepts/:
+  /api/v1/notifications/follow-accepts/:
     get:
       operationId: notifications_follow_accepts_retrieve
       description: Get all follow accept notifications.
@@ -2857,7 +2880,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/follow-requests/:
+  /api/v1/notifications/follow-requests/:
     get:
       operationId: notifications_follow_requests_retrieve
       description: Get all follow request notifications.
@@ -2868,7 +2891,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/likes/:
+  /api/v1/notifications/likes/:
     get:
       operationId: notifications_likes_retrieve
       description: Get all like notifications.
@@ -2879,7 +2902,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/mark-all-read/:
+  /api/v1/notifications/mark-all-read/:
     post:
       operationId: notifications_mark_all_read_create
       description: Mark all notifications as read for the current user.
@@ -2890,7 +2913,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/mark-all-seen/:
+  /api/v1/notifications/mark-all-seen/:
     post:
       operationId: notifications_mark_all_seen_create
       description: Mark all notifications as seen for the current user.
@@ -2901,7 +2924,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/notifications/posts/:
+  /api/v1/notifications/posts/:
     get:
       operationId: notifications_posts_retrieve
       description: Get all post-related notifications (new posts from followed users/clubs).
@@ -2912,7 +2935,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/posts/:
+  /api/v1/posts/:
     get:
       operationId: posts_list
       tags:
@@ -2943,7 +2966,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PostCreateRequest'
-        required: true
       security:
       - cookieAuth: []
       responses:
@@ -2953,7 +2975,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostCreate'
           description: ''
-  /api/posts/{post_id}/:
+  /api/v1/posts/{post_id}/:
     get:
       operationId: posts_retrieve
       parameters:
@@ -3053,7 +3075,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/posts/feed/:
+  /api/v1/posts/feed/:
     get:
       operationId: posts_feed_retrieve
       description: |-
@@ -3075,7 +3097,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/schema/:
+  /api/v1/schema/:
     get:
       operationId: schema_retrieve
       description: |-
@@ -3245,6 +3267,14 @@ components:
       required:
       - token
       - uid
+    ApplicationDecisionEnum:
+      enum:
+      - manual
+      - auto_accept
+      type: string
+      description: |-
+        * `manual` - Manual Review
+        * `auto_accept` - Auto Accept
     BlankEnum:
       enum:
       - ''
@@ -3548,6 +3578,8 @@ components:
         is_owner:
           type: boolean
           readOnly: true
+        preferences:
+          $ref: '#/components/schemas/ClubPreference'
         url:
           type: string
           readOnly: true
@@ -3592,6 +3624,7 @@ components:
       - owner
       - owner_details
       - posts_url
+      - preferences
       - total_members
       - updated_at
       - url
@@ -3640,8 +3673,11 @@ components:
         category:
           type: integer
           nullable: true
+        preferences:
+          $ref: '#/components/schemas/ClubPreferenceRequest'
       required:
       - name
+      - preferences
     ClubDetailStatusEnum:
       enum:
       - active
@@ -3733,6 +3769,60 @@ components:
             type: string
             format: uuid
           description: User's roles in the club
+    ClubPreference:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        application_decision:
+          $ref: '#/components/schemas/ApplicationDecisionEnum'
+        allow_reapplication:
+          type: boolean
+        leave_application:
+          type: boolean
+        notify_on_new_member:
+          type: boolean
+        notify_on_new_application:
+          type: boolean
+        notify_on_event_reminder:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        club:
+          type: string
+          format: uuid
+      required:
+      - club
+      - created_at
+      - id
+      - updated_at
+    ClubPreferenceRequest:
+      type: object
+      properties:
+        application_decision:
+          $ref: '#/components/schemas/ApplicationDecisionEnum'
+        allow_reapplication:
+          type: boolean
+        leave_application:
+          type: boolean
+        notify_on_new_member:
+          type: boolean
+        notify_on_new_application:
+          type: boolean
+        notify_on_event_reminder:
+          type: boolean
+        club:
+          type: string
+          format: uuid
+      required:
+      - club
     CustomTokenObtainPairRequest:
       type: object
       properties:
@@ -4033,6 +4123,8 @@ components:
           $ref: '#/components/schemas/Role988Enum'
         status:
           $ref: '#/components/schemas/Status8efEnum'
+        is_active:
+          type: boolean
       required:
       - id
       - institute
@@ -4044,6 +4136,8 @@ components:
           $ref: '#/components/schemas/Role988Enum'
         status:
           $ref: '#/components/schemas/Status8efEnum'
+        is_active:
+          type: boolean
     InstituteAffiliateRequest:
       type: object
       properties:
@@ -4307,19 +4401,23 @@ components:
           minimum: 0
           format: int64
         role:
-          $ref: '#/components/schemas/Role484Enum'
+          $ref: '#/components/schemas/Role2cdEnum'
       required:
       - file
       - id
       - role
-    MediaTypeEnum:
-      enum:
-      - IMAGE
-      - VIDEO
-      type: string
-      description: |-
-        * `IMAGE` - Image
-        * `VIDEO` - Video
+    MediaListRequest:
+      type: object
+      properties:
+        position:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        role:
+          $ref: '#/components/schemas/Role2cdEnum'
+      required:
+      - role
     MediaUpload:
       type: object
       properties:
@@ -4327,7 +4425,7 @@ components:
           type: integer
           readOnly: true
         role:
-          $ref: '#/components/schemas/Role484Enum'
+          $ref: '#/components/schemas/Role2cdEnum'
         file:
           type: string
           title: Media
@@ -4351,7 +4449,7 @@ components:
           format: uuid
           writeOnly: true
         role:
-          $ref: '#/components/schemas/Role484Enum'
+          $ref: '#/components/schemas/Role2cdEnum'
         file:
           type: string
           minLength: 1
@@ -4641,6 +4739,8 @@ components:
         category:
           type: integer
           nullable: true
+        preferences:
+          $ref: '#/components/schemas/ClubPreferenceRequest'
     PatchedInstituteAffiliateRequest:
       type: object
       properties:
@@ -4748,35 +4848,9 @@ components:
         is_pinned:
           type: boolean
           description: 'For club posts: whether the post is pinned in the club'
-        post_type:
-          $ref: '#/components/schemas/PostTypeEnum'
         content:
           type: string
           nullable: true
-        image_file:
-          type: string
-          format: binary
-          nullable: true
-        video_file:
-          type: string
-          format: binary
-          nullable: true
-        image_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        video_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
         original_post:
           type: string
           format: uuid
@@ -5065,27 +5139,15 @@ components:
         url:
           type: string
           readOnly: true
-        author_id:
-          type: string
-          format: uuid
-          readOnly: true
-        author_username:
-          type: string
-          readOnly: true
-        author_avatar:
+        author:
           type: string
           readOnly: true
         author_url:
           type: string
           readOnly: true
-        club_id:
+        club:
           type: string
           readOnly: true
-          nullable: true
-        club_name:
-          type: string
-          readOnly: true
-          nullable: true
         club_url:
           type: string
           readOnly: true
@@ -5097,51 +5159,13 @@ components:
         is_pinned:
           type: boolean
           description: 'For club posts: whether the post is pinned in the club'
-        post_type:
-          $ref: '#/components/schemas/PostTypeEnum'
         content:
           type: string
           nullable: true
-        image:
-          type: string
-          readOnly: true
-        video:
-          type: string
-          readOnly: true
-        image_file:
-          type: string
-          format: uri
-          nullable: true
-        video_file:
-          type: string
-          format: uri
-          nullable: true
-        image_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        video_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        images:
-          type: string
-          readOnly: true
-        videos:
-          type: string
-          readOnly: true
-        media_files:
+        media:
           type: array
           items:
-            $ref: '#/components/schemas/PostMedia'
+            $ref: '#/components/schemas/MediaList'
           readOnly: true
         original_post:
           type: string
@@ -5200,26 +5224,21 @@ components:
           format: date-time
           readOnly: true
       required:
-      - author_avatar
-      - author_id
+      - author
       - author_url
-      - author_username
       - can_edit
-      - club_id
-      - club_name
+      - club
       - club_url
       - comment_count
       - comments_url
       - created_at
       - id
-      - image
-      - images
       - is_liked
       - is_shared
       - like_count
       - like_toggle_url
       - likes_url
-      - media_files
+      - media
       - original_post_data
       - repost_count
       - repost_url
@@ -5228,121 +5247,39 @@ components:
       - shares_url
       - updated_at
       - url
-      - video
-      - videos
     PostCreate:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
         content:
           type: string
+          nullable: true
         media:
+          type: string
+          format: uri
+          nullable: true
+        clubs:
           type: array
           items:
-            $ref: '#/components/schemas/PostMedia'
-      required:
-      - content
-      - id
+            type: string
+            format: uuid
+            nullable: true
     PostCreateRequest:
       type: object
       properties:
         content:
           type: string
+          nullable: true
           minLength: 1
         media:
+          type: string
+          format: binary
+          nullable: true
+        clubs:
           type: array
           items:
-            $ref: '#/components/schemas/PostMediaRequest'
-      required:
-      - content
-    PostMedia:
-      type: object
-      description: Serializer for PostMedia model
-      properties:
-        id:
-          type: string
-        media_type:
-          $ref: '#/components/schemas/MediaTypeEnum'
-        image_file:
-          type: string
-          format: uri
-          nullable: true
-        video_file:
-          type: string
-          format: uri
-          nullable: true
-        image_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        video_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        media_url:
-          type: string
-          readOnly: true
-        order:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-      required:
-      - id
-      - media_type
-      - media_url
-    PostMediaRequest:
-      type: object
-      description: Serializer for PostMedia model
-      properties:
-        id:
-          type: string
-          minLength: 1
-        media_type:
-          $ref: '#/components/schemas/MediaTypeEnum'
-        image_file:
-          type: string
-          format: binary
-          nullable: true
-        video_file:
-          type: string
-          format: binary
-          nullable: true
-        image_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        video_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        order:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-      required:
-      - id
-      - media_type
+            type: string
+            format: uuid
+            nullable: true
     PostRequest:
       type: object
       description: Detailed serializer for user posts with interaction data
@@ -5358,35 +5295,9 @@ components:
         is_pinned:
           type: boolean
           description: 'For club posts: whether the post is pinned in the club'
-        post_type:
-          $ref: '#/components/schemas/PostTypeEnum'
         content:
           type: string
           nullable: true
-        image_file:
-          type: string
-          format: binary
-          nullable: true
-        video_file:
-          type: string
-          format: binary
-          nullable: true
-        image_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
-        video_url:
-          nullable: true
-          oneOf:
-          - type: string
-            format: uri
-            maxLength: 200
-          - type: string
-            maxLength: 0
         original_post:
           type: string
           format: uuid
@@ -5395,18 +5306,6 @@ components:
           type: boolean
       required:
       - id
-    PostTypeEnum:
-      enum:
-      - TEXT
-      - IMAGE
-      - VIDEO
-      - MIXED
-      type: string
-      description: |-
-        * `TEXT` - Text/Status
-        * `IMAGE` - Image
-        * `VIDEO` - Video/Reel
-        * `MIXED` - Mixed Media
     PreferredEmailEnum:
       enum:
       - email
@@ -5534,22 +5433,26 @@ components:
       - password
       - re_password
       - username
-    Role484Enum:
+    Role2cdEnum:
       enum:
+      - post
       - avatar
       - cover
       - banner
       - logo
       - gallery
       - attachment
+      - other
       type: string
       description: |-
+        * `post` - Post
         * `avatar` - Avatar
         * `cover` - Cover
         * `banner` - Banner
         * `logo` - Logo
         * `gallery` - Gallery
         * `attachment` - Attachment
+        * `other` - Other
     Role63cEnum:
       enum:
       - student

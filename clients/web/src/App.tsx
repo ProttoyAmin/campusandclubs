@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { paths } from "./settings/routes";
 import { useGetClubs } from "./features/club/hooks/club.hooks";
 import type { Club } from "@campus/api";
+import Header from "./components/header";
 import "./App.css"
 
 function App() {
@@ -12,7 +13,10 @@ function App() {
   const { data } = useSession();
 
   return (
-    <div>
+    <div className="">
+      <div className="md:hidden">
+        <Header />
+      </div>
       <p>{data?.meta?.is_authenticated ? "true" : "false"}</p>
       <div className="flex gap-4 w-full flex-wrap">
         {users?.data?.results.map((user) => (

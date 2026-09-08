@@ -14,6 +14,12 @@ export type ActivationRequest = {
   token: string;
 };
 
+/**
+ * * `manual` - Manual Review
+ * * `auto_accept` - Auto Accept
+ */
+export type ApplicationDecisionEnum = "manual" | "auto_accept";
+
 export type BlankEnum = "";
 
 /**
@@ -125,6 +131,7 @@ export type ClubDetail = {
   } | null;
   readonly is_member: boolean;
   readonly is_owner: boolean;
+  preferences: ClubPreference;
   readonly url: string;
   readonly members_url: string;
   readonly posts_url: string;
@@ -157,6 +164,7 @@ export type ClubDetailRequest = {
   status?: ClubDetailStatusEnum;
   scope?: ScopeEnum;
   category?: number | null;
+  preferences: ClubPreferenceRequest;
 };
 
 /**
@@ -207,6 +215,29 @@ export type ClubJoinRequest = {
    * User's roles in the club
    */
   roles?: Array<string>;
+};
+
+export type ClubPreference = {
+  readonly id: number;
+  application_decision?: ApplicationDecisionEnum;
+  allow_reapplication?: boolean;
+  leave_application?: boolean;
+  notify_on_new_member?: boolean;
+  notify_on_new_application?: boolean;
+  notify_on_event_reminder?: boolean;
+  readonly created_at: string;
+  readonly updated_at: string;
+  club: string;
+};
+
+export type ClubPreferenceRequest = {
+  application_decision?: ApplicationDecisionEnum;
+  allow_reapplication?: boolean;
+  leave_application?: boolean;
+  notify_on_new_member?: boolean;
+  notify_on_new_application?: boolean;
+  notify_on_event_reminder?: boolean;
+  club: string;
 };
 
 export type CustomTokenObtainPairRequest = {
@@ -327,6 +358,7 @@ export type InstituteAffiliateForUser = {
   institute: Institute;
   role?: Role988Enum;
   status?: Status8EfEnum;
+  is_active?: boolean;
 };
 
 /**
@@ -335,6 +367,7 @@ export type InstituteAffiliateForUser = {
 export type InstituteAffiliateForUserRequest = {
   role?: Role988Enum;
   status?: Status8EfEnum;
+  is_active?: boolean;
 };
 
 export type InstituteAffiliateRequest = {
@@ -426,18 +459,17 @@ export type MediaList = {
   readonly id: number;
   readonly file: string;
   position?: number;
-  role: Role484Enum;
+  role: Role2CdEnum;
 };
 
-/**
- * * `IMAGE` - Image
- * * `VIDEO` - Video
- */
-export type MediaTypeEnum = "IMAGE" | "VIDEO";
+export type MediaListRequest = {
+  position?: number;
+  role: Role2CdEnum;
+};
 
 export type MediaUpload = {
   readonly id: number;
-  role: Role484Enum;
+  role: Role2CdEnum;
   /**
    * Media
    */
@@ -446,7 +478,7 @@ export type MediaUpload = {
 };
 
 export type MediaUploadRequest = {
-  role: Role484Enum;
+  role: Role2CdEnum;
   /**
    * Media
    */
@@ -561,6 +593,7 @@ export type PatchedClubDetailRequest = {
   status?: ClubDetailStatusEnum;
   scope?: ScopeEnum;
   category?: number | null;
+  preferences?: ClubPreferenceRequest;
 };
 
 export type PatchedInstituteAffiliateRequest = {
@@ -610,12 +643,7 @@ export type PatchedPostRequest = {
    * For club posts: whether the post is pinned in the club
    */
   is_pinned?: boolean;
-  post_type?: PostTypeEnum;
   content?: string | null;
-  image_file?: Blob | File | null;
-  video_file?: Blob | File | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
   original_post?: string | null;
   is_public?: boolean;
 };
@@ -757,12 +785,9 @@ export type PatchedUserRequest = {
 export type Post = {
   id: string;
   readonly url: string;
-  readonly author_id: string;
-  readonly author_username: string;
-  readonly author_avatar: string;
+  readonly author: string;
   readonly author_url: string;
-  readonly club_id: string | null;
-  readonly club_name: string | null;
+  readonly club: string;
   readonly club_url: string;
   /**
    * Optional title (commonly used for club posts)
@@ -772,17 +797,8 @@ export type Post = {
    * For club posts: whether the post is pinned in the club
    */
   is_pinned?: boolean;
-  post_type?: PostTypeEnum;
   content?: string | null;
-  readonly image: string;
-  readonly video: string;
-  image_file?: string | null;
-  video_file?: string | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
-  readonly images: string;
-  readonly videos: string;
-  readonly media_files: Array<PostMedia>;
+  readonly media: Array<MediaList>;
   original_post?: string | null;
   readonly original_post_data: string;
   readonly like_count: string;
@@ -804,41 +820,15 @@ export type Post = {
 };
 
 export type PostCreate = {
-  readonly id: string;
-  content: string;
-  media?: Array<PostMedia>;
+  content?: string | null;
+  media?: string | null;
+  clubs?: Array<string | null>;
 };
 
 export type PostCreateRequest = {
-  content: string;
-  media?: Array<PostMediaRequest>;
-};
-
-/**
- * Serializer for PostMedia model
- */
-export type PostMedia = {
-  id: string;
-  media_type: MediaTypeEnum;
-  image_file?: string | null;
-  video_file?: string | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
-  readonly media_url: string;
-  order?: number;
-};
-
-/**
- * Serializer for PostMedia model
- */
-export type PostMediaRequest = {
-  id: string;
-  media_type: MediaTypeEnum;
-  image_file?: Blob | File | null;
-  video_file?: Blob | File | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
-  order?: number;
+  content?: string | null;
+  media?: Blob | File | null;
+  clubs?: Array<string | null>;
 };
 
 /**
@@ -854,23 +844,10 @@ export type PostRequest = {
    * For club posts: whether the post is pinned in the club
    */
   is_pinned?: boolean;
-  post_type?: PostTypeEnum;
   content?: string | null;
-  image_file?: Blob | File | null;
-  video_file?: Blob | File | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
   original_post?: string | null;
   is_public?: boolean;
 };
-
-/**
- * * `TEXT` - Text/Status
- * * `IMAGE` - Image
- * * `VIDEO` - Video/Reel
- * * `MIXED` - Mixed Media
- */
-export type PostTypeEnum = "TEXT" | "IMAGE" | "VIDEO" | "MIXED";
 
 /**
  * * `email` - Personal Email
@@ -940,15 +917,24 @@ export type RegisterRequest = {
 };
 
 /**
+ * * `post` - Post
  * * `avatar` - Avatar
  * * `cover` - Cover
  * * `banner` - Banner
  * * `logo` - Logo
  * * `gallery` - Gallery
  * * `attachment` - Attachment
+ * * `other` - Other
  */
-export type Role484Enum =
-  "avatar" | "cover" | "banner" | "logo" | "gallery" | "attachment";
+export type Role2CdEnum =
+  | "post"
+  | "avatar"
+  | "cover"
+  | "banner"
+  | "logo"
+  | "gallery"
+  | "attachment"
+  | "other";
 
 /**
  * * `student` - Student
@@ -1517,6 +1503,7 @@ export type ClubDetailWritable = {
   status?: ClubDetailStatusEnum;
   scope?: ScopeEnum;
   category?: number | null;
+  preferences: ClubPreferenceWritable;
 };
 
 /**
@@ -1535,6 +1522,16 @@ export type ClubJoinWritable = {
    * User's roles in the club
    */
   roles?: Array<string>;
+};
+
+export type ClubPreferenceWritable = {
+  application_decision?: ApplicationDecisionEnum;
+  allow_reapplication?: boolean;
+  leave_application?: boolean;
+  notify_on_new_member?: boolean;
+  notify_on_new_application?: boolean;
+  notify_on_event_reminder?: boolean;
+  club: string;
 };
 
 export type CustomTokenObtainPairRequestWritable = {
@@ -1605,6 +1602,7 @@ export type InstituteAffiliateForInstituteWritable = {
 export type InstituteAffiliateForUserWritable = {
   role?: Role988Enum;
   status?: Status8EfEnum;
+  is_active?: boolean;
 };
 
 export type InstituteDetailWritable = {
@@ -1634,11 +1632,11 @@ export type InstituteDetailWritable = {
 
 export type MediaListWritable = {
   position?: number;
-  role: Role484Enum;
+  role: Role2CdEnum;
 };
 
 export type MediaUploadWritable = {
-  role: Role484Enum;
+  role: Role2CdEnum;
   /**
    * Media
    */
@@ -1648,7 +1646,7 @@ export type MediaUploadWritable = {
 export type MediaUploadRequestWritable = {
   target_type: TargetTypeEnum;
   object_id: string;
-  role: Role484Enum;
+  role: Role2CdEnum;
   /**
    * Media
    */
@@ -1713,32 +1711,9 @@ export type PostWritable = {
    * For club posts: whether the post is pinned in the club
    */
   is_pinned?: boolean;
-  post_type?: PostTypeEnum;
   content?: string | null;
-  image_file?: string | null;
-  video_file?: string | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
   original_post?: string | null;
   is_public?: boolean;
-};
-
-export type PostCreateWritable = {
-  content: string;
-  media?: Array<PostMediaWritable>;
-};
-
-/**
- * Serializer for PostMedia model
- */
-export type PostMediaWritable = {
-  id: string;
-  media_type: MediaTypeEnum;
-  image_file?: string | null;
-  video_file?: string | null;
-  image_url?: string | string | null;
-  video_url?: string | string | null;
-  order?: number;
 };
 
 /**
@@ -1908,7 +1883,7 @@ export type AccountsAuthAllRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/{user_id}/all/";
+  url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
 export type AccountsAuthAllRetrieveResponses = {
@@ -1924,7 +1899,7 @@ export type AccountsAuthAllPartialUpdateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/{user_id}/all/";
+  url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
 export type AccountsAuthAllPartialUpdateResponses = {
@@ -1940,7 +1915,7 @@ export type AccountsAuthAllUpdateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/{user_id}/all/";
+  url: "/api/v1/accounts/auth/{user_id}/all/";
 };
 
 export type AccountsAuthAllUpdateResponses = {
@@ -1949,22 +1924,6 @@ export type AccountsAuthAllUpdateResponses = {
 
 export type AccountsAuthAllUpdateResponse =
   AccountsAuthAllUpdateResponses[keyof AccountsAuthAllUpdateResponses];
-
-export type AccountsAuthPostsRetrieveData = {
-  body?: never;
-  path: {
-    user_id: string;
-  };
-  query?: never;
-  url: "/api/accounts/auth/{user_id}/posts/";
-};
-
-export type AccountsAuthPostsRetrieveResponses = {
-  /**
-   * No response body
-   */
-  200: unknown;
-};
 
 export type ListUsersData = {
   body?: never;
@@ -1987,7 +1946,7 @@ export type ListUsersData = {
      */
     search?: string;
   };
-  url: "/api/accounts/auth/all/";
+  url: "/api/v1/accounts/auth/all/";
 };
 
 export type ListUsersErrors = {
@@ -2023,7 +1982,7 @@ export type ListUsers2Data = {
      */
     search?: string;
   };
-  url: "/api/accounts/auth/all/";
+  url: "/api/v1/accounts/auth/all/";
 };
 
 export type ListUsers2Errors = {
@@ -2046,7 +2005,7 @@ export type AccountsAuthJwtCreateCreateData = {
   body: TokenObtainPairRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/jwt/create/";
+  url: "/api/v1/accounts/auth/jwt/create/";
 };
 
 export type AccountsAuthJwtCreateCreateResponses = {
@@ -2060,7 +2019,7 @@ export type AccountsAuthJwtRefreshCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/jwt/refresh/";
+  url: "/api/v1/accounts/auth/jwt/refresh/";
 };
 
 export type AccountsAuthJwtRefreshCreateResponses = {
@@ -2074,7 +2033,7 @@ export type AccountsAuthJwtVerifyCreateData = {
   body: TokenVerifyRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/jwt/verify/";
+  url: "/api/v1/accounts/auth/jwt/verify/";
 };
 
 export type AccountsAuthJwtVerifyCreateResponses = {
@@ -2088,7 +2047,7 @@ export type LoginData = {
   body: CustomTokenObtainPairRequestWritable;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/login/";
+  url: "/api/v1/accounts/auth/login/";
 };
 
 export type LoginErrors = {
@@ -2111,7 +2070,7 @@ export type AccountsAuthLogoutCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/logout/";
+  url: "/api/v1/accounts/auth/logout/";
 };
 
 export type AccountsAuthLogoutCreateResponses = {
@@ -2125,7 +2084,7 @@ export type AccountsAuthMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/me/";
+  url: "/api/v1/accounts/auth/me/";
 };
 
 export type AccountsAuthMeRetrieveResponses = {
@@ -2139,7 +2098,7 @@ export type GetMyAffiliationsData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/me/affiliations/";
+  url: "/api/v1/accounts/auth/me/affiliations/";
 };
 
 export type GetMyAffiliationsErrors = {
@@ -2163,7 +2122,7 @@ export type GetMyEmailsData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/me/emails/";
+  url: "/api/v1/accounts/auth/me/emails/";
 };
 
 export type GetMyEmailsErrors = {
@@ -2183,11 +2142,25 @@ export type GetMyEmailsResponses = {
 export type GetMyEmailsResponse =
   GetMyEmailsResponses[keyof GetMyEmailsResponses];
 
+export type AccountsAuthMeUploadProfilePictureCreateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/accounts/auth/me/upload-profile-picture/";
+};
+
+export type AccountsAuthMeUploadProfilePictureCreateResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
 export type AccountsAuthRefreshCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/refresh/";
+  url: "/api/v1/accounts/auth/refresh/";
 };
 
 export type AccountsAuthRefreshCreateResponses = {
@@ -2201,7 +2174,7 @@ export type AccountsAuthRequestInfoRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/request-info/";
+  url: "/api/v1/accounts/auth/request-info/";
 };
 
 export type AccountsAuthRequestInfoRetrieveResponses = {
@@ -2215,7 +2188,7 @@ export type AccountsAuthUsersListData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/";
+  url: "/api/v1/accounts/auth/users/";
 };
 
 export type AccountsAuthUsersListResponses = {
@@ -2229,7 +2202,7 @@ export type AccountsAuthUsersCreateData = {
   body: RegisterRequestWritable;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/";
+  url: "/api/v1/accounts/auth/users/";
 };
 
 export type AccountsAuthUsersCreateResponses = {
@@ -2248,7 +2221,7 @@ export type AccountsAuthUsersDestroyData = {
     id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/{id}/";
+  url: "/api/v1/accounts/auth/users/{id}/";
 };
 
 export type AccountsAuthUsersDestroyResponses = {
@@ -2270,7 +2243,7 @@ export type AccountsAuthUsersRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/{id}/";
+  url: "/api/v1/accounts/auth/users/{id}/";
 };
 
 export type AccountsAuthUsersRetrieveResponses = {
@@ -2289,7 +2262,7 @@ export type AccountsAuthUsersPartialUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/{id}/";
+  url: "/api/v1/accounts/auth/users/{id}/";
 };
 
 export type AccountsAuthUsersPartialUpdateResponses = {
@@ -2308,7 +2281,7 @@ export type AccountsAuthUsersUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/{id}/";
+  url: "/api/v1/accounts/auth/users/{id}/";
 };
 
 export type AccountsAuthUsersUpdateResponses = {
@@ -2318,11 +2291,27 @@ export type AccountsAuthUsersUpdateResponses = {
 export type AccountsAuthUsersUpdateResponse =
   AccountsAuthUsersUpdateResponses[keyof AccountsAuthUsersUpdateResponses];
 
+export type AccountsAuthUsersPostsRetrieveData = {
+  body?: never;
+  path: {
+    user_id: string;
+  };
+  query?: never;
+  url: "/api/v1/accounts/auth/users/{user_id}/posts/";
+};
+
+export type AccountsAuthUsersPostsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
 export type AccountsAuthUsersActivationCreateData = {
   body: ActivationRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/activation/";
+  url: "/api/v1/accounts/auth/users/activation/";
 };
 
 export type AccountsAuthUsersActivationCreateResponses = {
@@ -2336,7 +2325,7 @@ export type AccountsAuthUsersMeDestroyData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/me/";
+  url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMeDestroyResponses = {
@@ -2353,7 +2342,7 @@ export type AccountsAuthUsersMeRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/me/";
+  url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMeRetrieveResponses = {
@@ -2367,7 +2356,7 @@ export type AccountsAuthUsersMePartialUpdateData = {
   body?: PatchedUserProfileRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/me/";
+  url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMePartialUpdateResponses = {
@@ -2381,7 +2370,7 @@ export type AccountsAuthUsersMeUpdateData = {
   body: UserProfileRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/me/";
+  url: "/api/v1/accounts/auth/users/me/";
 };
 
 export type AccountsAuthUsersMeUpdateResponses = {
@@ -2395,7 +2384,7 @@ export type AccountsAuthUsersResendActivationCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/resend_activation/";
+  url: "/api/v1/accounts/auth/users/resend_activation/";
 };
 
 export type AccountsAuthUsersResendActivationCreateResponses = {
@@ -2409,7 +2398,7 @@ export type AccountsAuthUsersResetPasswordCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/reset_password/";
+  url: "/api/v1/accounts/auth/users/reset_password/";
 };
 
 export type AccountsAuthUsersResetPasswordCreateResponses = {
@@ -2423,7 +2412,7 @@ export type AccountsAuthUsersResetPasswordConfirmCreateData = {
   body: PasswordResetConfirmRetypeRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/reset_password_confirm/";
+  url: "/api/v1/accounts/auth/users/reset_password_confirm/";
 };
 
 export type AccountsAuthUsersResetPasswordConfirmCreateResponses = {
@@ -2437,7 +2426,7 @@ export type AccountsAuthUsersResetUsernameCreateData = {
   body: SendEmailResetRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/reset_username/";
+  url: "/api/v1/accounts/auth/users/reset_username/";
 };
 
 export type AccountsAuthUsersResetUsernameCreateResponses = {
@@ -2451,7 +2440,7 @@ export type AccountsAuthUsersResetUsernameConfirmCreateData = {
   body: UsernameResetConfirmRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/reset_username_confirm/";
+  url: "/api/v1/accounts/auth/users/reset_username_confirm/";
 };
 
 export type AccountsAuthUsersResetUsernameConfirmCreateResponses = {
@@ -2465,7 +2454,7 @@ export type AccountsAuthUsersSetPasswordCreateData = {
   body: SetPasswordRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/set_password/";
+  url: "/api/v1/accounts/auth/users/set_password/";
 };
 
 export type AccountsAuthUsersSetPasswordCreateResponses = {
@@ -2479,7 +2468,7 @@ export type AccountsAuthUsersSetUsernameCreateData = {
   body: SetUsernameRequest;
   path?: never;
   query?: never;
-  url: "/api/accounts/auth/users/set_username/";
+  url: "/api/v1/accounts/auth/users/set_username/";
 };
 
 export type AccountsAuthUsersSetUsernameCreateResponses = {
@@ -2495,7 +2484,7 @@ export type AccountsAuthUsersUserDestroyData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/";
+  url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
 export type AccountsAuthUsersUserDestroyResponses = {
@@ -2514,7 +2503,7 @@ export type AccountsAuthUsersUserRetrieveData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/";
+  url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
 export type AccountsAuthUsersUserRetrieveResponses = {
@@ -2530,7 +2519,7 @@ export type AccountsAuthUsersUserPartialUpdateData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/";
+  url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
 export type AccountsAuthUsersUserPartialUpdateResponses = {
@@ -2546,7 +2535,7 @@ export type AccountsAuthUsersUserUpdateData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/";
+  url: "/api/v1/accounts/auth/users/user/{username}/";
 };
 
 export type AccountsAuthUsersUserUpdateResponses = {
@@ -2562,7 +2551,7 @@ export type AccountsAuthUsersUserActivityRetrieveData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/activity/";
+  url: "/api/v1/accounts/auth/users/user/{username}/activity/";
 };
 
 export type AccountsAuthUsersUserActivityRetrieveResponses = {
@@ -2578,10 +2567,24 @@ export type AccountsAuthUsersUserClubsRetrieveData = {
     username: string;
   };
   query?: never;
-  url: "/api/accounts/auth/users/user/{username}/clubs/";
+  url: "/api/v1/accounts/auth/users/user/{username}/clubs/";
 };
 
 export type AccountsAuthUsersUserClubsRetrieveResponses = {
+  /**
+   * No response body
+   */
+  200: unknown;
+};
+
+export type AccountsSearchRetrieveData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/accounts/search/";
+};
+
+export type AccountsSearchRetrieveResponses = {
   /**
    * No response body
    */
@@ -2592,7 +2595,7 @@ export type ActivitiesCommentsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/activities/comments/";
+  url: "/api/v1/activities/comments/";
 };
 
 export type ActivitiesCommentsRetrieveResponses = {
@@ -2608,7 +2611,7 @@ export type ActivitiesCommentsDestroyData = {
     comment_id: number;
   };
   query?: never;
-  url: "/api/activities/comments/{comment_id}/";
+  url: "/api/v1/activities/comments/{comment_id}/";
 };
 
 export type ActivitiesCommentsDestroyResponses = {
@@ -2627,7 +2630,7 @@ export type ActivitiesCommentsRetrieve2Data = {
     comment_id: number;
   };
   query?: never;
-  url: "/api/activities/comments/{comment_id}/";
+  url: "/api/v1/activities/comments/{comment_id}/";
 };
 
 export type ActivitiesCommentsRetrieve2Responses = {
@@ -2643,7 +2646,7 @@ export type ActivitiesCommentsPartialUpdateData = {
     comment_id: number;
   };
   query?: never;
-  url: "/api/activities/comments/{comment_id}/";
+  url: "/api/v1/activities/comments/{comment_id}/";
 };
 
 export type ActivitiesCommentsPartialUpdateResponses = {
@@ -2659,7 +2662,7 @@ export type ActivitiesCommentsRepliesRetrieveData = {
     comment_id: number;
   };
   query?: never;
-  url: "/api/activities/comments/{comment_id}/replies/";
+  url: "/api/v1/activities/comments/{comment_id}/replies/";
 };
 
 export type ActivitiesCommentsRepliesRetrieveResponses = {
@@ -2673,7 +2676,7 @@ export type ActivitiesCommentsCreateCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/activities/comments/create/";
+  url: "/api/v1/activities/comments/create/";
 };
 
 export type ActivitiesCommentsCreateCreateResponses = {
@@ -2687,7 +2690,7 @@ export type ActivitiesLikesRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/activities/likes/";
+  url: "/api/v1/activities/likes/";
 };
 
 export type ActivitiesLikesRetrieveResponses = {
@@ -2701,7 +2704,7 @@ export type ActivitiesLikesCheckRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/activities/likes/check/";
+  url: "/api/v1/activities/likes/check/";
 };
 
 export type ActivitiesLikesCheckRetrieveResponses = {
@@ -2715,7 +2718,7 @@ export type ActivitiesLikesToggleCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/activities/likes/toggle/";
+  url: "/api/v1/activities/likes/toggle/";
 };
 
 export type ActivitiesLikesToggleCreateResponses = {
@@ -2738,7 +2741,7 @@ export type ClubsListData = {
      */
     page_size?: number;
   };
-  url: "/api/clubs/";
+  url: "/api/v1/clubs/";
 };
 
 export type ClubsListResponses = {
@@ -2751,7 +2754,7 @@ export type ClubsCreateData = {
   body: ClubCreateRequestWritable;
   path?: never;
   query?: never;
-  url: "/api/clubs/";
+  url: "/api/v1/clubs/";
 };
 
 export type ClubsCreateResponses = {
@@ -2767,7 +2770,7 @@ export type ClubsDestroyData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/";
+  url: "/api/v1/clubs/{id}/";
 };
 
 export type ClubsDestroyResponses = {
@@ -2786,7 +2789,7 @@ export type ClubsRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/";
+  url: "/api/v1/clubs/{id}/";
 };
 
 export type ClubsRetrieveResponses = {
@@ -2802,7 +2805,7 @@ export type ClubsPartialUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/";
+  url: "/api/v1/clubs/{id}/";
 };
 
 export type ClubsPartialUpdateResponses = {
@@ -2818,7 +2821,7 @@ export type ClubsUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/";
+  url: "/api/v1/clubs/{id}/";
 };
 
 export type ClubsUpdateResponses = {
@@ -2834,7 +2837,7 @@ export type ClubsApplicationFormsListData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/application-forms/";
+  url: "/api/v1/clubs/{id}/application-forms/";
 };
 
 export type ClubsApplicationFormsListResponses = {
@@ -2850,7 +2853,7 @@ export type ClubsApplicationFormsCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/application-forms/";
+  url: "/api/v1/clubs/{id}/application-forms/";
 };
 
 export type ClubsApplicationFormsCreateResponses = {
@@ -2866,7 +2869,7 @@ export type ClubsApplicationsListData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/";
+  url: "/api/v1/clubs/{id}/applications/";
 };
 
 export type ClubsApplicationsListResponses = {
@@ -2882,7 +2885,7 @@ export type ClubsApplicationsCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/";
+  url: "/api/v1/clubs/{id}/applications/";
 };
 
 export type ClubsApplicationsCreateResponses = {
@@ -2899,7 +2902,7 @@ export type ClubsApplicationsList2Data = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/{application_pk}/";
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/";
 };
 
 export type ClubsApplicationsList2Responses = {
@@ -2916,7 +2919,7 @@ export type ClubsApplicationsCreate2Data = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/{application_pk}/";
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/";
 };
 
 export type ClubsApplicationsCreate2Responses = {
@@ -2933,7 +2936,7 @@ export type ClubsApplicationsApproveCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/{application_pk}/approve/";
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/approve/";
 };
 
 export type ClubsApplicationsApproveCreateResponses = {
@@ -2950,7 +2953,7 @@ export type ClubsApplicationsRejectCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/{application_pk}/reject/";
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/reject/";
 };
 
 export type ClubsApplicationsRejectCreateResponses = {
@@ -2967,7 +2970,7 @@ export type ClubsApplicationsWithdrawCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/applications/{application_pk}/withdraw/";
+  url: "/api/v1/clubs/{id}/applications/{application_pk}/withdraw/";
 };
 
 export type ClubsApplicationsWithdrawCreateResponses = {
@@ -2983,7 +2986,7 @@ export type ClubsEventsRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/events/";
+  url: "/api/v1/clubs/{id}/events/";
 };
 
 export type ClubsEventsRetrieveResponses = {
@@ -2999,7 +3002,7 @@ export type ClubsJoinCreateData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/join/";
+  url: "/api/v1/clubs/{id}/join/";
 };
 
 export type ClubsJoinCreateResponses = {
@@ -3015,7 +3018,7 @@ export type ClubsLeaveDestroyData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/leave/";
+  url: "/api/v1/clubs/{id}/leave/";
 };
 
 export type ClubsLeaveDestroyResponses = {
@@ -3034,7 +3037,7 @@ export type ClubsMembersRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/members/";
+  url: "/api/v1/clubs/{id}/members/";
 };
 
 export type ClubsMembersRetrieveResponses = {
@@ -3051,7 +3054,7 @@ export type ClubsMembersRetrieve2Data = {
     user_id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/members/{user_id}/";
+  url: "/api/v1/clubs/{id}/members/{user_id}/";
 };
 
 export type ClubsMembersRetrieve2Responses = {
@@ -3067,7 +3070,7 @@ export type ClubsPostsRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/clubs/{id}/posts/";
+  url: "/api/v1/clubs/{id}/posts/";
 };
 
 export type ClubsPostsRetrieveResponses = {
@@ -3083,7 +3086,7 @@ export type ClubsStatsRetrieveData = {
     id: number;
   };
   query?: never;
-  url: "/api/clubs/{id}/stats/";
+  url: "/api/v1/clubs/{id}/stats/";
 };
 
 export type ClubsStatsRetrieveResponses = {
@@ -3099,7 +3102,7 @@ export type ClubsDestroy2Data = {
     slug: string;
   };
   query?: never;
-  url: "/api/clubs/{slug}/";
+  url: "/api/v1/clubs/{slug}/";
 };
 
 export type ClubsDestroy2Responses = {
@@ -3118,7 +3121,7 @@ export type ClubsRetrieve2Data = {
     slug: string;
   };
   query?: never;
-  url: "/api/clubs/{slug}/";
+  url: "/api/v1/clubs/{slug}/";
 };
 
 export type ClubsRetrieve2Responses = {
@@ -3134,7 +3137,7 @@ export type ClubsPartialUpdate2Data = {
     slug: string;
   };
   query?: never;
-  url: "/api/clubs/{slug}/";
+  url: "/api/v1/clubs/{slug}/";
 };
 
 export type ClubsPartialUpdate2Responses = {
@@ -3150,7 +3153,7 @@ export type ClubsUpdate2Data = {
     slug: string;
   };
   query?: never;
-  url: "/api/clubs/{slug}/";
+  url: "/api/v1/clubs/{slug}/";
 };
 
 export type ClubsUpdate2Responses = {
@@ -3164,7 +3167,7 @@ export type ClubsDepartmentTemplatesListData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/clubs/department-templates/";
+  url: "/api/v1/clubs/department-templates/";
 };
 
 export type ClubsDepartmentTemplatesListResponses = {
@@ -3180,7 +3183,7 @@ export type ClubsOriginRetrieveData = {
     origin: string;
   };
   query?: never;
-  url: "/api/clubs/origin/{origin}/";
+  url: "/api/v1/clubs/origin/{origin}/";
 };
 
 export type ClubsOriginRetrieveResponses = {
@@ -3194,7 +3197,7 @@ export type ClubsRecommendedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/clubs/recommended/";
+  url: "/api/v1/clubs/recommended/";
 };
 
 export type ClubsRecommendedRetrieveResponses = {
@@ -3208,7 +3211,7 @@ export type ClubsSearchRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/clubs/search/";
+  url: "/api/v1/clubs/search/";
 };
 
 export type ClubsSearchRetrieveResponses = {
@@ -3222,7 +3225,7 @@ export type ClubsTestManagerRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/clubs/test/manager/";
+  url: "/api/v1/clubs/test/manager/";
 };
 
 export type ClubsTestManagerRetrieveResponses = {
@@ -3236,7 +3239,7 @@ export type ClubsTrendingRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/clubs/trending/";
+  url: "/api/v1/clubs/trending/";
 };
 
 export type ClubsTrendingRetrieveResponses = {
@@ -3259,7 +3262,7 @@ export type CommunicationsEmailsListData = {
      */
     page_size?: number;
   };
-  url: "/api/communications/emails/";
+  url: "/api/v1/communications/emails/";
 };
 
 export type CommunicationsEmailsListResponses = {
@@ -3273,7 +3276,7 @@ export type CommunicationsEmailsCreateData = {
   body: SendEmailRequest;
   path?: never;
   query?: never;
-  url: "/api/communications/emails/";
+  url: "/api/v1/communications/emails/";
 };
 
 export type CommunicationsEmailsCreateResponses = {
@@ -3289,7 +3292,7 @@ export type ConnectionsBlockCreateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/block/";
+  url: "/api/v1/connections/{user_id}/block/";
 };
 
 export type ConnectionsBlockCreateResponses = {
@@ -3305,7 +3308,7 @@ export type ConnectionsFollowersRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/followers/";
+  url: "/api/v1/connections/{user_id}/followers/";
 };
 
 export type ConnectionsFollowersRetrieveResponses = {
@@ -3321,7 +3324,7 @@ export type ConnectionsFollowingRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/following/";
+  url: "/api/v1/connections/{user_id}/following/";
 };
 
 export type ConnectionsFollowingRetrieveResponses = {
@@ -3337,7 +3340,7 @@ export type ConnectionsMutualRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/mutual/";
+  url: "/api/v1/connections/{user_id}/mutual/";
 };
 
 export type ConnectionsMutualRetrieveResponses = {
@@ -3353,7 +3356,7 @@ export type ConnectionsRelationshipRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/relationship/";
+  url: "/api/v1/connections/{user_id}/relationship/";
 };
 
 export type ConnectionsRelationshipRetrieveResponses = {
@@ -3369,7 +3372,7 @@ export type ConnectionsRemoveDestroyData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/remove/";
+  url: "/api/v1/connections/{user_id}/remove/";
 };
 
 export type ConnectionsRemoveDestroyResponses = {
@@ -3388,7 +3391,7 @@ export type ConnectionsStatusRetrieveData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/status/";
+  url: "/api/v1/connections/{user_id}/status/";
 };
 
 export type ConnectionsStatusRetrieveResponses = {
@@ -3404,7 +3407,7 @@ export type ConnectionsToggleCreateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/toggle/";
+  url: "/api/v1/connections/{user_id}/toggle/";
 };
 
 export type ConnectionsToggleCreateResponses = {
@@ -3420,7 +3423,7 @@ export type ConnectionsUnblockCreateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/{user_id}/unblock/";
+  url: "/api/v1/connections/{user_id}/unblock/";
 };
 
 export type ConnectionsUnblockCreateResponses = {
@@ -3434,7 +3437,7 @@ export type ConnectionsBlockedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/blocked/";
+  url: "/api/v1/connections/blocked/";
 };
 
 export type ConnectionsBlockedRetrieveResponses = {
@@ -3448,7 +3451,7 @@ export type ConnectionsRelationsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/relations/";
+  url: "/api/v1/connections/relations/";
 };
 
 export type ConnectionsRelationsRetrieveResponses = {
@@ -3462,7 +3465,7 @@ export type ConnectionsRelationsConnectedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/relations/connected/";
+  url: "/api/v1/connections/relations/connected/";
 };
 
 export type ConnectionsRelationsConnectedRetrieveResponses = {
@@ -3476,7 +3479,7 @@ export type ConnectionsRelationsPendingRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/relations/pending/";
+  url: "/api/v1/connections/relations/pending/";
 };
 
 export type ConnectionsRelationsPendingRetrieveResponses = {
@@ -3490,7 +3493,7 @@ export type ConnectionsRelationsSentRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/relations/sent/";
+  url: "/api/v1/connections/relations/sent/";
 };
 
 export type ConnectionsRelationsSentRetrieveResponses = {
@@ -3504,7 +3507,7 @@ export type ConnectionsRequestsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/requests/";
+  url: "/api/v1/connections/requests/";
 };
 
 export type ConnectionsRequestsRetrieveResponses = {
@@ -3520,7 +3523,7 @@ export type ConnectionsRequestsAcceptCreateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/requests/{user_id}/accept/";
+  url: "/api/v1/connections/requests/{user_id}/accept/";
 };
 
 export type ConnectionsRequestsAcceptCreateResponses = {
@@ -3536,7 +3539,7 @@ export type ConnectionsRequestsRejectCreateData = {
     user_id: string;
   };
   query?: never;
-  url: "/api/connections/requests/{user_id}/reject/";
+  url: "/api/v1/connections/requests/{user_id}/reject/";
 };
 
 export type ConnectionsRequestsRejectCreateResponses = {
@@ -3550,7 +3553,7 @@ export type ConnectionsSuggestionsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/connections/suggestions/";
+  url: "/api/v1/connections/suggestions/";
 };
 
 export type ConnectionsSuggestionsRetrieveResponses = {
@@ -3573,7 +3576,7 @@ export type InstitutesListData = {
      */
     page_size?: number;
   };
-  url: "/api/institutes/";
+  url: "/api/v1/institutes/";
 };
 
 export type InstitutesListResponses = {
@@ -3587,7 +3590,7 @@ export type InstitutesCreateData = {
   body: InstituteRequest;
   path?: never;
   query?: never;
-  url: "/api/institutes/";
+  url: "/api/v1/institutes/";
 };
 
 export type InstitutesCreateResponses = {
@@ -3603,7 +3606,7 @@ export type InstitutesDestroyData = {
     id: string;
   };
   query?: never;
-  url: "/api/institutes/{id}/";
+  url: "/api/v1/institutes/{id}/";
 };
 
 export type InstitutesDestroyResponses = {
@@ -3622,7 +3625,7 @@ export type InstitutesRetrieveData = {
     id: string;
   };
   query?: never;
-  url: "/api/institutes/{id}/";
+  url: "/api/v1/institutes/{id}/";
 };
 
 export type InstitutesRetrieveResponses = {
@@ -3638,7 +3641,7 @@ export type InstitutesPartialUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/institutes/{id}/";
+  url: "/api/v1/institutes/{id}/";
 };
 
 export type InstitutesPartialUpdateResponses = {
@@ -3654,7 +3657,7 @@ export type InstitutesUpdateData = {
     id: string;
   };
   query?: never;
-  url: "/api/institutes/{id}/";
+  url: "/api/v1/institutes/{id}/";
 };
 
 export type InstitutesUpdateResponses = {
@@ -3668,7 +3671,7 @@ export type ListAffiliationsData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/institutes/affiliations/";
+  url: "/api/v1/institutes/affiliations/";
 };
 
 export type ListAffiliationsErrors = {
@@ -3692,7 +3695,7 @@ export type CreateAffiliationData = {
   body: InstituteAffiliateRequest;
   path?: never;
   query?: never;
-  url: "/api/institutes/affiliations/";
+  url: "/api/v1/institutes/affiliations/";
 };
 
 export type CreateAffiliationErrors = {
@@ -3722,7 +3725,7 @@ export type InstitutesAffiliationsRetrieveData = {
     id: number;
   };
   query?: never;
-  url: "/api/institutes/affiliations/{id}/";
+  url: "/api/v1/institutes/affiliations/{id}/";
 };
 
 export type InstitutesAffiliationsRetrieveResponses = {
@@ -3738,7 +3741,7 @@ export type InstitutesAffiliationsPartialUpdateData = {
     id: number;
   };
   query?: never;
-  url: "/api/institutes/affiliations/{id}/";
+  url: "/api/v1/institutes/affiliations/{id}/";
 };
 
 export type InstitutesAffiliationsPartialUpdateResponses = {
@@ -3754,7 +3757,7 @@ export type InstitutesAffiliationsUpdateData = {
     id: number;
   };
   query?: never;
-  url: "/api/institutes/affiliations/{id}/";
+  url: "/api/v1/institutes/affiliations/{id}/";
 };
 
 export type InstitutesAffiliationsUpdateResponses = {
@@ -3770,7 +3773,7 @@ export type VerifyAffiliationData = {
     id: number;
   };
   query?: never;
-  url: "/api/institutes/affiliations/{id}/verify/";
+  url: "/api/v1/institutes/affiliations/{id}/verify/";
 };
 
 export type VerifyAffiliationErrors = {
@@ -3800,7 +3803,7 @@ export type ClaimAffiliationData = {
   body: ClaimAffiliateRequestWritable;
   path?: never;
   query?: never;
-  url: "/api/institutes/claim/";
+  url: "/api/v1/institutes/claim/";
 };
 
 export type ClaimAffiliationErrors = {
@@ -3830,7 +3833,7 @@ export type MediaListData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/media/";
+  url: "/api/v1/media/";
 };
 
 export type MediaListResponses = {
@@ -3843,7 +3846,7 @@ export type MediaCreateData = {
   body: MediaUploadRequestWritable;
   path?: never;
   query?: never;
-  url: "/api/media/";
+  url: "/api/v1/media/";
 };
 
 export type MediaCreateResponses = {
@@ -3857,7 +3860,7 @@ export type NotificationsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/";
+  url: "/api/v1/notifications/";
 };
 
 export type NotificationsRetrieveResponses = {
@@ -3873,7 +3876,7 @@ export type NotificationsRetrieve2Data = {
     notification_id: number;
   };
   query?: never;
-  url: "/api/notifications/{notification_id}/";
+  url: "/api/v1/notifications/{notification_id}/";
 };
 
 export type NotificationsRetrieve2Responses = {
@@ -3889,7 +3892,7 @@ export type NotificationsDeleteDestroyData = {
     notification_id: number;
   };
   query?: never;
-  url: "/api/notifications/{notification_id}/delete/";
+  url: "/api/v1/notifications/{notification_id}/delete/";
 };
 
 export type NotificationsDeleteDestroyResponses = {
@@ -3908,7 +3911,7 @@ export type NotificationsDeliveriesRetrieveData = {
     notification_id: number;
   };
   query?: never;
-  url: "/api/notifications/{notification_id}/deliveries/";
+  url: "/api/v1/notifications/{notification_id}/deliveries/";
 };
 
 export type NotificationsDeliveriesRetrieveResponses = {
@@ -3924,7 +3927,7 @@ export type NotificationsReadCreateData = {
     notification_id: number;
   };
   query?: never;
-  url: "/api/notifications/{notification_id}/read/";
+  url: "/api/v1/notifications/{notification_id}/read/";
 };
 
 export type NotificationsReadCreateResponses = {
@@ -3940,7 +3943,7 @@ export type NotificationsSeenCreateData = {
     notification_id: number;
   };
   query?: never;
-  url: "/api/notifications/{notification_id}/seen/";
+  url: "/api/v1/notifications/{notification_id}/seen/";
 };
 
 export type NotificationsSeenCreateResponses = {
@@ -3954,7 +3957,7 @@ export type NotificationsClearDestroyData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/clear/";
+  url: "/api/v1/notifications/clear/";
 };
 
 export type NotificationsClearDestroyResponses = {
@@ -3971,7 +3974,7 @@ export type NotificationsCommentsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/comments/";
+  url: "/api/v1/notifications/comments/";
 };
 
 export type NotificationsCommentsRetrieveResponses = {
@@ -3985,7 +3988,7 @@ export type NotificationsCountsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/counts/";
+  url: "/api/v1/notifications/counts/";
 };
 
 export type NotificationsCountsRetrieveResponses = {
@@ -3999,7 +4002,7 @@ export type NotificationsFollowAcceptsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/follow-accepts/";
+  url: "/api/v1/notifications/follow-accepts/";
 };
 
 export type NotificationsFollowAcceptsRetrieveResponses = {
@@ -4013,7 +4016,7 @@ export type NotificationsFollowRequestsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/follow-requests/";
+  url: "/api/v1/notifications/follow-requests/";
 };
 
 export type NotificationsFollowRequestsRetrieveResponses = {
@@ -4027,7 +4030,7 @@ export type NotificationsLikesRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/likes/";
+  url: "/api/v1/notifications/likes/";
 };
 
 export type NotificationsLikesRetrieveResponses = {
@@ -4041,7 +4044,7 @@ export type NotificationsMarkAllReadCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/mark-all-read/";
+  url: "/api/v1/notifications/mark-all-read/";
 };
 
 export type NotificationsMarkAllReadCreateResponses = {
@@ -4055,7 +4058,7 @@ export type NotificationsMarkAllSeenCreateData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/mark-all-seen/";
+  url: "/api/v1/notifications/mark-all-seen/";
 };
 
 export type NotificationsMarkAllSeenCreateResponses = {
@@ -4069,7 +4072,7 @@ export type NotificationsPostsRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/notifications/posts/";
+  url: "/api/v1/notifications/posts/";
 };
 
 export type NotificationsPostsRetrieveResponses = {
@@ -4083,7 +4086,7 @@ export type PostsListData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/posts/";
+  url: "/api/v1/posts/";
 };
 
 export type PostsListResponses = {
@@ -4093,10 +4096,10 @@ export type PostsListResponses = {
 export type PostsListResponse = PostsListResponses[keyof PostsListResponses];
 
 export type PostsCreateData = {
-  body: PostCreateRequest;
+  body?: PostCreateRequest;
   path?: never;
   query?: never;
-  url: "/api/posts/";
+  url: "/api/v1/posts/";
 };
 
 export type PostsCreateResponses = {
@@ -4112,7 +4115,7 @@ export type PostsDestroyData = {
     post_id: string;
   };
   query?: never;
-  url: "/api/posts/{post_id}/";
+  url: "/api/v1/posts/{post_id}/";
 };
 
 export type PostsDestroyResponses = {
@@ -4131,7 +4134,7 @@ export type PostsRetrieveData = {
     post_id: string;
   };
   query?: never;
-  url: "/api/posts/{post_id}/";
+  url: "/api/v1/posts/{post_id}/";
 };
 
 export type PostsRetrieveResponses = {
@@ -4147,7 +4150,7 @@ export type PostsPartialUpdateData = {
     post_id: string;
   };
   query?: never;
-  url: "/api/posts/{post_id}/";
+  url: "/api/v1/posts/{post_id}/";
 };
 
 export type PostsPartialUpdateResponses = {
@@ -4163,7 +4166,7 @@ export type PostsUpdateData = {
     post_id: string;
   };
   query?: never;
-  url: "/api/posts/{post_id}/";
+  url: "/api/v1/posts/{post_id}/";
 };
 
 export type PostsUpdateResponses = {
@@ -4177,7 +4180,7 @@ export type PostsFeedRetrieveData = {
   body?: never;
   path?: never;
   query?: never;
-  url: "/api/posts/feed/";
+  url: "/api/v1/posts/feed/";
 };
 
 export type PostsFeedRetrieveResponses = {
@@ -4294,7 +4297,7 @@ export type SchemaRetrieveData = {
       | "zh-hans"
       | "zh-hant";
   };
-  url: "/api/schema/";
+  url: "/api/v1/schema/";
 };
 
 export type SchemaRetrieveResponses = {

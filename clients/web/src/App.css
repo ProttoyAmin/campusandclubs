@@ -136,9 +136,9 @@
     cursor: pointer;
   }
 
-  ::-webkit-scrollbar {
+  /* ::-webkit-scrollbar {
     @apply hidden;
-  }
+  } */
 
   @keyframes slideInLeft {
     from {

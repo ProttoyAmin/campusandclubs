@@ -3,6 +3,8 @@ import ClubsLayout from "@/layouts/club/clubs-layout";
 import ClubConfigLayout from "@/layouts/club/config-layout";
 import { routes } from "@/settings/routes";
 import React from "react";
+import ClubMedia from "./pages/private/c-media";
+import ClubPosts from "./pages/private/c-posts";
 
 const Clubs = React.lazy(() => import("./pages/private/clubs"));
 const ClubPage = React.lazy(() => import("./pages/public/club-page"));
@@ -39,7 +41,21 @@ export const clubRoutes = [
     element: <ClubsLayout />,
     children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
   },
-  { id: "club-main", path: routes.club.public.base, element: <ClubPage /> },
+  {
+    id: "club-main", path: routes.club.public.base, element: <ClubPage />,
+    children: [
+      {
+        id: "club-posts",
+        index: true,
+        element: <ClubPosts />,
+      },
+      {
+        id: "club-media",
+        path: routes.club.private.media,
+        element: <ClubMedia />,
+      },
+    ]
+  },
   {
     id: "club-config-layout",
     path: routes.club.private.config.base,

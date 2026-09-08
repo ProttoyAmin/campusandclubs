@@ -109,9 +109,11 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                 name={field.name}
                 value={field.value}
                 onValueChange={field.onChange}
+                defaultValue={undefined}
+                disabled={!props.institutes || props.institutes.length === 0}
               >
                 <SelectTrigger
-                  id="scope"
+                  id="origin"
                   aria-invalid={fieldState.invalid}
                   className="min-w-30"
                 >
@@ -119,13 +121,19 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectSeparator />
-                  {props.institutes.map((institute) => (
+                  {props.institutes?.map((institute) => (
                     <SelectItem key={institute.id} value={institute.id}>
                       {`${formatLabel(institute.name)} (${institute.code})`}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {!props.institutes || props.institutes.length === 0 && (
+                <>
+                  <FieldLabel className="text-xs text-orange-400">You need to join an institute to create a club with an origin. You can claim one from the settings page.</FieldLabel>
+                  <FieldLabel className="text-xs text-orange-400">Clubs with no origin will be treated as a Local club.</FieldLabel>
+                </>
+              )}
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
@@ -255,4 +263,4 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
   );
 };
 
-export default React.lazy(() => Promise.resolve({ default: ClubCreateForm }));
+export default React.memo(ClubCreateForm);

@@ -1,24 +1,27 @@
 import { paths, routes } from "@/settings/routes";
-import { House, LayoutList } from "lucide-react";
+import { House } from "lucide-react";
 import type { MenuItemType } from "../menu/main-menu";
+import { GitPullRequestCreateIcon } from "lucide-react";
 import { isRouteActive } from "@/utils/route";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { SquareLock01Icon, UserCircleIcon } from "@hugeicons/core-free-icons";
 
 export const SettingsMenu: () => MenuItemType[] = () => [
   {
     id: 1,
-    label: "Account",
-    icon: <House size={18} />,
-    iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
-    link: () => paths.private.settings.account,
+    label: "Accounts",
+    icon: <HugeiconsIcon icon={UserCircleIcon} />,
+    iconActive: <HugeiconsIcon icon={UserCircleIcon} fill="currentColor" stroke="currentColor" />,
+    link: () => paths.private.settings.account.base,
     isActive: (currentPath) =>
-      isRouteActive(routes.settings.account, currentPath),
+      isRouteActive(routes.settings.account.base, currentPath),
   },
   {
     id: 2,
     label: "Privacy",
-    icon: <LayoutList size={18} />,
+    icon: <HugeiconsIcon icon={SquareLock01Icon} />,
     iconActive: (
-      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+      <HugeiconsIcon icon={SquareLock01Icon} />
     ),
     link: () => paths.private.settings.privacy,
     isActive: (currentPath) =>
@@ -27,11 +30,11 @@ export const SettingsMenu: () => MenuItemType[] = () => [
   {
     id: 3,
     label: "Affiliations",
-    icon: <LayoutList size={18} />,
+    icon: <GitPullRequestCreateIcon size={18} />,
     iconActive: (
-      <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+      <GitPullRequestCreateIcon size={18} fill="currentColor" stroke="currentColor" />
     ),
-    link: () => paths.private.settings.affilications,
+    link: () => paths.private.settings.affiliations,
     isActive: (currentPath) =>
       isRouteActive(routes.settings.affiliations, currentPath),
   },
@@ -43,8 +46,8 @@ export const SettingsDropdownMenu: () => MenuItemType[] = () => [
     label: "Settings",
     icon: <House size={18} />,
     iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
-    link: () => routes.settings.account,
+    link: () => routes.settings.account.base,
     isActive: (currentPath) =>
-      isRouteActive(routes.settings.account, currentPath),
+      isRouteActive(routes.settings.account.base, currentPath),
   },
 ];

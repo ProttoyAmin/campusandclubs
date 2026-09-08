@@ -69,6 +69,18 @@ export class AuthClient extends BaseAuthClient {
     return response;
   }
 
+  async resendEmailVerification(): Promise<AxiosResponse> {
+    const response = await this.client.post(
+      `${this.allauthBrowser}auth/email/verify/resend`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response;
+  }
+
   async login(
     data: SignInSchemaType,
   ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
@@ -84,8 +96,7 @@ export class AuthClient extends BaseAuthClient {
     await this.getSession();
     const form = document.createElement("form");
     form.method = "POST";
-    // form.action = `http://127.0.0.1:8000/api/${this.allauthBrowser}auth/provider/redirect`;
-    form.action = `/api/${this.allauthBrowser}auth/provider/redirect`;
+    form.action = `/api/v1/${this.allauthBrowser}auth/provider/redirect`;
     form.style.display = "none";
 
     const fields: Record<string, string> = {
@@ -104,7 +115,6 @@ export class AuthClient extends BaseAuthClient {
     }
 
     document.body.appendChild(form);
-    console.log(form);
     form.submit();
   }
 

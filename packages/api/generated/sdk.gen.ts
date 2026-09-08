@@ -25,8 +25,8 @@ import type {
   AccountsAuthLogoutCreateResponses,
   AccountsAuthMeRetrieveData,
   AccountsAuthMeRetrieveResponses,
-  AccountsAuthPostsRetrieveData,
-  AccountsAuthPostsRetrieveResponses,
+  AccountsAuthMeUploadProfilePictureCreateData,
+  AccountsAuthMeUploadProfilePictureCreateResponses,
   AccountsAuthRefreshCreateData,
   AccountsAuthRefreshCreateResponses,
   AccountsAuthRequestInfoRetrieveData,
@@ -49,6 +49,8 @@ import type {
   AccountsAuthUsersMeUpdateResponses,
   AccountsAuthUsersPartialUpdateData,
   AccountsAuthUsersPartialUpdateResponses,
+  AccountsAuthUsersPostsRetrieveData,
+  AccountsAuthUsersPostsRetrieveResponses,
   AccountsAuthUsersResendActivationCreateData,
   AccountsAuthUsersResendActivationCreateResponses,
   AccountsAuthUsersResetPasswordConfirmCreateData,
@@ -79,6 +81,8 @@ import type {
   AccountsAuthUsersUserRetrieveResponses,
   AccountsAuthUsersUserUpdateData,
   AccountsAuthUsersUserUpdateResponses,
+  AccountsSearchRetrieveData,
+  AccountsSearchRetrieveResponses,
   ActivitiesCommentsCreateCreateData,
   ActivitiesCommentsCreateCreateResponses,
   ActivitiesCommentsDestroyData,
@@ -332,7 +336,7 @@ export const accountsAuthAllRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/{user_id}/all/",
+    url: "/api/v1/accounts/auth/{user_id}/all/",
     ...options,
   });
 
@@ -358,7 +362,7 @@ export const accountsAuthAllPartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/{user_id}/all/",
+    url: "/api/v1/accounts/auth/{user_id}/all/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -382,37 +386,12 @@ export const accountsAuthAllUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/{user_id}/all/",
+    url: "/api/v1/accounts/auth/{user_id}/all/",
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
-  });
-
-/**
- * Get all posts created by a user (both user posts and club posts)
- * Query params:
- * - source: all|user|club (default: all)
- * - post_type: TEXT|IMAGE|VIDEO (default: all)
- */
-export const accountsAuthPostsRetrieve = <ThrowOnError extends boolean = false>(
-  options: Options<AccountsAuthPostsRetrieveData, ThrowOnError>,
-): RequestResult<AccountsAuthPostsRetrieveResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).get<
-    AccountsAuthPostsRetrieveResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
-      },
-    ],
-    url: "/api/accounts/auth/{user_id}/posts/",
-    ...options,
   });
 
 /**
@@ -436,7 +415,7 @@ export const listUsers = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/all/",
+    url: "/api/v1/accounts/auth/all/",
     ...options,
   });
 
@@ -461,7 +440,7 @@ export const listUsers2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/all/",
+    url: "/api/v1/accounts/auth/all/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -484,7 +463,7 @@ export const accountsAuthJwtCreateCreate = <
     ThrowOnError
   >({
     responseType: "json",
-    url: "/api/accounts/auth/jwt/create/",
+    url: "/api/v1/accounts/auth/jwt/create/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -511,7 +490,7 @@ export const accountsAuthJwtRefreshCreate = <
     ThrowOnError
   >({
     responseType: "json",
-    url: "/api/accounts/auth/jwt/refresh/",
+    url: "/api/v1/accounts/auth/jwt/refresh/",
     ...options,
   });
 
@@ -529,7 +508,7 @@ export const accountsAuthJwtVerifyCreate = <
     unknown,
     ThrowOnError
   >({
-    url: "/api/accounts/auth/jwt/verify/",
+    url: "/api/v1/accounts/auth/jwt/verify/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -547,7 +526,7 @@ export const login = <ThrowOnError extends boolean = false>(
 ): RequestResult<LoginResponses, LoginErrors, ThrowOnError> =>
   (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
     responseType: "json",
-    url: "/api/accounts/auth/login/",
+    url: "/api/v1/accounts/auth/login/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -570,7 +549,7 @@ export const accountsAuthLogoutCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/logout/",
+    url: "/api/v1/accounts/auth/logout/",
     ...options,
   });
 
@@ -592,7 +571,7 @@ export const accountsAuthMeRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/me/",
+    url: "/api/v1/accounts/auth/me/",
     ...options,
   });
 
@@ -621,7 +600,7 @@ export const getMyAffiliations = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/me/affiliations/",
+    url: "/api/v1/accounts/auth/me/affiliations/",
     ...options,
   });
 
@@ -646,7 +625,35 @@ export const getMyEmails = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/me/emails/",
+    url: "/api/v1/accounts/auth/me/emails/",
+    ...options,
+  });
+
+/**
+ * Upload a new profile picture for the authenticated user
+ */
+export const accountsAuthMeUploadProfilePictureCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<AccountsAuthMeUploadProfilePictureCreateData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthMeUploadProfilePictureCreateResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    AccountsAuthMeUploadProfilePictureCreateResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/me/upload-profile-picture/",
     ...options,
   });
 
@@ -663,7 +670,7 @@ export const accountsAuthRefreshCreate = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     responseType: "json",
-    url: "/api/accounts/auth/refresh/",
+    url: "/api/v1/accounts/auth/refresh/",
     ...options,
   });
 
@@ -688,7 +695,7 @@ export const accountsAuthRequestInfoRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/request-info/",
+    url: "/api/v1/accounts/auth/request-info/",
     ...options,
   });
 
@@ -708,7 +715,7 @@ export const accountsAuthUsersList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/",
+    url: "/api/v1/accounts/auth/users/",
     ...options,
   });
 
@@ -728,7 +735,7 @@ export const accountsAuthUsersCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/",
+    url: "/api/v1/accounts/auth/users/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -751,7 +758,7 @@ export const accountsAuthUsersDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/{id}/",
+    url: "/api/v1/accounts/auth/users/{id}/",
     ...options,
   });
 
@@ -771,7 +778,7 @@ export const accountsAuthUsersRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/{id}/",
+    url: "/api/v1/accounts/auth/users/{id}/",
     ...options,
   });
 
@@ -797,7 +804,7 @@ export const accountsAuthUsersPartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/{id}/",
+    url: "/api/v1/accounts/auth/users/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -821,12 +828,43 @@ export const accountsAuthUsersUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/{id}/",
+    url: "/api/v1/accounts/auth/users/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
+  });
+
+/**
+ * Get all posts created by a user (both user posts and club posts)
+ * Query params:
+ * - source: all|user|club (default: all)
+ * - post_type: TEXT|IMAGE|VIDEO (default: all)
+ */
+export const accountsAuthUsersPostsRetrieve = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<AccountsAuthUsersPostsRetrieveData, ThrowOnError>,
+): RequestResult<
+  AccountsAuthUsersPostsRetrieveResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    AccountsAuthUsersPostsRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/auth/users/{user_id}/posts/",
+    ...options,
   });
 
 export const accountsAuthUsersActivationCreate = <
@@ -851,7 +889,7 @@ export const accountsAuthUsersActivationCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/activation/",
+    url: "/api/v1/accounts/auth/users/activation/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -876,7 +914,7 @@ export const accountsAuthUsersMeDestroy = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/me/",
+    url: "/api/v1/accounts/auth/users/me/",
     ...options,
   });
 
@@ -898,7 +936,7 @@ export const accountsAuthUsersMeRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/me/",
+    url: "/api/v1/accounts/auth/users/me/",
     ...options,
   });
 
@@ -924,7 +962,7 @@ export const accountsAuthUsersMePartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/me/",
+    url: "/api/v1/accounts/auth/users/me/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -948,7 +986,7 @@ export const accountsAuthUsersMeUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/me/",
+    url: "/api/v1/accounts/auth/users/me/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -978,7 +1016,7 @@ export const accountsAuthUsersResendActivationCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/resend_activation/",
+    url: "/api/v1/accounts/auth/users/resend_activation/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1008,7 +1046,7 @@ export const accountsAuthUsersResetPasswordCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/reset_password/",
+    url: "/api/v1/accounts/auth/users/reset_password/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1041,7 +1079,7 @@ export const accountsAuthUsersResetPasswordConfirmCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/reset_password_confirm/",
+    url: "/api/v1/accounts/auth/users/reset_password_confirm/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1071,7 +1109,7 @@ export const accountsAuthUsersResetUsernameCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/reset_username/",
+    url: "/api/v1/accounts/auth/users/reset_username/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1104,7 +1142,7 @@ export const accountsAuthUsersResetUsernameConfirmCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/reset_username_confirm/",
+    url: "/api/v1/accounts/auth/users/reset_username_confirm/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1134,7 +1172,7 @@ export const accountsAuthUsersSetPasswordCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/set_password/",
+    url: "/api/v1/accounts/auth/users/set_password/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1164,7 +1202,7 @@ export const accountsAuthUsersSetUsernameCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/set_username/",
+    url: "/api/v1/accounts/auth/users/set_username/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1196,7 +1234,7 @@ export const accountsAuthUsersUserDestroy = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/",
+    url: "/api/v1/accounts/auth/users/user/{username}/",
     ...options,
   });
 
@@ -1225,7 +1263,7 @@ export const accountsAuthUsersUserRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/",
+    url: "/api/v1/accounts/auth/users/user/{username}/",
     ...options,
   });
 
@@ -1254,7 +1292,7 @@ export const accountsAuthUsersUserPartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/",
+    url: "/api/v1/accounts/auth/users/user/{username}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1283,7 +1321,7 @@ export const accountsAuthUsersUserUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/",
+    url: "/api/v1/accounts/auth/users/user/{username}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1315,7 +1353,7 @@ export const accountsAuthUsersUserActivityRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/activity/",
+    url: "/api/v1/accounts/auth/users/user/{username}/activity/",
     ...options,
   });
 
@@ -1343,7 +1381,29 @@ export const accountsAuthUsersUserClubsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/accounts/auth/users/user/{username}/clubs/",
+    url: "/api/v1/accounts/auth/users/user/{username}/clubs/",
+    ...options,
+  });
+
+/**
+ * Search users by username or email
+ */
+export const accountsSearchRetrieve = <ThrowOnError extends boolean = false>(
+  options?: Options<AccountsSearchRetrieveData, ThrowOnError>,
+): RequestResult<AccountsSearchRetrieveResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).get<
+    AccountsSearchRetrieveResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        in: "cookie",
+        name: "sessionid",
+        type: "apiKey",
+      },
+    ],
+    url: "/api/v1/accounts/search/",
     ...options,
   });
 
@@ -1373,7 +1433,7 @@ export const activitiesCommentsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/",
+    url: "/api/v1/activities/comments/",
     ...options,
   });
 
@@ -1398,7 +1458,7 @@ export const activitiesCommentsDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/{comment_id}/",
+    url: "/api/v1/activities/comments/{comment_id}/",
     ...options,
   });
 
@@ -1425,7 +1485,7 @@ export const activitiesCommentsRetrieve2 = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/{comment_id}/",
+    url: "/api/v1/activities/comments/{comment_id}/",
     ...options,
   });
 
@@ -1456,7 +1516,7 @@ export const activitiesCommentsPartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/{comment_id}/",
+    url: "/api/v1/activities/comments/{comment_id}/",
     ...options,
   });
 
@@ -1484,7 +1544,7 @@ export const activitiesCommentsRepliesRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/{comment_id}/replies/",
+    url: "/api/v1/activities/comments/{comment_id}/replies/",
     ...options,
   });
 
@@ -1518,7 +1578,7 @@ export const activitiesCommentsCreateCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/comments/create/",
+    url: "/api/v1/activities/comments/create/",
     ...options,
   });
 
@@ -1545,7 +1605,7 @@ export const activitiesLikesRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/activities/likes/",
+    url: "/api/v1/activities/likes/",
     ...options,
   });
 
@@ -1578,7 +1638,7 @@ export const activitiesLikesCheckRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/likes/check/",
+    url: "/api/v1/activities/likes/check/",
     ...options,
   });
 
@@ -1608,7 +1668,7 @@ export const activitiesLikesToggleCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/activities/likes/toggle/",
+    url: "/api/v1/activities/likes/toggle/",
     ...options,
   });
 
@@ -1635,7 +1695,7 @@ export const clubsList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/",
+    url: "/api/v1/clubs/",
     ...options,
   });
 
@@ -1662,7 +1722,7 @@ export const clubsCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/",
+    url: "/api/v1/clubs/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1688,7 +1748,7 @@ export const clubsDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/",
+    url: "/api/v1/clubs/{id}/",
     ...options,
   });
 
@@ -1708,7 +1768,7 @@ export const clubsRetrieve = <ThrowOnError extends boolean = false>(
           type: "apiKey",
         },
       ],
-      url: "/api/clubs/{id}/",
+      url: "/api/v1/clubs/{id}/",
       ...options,
     },
   );
@@ -1732,7 +1792,7 @@ export const clubsPartialUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/",
+    url: "/api/v1/clubs/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1755,7 +1815,7 @@ export const clubsUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/",
+    url: "/api/v1/clubs/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1783,7 +1843,7 @@ export const clubsApplicationFormsList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/application-forms/",
+    url: "/api/v1/clubs/{id}/application-forms/",
     ...options,
   });
 
@@ -1809,7 +1869,7 @@ export const clubsApplicationFormsCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/application-forms/",
+    url: "/api/v1/clubs/{id}/application-forms/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1833,7 +1893,7 @@ export const clubsApplicationsList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/",
+    url: "/api/v1/clubs/{id}/applications/",
     ...options,
   });
 
@@ -1853,7 +1913,7 @@ export const clubsApplicationsCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/",
+    url: "/api/v1/clubs/{id}/applications/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1877,7 +1937,7 @@ export const clubsApplicationsList2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/{application_pk}/",
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/",
     ...options,
   });
 
@@ -1897,7 +1957,7 @@ export const clubsApplicationsCreate2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/{application_pk}/",
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1927,7 +1987,7 @@ export const clubsApplicationsApproveCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/{application_pk}/approve/",
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/approve/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1957,7 +2017,7 @@ export const clubsApplicationsRejectCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/{application_pk}/reject/",
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/reject/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -1987,7 +2047,7 @@ export const clubsApplicationsWithdrawCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/applications/{application_pk}/withdraw/",
+    url: "/api/v1/clubs/{id}/applications/{application_pk}/withdraw/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2015,7 +2075,7 @@ export const clubsEventsRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/events/",
+    url: "/api/v1/clubs/{id}/events/",
     ...options,
   });
 
@@ -2035,7 +2095,7 @@ export const clubsJoinCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/join/",
+    url: "/api/v1/clubs/{id}/join/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2058,17 +2118,18 @@ export const clubsLeaveDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/leave/",
+    url: "/api/v1/clubs/{id}/leave/",
     ...options,
   });
 
 /**
- * List all members of a club with filtering options
+ * List all members of a club with filtering options.
+ *
  * Query params:
  * - role: Filter by role name
- * - search: Search members by username or email
+ * - search: Search members by username / email / first / last name
  * - sort: joined_at (default), username, role
- * - order: asc, desc (default)
+ * - order: asc / desc (default)
  */
 export const clubsMembersRetrieve = <ThrowOnError extends boolean = false>(
   options: Options<ClubsMembersRetrieveData, ThrowOnError>,
@@ -2085,7 +2146,7 @@ export const clubsMembersRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/members/",
+    url: "/api/v1/clubs/{id}/members/",
     ...options,
   });
 
@@ -2107,7 +2168,7 @@ export const clubsMembersRetrieve2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/members/{user_id}/",
+    url: "/api/v1/clubs/{id}/members/{user_id}/",
     ...options,
   });
 
@@ -2129,7 +2190,7 @@ export const clubsPostsRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/posts/",
+    url: "/api/v1/clubs/{id}/posts/",
     ...options,
   });
 
@@ -2153,7 +2214,7 @@ export const clubsStatsRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{id}/stats/",
+    url: "/api/v1/clubs/{id}/stats/",
     ...options,
   });
 
@@ -2175,7 +2236,7 @@ export const clubsDestroy2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{slug}/",
+    url: "/api/v1/clubs/{slug}/",
     ...options,
   });
 
@@ -2198,7 +2259,7 @@ export const clubsRetrieve2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{slug}/",
+    url: "/api/v1/clubs/{slug}/",
     ...options,
   });
 
@@ -2221,7 +2282,7 @@ export const clubsPartialUpdate2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{slug}/",
+    url: "/api/v1/clubs/{slug}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2244,7 +2305,7 @@ export const clubsUpdate2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/{slug}/",
+    url: "/api/v1/clubs/{slug}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2274,7 +2335,7 @@ export const clubsDepartmentTemplatesList = <
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/department-templates/",
+    url: "/api/v1/clubs/department-templates/",
     ...options,
   });
 
@@ -2296,7 +2357,7 @@ export const clubsOriginRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/origin/{origin}/",
+    url: "/api/v1/clubs/origin/{origin}/",
     ...options,
   });
 
@@ -2324,7 +2385,7 @@ export const clubsRecommendedRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/recommended/",
+    url: "/api/v1/clubs/recommended/",
     ...options,
   });
 
@@ -2346,7 +2407,7 @@ export const clubsSearchRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/search/",
+    url: "/api/v1/clubs/search/",
     ...options,
   });
 
@@ -2365,7 +2426,7 @@ export const clubsTestManagerRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/test/manager/",
+    url: "/api/v1/clubs/test/manager/",
     ...options,
   });
 
@@ -2387,7 +2448,7 @@ export const clubsTrendingRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/clubs/trending/",
+    url: "/api/v1/clubs/trending/",
     ...options,
   });
 
@@ -2407,7 +2468,7 @@ export const communicationsEmailsList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/communications/emails/",
+    url: "/api/v1/communications/emails/",
     ...options,
   });
 
@@ -2429,7 +2490,7 @@ export const communicationsEmailsCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/communications/emails/",
+    url: "/api/v1/communications/emails/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2457,7 +2518,7 @@ export const connectionsBlockCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/block/",
+    url: "/api/v1/connections/{user_id}/block/",
     ...options,
   });
 
@@ -2485,7 +2546,7 @@ export const connectionsFollowersRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/followers/",
+    url: "/api/v1/connections/{user_id}/followers/",
     ...options,
   });
 
@@ -2513,7 +2574,7 @@ export const connectionsFollowingRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/following/",
+    url: "/api/v1/connections/{user_id}/following/",
     ...options,
   });
 
@@ -2535,7 +2596,7 @@ export const connectionsMutualRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/mutual/",
+    url: "/api/v1/connections/{user_id}/mutual/",
     ...options,
   });
 
@@ -2568,7 +2629,7 @@ export const connectionsRelationshipRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/relationship/",
+    url: "/api/v1/connections/{user_id}/relationship/",
     ...options,
   });
 
@@ -2590,7 +2651,7 @@ export const connectionsRemoveDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/remove/",
+    url: "/api/v1/connections/{user_id}/remove/",
     ...options,
   });
 
@@ -2612,7 +2673,7 @@ export const connectionsStatusRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/status/",
+    url: "/api/v1/connections/{user_id}/status/",
     ...options,
   });
 
@@ -2637,7 +2698,7 @@ export const connectionsToggleCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/toggle/",
+    url: "/api/v1/connections/{user_id}/toggle/",
     ...options,
   });
 
@@ -2659,7 +2720,7 @@ export const connectionsUnblockCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/connections/{user_id}/unblock/",
+    url: "/api/v1/connections/{user_id}/unblock/",
     ...options,
   });
 
@@ -2683,7 +2744,7 @@ export const connectionsBlockedRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/blocked/",
+    url: "/api/v1/connections/blocked/",
     ...options,
   });
 
@@ -2717,7 +2778,7 @@ export const connectionsRelationsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/relations/",
+    url: "/api/v1/connections/relations/",
     ...options,
   });
 
@@ -2745,7 +2806,7 @@ export const connectionsRelationsConnectedRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/relations/connected/",
+    url: "/api/v1/connections/relations/connected/",
     ...options,
   });
 
@@ -2774,7 +2835,7 @@ export const connectionsRelationsPendingRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/relations/pending/",
+    url: "/api/v1/connections/relations/pending/",
     ...options,
   });
 
@@ -2803,7 +2864,7 @@ export const connectionsRelationsSentRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/relations/sent/",
+    url: "/api/v1/connections/relations/sent/",
     ...options,
   });
 
@@ -2827,7 +2888,7 @@ export const connectionsRequestsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/requests/",
+    url: "/api/v1/connections/requests/",
     ...options,
   });
 
@@ -2855,7 +2916,7 @@ export const connectionsRequestsAcceptCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/requests/{user_id}/accept/",
+    url: "/api/v1/connections/requests/{user_id}/accept/",
     ...options,
   });
 
@@ -2883,7 +2944,7 @@ export const connectionsRequestsRejectCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/requests/{user_id}/reject/",
+    url: "/api/v1/connections/requests/{user_id}/reject/",
     ...options,
   });
 
@@ -2915,7 +2976,7 @@ export const connectionsSuggestionsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/connections/suggestions/",
+    url: "/api/v1/connections/suggestions/",
     ...options,
   });
 
@@ -2935,7 +2996,7 @@ export const institutesList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/",
+    url: "/api/v1/institutes/",
     ...options,
   });
 
@@ -2955,7 +3016,7 @@ export const institutesCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/",
+    url: "/api/v1/institutes/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -2978,7 +3039,7 @@ export const institutesDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/{id}/",
+    url: "/api/v1/institutes/{id}/",
     ...options,
   });
 
@@ -2998,7 +3059,7 @@ export const institutesRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/{id}/",
+    url: "/api/v1/institutes/{id}/",
     ...options,
   });
 
@@ -3018,7 +3079,7 @@ export const institutesPartialUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/{id}/",
+    url: "/api/v1/institutes/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3042,7 +3103,7 @@ export const institutesUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/{id}/",
+    url: "/api/v1/institutes/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3075,7 +3136,7 @@ export const listAffiliations = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/",
+    url: "/api/v1/institutes/affiliations/",
     ...options,
   });
 
@@ -3104,7 +3165,7 @@ export const createAffiliation = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/",
+    url: "/api/v1/institutes/affiliations/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3134,7 +3195,7 @@ export const institutesAffiliationsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/{id}/",
+    url: "/api/v1/institutes/affiliations/{id}/",
     ...options,
   });
 
@@ -3160,7 +3221,7 @@ export const institutesAffiliationsPartialUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/{id}/",
+    url: "/api/v1/institutes/affiliations/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3190,7 +3251,7 @@ export const institutesAffiliationsUpdate = <
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/{id}/",
+    url: "/api/v1/institutes/affiliations/{id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3223,7 +3284,7 @@ export const verifyAffiliation = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/affiliations/{id}/verify/",
+    url: "/api/v1/institutes/affiliations/{id}/verify/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3256,7 +3317,7 @@ export const claimAffiliation = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/institutes/claim/",
+    url: "/api/v1/institutes/claim/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3276,7 +3337,7 @@ export const mediaList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/media/",
+    url: "/api/v1/media/",
     ...options,
   });
 
@@ -3292,7 +3353,7 @@ export const mediaCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/media/",
+    url: "/api/v1/media/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3324,7 +3385,7 @@ export const notificationsRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/",
+    url: "/api/v1/notifications/",
     ...options,
   });
 
@@ -3347,7 +3408,7 @@ export const notificationsRetrieve2 = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/{notification_id}/",
+    url: "/api/v1/notifications/{notification_id}/",
     ...options,
   });
 
@@ -3371,7 +3432,7 @@ export const notificationsDeleteDestroy = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/{notification_id}/delete/",
+    url: "/api/v1/notifications/{notification_id}/delete/",
     ...options,
   });
 
@@ -3399,7 +3460,7 @@ export const notificationsDeliveriesRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/{notification_id}/deliveries/",
+    url: "/api/v1/notifications/{notification_id}/deliveries/",
     ...options,
   });
 
@@ -3421,7 +3482,7 @@ export const notificationsReadCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/{notification_id}/read/",
+    url: "/api/v1/notifications/{notification_id}/read/",
     ...options,
   });
 
@@ -3443,7 +3504,7 @@ export const notificationsSeenCreate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/{notification_id}/seen/",
+    url: "/api/v1/notifications/{notification_id}/seen/",
     ...options,
   });
 
@@ -3465,7 +3526,7 @@ export const notificationsClearDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/clear/",
+    url: "/api/v1/notifications/clear/",
     ...options,
   });
 
@@ -3493,7 +3554,7 @@ export const notificationsCommentsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/comments/",
+    url: "/api/v1/notifications/comments/",
     ...options,
   });
 
@@ -3518,7 +3579,7 @@ export const notificationsCountsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/counts/",
+    url: "/api/v1/notifications/counts/",
     ...options,
   });
 
@@ -3546,7 +3607,7 @@ export const notificationsFollowAcceptsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/follow-accepts/",
+    url: "/api/v1/notifications/follow-accepts/",
     ...options,
   });
 
@@ -3574,7 +3635,7 @@ export const notificationsFollowRequestsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/follow-requests/",
+    url: "/api/v1/notifications/follow-requests/",
     ...options,
   });
 
@@ -3598,7 +3659,7 @@ export const notificationsLikesRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/likes/",
+    url: "/api/v1/notifications/likes/",
     ...options,
   });
 
@@ -3626,7 +3687,7 @@ export const notificationsMarkAllReadCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/mark-all-read/",
+    url: "/api/v1/notifications/mark-all-read/",
     ...options,
   });
 
@@ -3654,7 +3715,7 @@ export const notificationsMarkAllSeenCreate = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/mark-all-seen/",
+    url: "/api/v1/notifications/mark-all-seen/",
     ...options,
   });
 
@@ -3678,7 +3739,7 @@ export const notificationsPostsRetrieve = <
         type: "apiKey",
       },
     ],
-    url: "/api/notifications/posts/",
+    url: "/api/v1/notifications/posts/",
     ...options,
   });
 
@@ -3694,29 +3755,31 @@ export const postsList = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/posts/",
+    url: "/api/v1/posts/",
     ...options,
   });
 
 export const postsCreate = <ThrowOnError extends boolean = false>(
-  options: Options<PostsCreateData, ThrowOnError>,
+  options?: Options<PostsCreateData, ThrowOnError>,
 ): RequestResult<PostsCreateResponses, unknown, ThrowOnError> =>
-  (options.client ?? client).post<PostsCreateResponses, unknown, ThrowOnError>({
-    responseType: "json",
-    security: [
-      {
-        in: "cookie",
-        name: "sessionid",
-        type: "apiKey",
+  (options?.client ?? client).post<PostsCreateResponses, unknown, ThrowOnError>(
+    {
+      responseType: "json",
+      security: [
+        {
+          in: "cookie",
+          name: "sessionid",
+          type: "apiKey",
+        },
+      ],
+      url: "/api/v1/posts/",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
       },
-    ],
-    url: "/api/posts/",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
     },
-  });
+  );
 
 export const postsDestroy = <ThrowOnError extends boolean = false>(
   options: Options<PostsDestroyData, ThrowOnError>,
@@ -3733,7 +3796,7 @@ export const postsDestroy = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/posts/{post_id}/",
+    url: "/api/v1/posts/{post_id}/",
     ...options,
   });
 
@@ -3750,7 +3813,7 @@ export const postsRetrieve = <ThrowOnError extends boolean = false>(
           type: "apiKey",
         },
       ],
-      url: "/api/posts/{post_id}/",
+      url: "/api/v1/posts/{post_id}/",
       ...options,
     },
   );
@@ -3771,7 +3834,7 @@ export const postsPartialUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/posts/{post_id}/",
+    url: "/api/v1/posts/{post_id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3791,7 +3854,7 @@ export const postsUpdate = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/posts/{post_id}/",
+    url: "/api/v1/posts/{post_id}/",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -3827,7 +3890,7 @@ export const postsFeedRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/posts/feed/",
+    url: "/api/v1/posts/feed/",
     ...options,
   });
 
@@ -3853,6 +3916,6 @@ export const schemaRetrieve = <ThrowOnError extends boolean = false>(
         type: "apiKey",
       },
     ],
-    url: "/api/schema/",
+    url: "/api/v1/schema/",
     ...options,
   });

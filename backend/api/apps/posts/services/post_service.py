@@ -21,7 +21,7 @@ class PostService(BaseService[Post, PostRepository]):
     repository_class = PostRepository
 
     def list_posts(self) -> QuerySet[Post]:
-        return self.repository.get_queryset()
+        return self.repository.get_queryset().filter(deleted_at__isnull=True)
 
     def soft_delete(self, instance: Post):
         logger.info("SOFT DELETING POST!!!!!!!", instance)

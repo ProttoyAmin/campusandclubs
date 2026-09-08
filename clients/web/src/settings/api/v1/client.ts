@@ -16,7 +16,7 @@ export class V1Client {
 
   private constructor() {
     this.client = axios.create({
-      baseURL: config.api.v1.suffix,
+      baseURL: config.api.v1.baseUrl,
       withCredentials: true,
       xsrfCookieName: "csrftoken",
       xsrfHeaderName: "X-CSRFToken",
@@ -58,7 +58,7 @@ export class V1Client {
           try {
             // Call the refresh endpoint directly
             await axios.post(
-              `${config.api.v1.suffix}${config.api.v1.account.base}refresh/`,
+              `${config.api.v1.baseUrl}${config.api.v1.account.base}refresh/`,
               {},
               {
                 withCredentials: true,
@@ -91,7 +91,7 @@ export class V1Client {
   private ensureCsrfCookie(): Promise<void> {
     if (!this.csrfBootstrap) {
       this.csrfBootstrap = axios
-        .get(`${config.api.v1.raw}/api/_allauth/browser/v1/config`, {
+        .get(`${config.api.v1.baseUrl}_allauth/browser/v1/config`, {
           withCredentials: true,
         })
         .then(() => {

@@ -13,7 +13,7 @@ __all__ = [
     'ClubCreateSerializer',
     'ClubDetailSerializer',
     'ClubJoinSerializer',
-    'ClubMinimalSerializer'
+    'ClubMinimalSerializer',
     'ClubSerializer',
     'ClubAvatarUploadSerializer',
     'ClubBannerUploadSerializer',

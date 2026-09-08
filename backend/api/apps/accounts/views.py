@@ -363,6 +363,7 @@ def get_user_posts(request, user_id) -> Response:
     # Get query parameters
     post_type = request.query_params.get('post_type')
     post_source = request.query_params.get('source', 'all')
+    media = request.query_params.get('media', 'True')
 
     # Validate post_type if provided
     valid_post_types = ['TEXT', 'IMAGE', 'VIDEO', "MIXED"]
@@ -375,8 +376,9 @@ def get_user_posts(request, user_id) -> Response:
     # Base query
     posts = Post.objects.filter(
         author=user,
+        club__isnull=True,
         original_post__isnull=True,
-        is_deleted=False
+        deleted_at__isnull=True
     ).select_related('author')
 
     # Filter by source
@@ -388,6 +390,12 @@ def get_user_posts(request, user_id) -> Response:
     # Filter by post type
     if post_type:
         posts = posts.filter(post_type=post_type)
+
+    # Filter by media
+    if media == 'True':
+        posts = posts.filter(media__isnull=False)
+    elif media == 'False':
+        posts = posts.filter(media__isnull=True)
 
     # Order by creation date descending
     posts = posts.order_by('-created_at')

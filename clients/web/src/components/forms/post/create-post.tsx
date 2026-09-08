@@ -1,6 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Avatar, AvatarFallback, AvatarImage } from 'design/components/ui/avatar';
-import { Button } from 'design/components/ui/button';
 import { Textarea } from 'design/components/ui/textarea';
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form';
@@ -22,7 +20,11 @@ import {
     AttachmentTrigger,
 } from "design/components/ui/attachment";
 import { Input } from 'design/components/ui/input';
-import { ImageUpIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+    Image03Icon
+} from "@hugeicons/core-free-icons";
 
 interface PostCreateFormProps {
     user?: {
@@ -38,42 +40,29 @@ const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
     const [media, setMedia] = React.useState<File[] | null>(null);
     const form = useForm({
         resolver: zodResolver(PostCreateSchema),
+        mode: "onChange",
         defaultValues: {
             content: "",
         },
     });
 
-    const clubs = [{
-        id: 1,
-        label: "Club 1",
-    }, {
-        id: 2,
-        label: "Club 2",
-    }]
-
     const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        console.log('files', files);
         if (files) {
-            setMedia(Array.from(files));
-            console.log("media", media);
+            setMedia((prev) => [...(prev || []), ...Array.from(files)]);
             form.setValue("media", files[0]);
-            console.log("form", form.getValues());
         }
     }
 
     return (
-        <form id="post-create-form" onSubmit={form.handleSubmit((data) => onSubmit(data))}>
-            <FieldGroup>
-                <div className="flex flex-col gap-2">
+        <form id="post-create-form" onSubmit={form.handleSubmit((data) => onSubmit(data))} className=''>
+            <FieldGroup className='h-full flex flex-col justify-between'>
+                <div className="flex flex-col h-full justify-between">
                     <Controller
                         name="content"
                         control={form.control}
                         render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                {/* <FieldLabel htmlFor="post-create-form-content">
-                                    Content
-                                </FieldLabel> */}
+                            <Field data-invalid={fieldState.invalid} className='scrollbar-none max-h-100 mb-4'>
                                 <Textarea
                                     {...field}
                                     id="post-create-form-content"
@@ -81,7 +70,7 @@ const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
                                     placeholder="What's new?"
                                     autoComplete="off"
                                     autoFocus
-                                    className='border-none focus:outline-none focus-visible:ring-0 focus:ring-transparent bg-transparent resize-none w-full'
+                                    className='border-none focus:outline-none focus-visible:ring-0 focus:ring-transparent bg-transparent resize-none md:scrollbar-none'
                                 />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
@@ -104,7 +93,7 @@ const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
                                         <AttachmentActions>
                                             <AttachmentAction aria-label={`Remove ${image.name}`} onClick={() => {
                                                 const updatedMedia = media.filter((_item, index) => index !== media.indexOf(image));
-                                                setMedia(updatedMedia.length > 0 ? updatedMedia : null);
+                                                setMedia(updatedMedia);
                                             }}>
                                                 <XIcon />
                                             </AttachmentAction>
@@ -131,7 +120,7 @@ const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
                                 >
                                     <div className="size-10 overflow-hidden rounded-md relative border">
                                         <div className="flex size-full items-center justify-center text-2xl font-medium">
-                                            <ImageUpIcon className="size-5" />
+                                            <HugeiconsIcon icon={Image03Icon} className="size-5" />
                                         </div>
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-md">
                                         </div>

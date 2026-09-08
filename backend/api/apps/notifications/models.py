@@ -127,7 +127,7 @@ class NotificationTarget(models.Model):
         related_name='targets'
     )
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.BigIntegerField()
+    object_id = models.UUIDField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:

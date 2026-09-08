@@ -5,26 +5,37 @@ from urllib.parse import urlparse, parse_qsl
 
 DEBUG = False
 
+FRONTEND_URL = getenv("FRONTEND_URL", "https://campusandclubs.com").rstrip("/")
+BACKEND_DOMAIN = getenv("BACKEND_DOMAIN", "api.campusandclubs.com")
+COOKIE_DOMAIN = getenv("COOKIE_DOMAIN", ".campusandclubs.com") or None
+
 ALLOWED_HOSTS = [
-    "api.campusandclubs.com",
+    BACKEND_DOMAIN,
+    *([h.strip() for h in getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]),
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://campusandclubs.com",
-    "https://api.campusandclubs.com",
+    FRONTEND_URL,
+    f"https://{BACKEND_DOMAIN}",
+    *([o.strip() for o in getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]),
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://campusandclubs.com",
+    FRONTEND_URL,
+    *([o.strip() for o in getenv("CORS_ALLOWED_ORIGINS", "").split(",") if o.strip()]),
 ]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ["X-CSRFToken"]
 
-# Same registrable domain (campusandclubs.com / api.campusandclubs.com) means
-# SameSite=Lax works natively without needing SameSite=None + Secure.
-SESSION_COOKIE_DOMAIN = ".campusandclubs.com"
-CSRF_COOKIE_DOMAIN = ".campusandclubs.com"
+# Cookie configurations
+# When frontend & backend share a domain (e.g. domain.com & api.domain.com),
+# COOKIE_DOMAIN=".domain.com" allows seamless cookie sharing with SameSite=Lax.
+# For completely distinct root domains, set COOKIE_DOMAIN="" and COOKIE_SAMESITE="None".
+SESSION_COOKIE_DOMAIN = COOKIE_DOMAIN
+CSRF_COOKIE_DOMAIN = COOKIE_DOMAIN
+SESSION_COOKIE_SAMESITE = getenv("COOKIE_SAMESITE", "Lax")
+CSRF_COOKIE_SAMESITE = getenv("COOKIE_SAMESITE", "Lax")
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -46,9 +57,10 @@ DATABASES = {
 }
 
 HEADLESS_FRONTEND_URLS = {
-    "account_reset_password_from_key": "https://campusandclubs.com/@/auth/account/reset-password/{key}",
-    "account_confirm_email": "https://campusandclubs.com/@/auth/account/verify-email/{key}",
-    "account_signup": "https://campusandclubs.com/@/auth/sign-up",
+    "account_reset_password_from_key": f"{FRONTEND_URL}/@/auth/account/reset-password/{{key}}",
+    "account_confirm_email": f"{FRONTEND_URL}/@/auth/account/verify-email/{{key}}",
+    "account_signup": f"{FRONTEND_URL}/@/auth/sign-up",
+    "socialaccount_login_error": f"{FRONTEND_URL}/@/auth/callback",
 }
 
 # Resend only sends to arbitrary recipients once the sending domain is

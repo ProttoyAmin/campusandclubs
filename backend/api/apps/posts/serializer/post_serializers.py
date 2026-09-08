@@ -11,6 +11,15 @@ from apps.posts.serializer import PostMediaSerializer
 from apps.media.serializers import MediaListSerializer
 
 
+class PostMinimalSerializer(serializers.ModelSerializer):
+    id = serializers.CharField()
+    content = serializers.CharField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'content']
+
+
 class PostSerializer(serializers.ModelSerializer):
     """Detailed serializer for user posts with interaction data"""
     id = serializers.CharField()

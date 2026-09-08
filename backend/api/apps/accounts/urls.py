@@ -21,6 +21,7 @@ from apps.accounts.view.user.common import (
     get_user_clubs,
     get_my_affiliations,
     get_my_emails,
+    get_my_clubs,
     UserRetrieveUpdateDestroyView,
     UserListCreateView
 
@@ -64,6 +65,7 @@ urlpatterns = [
 
     # # Current user endpoints
     path('auth/me/', get_current_user, name='current_user'),
+    path('auth/me/clubs/', get_my_clubs, name='my_clubs'),
     path('auth/me/affiliations/', get_my_affiliations, name='my_affiliations'),
     path('auth/me/emails/', get_my_emails, name='my_emails'),
     # path('auth/me/profile/', views.update_profile, name='update_profile'),

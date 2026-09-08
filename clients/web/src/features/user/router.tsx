@@ -1,9 +1,12 @@
 // import UserSettingsLayout from "@/layouts/user/user-settings-layout";
 import { routes } from "@/settings/routes";
 import React from "react";
+import PasswordsPage from "./pages/private/profile-settings/account/passwords-page";
+import EmailPage from "./pages/private/profile-settings/account/email-page";
 
 const Profile = React.lazy(() => import("./pages/public/Profile"));
 const UserPosts = React.lazy(() => import("./pages/private/posts/user-posts"))
+const PostDetail = React.lazy(() => import("./pages/private/posts/post-detail"))
 const UserReels = React.lazy(() => import("./pages/private/reels/user-reels"))
 const UserReposts = React.lazy(() => import("./pages/private/reposts/user-reposts"))
 const UserMedia = React.lazy(() => import("./pages/private/media/user-media"))
@@ -50,6 +53,11 @@ export const userRoutes = [
       },
     ],
   },
+  {
+    id: "user-profile-post",
+    path: routes.user.private.profile.posts.detail,
+    element: <PostDetail />,
+  },
 ];
 
 export const userSettingsRoutes = [
@@ -60,7 +68,7 @@ export const userSettingsRoutes = [
   },
   {
     id: "user-settings-account",
-    path: routes.settings.account,
+    path: routes.settings.account.base,
     element: <Account />,
   },
   {
@@ -72,5 +80,15 @@ export const userSettingsRoutes = [
     id: "user-settings-privacy",
     path: routes.settings.privacy,
     element: <Privacy />,
+  },
+  {
+    id: "user-settings-account-password",
+    path: routes.settings.account.password,
+    element: <PasswordsPage />,
+  },
+  {
+    id: "user-settings-account-email",
+    path: routes.settings.account.email,
+    element: <EmailPage />,
   },
 ];

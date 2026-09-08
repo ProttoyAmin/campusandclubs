@@ -55,6 +55,27 @@ def get_user_activity(request: Request, username: str) -> Response:
 
 
 
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_my_clubs(request: Request) -> Response:
+    """Get all clubs a user has joined"""
+    from apps.clubs.serializer.club.club import ClubListSerializer
+    from apps.accounts.serialize.user import UserClubMembershipSerializer
+    from apps.clubs.models import Membership
+
+    user: User = request.user
+    memberships = Membership.objects.filter(
+        user=user,
+        left_at__isnull=True
+    ).select_related("club")
+    # user.memberships.all()
+    
+    serializer = UserClubMembershipSerializer(
+        memberships,
+        many=True,
+        context={'request': request}
+    )
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])

@@ -18,6 +18,11 @@ export class UserService {
     return response.data;
   }
 
+  async clubs() {
+    const response = await this.userClient.getUserClubs();
+    return response.data;
+  }
+
   async emails() {
     const response = await this.userClient.get_my_emails();
     return response.data;
@@ -34,8 +39,8 @@ export class UserService {
     return response.data;
   }
 
-  async posts(userId: string) {
-    const response = await this.userClient.getUserPosts(userId);
+  async posts(userId: string, media?: "True" | "False") {
+    const response = await this.userClient.getUserPosts(userId, media);
     return response.data;
   }
 

@@ -146,25 +146,28 @@ const ProfileUpdateForm = (
           )}
         />
         <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
+          {/* <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
-          </Button>
-          <Button
-            type="submit"
-            form="profile-update-form"
-            disabled={props?.isPending}
-          >
-            {props?.isPending ? (
-              <>
-                <Spinner />
-                <p>Saving...</p>
-              </>
-            ) : (
-              <p>Save</p>
-            )}
-          </Button>
+          </Button> */}
         </Field>
       </FieldGroup>
+      <Button
+        type="submit"
+        variant="glass"
+        size="lg"
+        form="profile-update-form"
+        className={'w-full rounded-full'}
+        disabled={props?.isPending}
+      >
+        {props?.isPending ? (
+          <>
+            <Spinner />
+            <p>Saving...</p>
+          </>
+        ) : (
+          <p>Done</p>
+        )}
+      </Button>
     </form>
   );
 };

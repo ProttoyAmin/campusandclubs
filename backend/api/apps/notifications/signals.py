@@ -155,16 +155,17 @@ def _send_websocket_notification(notification, recipient, target=None):
         target_data = None
         if primary_actor:
             actor_data = {
-                'id': primary_actor.actor.id,
+                'id': str(primary_actor.actor.id),
                 'username': primary_actor.actor.username,
                 'first_name': primary_actor.actor.first_name,
                 'last_name': primary_actor.actor.last_name,
-                'avatar': primary_actor.actor.avatar or None,
+                'avatar': str(primary_actor.actor.avatar) if getattr(primary_actor.actor, 'avatar', None) else None,
             }
 
         if target:
+            target_id = target.get('id') if isinstance(target, dict) else getattr(target, 'id', None)
             target_data = {
-                'id': target['id'],
+                'id': str(target_id) if target_id is not None else None,
             }
 
         # Prepare notification data
@@ -215,7 +216,7 @@ def create_like_notification(sender, instance, created, **kwargs):
         return None
 
     post_owner = liked_content.author
-    target_object = instance.content_object.__dict__
+    target_object = instance.content_object
 
     # Don't notify if user liked their own post
     if liker == post_owner:

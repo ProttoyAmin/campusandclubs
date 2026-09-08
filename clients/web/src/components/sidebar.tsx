@@ -3,14 +3,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import NavTabs from "./nav-tabs";
 import { userMenu, type MenuItemType } from "@/config/menu/main-menu";
-import { Ellipsis, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { useMe } from "@/features/user/hooks/user.hooks";
 import { clubMenu } from "@/config/menu/club-menu";
 import type { ClubCreateRequestWritable, ClubDetail } from "@campus/api";
-import AppDialog from "@/shared/components/app-dialog";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import ClubCreateForm from "@/features/club/forms/create-club-form";
 import { useInstitutes } from "@/features/institute/hooks/institute.hooks";
 import {
@@ -18,6 +18,8 @@ import {
   useDepartmentTemplates,
 } from "@/features/club/hooks/club.hooks";
 import { toast } from "design/components/ui/toast";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { MenuTwoLineIcon } from "@hugeicons/core-free-icons";
 
 interface SideBarProps {
   main?: boolean;
@@ -39,22 +41,22 @@ const SideBar: React.FC<SideBarProps> = (props) => {
 
   const handleClubCreate = async (data: ClubCreateRequestWritable) => {
     console.log(data)
-    // await create.mutateAsync(data, {
-    //   onSuccess: () => {
-    //     toast.add({
-    //       title: "Club created successfully",
-    //       type: "success",
-    //     });
-    //     setIsCreating(false);
-    //   },
-    //   onError: (error) => {
-    //     toast.add({
-    //       title: "Failed to create club",
-    //       type: "error",
-    //       description: error.response?.data?.detail,
-    //     });
-    //   },
-    // });
+    await create.mutateAsync(data, {
+      onSuccess: () => {
+        toast.add({
+          title: "Club created successfully",
+          type: "success",
+        });
+        setIsCreating(false);
+      },
+      onError: (error) => {
+        toast.add({
+          title: "Failed to create club",
+          type: "error",
+          description: error.response?.data?.detail,
+        });
+      },
+    });
   };
 
   if (props.main) {
@@ -70,9 +72,10 @@ const SideBar: React.FC<SideBarProps> = (props) => {
             menu={userMenu(currentUser?.username || "")}
             className="flex flex-row md:flex-col space-y-2 w-full self-start"
           />
-          <AppDialog
-          open={isCreating}
-          onOpenChange={setIsCreating}
+          <ResponsiveDialog
+            open={isCreating}
+            showCloseButton={false}
+            onOpenChange={setIsCreating}
             trigger={
               <Button
                 variant="ghost"
@@ -91,15 +94,15 @@ const SideBar: React.FC<SideBarProps> = (props) => {
               templates={templates}
               isPending={create.isPending || templatesIsPending}
             />
-          </AppDialog>
+          </ResponsiveDialog>
         </div>
         <div className="flex flex-col space-y-2">
           <h1 className="text-muted-foreground text-xs">Clubs</h1>
           {clubs &&
             clubs.map((club: any) => (
               <NavTabs
-                key={club?.club_id}
-                menu={clubMenu(club.club_id, club.club_name, club.club_slug)}
+                key={club?.id}
+                menu={clubMenu(club?.id, club.name, club.slug)}
                 className="flex flex-row md:flex-col space-y-2 w-full self-start"
               />
             ))}
@@ -109,7 +112,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
             menu={SettingsDropdownMenu}
             trigger={
               <Button variant="ghost">
-                <Ellipsis className="size-5" />
+                <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
               </Button>
             }
           />

@@ -48,7 +48,9 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
     def _get_object(self, pk: int) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
 
-    def list_clubs(self, viewer: User | AnonymousUser, filters: ClubListFilters) -> QuerySet[Club]:
+    def list_clubs(self, viewer: User | AnonymousUser, filters: ClubListFilters | None = None) -> QuerySet[Club]:
+        if filters is None:
+            filters = ClubListFilters()
         clubs = (
             self.repository.joined_by(viewer)
             if filters.joined

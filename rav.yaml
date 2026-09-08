@@ -9,6 +9,7 @@ scripts:
   backend:migrate: cd backend/api && uv run python manage.py migrate
   backend:build:migrate: cd backend/api && $env:DEBUG="False"; uv run python manage.py migrate
   backend:server: cd backend/api && uv run python manage.py runserver localhost:8000
+  backend:build:server: cd backend/api && $env:DEBUG="False"; uv run python manage.py runserver localhost:8000
   backend:schema: cd backend/api && uv run python manage.py spectacular --file ../../packages/api/schema/openapi.yaml
 
   web:dev: pnpm --filter web dev

@@ -43,10 +43,16 @@ class MediaListSerializer(serializers.ModelSerializer):
         fields = ["id", "file", "position", "role"]
 
     def get_file(self, obj: Media):
+        from cloudinary import CloudinaryResource
+        file: CloudinaryResource = obj.file
         return {
-            "url": obj.file.url,
-            "public_id": obj.file.public_id,
-            "resource_type": obj.file.resource_type,
+            "url": file.url,
+            "public_id": file.public_id,
+            "resource_type": file.resource_type,
+            "type": file.type,
+            "version": file.version,
+            "format": file.format,
+            "secure_url": file.source(secure=True)
         }
 
     # def get_target(self, obj: Media):

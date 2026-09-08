@@ -30,6 +30,10 @@ class Media(models.Model):
 
 
     file = CloudinaryField("media")
+    original_file_name = models.CharField(
+        max_length=255,
+        blank=True
+    )
 
     role = models.CharField(
         max_length=20, choices=MediaRole.choices

@@ -15,6 +15,7 @@ from apps.clubs.viewss.club.common import (
     AF_ListCreateAPIView,
     trending_clubs,
     search_clubs,
+    list_posts,
     clubs_by_origin,
     club_stats,
     ClubMediaUploadView,
@@ -144,7 +145,7 @@ urlpatterns = [
     # #          name='upcoming_events'),  # NEW
     # #     path('<int:pk>/events/past/', views_event_views.past_events,
     # #          name='past_events'),  # NEW
-    path('<uuid:pk>/posts/', views_clubs_post_views.list_posts, name='list_posts'),
+    path('<uuid:pk>/posts/', list_posts, name='list_posts'),
 
     #     # ==================== CLUB SETTINGS ====================
     # #     path('<int:pk>/settings/', views.club_settings, name='club_settings'),  # NEW

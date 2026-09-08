@@ -4,7 +4,7 @@ import { paths } from "@/settings/routes";
 import ClubDropdown from "../club/club-dropdown";
 import NavigateButtons from "@/shared/components/navigate-buttons";
 import { Button } from "design/components/ui/button";
-import { CircleEllipsis, Search, Settings } from "lucide-react";
+import { CircleEllipsis } from "lucide-react";
 import { Spinner } from "design/components/ui/spinner";
 import {
   Avatar,
@@ -13,6 +13,9 @@ import {
 } from "design/components/ui/avatar";
 import { useUpdateClub } from "../../hooks/club.hooks";
 import { toast } from "design/components/ui/toast";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
+import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
 
 const ClubLayoutHeader = ({
   club,
@@ -70,7 +73,7 @@ const ClubLayoutHeader = ({
                 navigate(paths.public.club.slug(slug));
               }}
             >
-              <AvatarImage src={club.avatar || undefined} alt={club.name} />
+              <AvatarImage src={club.avatar || GokuImage} alt={club.name} />
               <AvatarFallback>{club?.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
@@ -110,7 +113,7 @@ const ClubLayoutHeader = ({
             )}
 
             <Button variant={"ghost"} className={"rounded-full"} size="icon">
-              <Search className="size-5" />
+              <HugeiconsIcon icon={Search01Icon} className="size-5" />
             </Button>
             {club?.is_owner ? (
               <Button
@@ -121,10 +124,11 @@ const ClubLayoutHeader = ({
                   navigate(paths.private.club.config(slug));
                 }}
               >
-                <Settings className="size-5 transition-transform duration-200 group-hover:rotate-45" />
+                <HugeiconsIcon icon={Settings01Icon} className="size-5 transition-transform duration-200 group-hover:rotate-45" />
               </Button>
             ) : (
               <ClubDropdown
+                club={club}
                 trigger={
                   <Button
                     variant={"ghost"}

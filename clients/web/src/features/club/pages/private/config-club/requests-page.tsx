@@ -1,20 +1,22 @@
 import { useClubRequestsOutlet } from "@/features/club/context/club-requests-context";
 import ApplicationCard from "@/features/club/components/club/application-card";
 import type { ApplicationType } from "@/features/club/types/application";
+import { ClubRequestsMenu } from "@/config/menu/club/reqeusts-menu";
+import NavTabs from "@/components/nav-tabs";
+import { useParams } from "react-router-dom";
+import EmptyState from "@/shared/components/empty-state";
 
 const ClubRequestsPage = () => {
   const { applications } = useClubRequestsOutlet();
+  const params = useParams();
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {applications?.map((application) => (
-        <div key={application.id} className="grid grid-cols-1">
-          <ApplicationCard
-            application={application as unknown as ApplicationType}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <NavTabs
+        menu={ClubRequestsMenu(params.slug!)}
+        className="flex flex-col space-y-2"
+      />
+    </>
   );
 };
 

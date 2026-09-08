@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { routes } from "@/settings/routes";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "@/features/auth/hooks/session.hook";
+import { authentication } from "../../services/authentication";
 
 type SignInFormProps = {
   onSubmit: (data: SignInSchemaType) => void;
@@ -132,21 +133,23 @@ const SignInForm = (props: SignInFormProps) => {
           variant="glass"
           className={"rounded-full w-full"}
           size="lg"
+          disabled={props.pending || socialLogin.isPending}
           onClick={() => {
             socialLogin.mutate("google");
           }}
         >
-          {socialLogin.isPending && (
+          {socialLogin.isPending ? (
             <Spinner className="size-4" data-icon="inline-start" />
+          ) : (
+            <img
+              src={googleIconLogo}
+              alt=""
+              className="mr-2"
+              width={14}
+              height={14}
+            />
           )}
-          <img
-            src={googleIconLogo}
-            alt=""
-            className="mr-2"
-            width={14}
-            height={14}
-          />{" "}
-          Google
+          {socialLogin.isPending ? "Connecting to Google..." : "Google"}
         </Button>
       </div>
     </CardContent>
