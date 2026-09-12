@@ -9,9 +9,9 @@ import type {
 import { queryClient } from "@/config/query-client";
 import type { AppError } from "@/settings/app/error";
 import type { AllauthError } from "@/features/auth/api/auth.client";
-import type { PostExtended } from "@/features/posts/components/post-card";
 import type { PaginaatedClubPostsResponse } from "@/features/club/http/club.http";
 import type { AxiosResponse } from "axios";
+import type { ChangePasswordSchemaType } from "validation/auth";
 
 export const useUsers = () => {
   return useQuery({
@@ -94,9 +94,9 @@ export const useAccount = () => {
   });
 
   const passwordChange = useMutation<
-    AccountsAuthUsersSetPasswordCreateResponse,
+    void,
     AppError<AllauthError>,
-    SetPasswordRequest
+    ChangePasswordSchemaType
   >({
     mutationFn: (data) => {
       return accounts.password_change(data);

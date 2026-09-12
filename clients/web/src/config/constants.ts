@@ -5,3 +5,4 @@
 //         ]
 //     }
 // }
+export const APP_NAME = "Campus and Clubs";

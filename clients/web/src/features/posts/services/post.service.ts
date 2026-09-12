@@ -27,6 +27,10 @@ export class PostService {
   async comments(post_id: string) {
     return await postsClient.comments(post_id);
   }
+
+  async soft_delete(post_id: string) {
+    return await postsClient.delete(post_id);
+  }
 }
 
 export const posts = new PostService();

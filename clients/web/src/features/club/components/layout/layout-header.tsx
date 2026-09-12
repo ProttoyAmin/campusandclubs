@@ -16,6 +16,7 @@ import { toast } from "design/components/ui/toast";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
 import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
+import type { ClubDetail } from "@campus/api";
 
 const ClubLayoutHeader = ({
   club,
@@ -23,7 +24,7 @@ const ClubLayoutHeader = ({
   handleJoin,
   isJoinPending,
 }: {
-  club: any;
+  club: ClubDetail;
   slug: string;
   handleJoin: () => void;
   isJoinPending: boolean;
@@ -33,6 +34,15 @@ const ClubLayoutHeader = ({
   const location = useLocation();
 
   const handleLeave = () => {
+    if (club.preferences?.leave_application === true) {
+      toast.add({
+        title: "Leave application required",
+        description: "You cannot leave this club without a leave application",
+        type: "error",
+      });
+      return;
+    }
+
     leave.mutate(undefined, {
       onSuccess: () => {
         toast.add({
@@ -79,7 +89,7 @@ const ClubLayoutHeader = ({
             <div className="flex flex-col">
               <p className="text-lg">{club?.name}</p>
               <span className="text-sm text-muted-foreground">
-                {club?.member_count || (club?.total_members as string)} members
+                {club?.total_members} members
               </span>
             </div>
           </div>
@@ -91,6 +101,7 @@ const ClubLayoutHeader = ({
                   club?.is_member
                     ? "ghost"
                     : club?.application &&
+                      //@ts-ignore
                       club?.application?.status === "pending"
                       ? "secondary"
                       : "outline"
@@ -106,6 +117,7 @@ const ClubLayoutHeader = ({
                   ? "Joining..."
                   : club?.is_member
                     ? "Joined"
+                    //@ts-ignore  
                     : club?.application?.status === "pending"
                       ? "Pending"
                       : "Join"}

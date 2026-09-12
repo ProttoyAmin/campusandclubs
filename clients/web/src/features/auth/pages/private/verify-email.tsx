@@ -28,7 +28,6 @@ const VerifyEmail = () => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          console.log("Verification complete after 3 seconds");
           handle_verify();
           return 0;
         }

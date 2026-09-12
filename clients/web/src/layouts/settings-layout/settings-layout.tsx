@@ -5,10 +5,10 @@ import { useMe } from "@/features/user/hooks/user.hooks";
 import { SettingsMenu } from "@/config/menu/settings-menu";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React from "react";
-import { useSession } from "@/features/auth/hooks";
 import type { UserProfile } from "@campus/api";
 import { routes } from "@/settings/routes";
 import NavTabs from "@/components/nav-tabs";
+import { APP_NAME } from "@/config/constants";
 
 export interface UserSettingsLayoutProps {
   me: UserProfile;
@@ -16,13 +16,12 @@ export interface UserSettingsLayoutProps {
 
 const SettingsLayout = () => {
   const { data: me } = useMe();
-  const { data: currentUser } = useSession();
   const pageHeader = usePageHeader();
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
-    document.title = "Settings | " + me?.username;
+    document.title = `Settings | ${me?.username} • ${APP_NAME}`;
   }, [me]);
 
   React.useEffect(() => {

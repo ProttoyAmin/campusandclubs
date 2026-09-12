@@ -22,7 +22,6 @@ export const usePosts = (params?: Record<string, unknown>) => {
   const create = useMutation({
     mutationFn: (data: PostCreateInput) => posts.create(data),
     onSuccess: () => {
-      list.refetch();
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
@@ -37,10 +36,14 @@ export const usePost = (id: string) => {
     enabled: !!id,
   });
 
+  const softDelete = useMutation({
+    mutationFn: () => posts.soft_delete(id),
+  });
+
   const comments = useQuery({
     queryKey: ["posts", id, "comments"],
     queryFn: () => posts.comments(id),
   });
 
-  return { retrieve, comments };
+  return { retrieve, softDelete, comments };
 };

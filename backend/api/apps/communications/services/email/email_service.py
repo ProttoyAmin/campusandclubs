@@ -79,8 +79,6 @@ class EmailService(BaseService[Email, EmailRepository]):
 
         return self.send_resend_email(email, recipient.email)
 
-    # TODO: Fix this shit
-    # UPDATE: FIXED! But needs polishing
     def send_resend_email(self, email: Email, receiver: str):
         django_email = AnymailMessage(
             subject=email.subject,

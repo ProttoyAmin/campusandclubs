@@ -93,13 +93,6 @@ class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[P
             status=status.HTTP_201_CREATED,
         )
 
-        # return Response({
-        #     "message": "Post created successfully",
-        #     "data": serializer.validated_data,
-        #     "media": media.name if media else None,
-        #     "clubs": ClubMinimalSerializer(clubs, many=True).data if clubs else None,
-        # })
-
 
 class PostUpdateDestroyView(ServiceMixin[PostService], generics.RetrieveUpdateDestroyAPIView[Post]):
     serializer_class = PostSerializer

@@ -1,14 +1,13 @@
-export {
-    signUpSchema,
-    type SignUpSchemaType,
-} from "./sign-up-schema";
+export { signUpSchema, type SignUpSchemaType } from "./sign-up-schema";
+
+export { signInSchema, type SignInSchemaType } from "./sign-in-schema";
 
 export {
-    signInSchema,
-    type SignInSchemaType,
-} from "./sign-in-schema";
-
-export {
-    resetPasswordSchema,
-    type ResetPasswordSchemaType,
+  resetPasswordSchema,
+  type ResetPasswordSchemaType,
 } from "./reset-password-schema";
+
+export {
+  changePasswordSchema,
+  type ChangePasswordSchemaType,
+} from "./change-password-schema";

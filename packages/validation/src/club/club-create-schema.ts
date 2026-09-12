@@ -32,7 +32,7 @@ export const clubCreateSchema = z
   .superRefine((data, ctx) => {
     if (data.privacy === "secret" && data.join_mode !== "invite_only") {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "Secret clubs must be invite-only.",
         path: ["join_mode"],
       });
@@ -42,9 +42,33 @@ export const clubCreateSchema = z
       !["application", "invite_only"].includes(data.join_mode ?? "")
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "Private clubs must use application or invite-only join mode.",
         path: ["join_mode"],
+      });
+    }
+
+    if (data.privacy === "public" && data.join_mode === "invite_only") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Public clubs cannot use invite only join mode.",
+        path: ["join_mode"],
+      });
+    }
+
+    if (!data.origin && data.scope !== "global") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Local clubs must have global scope.",
+        path: ["scope"],
+      });
+    }
+
+    if (data.origin && data.scope === "global") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Originating clubs must have a scope other than global.",
+        path: ["scope"],
       });
     }
   });

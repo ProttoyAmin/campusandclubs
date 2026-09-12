@@ -17,7 +17,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
     },
     {
       id: 2,
-      label: "Permissions",
+      label: "Roles & Permissions",
       icon: <ShieldCheckIcon size={18} />,
       iconActive: (
         <ShieldCheckIcon size={18} fill="currentColor" stroke="currentColor" />

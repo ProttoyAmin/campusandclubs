@@ -121,11 +121,17 @@ export const paths = {
     auth: {
       activation: routes.auth.private.activation,
       forgot_password: routes.auth.private.forgot_password,
-      reset_password: (uid: string, token: string) =>
+      reset_password: (key: string) =>
         generateRouteFromPath(routes.auth.private.reset_password, {
-          uid,
-          token,
+          key,
         }),
+
+      verify_email: (key: string) =>
+        generateRouteFromPath(routes.auth.private.verify_email, {
+          key,
+        }),
+
+      verify_email_otp: routes.auth.private.verify_email_otp,
     },
   },
 

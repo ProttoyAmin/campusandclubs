@@ -24,7 +24,12 @@ import {
 } from "@hugeicons/core-free-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { getTimeAgo } from "@/utils/format-date";
-import { paths, routes } from "@/settings/routes";
+import { paths } from "@/settings/routes";
+import {
+    DropdownMenuGroup,
+    DropdownMenuItem,
+} from "design/components/ui/dropdown-menu";
+import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu";
 
 export type MediaListExtended = MediaList & {
     id: string | number;
@@ -65,11 +70,11 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                         </Avatar>
                     </Link>
                 </CardHeader>
-                <div className={`w-full ${enableNavigate ? "cursor-pointer" : ""}`} onClick={(e: React.MouseEvent) => {
+                <div className={`w-full`} onClick={(e: React.MouseEvent) => {
                     e.stopPropagation()
-                    if (enableNavigate) {
-                        navigate(`/@/${post.author?.username}/posts/${post.id}`)
-                    }
+                    // if (enableNavigate) {
+                    //     navigate(`/@/${post.author?.username}/posts/${post.id}`)
+                    // }
                 }}>
                     <CardDescription className="flex flex-row justify-between items-center">
                         <div className="flex flex-row gap-2 items-center">
@@ -81,11 +86,22 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                 {getTimeAgo(post.created_at)}
                             </span>
                         </div>
-                        <Button variant={"ghost"} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); }}>
-                            <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
-                        </Button>
+                        <ResponsiveDropDownMenu
+                            trigger={<Button variant={"ghost"} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); }}>
+                                <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
+                            </Button>}
+                        >
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem>First Item</DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </ResponsiveDropDownMenu>
                     </CardDescription>
-                    <CardContent className="p-0">
+                    <CardContent className={`p-0 ${enableNavigate ? "cursor-pointer" : ""}`} onClick={(e: React.MouseEvent) => {
+                        e.stopPropagation()
+                        if (enableNavigate) {
+                            navigate(`/@/${post.author?.username}/posts/${post.id}`)
+                        }
+                    }}>
                         <div className="mb-4">
                             <p>{post.content}</p>
                         </div>
@@ -106,20 +122,18 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                             </div>
                         ) : null}
                     </CardContent>
-                    <CardFooter className="p-0 mt-2" onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                    }}>
+                    <CardFooter className="p-0 mt-2">
                         <div className="flex items-center">
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full">
-                                    <HugeiconsIcon icon={FavouriteIcon} className="size-5 text-red-500" fill="red" />
-                                    <span className="text-xs text-muted-foreground">
+                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
+                                    <HugeiconsIcon icon={FavouriteIcon} className={`size-5 ${post.is_liked ? 'text-red-500' : 'text-muted-foreground'}`} fill={post.is_liked ? 'red' : 'none'} />
+                                    <span className={`text-xs text-muted-foreground ${post.is_liked ? 'text-red-500' : 'text-muted-foreground'}`}>
                                         {post.like_count}
                                     </span>
                                 </Button>
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full">
+                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
                                     <HugeiconsIcon icon={MessageCircleIcon} className="size-5" />
                                     <span className="text-xs text-muted-foreground">
                                         {post.comment_count}
@@ -127,7 +141,7 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                 </Button>
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full">
+                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
                                     <HugeiconsIcon
                                         icon={Refresh03Icon}
                                         className="size-5"
@@ -138,7 +152,7 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                 </Button>
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full">
+                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
                                     <HugeiconsIcon icon={SendIcon} className="size-5" />
                                     <span className="text-xs text-muted-foreground">
                                         {post.share_count}

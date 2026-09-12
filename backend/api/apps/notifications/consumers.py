@@ -137,6 +137,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         from urllib.parse import parse_qs
 
         # Try query string first
+        print(self.scope)
         query_string = self.scope.get("query_string", b"").decode()
         params = parse_qs(query_string)
         token_list = params.get("token")
@@ -151,7 +152,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         if cookie_header:
             from django.http import parse_cookie
             cookies = parse_cookie(cookie_header)
-            return cookies.get("access")
+            return cookies.get("sessionid")
 
         return None
 

@@ -30,7 +30,7 @@ class SendEmailAPIView(ServiceMixin[EmailService, ], generics.ListCreateAPIView)
         serializer = self.get_serializer_class()(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        email = self.get_service(request).send_club_email(
+        self.get_service(request).send_club_email(
             sender=request.user,
             receiver=serializer.validated_data["receiver"],
             club_id=serializer.validated_data["club_id"],

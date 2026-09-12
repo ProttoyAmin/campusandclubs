@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import PageHeaderProvider from "./page-header-provider";
+import ErrorBundary from "@/shared/pages/error-boundary";
 
 export function AppProviders({
     queryClient,
@@ -10,9 +11,11 @@ export function AppProviders({
 }) {
     return (
         <QueryClientProvider client={queryClient}>
-            <PageHeaderProvider>
-                {children}
-            </PageHeaderProvider>
+            <ErrorBundary>
+                <PageHeaderProvider>
+                    {children}
+                </PageHeaderProvider>
+            </ErrorBundary>
         </QueryClientProvider>
     );
 }

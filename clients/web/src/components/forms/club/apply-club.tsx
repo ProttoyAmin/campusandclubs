@@ -49,7 +49,7 @@ const ClubApplicationForm = (props: ClubApplicationProps) => {
             )}
           />
         </div>
-        <Button type="submit">
+        <Button type="submit" variant="glass" className={'rounded-full'} size="lg">
           {form.formState.isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </FieldGroup>

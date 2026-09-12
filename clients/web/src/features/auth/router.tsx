@@ -2,6 +2,7 @@ import { routes } from "@/settings/routes";
 import React from "react";
 import VerifyEmail from "./pages/private/verify-email";
 import SocialAuthCallback from "./pages/public/social-callback";
+import VerifyEmailOTP from "./pages/private/verify-email-otp";
 
 const SignIn = React.lazy(() => import("./pages/public/sign-in"));
 
@@ -30,7 +31,7 @@ export const authRoutes = [
     path: routes.auth.public.social_callback,
     element: <SocialAuthCallback />,
   },
-  
+
   {
     path: routes.auth.private.activation,
     element: <Activation />,
@@ -46,5 +47,9 @@ export const authRoutes = [
   {
     path: routes.auth.private.verify_email,
     element: <VerifyEmail />,
+  },
+  {
+    path: routes.auth.private.verify_email_otp,
+    element: <VerifyEmailOTP />,
   },
 ];

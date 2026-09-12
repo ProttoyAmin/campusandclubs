@@ -12,36 +12,11 @@ import {
   AvatarImage,
 } from "design/components/ui/avatar";
 import { Button } from "design/components/ui/button";
+import ToggleFollowButton from "../actions/follow-button";
 
 export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
   return (
     <div className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
-      {/* <CardHeader>
-        <CardTitle className="flex justify-between ">
-          <div>
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl">
-                {data.first_name} {data.last_name}
-              </h1>
-            </div>
-            <CardDescription>{data.username}</CardDescription>
-            <CardDescription>{data.detail}</CardDescription>
-          </div>
-          <Avatar size="3xl">
-            <AvatarImage src={data.avatar || undefined} alt={data.username} />
-            <AvatarFallback>{data.username[0]}</AvatarFallback>
-          </Avatar>
-        </CardTitle>
-        <div className="flex gap-2 items-center">
-          <CardDescription className="text-sm">
-            {data.follower_count}{" "}
-            {data.follower_count === 1 ? "follower" : "followers"}
-          </CardDescription>
-          <CardDescription className="text-sm">
-            {data.following_count} following
-          </CardDescription>
-        </div>
-      </CardHeader> */}
       <CardHeader className="block md:flex md:flex-row-reverse justify-between">
         <CardTitle className="place-items-center">
           <Avatar size="3xl">
@@ -70,15 +45,15 @@ export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ 
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="flex gap-2 mt-16">
+          <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
+          <Button variant={"ghost"} className="w-1/2 rounded-full">Message</Button>
+        </div>
         <div className="text-center py-10">
           <h2 className="text-2xl font-bold">This Account is Private</h2>
           <p className="text-muted-foreground mt-2">
             Follow to see their content.
           </p>
-        </div>
-        <div className="flex gap-2 mt-2">
-          <Button variant={"default"} className="w-1/2 rounded-full">Follow</Button>
-          <Button variant={"outline"} className="w-1/2 rounded-full">Message</Button>
         </div>
       </CardContent>
     </div>

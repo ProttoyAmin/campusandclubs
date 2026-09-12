@@ -5,6 +5,7 @@ import type {
 import { userClient } from "../api/user.client";
 import { UserService } from "./user.service";
 import { authentication } from "@/features/auth/services/authentication";
+import type { ChangePasswordSchemaType } from "validation/auth";
 
 class AccountService {
   private userClient = userClient;
@@ -43,8 +44,13 @@ class AccountService {
     return await authentication.resend_email_verification();
   }
 
-  async password_change(data: SetPasswordRequest) {
-    const response = await this.userClient.passwordChange(data);
+  async password_change(data: ChangePasswordSchemaType) {
+    const payload = {
+      current_password: data.old_password,
+      new_password: data.new_password1,
+    };
+
+    const response = await this.userClient.passwordChange(payload);
     return response.data;
   }
 }

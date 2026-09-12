@@ -256,65 +256,6 @@ const EmailPage = () => {
                                 </Button>
                             </form>
                         ) : (
-                            // <form className="flex flex-col gap-3 w-fit mx-auto" onSubmit={(e) => {
-                            //     e.preventDefault();
-                            //     handleVerify(key);
-                            // }}>
-                            //     <InputOTP maxLength={8} value={key} onChange={(value) => setKey(value)}>
-                            //         <InputOTPGroup>
-                            //             <InputOTPSlot index={0}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={1}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={2}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={3}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //         </InputOTPGroup>
-                            //         <InputOTPSeparator />
-                            //         <InputOTPGroup>
-                            //             <InputOTPSlot index={4}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={5}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={6}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //             <InputOTPSlot index={7}
-                            //                 aria-invalid={verifyAccountEmail.isError} />
-                            //         </InputOTPGroup>
-                            //     </InputOTP>
-                            //     {verifyAccountEmail.isError && (
-                            //         <p className="text-red-500 text-sm">
-                            //             {verifyAccountEmail.error?.response?.data.errors?.[0]?.message || "Invalid code"}
-                            //         </p>
-                            //     )}
-
-                            //     <Button
-                            //         type="submit"
-                            //         variant="outline"
-                            //         className="w-full rounded-full"
-                            //     >
-                            //         {verifyAccountEmail.isPending ? (
-                            //             <div className="flex items-center gap-2">
-                            //                 <Spinner />
-                            //                 <span>Verifying...</span>
-                            //             </div>
-                            //         ) : (
-                            //             "Confirm"
-                            //         )}
-                            //     </Button>
-
-                            //     <Button variant="default" onClick={handleResend} className={'w-full rounded-full'}>
-                            //         {resendVerification.isPending ? (
-                            //             <div className="flex items-center gap-2">
-                            //                 <Spinner />
-                            //                 <span>Resending...</span>
-                            //             </div>
-                            //         ) : (
-                            //             "Resend"
-                            //         )}
-                            //     </Button>
-                            // </form>
                             <OTPVerifyForm
                                 otp={key}
                                 onChange={setKey}

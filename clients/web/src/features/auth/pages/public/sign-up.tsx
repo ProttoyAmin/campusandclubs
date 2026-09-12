@@ -12,7 +12,7 @@ const SignUp: React.FC = () => {
   const handleSubmit = async (formData: RegisterRequestWritable) => {
     signUp.mutate(formData, {
       onSuccess: () => {
-        navigate(paths.public.auth.signIn);
+        navigate(paths.private.auth.verify_email_otp);
       },
     });
   };

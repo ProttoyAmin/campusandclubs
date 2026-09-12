@@ -1,7 +1,8 @@
 import { renderToPipeableStream, type PipeableStream } from "react-dom/server";
-import App from "./App";
+// import App from "./App";
 import './App.css';
-import { createQueryClient } from "./config/query-client";
+// import { createQueryClient } from "./config/query-client";
+import { queryClient } from "./config/query-client";
 import { AppProviders } from "./providers/app-providers";
 import { StrictMode } from "react";
 import { ThemeProvider } from "./providers/theme-provider";
@@ -21,7 +22,7 @@ type RenderCallbacks = {
 
 
 export async function render(url: string, callbacks: RenderCallbacks) {
-    const queryClient = createQueryClient();
+    // const queryClient = createQueryClient();
     const { query, dataRoutes } = createStaticHandler(routes);
 
     const request = new Request(`http://localhost:3000${url}`);

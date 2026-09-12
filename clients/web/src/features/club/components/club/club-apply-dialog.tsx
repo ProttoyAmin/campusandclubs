@@ -10,6 +10,7 @@ import type { MembershipApplicationCreateRequest } from "@campus/api";
 import { useApplyToClub } from "../../hooks/club.hooks";
 import { useParams } from "react-router-dom";
 import { toast } from "design/components/ui/toast";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
 
 type DialogProps = {
   open: boolean;
@@ -28,6 +29,8 @@ export function ClubApplicationDialog({
 }: DialogProps) {
   const { slug } = useParams();
   const { mutate: applyToClub } = useApplyToClub(clubId || "", slug || "");
+
+
   const onSubmit = (data: MembershipApplicationCreateRequest) => {
     applyToClub(data, {
       onSuccess: (id) => {
@@ -46,14 +49,8 @@ export function ClubApplicationDialog({
     });
   };
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
-        </DialogHeader>
-        <ClubApplicationForm onSubmit={onSubmit} />
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog open={open} onOpenChange={onOpenChange} trigger={<></>} title={title} description={description}>
+      <ClubApplicationForm onSubmit={onSubmit} />
+    </ResponsiveDialog>
   );
 }

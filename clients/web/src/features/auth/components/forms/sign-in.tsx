@@ -5,15 +5,13 @@ import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
 import { Separator } from "design/components/ui/separator";
-
 import { Field, FieldError, FieldGroup } from "design/components/ui/field";
-import { useNavigate } from "react-router-dom";
 import type { AllauthError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { routes } from "@/settings/routes";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "@/features/auth/hooks/session.hook";
-import { authentication } from "../../services/authentication";
+import { Link } from "react-router-dom";
 
 type SignInFormProps = {
   onSubmit: (data: SignInSchemaType) => void;
@@ -30,8 +28,6 @@ const SignInForm = (props: SignInFormProps) => {
       password: "",
     },
   });
-
-  const navigate = useNavigate();
 
   return (
     <CardContent>
@@ -93,24 +89,18 @@ const SignInForm = (props: SignInFormProps) => {
             )}
           />
           <CardAction className="flex justify-between w-full">
-            <Button
-              variant="link"
-              className={"text-blue-500"}
-              onClick={() => {
-                navigate(routes.auth.private.forgot_password);
-              }}
+            <Link
+              to={routes.auth.private.forgot_password}
+              className={"place-items-end-safe text-primary cursor-pointer w-fit transition-all duration-200 border-b border-transparent hover:border-b hover:border-primary/50"}
             >
               Forgotten password?
-            </Button>
-            <Button
-              variant="link"
-              className={"w-fit"}
-              onClick={() => {
-                navigate(routes.auth.public.sign_up);
-              }}
+            </Link>
+            <Link
+              to={routes.auth.public.sign_up}
+              className={"place-items-end-safe text-primary cursor-pointer w-fit transition-all duration-200 border-b border-transparent hover:border-b hover:border-primary/50"}
             >
               Sign up
-            </Button>
+            </Link>
           </CardAction>
           <Button
             type="submit"

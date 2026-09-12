@@ -4,19 +4,19 @@ import { signUpSchema, type SignUpSchemaType } from "validation/auth";
 import { CardContent } from "design/components/ui/card";
 import { Input } from "design/components/ui/input";
 import { Button } from "design/components/ui/button";
-
 import {
   Field,
   FieldError,
   FieldGroup,
 } from "design/components/ui/field";
-import { useNavigate } from "react-router-dom";
 import { Spinner } from "design/components/ui/spinner";
 import type { SignUpError } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "design/components/ui/separator";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "../../hooks/session.hook";
+import { Link } from "react-router-dom";
+import { routes } from "@/settings/routes";
 
 type SignUpFormProps = {
   onSubmit: (data: SignUpSchemaType) => void;
@@ -26,7 +26,6 @@ type SignUpFormProps = {
 
 const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
   const { socialLogin } = useSocials();
-  const navigate = useNavigate();
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
@@ -47,9 +46,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* <FieldLabel htmlFor="sign-up-form-username">
-                  Username
-                </FieldLabel> */}
                 <Input
                   {...field}
                   id="username"
@@ -79,7 +75,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* <FieldLabel htmlFor="sign-up-form-email">Email</FieldLabel> */}
                 <Input
                   {...field}
                   id="email"
@@ -108,9 +103,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* <FieldLabel htmlFor="sign-up-form-password">
-                  Password
-                </FieldLabel> */}
                 <Input
                   {...field}
                   id="password"
@@ -143,9 +135,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* <FieldLabel htmlFor="sign-up-form-re_password">
-                  Confirm Password
-                </FieldLabel> */}
                 <Input
                   {...field}
                   id="re_password"
@@ -173,14 +162,12 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
               </Field>
             )}
           />
-          <Button
-            type="button"
-            className="place-items-end-safe"
-            onClick={() => navigate("../@/auth/sign-in")}
-            variant="link"
+          <Link
+            to={routes.auth.public.sign_in}
+            className="place-items-end-safe text-primary cursor-pointer w-fit transition-all duration-200 border-b border-transparent hover:border-b hover:border-primary/50"
           >
             Already have an account?
-          </Button>
+          </Link>
           <Button
             type="submit"
             variant="glass"
@@ -221,28 +208,6 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
           />{" "}
           Google
         </Button>
-        {/* <Button
-          type="button"
-          variant="glass"
-          className={"rounded-full w-1/2"}
-          size="lg"
-          onClick={() => {
-            // socialLogin.mutate("google");
-            console.log('facebook login attempt')
-          }}
-        >
-          {socialLogin.isPending && (
-            <Spinner className="size-4" data-icon="inline-start" />
-          )}
-          <img
-            src={facebookIconLogo}
-            alt=""
-            className=""
-            width={34}
-            height={34}
-          />{" "}
-          Facebook
-        </Button> */}
       </div>
     </CardContent>
   );

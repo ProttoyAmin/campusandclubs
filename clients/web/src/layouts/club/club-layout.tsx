@@ -129,10 +129,8 @@ export const ClubMainLayout: React.FC = () => {
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions}
       </div>
-      {/* <div className="md:hidden">
-        <Header />
-      </div> */}
-      <Card ref={scrollRef} className="w-full shadow-lg shadow-gray-300 bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+      <Card ref={scrollRef} className="w-full shadow-lg  bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+        {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
         <Outlet context={{ club }} />
       </Card>
     </section>

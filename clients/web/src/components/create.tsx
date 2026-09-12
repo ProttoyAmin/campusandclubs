@@ -40,11 +40,10 @@ const Create = () => {
       clubs: value.length > 0 ? value[0] : undefined,
     };
 
-    console.log("submit", payload);
     create.mutate(payload, {
       onSuccess() {
         toast.add({
-          title: "Post created successfully",
+          title: "Posted",
           type: "success",
         });
         setDialogOpen(false);
@@ -54,7 +53,7 @@ const Create = () => {
       onError(error: any) {
         console.log(error.response.data);
         toast.add({
-          title: "Failed to create post",
+          title: "Failed for some reaason, Try again later.",
           description: error.response.data.detail.message,
           type: "error",
         });
@@ -98,7 +97,7 @@ const Create = () => {
             variant={"outline"}
             size={"lg"}
             disabled={create.isPending}
-            className="shadow-2xl w-full"
+            className="shadow-2xl w-full rounded-full"
           >
             {create.isPending ? <><Spinner /> Posting...</> : "Post"}
           </Button>

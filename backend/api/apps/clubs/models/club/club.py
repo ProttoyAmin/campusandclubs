@@ -32,6 +32,11 @@ _ALLOWED_JOIN_MODES: dict[str, tuple[str, ...]] = {
     Visibility.SECRET: (JoinMode.INVITE_ONLY,),
 }
 
+_ALLOWED_SCOPE: dict[str, MembershipScope] = {
+
+    
+}
+
 
 class Club(models.Model):
 
@@ -137,6 +142,16 @@ class Club(models.Model):
                     "join_mode": (
                         f"'{self.join_mode}' is not valid for a "
                         f"'{self.privacy}' club. Allowed: {', '.join(allowed)}."
+                    )
+                }
+            )
+        
+        if not self.origin and self.scope != MembershipScope.GLOBAL:
+            raise ValidationError(
+                {
+                    "scope": (
+                        f"'{self.scope}' is not valid for a local club. "
+                        f"Allowed: {MembershipScope.GLOBAL}."
                     )
                 }
             )

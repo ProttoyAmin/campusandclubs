@@ -177,9 +177,13 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         application.save(
             update_fields=["status", "reviewed_by", "reviewed_at"])
 
-        default_role = application.club.roles.filter(is_default=True).first()
-        membership = Membership.objects.create(
-            user=application.applicant, club=application.club, application=application)
+        default_role = self.role_repository.get_or_create_default_member_role(application.club)
+        
+        membership = self.membership_repository.create(
+            user=application.applicant, 
+            club=application.club, 
+            application=application
+        )
         if default_role:
             membership.add_role(default_role, set_as_primary=True)
 
@@ -267,7 +271,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
     # ---------- Media ----------
 
     def upload_media(self, club: Club, file: UploadedFile | None, kind: str) -> Club:
-        import cloudinary
+        from cloudinary import uploader
         from apps.media.models import Media, MediaRole
         from django.contrib.contenttypes.models import ContentType
 
@@ -277,7 +281,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         role_map = {"avatar": MediaRole.AVATAR, "banner": MediaRole.BANNER}
         role = role_map.get(kind, MediaRole.OTHER)
 
-        upload = cloudinary.uploader.upload(file, folder=f"clubs/{club.id}")
+        upload = uploader.upload(file, folder=f"clubs/{club.id}")
 
         Media.objects.create(
             content_type=ContentType.objects.get_for_model(club),

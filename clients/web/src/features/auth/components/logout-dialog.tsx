@@ -9,6 +9,8 @@ import {
   AlertDialogTitle,
 } from "design/components/ui/alert-dialog";
 import { useAuth } from "../hooks/session.hook";
+import { useNavigate } from "react-router-dom";
+import { routes } from "@/settings/routes";
 
 export const LogoutAlertDialog = ({
   open,
@@ -18,11 +20,14 @@ export const LogoutAlertDialog = ({
   onOpenChange: (open: boolean) => void;
 }) => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     logout.mutate(undefined, {
       onSuccess: () => {
         onOpenChange(false);
+        navigate(routes.auth.public.sign_in, { replace: true });
+
       },
       onError: () => {
         onOpenChange(false);

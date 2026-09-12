@@ -3,12 +3,13 @@ export const authRoutes = {
     sign_in: "/@/auth/sign-in",
     sign_up: "/@/auth/sign-up",
     social_callback: "/@/auth/callback",
-    
+
   },
   private: {
     activation: "/activate/:uuid/:token",
     forgot_password: "/@/auth/forgot-password",
     reset_password: "/@/auth/account/reset-password/:key",
     verify_email: "/@/auth/account/verify-email/:key",
+    verify_email_otp: "/@/auth/account/email/verify/",
   },
-};
+} as const;

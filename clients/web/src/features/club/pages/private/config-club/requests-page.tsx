@@ -12,10 +12,10 @@ const ClubRequestsPage = () => {
 
   return (
     <>
-      <NavTabs
+      {/* <NavTabs
         menu={ClubRequestsMenu(params.slug!)}
         className="flex flex-col space-y-2"
-      />
+      /> */}
     </>
   );
 };

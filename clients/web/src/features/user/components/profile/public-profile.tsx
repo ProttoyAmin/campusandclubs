@@ -12,6 +12,7 @@ import {
 import type { UserProfile } from "@campus/api";
 import { Button } from "design/components/ui/button";
 import type { AuthSession } from "@/features/auth/services/authentication";
+import ToggleFollowButton from "@/features/user/components/actions/follow-button";
 
 export const PublicProfileHeader: React.FC<{
   data: UserProfile;
@@ -59,10 +60,13 @@ export const PublicProfileHeader: React.FC<{
       <CardContent className="p-2">
         {data?.id !== currentUser?.data?.user?.id && <div className="p-2">
           <div className="flex gap-2 mt-2">
-            <Button variant={"default"} className="w-1/2 rounded-full">Follow</Button>
+            <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
             <Button variant={"outline"} className="w-1/2 rounded-full">Message</Button>
           </div>
         </div>}
+        {/* <pre>
+          {JSON.stringify(data, null, 2)}
+        </pre> */}
       </CardContent>
     </>
   );

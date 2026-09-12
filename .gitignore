@@ -1,10 +1,5 @@
-# Specific files
-services/api/.env.local
-services/api/db.sqlite3
-services/api/requirements.txt
-services/api/FEED_ALGORITHM.md
-services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
 
+backend/api/documents/
 clients/v1/web/.vscode
 clients/v1/web/.vscode/
 

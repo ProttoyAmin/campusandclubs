@@ -50,8 +50,6 @@ class PostCreateSerializer(serializers.Serializer):
     def validate(self, attrs: PostCreateAttrs) -> PostCreateAttrs:
         if not attrs.get('content') and not attrs.get('media'):
             raise serializers.ValidationError("Content or Media is required")
-        print(f"content: {attrs.get('content')}")
-        print(f"media: {attrs.get('media')}")
 
         return PostCreateAttrs(
             content=attrs.get('content'),

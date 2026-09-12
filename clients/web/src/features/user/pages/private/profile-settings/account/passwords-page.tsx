@@ -1,11 +1,34 @@
 import React from 'react'
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import NavigateButtons from '@/shared/components/navigate-buttons';
-import ResetPasswordForm from '@/features/auth/components/forms/reset-password';
 import { CardContent } from 'design/components/ui/card';
+import type { ChangePasswordSchemaType } from 'validation/auth';
+import ChangePassword from '@/features/auth/components/forms/change-password';
+import { useAccount } from '@/features/user/hooks/user.hooks';
+import { toast } from 'design/components/ui/toast';
 
 const PasswordsPage = () => {
     const pageHeader = usePageHeader();
+    const { passwordChange } = useAccount();
+
+    const handleSubmit = React.useCallback((data: ChangePasswordSchemaType) => {
+        passwordChange.mutate(data, {
+            onSuccess: () => {
+                // show success message
+                toast.add({
+                    type: "success",
+                    description: "Password changed successfully",
+                });
+            },
+            onError: (error) => {
+                // show error message
+                toast.add({
+                    type: "error",
+                    description: error.response.data.errors[0].message,
+                });
+            },
+        });
+    }, [passwordChange]);
 
     React.useEffect(() => {
         pageHeader.setActions(
@@ -32,10 +55,10 @@ const PasswordsPage = () => {
                 <h2 className="text-lg font-semibold">Passwords</h2>
                 <p className="text-muted-foreground text-sm">Change your password anytime</p>
             </div>
-            <ResetPasswordForm
-                pending={false}
-                serverErrors={null}
-                onSubmit={(data) => console.log(data)}
+            <ChangePassword
+                pending={passwordChange.isPending}
+                serverErrors={passwordChange.error?.response.data || null}
+                onSubmit={handleSubmit}
             />
         </CardContent>
     )
