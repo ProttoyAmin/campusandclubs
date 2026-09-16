@@ -16,10 +16,10 @@ const MainLayout: React.FC = () => {
     <Guard>
       <PageHeaderProvider>
         <div className="flex relative h-screen">
-          <div className="w-full md:w-1/6 md:container hidden md:block overflow-y-auto">
+          <div className="w-full md:w-1/7 md:container hidden md:block overflow-y-auto">
             <SideBar main />
           </div>
-          <div ref={scrollRef} className="w-full md:w-5/6 md:ps-40 pt-2 overflow-y-auto scrollbar-none">
+          <div ref={scrollRef} className="w-full md:w-6/7 pt-2 overflow-y-auto scrollbar-none">
             <Suspense fallback={<div>this is loading...</div>}>
               <Outlet />
             </Suspense>

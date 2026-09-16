@@ -32,7 +32,7 @@ export const UserProfileLayout: React.FC = () => {
   }, [username, user.data]);
 
   return (
-    <section className="flex flex-col gap-4 max-w-3xl justify-around">
+    <section className="flex md:ms-44 ms-0 flex-col gap-4 max-w-3xl justify-around">
       <div className="flex justify-between items-center">
         {pageHeader.actions ?? <ProfileLayoutHeader user={user.data} currentUser={currentUser} />}
       </div>

@@ -33,7 +33,7 @@ const SettingsLayout = () => {
     <>
       {location.pathname === routes.settings.base ? (
         <>
-          <section className="flex flex-col gap-4 max-w-3xl justify-around">
+          <section className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around">
             <div className="flex items-center p-2">
               {pageHeader.actions ?? (
                 <div className="flex items-center gap-4">
@@ -53,7 +53,7 @@ const SettingsLayout = () => {
         </>
       ) : (
         <>
-          <section className="flex flex-col gap-4 max-w-3xl justify-around">
+          <section className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around">
             <div className="flex justify-between items-center p-2">
               {pageHeader.actions}
             </div>

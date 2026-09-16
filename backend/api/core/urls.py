@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/v1/notifications/', include('apps.notifications.urls')),
     path('api/v1/communications/', include('apps.communications.urls')),
     path('api/v1/media/', include('apps.media.urls')),
+    path('api/v1/realtime/', include('apps.realtime.urls')),
 
     path('api/v1/_allauth/', include('allauth.headless.urls')),
     path('accounts/', include('allauth.urls')),

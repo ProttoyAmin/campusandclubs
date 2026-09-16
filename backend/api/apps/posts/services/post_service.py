@@ -9,7 +9,6 @@ from rest_framework.exceptions import PermissionDenied
 from core.services import BaseService
 from apps.posts.repository import PostRepository
 from apps.posts.models import Post
-from core.context import RequestContext
 
 logger = logging.getLogger(__name__)
 

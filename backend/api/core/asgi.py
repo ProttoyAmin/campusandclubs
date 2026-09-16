@@ -1,5 +1,6 @@
 from apps.notifications.routing import websocket_urlpatterns as notifications_ws
 from apps.accounts.routing import websocket_urlpatterns as accounts_ws
+from apps.realtime.routing import websocket_urlpatterns as realtime_ws
 import os
 import django
 from django.core.asgi import get_asgi_application
@@ -15,7 +16,7 @@ django_asgi_app = get_asgi_application()
 # Import routing AFTER get_asgi_application() to ensure all models are loaded
 
 # Combine all WebSocket URL patterns
-all_websocket_urlpatterns = accounts_ws + notifications_ws
+all_websocket_urlpatterns = accounts_ws + notifications_ws + realtime_ws
 
 print("ASGI application initialized with WebSocket routing")
 

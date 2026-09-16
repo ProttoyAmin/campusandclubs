@@ -6,33 +6,19 @@ import { useGetClubs } from "./features/club/hooks/club.hooks";
 import type { Club } from "@campus/api";
 import Header from "./components/header";
 import "./App.css";
-import { useEffect, useState } from "react";
 import { useFeed } from "./features/posts/hooks/posts.hooks";
 import PostCard from "./features/posts/components/post-card";
 import type { PostExtended } from "./features/posts/components/post-card";
 import { Card } from "design/components/ui/card";
 
 function App() {
-  const [notification, setNotification] = useState<string | null>(null);
   const { data: users } = useUsers();
   const { data: clubs } = useGetClubs();
   const { data } = useSession();
-  const { feed } = useFeed()
-
-  // useEffect(() => {
-  //   const ws = new WebSocket("ws://localhost:8000/ws/notifications/");
-  //   ws.onmessage = (e) => {
-  //     console.log("msg:", e.data);
-  //     setNotification(e.data);
-  //   };
-  //   ws.onclose = (e) => console.log("closed:", e.code, e.reason);
-
-  //   return () => ws.close();
-  // }, []);
-
+  const { feed } = useFeed();
 
   return (
-    <Card className="max-w-3xl gap-0">
+    <Card className="max-w-3xl md:ms-44 gap-0">
       <div className="md:hidden">
         <Header />
       </div>
@@ -52,7 +38,7 @@ function App() {
         ))}
       </div>
       {feed?.data?.results.map((post: PostExtended) => (
-        <div key={post.id} className='grid grid-cols-1 p-0 min-h-fit'>
+        <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
           <PostCard post={post} />
         </div>
       ))}

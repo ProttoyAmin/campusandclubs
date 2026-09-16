@@ -63,6 +63,7 @@ LOCAL_APPS = [
     "apps.notifications",
     "apps.institutes",
     "apps.communications",
+    "apps.realtime",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -242,10 +243,14 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                (
-                    getenv("REDIS_HOST", "localhost"),
-                    int(getenv("REDIS_PORT", 6379)),
-                )
+                {
+                    "host": getenv("REDIS_HOST", "127.0.0.1"),
+                    "port": int(getenv("REDIS_PORT", 6379)),
+                    "socket_keepalive": True,
+                    "socket_connect_timeout": 5,
+                    "socket_timeout": 30,
+                    "retry_on_timeout": True,
+                }
             ],
             "capacity": 1500,
             "expiry": 10,

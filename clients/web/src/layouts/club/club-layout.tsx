@@ -79,7 +79,7 @@ export const ClubMainLayout: React.FC = () => {
   return (
     <section
       id={useSectionId()}
-      className="flex flex-col gap-4 max-w-3xl justify-around"
+      className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around"
     >
       <div className="flex justify-between items-center">
         {pageHeader.actions ?? (

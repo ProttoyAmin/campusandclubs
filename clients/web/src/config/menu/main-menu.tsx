@@ -18,17 +18,17 @@ export const userMenu: (username: string) => MenuItemType[] = (
     {
       id: 1,
       label: "Home",
-      icon: <HugeiconsIcon icon={Home01Icon} size={24} />,
-      iconActive: <HugeiconsIcon icon={Home01Icon} size={24} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />,
+      icon: <HugeiconsIcon icon={Home01Icon} size={20} />,
+      iconActive: <HugeiconsIcon icon={Home01Icon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />,
       link: () => paths.public.home,
       isActive: (currentPath) => isRouteActive(routes.home, currentPath),
     },
     {
       id: 2,
       label: "Profile",
-      icon: <HugeiconsIcon icon={UserRoundIcon} size={24} />,
+      icon: <HugeiconsIcon icon={UserRoundIcon} size={20} />,
       iconActive: (
-        <HugeiconsIcon icon={UserRoundIcon} size={24} color="currentColor" stroke="currentColor" fill="currentColor" />
+        <HugeiconsIcon icon={UserRoundIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
       ),
       link: () => paths.private.user.profile(username),
       isActive: (currentPath) =>
@@ -38,9 +38,9 @@ export const userMenu: (username: string) => MenuItemType[] = (
     {
       id: 3,
       label: "Messages",
-      icon: <HugeiconsIcon icon={Message01Icon} size={24} />,
+      icon: <HugeiconsIcon icon={Message01Icon} size={20} />,
       iconActive: (
-        <HugeiconsIcon icon={Message01Icon} size={24} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
+        <HugeiconsIcon icon={Message01Icon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
       ),
       link: () => paths.private.chat.inbox,
       isActive: (currentPath) =>
@@ -49,9 +49,9 @@ export const userMenu: (username: string) => MenuItemType[] = (
     {
       id: 4,
       label: "Clubs",
-      icon: <HugeiconsIcon icon={OpenSourceIcon} size={24} />,
+      icon: <HugeiconsIcon icon={OpenSourceIcon} size={20} />,
       iconActive: (
-        <HugeiconsIcon icon={OpenSourceIcon} size={24} color="currentColor" stroke="currentColor" fill="currentColor" />
+        <HugeiconsIcon icon={OpenSourceIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
       ),
       link: () => paths.private.club.list,
       isActive: (currentPath) =>
