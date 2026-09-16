@@ -361,17 +361,17 @@ def get_user_posts(request, user_id) -> Response:
             )
 
     # Get query parameters
-    post_type = request.query_params.get('post_type')
-    post_source = request.query_params.get('source', 'all')
-    media = request.query_params.get('media', 'True')
+    # post_type = request.query_params.get('post_type')
+    # post_source = request.query_params.get('source', 'all')
+    media = request.query_params.get('media')
 
     # Validate post_type if provided
-    valid_post_types = ['TEXT', 'IMAGE', 'VIDEO', "MIXED"]
-    if post_type and post_type not in valid_post_types:
-        return Response(
-            {'detail': f'post_type must be one of: {", ".join(valid_post_types)}'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+    # valid_post_types = ['TEXT', 'IMAGE', 'VIDEO', "MIXED"]
+    # if post_type and post_type not in valid_post_types:
+    #     return Response(
+    #         {'detail': f'post_type must be one of: {", ".join(valid_post_types)}'},
+    #         status=status.HTTP_400_BAD_REQUEST
+    #     )
 
     # Base query
     posts = Post.objects.filter(
@@ -382,20 +382,21 @@ def get_user_posts(request, user_id) -> Response:
     ).select_related('author')
 
     # Filter by source
-    if post_source == 'user':
-        posts = posts.filter(club__isnull=True)
-    elif post_source == 'club':
-        posts = posts.filter(club__isnull=False)
+    # if post_source == 'user':
+    #     posts = posts.filter(club__isnull=True)
+    # elif post_source == 'club':
+    #     posts = posts.filter(club__isnull=False)
 
-    # Filter by post type
-    if post_type:
-        posts = posts.filter(post_type=post_type)
+    # # Filter by post type
+    # if post_type:
+    #     posts = posts.filter(post_type=post_type)
 
     # Filter by media
-    if media == 'True':
-        posts = posts.filter(media__isnull=False)
-    elif media == 'False':
-        posts = posts.filter(media__isnull=True)
+    if media:
+        if media.lower() == "true":
+            posts = posts.filter(media__isnull=False)
+        elif media.lower() == "false":
+            posts = posts.filter(media__isnull=True)
 
     # Order by creation date descending
     posts = posts.order_by('-created_at')

@@ -32,7 +32,7 @@ const ProfileLayoutHeader = ({
     <>
       {user && (
         <>
-          <header className="flex items-center justify-between w-full">
+          <header className="flex items-center justify-between w-full md:p-2 p-1">
             <div className="flex gap-2 items-center">
               <div>
                 {location.pathname !==

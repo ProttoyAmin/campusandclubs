@@ -7,12 +7,11 @@ import { Plus } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
-import { useMe } from "@/features/user/hooks/user.hooks";
+import { useAffiliations, useMe } from "@/features/user/hooks/user.hooks";
 import { clubMenu } from "@/config/menu/club-menu";
 import type { ClubCreateRequestWritable, ClubDetail } from "@campus/api";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import ClubCreateForm from "@/features/club/forms/create-club-form";
-import { useInstitutes } from "@/features/institute/hooks/institute.hooks";
 import {
   useClubs,
   useDepartmentTemplates,
@@ -20,6 +19,7 @@ import {
 import { toast } from "design/components/ui/toast";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MenuTwoLineIcon } from "@hugeicons/core-free-icons";
+import { APP_NAME } from "@/config/constants";
 
 interface SideBarProps {
   main?: boolean;
@@ -31,7 +31,7 @@ interface SideBarProps {
 const SideBar: React.FC<SideBarProps> = (props) => {
   const [isCreating, setIsCreating] = React.useState<boolean>(false);
   const { data: currentUser } = useMe();
-  const { institutes } = useInstitutes("id, name, code");
+  const { data: affiliations } = useAffiliations();
   const { data: templates, isPending: templatesIsPending } = useDepartmentTemplates();
   const { create } = useClubs();
   const clubs: Pick<ClubDetail, "id" | "slug" | "name">[] =
@@ -65,7 +65,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
         className={`h-screen p-4 flex flex-col justify-between items-left ${props.className}`}
       >
         <Link to={paths.public.home} className="col-span-1">
-          CQlubs
+          <span className="text-lg font-semibold">{APP_NAME.split(' ')}</span>
         </Link>
         <div className="flex flex-col gap-2">
           <NavTabs
@@ -90,8 +90,8 @@ const SideBar: React.FC<SideBarProps> = (props) => {
           >
             <ClubCreateForm
               onSubmit={handleClubCreate}
-              institutes={institutes?.data?.results}
-              templates={templates}
+              affiliations={affiliations || []}
+              templates={templates || []}
               isPending={create.isPending || templatesIsPending}
             />
           </ResponsiveDialog>

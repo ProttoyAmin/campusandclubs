@@ -29,9 +29,8 @@ class Like(models.Model):
             models.Index(fields=['user', 'content_type']),              # For faster lookups of what a user has liked
         ]
 
-
-        def __str__(self):
-            return f"{self.user.username} likes {self.content_type}"
+    def __str__(self):
+        return f"{self.user.username} likes {self.content_type}"
 
 
 class Comment(models.Model):

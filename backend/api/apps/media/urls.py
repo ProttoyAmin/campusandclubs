@@ -6,6 +6,6 @@ from apps.media.views import ListCreateMediaAPIView
 from django.urls import path
 
 
-urlpatterns: URLPattern | URLResolver = [
-    path("", ListCreateMediaAPIView.as_view(), name="media"),
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("", ListCreateMediaAPIView.as_view(), name="list_create_media"),
 ]

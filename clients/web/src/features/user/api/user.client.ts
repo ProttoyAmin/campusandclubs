@@ -6,11 +6,10 @@ import type {
   AccountsAuthUsersUserRetrieveResponse,
   PatchedUserProfileRequest,
   UserEmail,
-  GetMyAffiliationsResponse,
   SetPasswordRequest,
-  AccountsAuthUsersSetPasswordCreateResponse,
   PostsListResponse,
   Club,
+  InstituteAffiliateForUser,
 } from "@campus/api";
 
 import { AxiosError, type AxiosResponse } from "axios";
@@ -146,7 +145,7 @@ export class UserClient extends BaseClient<
   }
 
   async get_my_affiliations() {
-    const response = await this.client.get<GetMyAffiliationsResponse[]>(
+    const response = await this.client.get<InstituteAffiliateForUser[]>(
       this.endpoint + "me/affiliations/",
     );
     return response;
@@ -164,7 +163,7 @@ export class UserClient extends BaseClient<
 
   async getUserPosts(userId: string, media?: "True" | "False") {
     const response = await this.client.get(
-      this.endpoint + `users/${userId}/posts?media=${media}`,
+      this.endpoint + `users/${userId}/posts${media ? `?media=${media}` : ""}`,
     );
     return response;
   }

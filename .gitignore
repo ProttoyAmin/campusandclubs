@@ -2,7 +2,7 @@
 backend/api/documents/
 clients/v1/web/.vscode
 clients/v1/web/.vscode/
-
+jwt-private.pem
 # Python
 __pycache__/
 *.py[cod]

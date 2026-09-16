@@ -29,7 +29,7 @@ const EmailPage = () => {
     const pageHeader = usePageHeader();
 
     React.useEffect(() => {
-        pageHeader.setActions(
+        const id = pageHeader.push(
             <>
                 <div className="flex items-center gap-4">
                     <NavigateButtons hideForward />
@@ -39,9 +39,9 @@ const EmailPage = () => {
         );
 
         return () => {
-            pageHeader.clearActions();
+            pageHeader.pop(id)
         };
-    }, [pageHeader.setActions, pageHeader.clearActions]);
+    }, [pageHeader.push, pageHeader.pop]);
 
     const handleAddEmail = async (email: string) => {
         addEmail.mutate(email, {

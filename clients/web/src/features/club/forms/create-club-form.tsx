@@ -31,12 +31,12 @@ import {
 import { formatLabel } from "@/utils/format-label";
 import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
-import type { DepartmentTemplate, Institute } from "@campus/api";
+import type { DepartmentTemplate, InstituteAffiliateForUser } from "@campus/api";
 import RenderDepartmentsComboboxField from "./render-departments-field";
 
 type ClubCreateFormProps = {
   onSubmit: (data: ClubCreateSchemaType) => void;
-  institutes: Pick<Institute, "id" | "name" | "code">[] | undefined;
+  affiliations: Array<InstituteAffiliateForUser>;
   templates: DepartmentTemplate[] | undefined;
   isPending?: boolean;
 };
@@ -103,7 +103,7 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                     value={field.value}
                     onValueChange={field.onChange}
                     defaultValue={undefined}
-                    disabled={!props.institutes || props.institutes.length === 0}
+                    disabled={!props.affiliations || props.affiliations.length === 0}
                   >
                     <SelectTrigger
                       id="origin"
@@ -114,14 +114,14 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectSeparator />
-                      {props.institutes?.map((institute) => (
-                        <SelectItem key={institute.id} value={institute.id}>
-                          {`${formatLabel(institute.name)} (${institute.code})`}
+                      {props.affiliations?.map((affiliation) => (
+                        <SelectItem key={affiliation.id} value={affiliation.id}>
+                          {`${formatLabel(affiliation.institute.name)} (${affiliation.institute.code})`}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {(!props.institutes || props.institutes.length === 0) && (
+                  {(!props.affiliations || props.affiliations.length === 0) && (
                     <>
                       <FieldLabel className="text-xs text-orange-400">
                         You need to join an institute to create a club with an origin. You can claim one from the settings page.
@@ -294,7 +294,7 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
       default:
         return null;
     }
-  }, [step, form.control, props.institutes, clubTemplatesWithLabel]);
+  }, [step, form.control, props.affiliations, clubTemplatesWithLabel]);
 
   const renderStepButtons = React.useCallback(() => {
     const isFirstStep = step === 1;

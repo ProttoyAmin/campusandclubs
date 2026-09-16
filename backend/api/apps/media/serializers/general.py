@@ -36,11 +36,12 @@ class MediaUploadSerializer(serializers.ModelSerializer):
 
 class MediaListSerializer(serializers.ModelSerializer):
     file = serializers.SerializerMethodField()
-    # target = serializers.SerializerMethodField()
+    target = serializers.SerializerMethodField()
 
     class Meta:
         model = Media
-        fields = ["id", "file", "position", "role"]
+        fields = ["id", "file", "position", "role", "target"]
+        read_only_fields = ["id", "position", "role", "target"]
 
     def get_file(self, obj: Media):
         from cloudinary import CloudinaryResource
@@ -55,19 +56,23 @@ class MediaListSerializer(serializers.ModelSerializer):
             "secure_url": file.source(secure=True)
         }
 
-    # def get_target(self, obj: Media):
-    #     from apps.clubs.serializer import ClubSerializer
-    #     from apps.accounts.serialize.user import UserProfileSerializer
-    #     from apps.posts.serializer import PostSerializer
+    def get_target(self, obj: Media):
+        from apps.clubs.serializer import ClubSerializer
+        from apps.accounts.serialize.user import UserProfileSerializer
+        from apps.posts.serializer import PostSerializer
 
-    #     serializer_map = {
-    #         "club": ClubSerializer,
-    #         "user": UserProfileSerializer,
-    #         "post": PostSerializer,
-    #     }
+        # serializer_map = {
+        #     "club": ClubSerializer,
+        #     "user": UserProfileSerializer,
+        #     "post": PostSerializer,
+        # }
 
-    #     serializer_class = serializer_map.get(obj.content_type.model)
-    #     if serializer_class is None or obj.content_object is None:
-    #         return None
+        # serializer_class = serializer_map.get(obj.content_type.model)
+        # if serializer_class is None or obj.content_object is None:
+        #     return None
 
-    #     return serializer_class(obj.content_object, context=self.context).data
+        # return serializer_map[obj.content_type.model](obj.content_object, context=self.context).data
+        return {
+            "id": obj.content_object.id,
+            "model": obj.content_object.__class__.__name__
+        }

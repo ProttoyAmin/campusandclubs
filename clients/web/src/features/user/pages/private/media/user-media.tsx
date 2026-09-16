@@ -6,13 +6,16 @@ import { Image03Icon } from '@hugeicons/core-free-icons';
 import type { Post } from '@campus/api';
 import { useFeed, useUser } from '@/features/user/hooks/user.hooks';
 import { useParams } from 'react-router-dom';
+import { useProfileOutlet } from '@/features/user/context/user-layout-context';
 
 const UserMedia = () => {
-    const { username } = useParams()
-    const { postsWithMedia } = useUser(username || '');
+    const { user } = useProfileOutlet()
+    const { postsWithMedia } = useUser(user?.username || '');
+
+    const { data: posts, refetch, isLoading } = postsWithMedia(user?.id || '')
     return (
         <>
-            {postsWithMedia?.data?.results?.length === 0 ? (
+            {posts?.results.length === 0 ? (
                 <EmptyState
                     title=''
                     description='No media posts'
@@ -20,7 +23,7 @@ const UserMedia = () => {
                 />
             ) : (
                 <>
-                    {postsWithMedia.data?.results?.map((post: PostExtended) => (
+                    {posts?.results.map((post: PostExtended) => (
                         <PostCard key={post.id} post={post} />
                     ))}
                 </>

@@ -1,17 +1,16 @@
 import { paths, routes } from "@/settings/routes";
 import { House } from "lucide-react";
 import type { MenuItemType } from "../menu/main-menu";
-import { GitPullRequestCreateIcon } from "lucide-react";
 import { isRouteActive } from "@/utils/route";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { SquareLock01Icon, UserCircleIcon } from "@hugeicons/core-free-icons";
+import { SquareLock01Icon, ThreeDScaleIcon, UserRoundPenIcon } from "@hugeicons/core-free-icons";
 
 export const SettingsMenu: () => MenuItemType[] = () => [
   {
     id: 1,
     label: "Accounts",
-    icon: <HugeiconsIcon icon={UserCircleIcon} />,
-    iconActive: <HugeiconsIcon icon={UserCircleIcon} fill="currentColor" stroke="currentColor" />,
+    icon: <HugeiconsIcon icon={UserRoundPenIcon} size={18} />,
+    iconActive: <HugeiconsIcon icon={UserRoundPenIcon} size={18} />,
     link: () => paths.private.settings.account.base,
     isActive: (currentPath) =>
       isRouteActive(routes.settings.account.base, currentPath),
@@ -19,9 +18,9 @@ export const SettingsMenu: () => MenuItemType[] = () => [
   {
     id: 2,
     label: "Privacy",
-    icon: <HugeiconsIcon icon={SquareLock01Icon} />,
+    icon: <HugeiconsIcon icon={SquareLock01Icon} size={18} />,
     iconActive: (
-      <HugeiconsIcon icon={SquareLock01Icon} />
+      <HugeiconsIcon icon={SquareLock01Icon} size={18} />
     ),
     link: () => paths.private.settings.privacy,
     isActive: (currentPath) =>
@@ -30,9 +29,9 @@ export const SettingsMenu: () => MenuItemType[] = () => [
   {
     id: 3,
     label: "Affiliations",
-    icon: <GitPullRequestCreateIcon size={18} />,
+    icon: <HugeiconsIcon icon={ThreeDScaleIcon} size={18} />,
     iconActive: (
-      <GitPullRequestCreateIcon size={18} fill="currentColor" stroke="currentColor" />
+      <HugeiconsIcon icon={ThreeDScaleIcon} size={18} />
     ),
     link: () => paths.private.settings.affiliations,
     isActive: (currentPath) =>

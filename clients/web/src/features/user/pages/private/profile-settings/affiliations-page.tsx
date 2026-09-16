@@ -7,7 +7,6 @@ import {
   useAffiliation,
   useInstitutes,
 } from "@/features/institute/hooks/institute.hooks";
-import AffiliationDialog from "@/features/user/components/profile-settings/affiliation-dialog";
 import AffiliationCard from "@/features/institute/components/affiliation-card";
 import ClaimAffiliationForm from "@/features/institute/forms/claim-affiliation-form";
 import { useEmails } from "@/features/user/hooks/user.hooks";

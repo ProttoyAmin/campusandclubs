@@ -169,8 +169,17 @@ DOMAIN = getenv("DOMAIN", "127.0.0.1")
 SITE_NAME = getenv("SITE_NAME")
 
 HEADLESS_ONLY = True
+HEADLESS_CLIENTS = ('app', 'browser')
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
+
+# HEADLESS_TOKEN_STRATEGY = (
+#     "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
+# )
+
+# HEADLESS_JWT_ALGORITHM = "RS256"
+
+# HEADLESS_JWT_PRIVATE_KEY = (BASE_DIR / "jwt-private.pem").read_text(encoding="utf-8")
 
 ACCOUNT_SIGNUP_FIELDS = [
     "email*",
@@ -232,7 +241,12 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(getenv("REDIS_HOST", "127.0.0.1"), int(getenv("REDIS_PORT", 6379)))],
+            "hosts": [
+                (
+                    getenv("REDIS_HOST", "localhost"),
+                    int(getenv("REDIS_PORT", 6379)),
+                )
+            ],
             "capacity": 1500,
             "expiry": 10,
         },

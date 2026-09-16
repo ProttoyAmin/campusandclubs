@@ -78,7 +78,7 @@ export const useAuth = () => {
     mutationFn: (data) => authentication.login(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: authKeys.session });
-      queryClient.clear();
+      // queryClient.clear();
     },
   });
 

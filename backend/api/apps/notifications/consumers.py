@@ -24,20 +24,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         Authenticate user and subscribe to their notification channel
         """
         try:
-            token = self.get_token_from_scope()
+            user = self.scope["user"]
 
-            if not token:
-                logger.warning("Notification WS: No token provided")
+            if not user or not user.is_authenticated:
+                logger.warning("Notification WS: unauthenticated connection")
                 await self.close()
                 return
-
-            user = await self.get_user_from_token(token)
-
-            if not user:
-                logger.warning("Notification WS: Invalid token")
-                await self.close()
-                return
-
+            
             self.user = user
             # Each user has their own notification channel group
             self.group_name = f"notifications_{user.id}"
@@ -137,7 +130,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         from urllib.parse import parse_qs
 
         # Try query string first
-        print(self.scope)
         query_string = self.scope.get("query_string", b"").decode()
         params = parse_qs(query_string)
         token_list = params.get("token")

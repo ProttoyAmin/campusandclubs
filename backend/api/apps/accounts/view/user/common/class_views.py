@@ -70,10 +70,10 @@ class UserRetrieveUpdateDestroyView(
 class UserListCreateView(
     PolicyMixin[UserPolicy, User],
     ServiceMixin[AccountService],
-    generics.ListCreateAPIView[User]
+    generics.ListAPIView[User]
 ):
     """
-    User List and Create View
+    User List View
     """
     service_class = AccountService
     serializer_class = UserMinimalSerializer

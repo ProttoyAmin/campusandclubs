@@ -1,11 +1,13 @@
+import type { UserProfile } from "@campus/api";
+
 export interface Comment {
-  id: number | string;
-  author_id: number;
-  author_username: string;
-  author_avatar?: string;
-  profile_picture_url?: string;
+  id: string;
+  author: Pick<UserProfile, "id" | "username" | "avatar">
   content: string;
   is_edited: boolean;
+  like_count: number;
+  has_replies: boolean;
+  object_id: string;
   like_count: number;
   reply_count: number;
   is_liked: boolean;

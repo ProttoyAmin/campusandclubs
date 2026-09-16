@@ -28,7 +28,7 @@ class UserMinimalSerializer(serializers.ModelSerializer):
         media = obj.media.filter(role="avatar").first()
 
         if not media:
-            return None
+            return obj.avatar
 
         serializer = MediaListSerializer(media, context=self.context)
         return serializer.data['file']['url']
@@ -39,6 +39,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     from apps.institutes.serializers.affiliates import InstituteAffiliateForUserSerializer
     # Personal info
     # department = serializers.SerializerMethodField()
+    preferences = serializers.SerializerMethodField(read_only=True)
 
     # Institute info
 
@@ -90,10 +91,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         visible_fields = [
-            'id', 'username', 'first_name', 'last_name', 'email', 'professional_email', 'avatar', 'url', 'gender', 'affiliations', 'emails',
-            'student_id', 'year', 'level', 'type', 'preferred_email', 'media',
-            'bio', 'location', 'website', 'date_of_birth',
-            'email_verified', 'is_private', 'status', 'is_status_manual',
+            'id', 'username', 'first_name', 'last_name', 'email', 'avatar', 'url', 'gender', 'affiliations', 'emails', 'preferences',
+            'media', 'bio', 'location', 'website', 'date_of_birth',
+            'is_private', 'status', 'is_status_manual',
             'club_count', 'clubs', 'clubs_url',
             'user_post_count', 'total_posts_count', 'posts_url',
             'follower_count', 'following_count', 'pending_requests_count',
@@ -106,7 +106,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = models.User
         fields = visible_fields
         read_only_fields = [
-            'id', 'email', 'professional_email', 'email_verified',
+            'id', 'email', 
             'created_at', 'updated_at', 'last_login'
         ]
 
@@ -330,3 +330,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 # Anonymous users - only public profiles
                 return not obj.is_private if hasattr(obj, 'is_private') else True
         return not obj.is_private if hasattr(obj, 'is_private') else True
+
+    def get_preferences(self, obj: models.User) -> dict[str, Any] | None:
+        """Get user's preferences"""
+        from .preferences_serializer import UserPreferencesSerializer
+
+        if not self._should_include('preferences'):
+            return None
+
+        return UserPreferencesSerializer(obj.preferences).data if hasattr(obj, 'preferences') else None

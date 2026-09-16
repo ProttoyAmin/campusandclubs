@@ -14,15 +14,18 @@ interface NavTabsProps {
 const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "default", onlyIcon = false }: NavTabsProps) => {
   const { pathname } = useLocation();
 
-  const renderLabel = (item: MenuItemType, active: boolean) => {
-    if (!onlyIcon) return item.label;
-    if (typeof item.icon === "function") return item.icon;
-    if (onlyIcon && active) {
+  const getIcon = (item: MenuItemType, active: boolean) => {
+    if (active && item.iconActive) {
       return typeof item.iconActive === "function"
         ? item.iconActive(avatar || "")
-        : item.iconActive || item.icon;
+        : item.iconActive;
     }
     return item.icon;
+  };
+
+  const renderLabel = (item: MenuItemType) => {
+    if (onlyIcon) return null;
+    return item.label;
   };
 
   const classes = (variant: string) => {
@@ -55,7 +58,7 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
                 : "text-muted-foreground border-b-2 border-transparent"
                 }`}
             >
-              <span className={`flex gap-2 items-center ${itemsClassName}`}>{item.icon} {renderLabel(item, active)}</span>
+              <span className={`flex gap-2 items-center  ${itemsClassName}`}>{getIcon(item, active)} {renderLabel(item)}</span>
             </NavLink>
           </>
         );

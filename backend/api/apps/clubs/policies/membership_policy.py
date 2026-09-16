@@ -1,8 +1,7 @@
 from functools import cached_property
-from typing import TypeVar
-from apps.clubs.models import Club, Membership
 
-from core.policies.base import Policy, ActorT, RecordT
+from apps.clubs.models import Club, Membership
+from core.policies.base import ActorT, Policy, RecordT
 
 
 class MembershipAwarePolicy(Policy[ActorT, RecordT]):

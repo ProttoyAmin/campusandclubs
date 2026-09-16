@@ -1,6 +1,5 @@
 import type {
   PatchedUserProfileRequest,
-  SetPasswordRequest,
 } from "@campus/api";
 import { userClient } from "../api/user.client";
 

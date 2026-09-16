@@ -26,7 +26,7 @@ const ResponsiveDropDownMenu = (props: DropDownProps) => {
             <>
                 <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
                     <DropdownMenuTrigger render={props.trigger}></DropdownMenuTrigger>
-                    <DropdownMenuContent className={'w-fit'}>
+                    <DropdownMenuContent className={'w-fit'} align='end'>
                         {props.children}
                     </DropdownMenuContent>
                 </DropdownMenu>

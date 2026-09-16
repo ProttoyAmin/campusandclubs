@@ -1,6 +1,7 @@
 import { paths, routes } from "@/settings/routes";
-import { House, LayoutList, User2Icon } from "lucide-react";
 import { isRouteActive } from "@/utils/route";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Home01Icon, Message01Icon, OpenSourceIcon, UserRoundIcon } from "@hugeicons/core-free-icons";
 
 export type MenuItemType = {
   id: number | string;
@@ -17,29 +18,40 @@ export const userMenu: (username: string) => MenuItemType[] = (
     {
       id: 1,
       label: "Home",
-      icon: <House size={18} />,
-      iconActive: <House size={18} fill="currentColor" stroke="currentColor" />,
+      icon: <HugeiconsIcon icon={Home01Icon} size={24} />,
+      iconActive: <HugeiconsIcon icon={Home01Icon} size={24} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />,
       link: () => paths.public.home,
       isActive: (currentPath) => isRouteActive(routes.home, currentPath),
     },
     {
       id: 2,
       label: "Profile",
-      icon: <User2Icon size={18} />,
+      icon: <HugeiconsIcon icon={UserRoundIcon} size={24} />,
       iconActive: (
-        <User2Icon size={18} fill="currentColor" stroke="currentColor" />
+        <HugeiconsIcon icon={UserRoundIcon} size={24} color="currentColor" stroke="currentColor" fill="currentColor" />
       ),
       link: () => paths.private.user.profile(username),
       isActive: (currentPath) =>
         isRouteActive(routes.user.public.profile, currentPath) &&
-        currentPath.includes(username),
+        currentPath === `/@/${username}`,
     },
     {
       id: 3,
-      label: "Clubs",
-      icon: <LayoutList size={18} />,
+      label: "Messages",
+      icon: <HugeiconsIcon icon={Message01Icon} size={24} />,
       iconActive: (
-        <LayoutList size={18} fill="currentColor" stroke="currentColor" />
+        <HugeiconsIcon icon={Message01Icon} size={24} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
+      ),
+      link: () => paths.private.chat.inbox,
+      isActive: (currentPath) =>
+        isRouteActive(routes.chat.inbox, currentPath)
+    },
+    {
+      id: 4,
+      label: "Clubs",
+      icon: <HugeiconsIcon icon={OpenSourceIcon} size={24} />,
+      iconActive: (
+        <HugeiconsIcon icon={OpenSourceIcon} size={24} color="currentColor" stroke="currentColor" fill="currentColor" />
       ),
       link: () => paths.private.club.list,
       isActive: (currentPath) =>

@@ -67,7 +67,7 @@ export const paths = {
       base: routes.activity.base,
       follows: routes.activity.follows,
       likes: routes.activity.likes,
-      replies: routes.activity.replies,
+      replies: routes.activity.comments,
     },
 
     club: {
@@ -116,6 +116,11 @@ export const paths = {
         generateRouteFromPath(routes.club.private.config.settings, {
           slug,
         }),
+    },
+
+    chat: {
+      inbox: routes.chat.inbox,
+      request: routes.chat.request,
     },
 
     auth: {

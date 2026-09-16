@@ -1,9 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { accounts } from "../services/account.service";
 import type {
-  AccountsAuthUsersSetPasswordCreateResponse,
   PatchedUserProfileRequest,
-  SetPasswordRequest,
   UserEmail,
 } from "@campus/api";
 import { queryClient } from "@/config/query-client";
@@ -177,19 +175,18 @@ export const useFeed = () => {
   });
 };
 
-export const useUser = (username: string, userId: string = "") => {
+export const useUser = (username: string) => {
   const user = useQuery({
     queryKey: ["users", username],
     queryFn: () => accounts.user.userByUsername(username),
   });
 
-  const posts = useQuery<PaginaatedClubPostsResponse, AppError>({
+  const posts = (userId: string) => useQuery<PaginaatedClubPostsResponse, AppError>({
     queryKey: ["users", username, "posts"],
     queryFn: () => accounts.user.posts(userId),
-    enabled: !!userId,
   });
 
-  const postsWithMedia = useQuery<PaginaatedClubPostsResponse, AppError>({
+  const postsWithMedia = (userId: string) => useQuery<PaginaatedClubPostsResponse, AppError>({
     queryKey: ["users", username, "posts", "media"],
     queryFn: () => {
       return accounts.user.posts(userId, "True");

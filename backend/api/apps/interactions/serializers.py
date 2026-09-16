@@ -1,3 +1,4 @@
+from django.urls import reverse
 from rest_framework import serializers
 from django.contrib.contenttypes.models import ContentType
 from .models import Like, Comment, Share
@@ -20,38 +21,46 @@ class LikeSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     """Works for ANY content type"""
     id = serializers.CharField(read_only=True)
-    # parent = serializers.CharField(read_only=True)
-    author_username = serializers.CharField(source='author.username', read_only=True)
-    author_id = serializers.IntegerField(source='author.id', read_only=True)
+    author = serializers.SerializerMethodField()
     author_url = serializers.SerializerMethodField()
-    like_count = serializers.IntegerField(read_only=True)
-    reply_count = serializers.IntegerField(read_only=True)
+    like_count = serializers.SerializerMethodField()
+    reply_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     can_edit = serializers.SerializerMethodField()
+    has_replies = serializers.SerializerMethodField()
     replies = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = [
-            'id', 'author_id', 'author_username', 'author_url', 'parent',
-            'content', 'parent', 'is_edited', 'like_count', 'reply_count',
-            'is_liked', 'can_edit', 'replies', 'created_at', 'updated_at'
+            'id', 'author', 'author_url', 'parent', 'object_id',
+            'content', 'is_edited', 'like_count', 'reply_count',
+            'is_liked', 'can_edit', 'has_replies', 'replies', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['author', 'is_edited', 'created_at', 'updated_at']
+        read_only_fields = ['author', 'is_edited', 'created_at', 'updated_at', 'parent', 'object_id']
 
-    def get_author_url(self, obj):
+    def get_author(self, obj):
+        return {
+            'id': obj.author.id,
+            'username': obj.author.username,
+            'avatar': obj.author.avatar if obj.author.avatar else None
+        }
+
+    def get_author_url(self, obj: Comment):
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(f'/api/v1/users/{obj.author.id}/')
         return None
     
-    def get_like_count(self, obj):
-        like_count = obj.objects.filter(
+    def get_like_count(self, obj: Comment):
+        return Like.objects.filter(
             object_id=obj.id
         ).count()
-        return like_count
 
-    def get_is_liked(self, obj):
+    def get_reply_count(self, obj: Comment):
+        return obj.replies.count()
+
+    def get_is_liked(self, obj: Comment):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             content_type = ContentType.objects.get_for_model(obj)
@@ -67,13 +76,36 @@ class CommentSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return obj.author == request.user
         return False
+    
+    def get_has_replies(self, obj):
+        return obj.replies.count() > 0
+
+    # def get_replies(self, obj):
+    #     if obj.parent is None:
+    #         replies = obj.replies.all()[:5]
+    #         return CommentSerializer(replies, many=True, context=self.context).data
+    #     return []
 
     def get_replies(self, obj):
-        if obj.parent is None:
-            replies = obj.replies.all()[:5]
-            return CommentSerializer(replies, many=True, context=self.context).data
-        return []
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(reverse('interactions:comment_replies', args=[obj.id]))
+        return None
 
+class CommentReplySerializer(serializers.ModelSerializer):
+    reply = serializers.CharField(write_only=True)
+    
+    class Meta:
+        model = Comment
+        fields = [
+            'reply'
+        ]
+
+    def validate(self, attrs: dict[str, str]):
+        if not attrs.get('reply'):
+            raise serializers.ValidationError("Reply is required")
+
+        return attrs
 
 
 class ShareSerializer(serializers.ModelSerializer):

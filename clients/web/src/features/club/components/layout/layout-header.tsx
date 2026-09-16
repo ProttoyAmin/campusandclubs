@@ -65,8 +65,8 @@ const ClubLayoutHeader = ({
   return (
     <>
       {club && (
-        <>
-          <div className="flex gap-2 items-center">
+        <div className="flex items-center w-full justify-between">
+          <div className="flex gap-2 items-center md:p-2">
             <div>
               {location.pathname !== paths.public.club.slug(slug) && (
                 <>
@@ -155,7 +155,7 @@ const ClubLayoutHeader = ({
               />
             )}
           </div>
-        </>
+        </div>
       )}
     </>
   );

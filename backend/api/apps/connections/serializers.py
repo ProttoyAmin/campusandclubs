@@ -6,7 +6,7 @@ from apps.accounts.models import User
 
 class FollowerSerializer(serializers.ModelSerializer):
     """Serializer for follower user info"""
-    user_id = serializers.IntegerField(source='follower.id', read_only=True)
+    user_id = serializers.UUIDField(source='follower.id', read_only=True)
     username = serializers.CharField(
         source='follower.username', read_only=True)
     first_name = serializers.CharField(
@@ -41,7 +41,7 @@ class FollowerSerializer(serializers.ModelSerializer):
     def get_user_url(self, obj):
         request = self.context.get('request')
         if request:
-            return request.build_absolute_uri(f'/api/v1/users/{obj.follower.id}/')
+            return request.build_absolute_uri(f'/api/v1/accounts/auth/users/user/{obj.follower.username}/')
         return None
 
     # def get_you_following_back(self, obj):
@@ -65,7 +65,7 @@ class FollowerSerializer(serializers.ModelSerializer):
 
 class FollowingSerializer(serializers.ModelSerializer):
     """Serializer for following user info"""
-    user_id = serializers.IntegerField(source='following.id', read_only=True)
+    user_id = serializers.UUIDField(source='following.id', read_only=True)
     username = serializers.CharField(
         source='following.username', read_only=True)
     avatar = serializers.SerializerMethodField()

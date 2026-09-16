@@ -4,7 +4,7 @@ export const PostCreateSchema = z
   .object({
     content: z
       .string()
-      .max(200, "Post content cannot exceed 200 characters")
+      .max(300, "Post content cannot exceed 300 characters")
       .optional(),
     media: z
       .custom<File | undefined>((file) => {

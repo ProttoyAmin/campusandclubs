@@ -67,9 +67,9 @@ export function AvatarUpload({
                 onChange={handleFileChange}
             />
 
-            {/* <button type="button" onClick={handleSubmit}>
+            <button type="button" >
                 Submit
-            </button> */}
+            </button>
         </div>
     );
 }

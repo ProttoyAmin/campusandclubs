@@ -9,13 +9,7 @@ from django.shortcuts import get_object_or_404
 
 from .models import Like, Comment, Share
 from . import serializers
-
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 20
-    page_size_query_param = 'page_size'
-    max_page_size = 100
-
+from core.pagination import StandardResultsSetPagination
 
 # ==================== HELPER FUNCTIONS ====================
 
@@ -212,24 +206,31 @@ def list_comments(request):
     - object_id: ID of the object
     - parent: (optional) ID of parent comment for nested replies
 
-    Example: /api/v1/activities/comments/?content_type=clubs.clubpost&object_id=123
+    Example: /api/v1/activities/comments/?content_type=posts.Post&object_id=123
     """
     content_type_str = request.query_params.get('content_type')
     object_id = request.query_params.get('object_id')
-    parent_id = request.query_params.get(
-        'parent')  # Optional for nested comments
+    parent_id = request.query_params.get('parent')
 
     if not content_type_str or not object_id:
-        return Response(
-            {'detail': 'content_type and object_id are required.'},
-            status=status.HTTP_400_BAD_REQUEST
+        all_comments = Comment.objects.all().select_related('author')
+        paginator = StandardResultsSetPagination()
+        paginated_comments = paginator.paginate_queryset(all_comments, request)
+
+        serializer = serializers.CommentSerializer(
+            paginated_comments,
+            many=True,
+            context={'request': request}
         )
+
+        return paginator.get_paginated_response(serializer.data)
+    
 
     # Verify object exists
     content_object = get_content_object(content_type_str, object_id)
     if not content_object:
         return Response(
-            {'detail': 'Content object not found.'},
+            {'detail': f"Content object type {content_type_str} doesn't support comments."},
             status=status.HTTP_404_NOT_FOUND
         )
 
@@ -249,6 +250,8 @@ def list_comments(request):
     else:
         # Get only root comments (no parent)
         comments = comments.filter(parent=None)
+
+    all_comments = Comment.objects.all().select_related('author')
 
     # Pagination
     paginator = StandardResultsSetPagination()
@@ -398,51 +401,18 @@ def manage_comment(request, comment_id):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def get_comment_replies(request, comment_id):
     """Get all replies to a specific comment"""
+    from apps.interactions.serializers import CommentSerializer
     parent_comment = get_object_or_404(Comment, pk=comment_id)
     
     replies = Comment.objects.filter(parent=parent_comment).select_related('author').order_by('created_at')
-    
+    serializer = CommentSerializer(replies, many=True, context={"request": request})
     paginator = StandardResultsSetPagination()
-    paginated_replies = paginator.paginate_queryset(replies, request)
+    paginated_replies = paginator.paginate_queryset(serializer.data, request)
     
-    # Enhanced reply data
-    replies_data = []
-    for reply in paginated_replies:
-        print("reply", reply)
-        comment_content_type = ContentType.objects.get_for_model(Comment)
-        is_liked = False
-        if request.user.is_authenticated:
-            is_liked = Like.objects.filter(
-                user=request.user,
-                content_type=comment_content_type,
-                object_id=reply.id
-            ).exists()
-        
-        like_count = Like.objects.filter(
-            content_type=comment_content_type,
-            object_id=reply.id
-        ).count()
-        
-        replies_data.append({
-            'id': str(reply.id),
-            'author_id': reply.author.id,
-            'author_username': reply.author.username,
-            'author_avatar': reply.author.avatar,
-            'profile_picture_url': request.build_absolute_uri(reply.author.profile_picture.url),
-            'content': reply.content,
-            'is_edited': reply.is_edited,
-            'like_count': like_count,
-            'is_liked': is_liked,
-            'parent' : str(reply.parent_id),
-            'can_edit': request.user.is_authenticated and reply.author == request.user,
-            'created_at': reply.created_at,
-            'updated_at': reply.updated_at
-        })
-    
-    return paginator.get_paginated_response(replies_data)
+    return paginator.get_paginated_response(paginated_replies)
 
 
 # ==================== SHARE VIEWS ====================

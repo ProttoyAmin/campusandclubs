@@ -34,9 +34,9 @@ router = DefaultRouter()
 
 urlpatterns = [
     # Djoser auth endpoints
-    re_path(r'^auth/', include('djoser.urls')),
+#     re_path(r'^auth/', include('djoser.urls')),
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
-    re_path(r'^auth/', include('djoser.urls.jwt')),
+#     re_path(r'^auth/', include('djoser.urls.jwt')),
 
     path("auth/refresh/", RefreshTokenView.as_view(), name="refresh"),
     path("auth/request-info/", get_request_info, name="request_info"),

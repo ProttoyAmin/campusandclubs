@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import SideBar from "@/components/sidebar";
 import { Card, CardContent } from "design/components/ui/card";
 import { useMe } from "@/features/user/hooks/user.hooks";
@@ -17,34 +17,15 @@ export interface UserSettingsLayoutProps {
 const SettingsLayout = () => {
   const { data: me } = useMe();
   const pageHeader = usePageHeader();
-  const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
-    document.title = `Settings | ${me?.username} • ${APP_NAME}`;
+    if (!me) {
+      document.title = `Settings • ${APP_NAME}`;
+      return;
+    }
+    document.title = `Settings • (@${me.username}) • ${APP_NAME}`;
   }, [me]);
-
-  React.useEffect(() => {
-    pageHeader.setActions(
-      // <ProfileLayoutHeader user={me} currentUser={currentUser} />,
-      <div className="flex items-center gap-4">
-        {/* <NavigateButtons
-          hideForward
-        /> */}
-        <h1 className="text-lg font-semibold">Settings</h1>
-      </div>
-    );
-
-    return () => {
-      pageHeader.clearActions();
-    };
-  }, [
-    me,
-    navigate,
-    location.pathname,
-    pageHeader.setActions,
-    pageHeader.clearActions,
-  ]);
 
   if (!me) return <div>Not found</div>;
 
@@ -54,7 +35,11 @@ const SettingsLayout = () => {
         <>
           <section className="flex flex-col gap-4 max-w-3xl justify-around">
             <div className="flex items-center p-2">
-              {pageHeader.actions}
+              {pageHeader.actions ?? (
+                <div className="flex items-center gap-4">
+                  <h1 className="text-lg font-semibold">Settings</h1>
+                </div>
+              )}
             </div>
             <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
               <CardContent className="w-full">

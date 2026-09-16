@@ -95,6 +95,7 @@ def post_likes(request: Request, post_id: uuid.UUID):
 @permission_classes([AllowAny])
 def post_comments(request: Request, post_id: uuid.UUID):
     """Get all comments on a post"""
+    from apps.interactions.serializers import CommentSerializer
     post = get_object_or_404(Post, pk=post_id, deleted_at__isnull=True)
 
     if request.method == "POST":
@@ -142,43 +143,13 @@ def post_comments(request: Request, post_id: uuid.UUID):
 
     comments = Comment.objects.filter(
         content_type=content_type,
-        object_id=post.id
-    ).select_related('author').order_by('created_at')
+        object_id=post.id,
+        parent=None
+    ).select_related('author').order_by('-created_at')
+
+    serializer = CommentSerializer(comments, many=True, context={'request': request})
 
     paginator = StandardResultsSetPagination()
-    paginated_comments = paginator.paginate_queryset(comments, request)
+    paginated_comments = paginator.paginate_queryset(serializer.data, request)
 
-    comments_data = []
-
-    for comment in paginated_comments:
-        comment_content_type = ContentType.objects.get_for_model(comment)
-        is_liked = False
-        if request.user.is_authenticated:
-            is_liked = Like.objects.filter(
-                user=request.user,
-                content_type=comment_content_type,
-                object_id=comment.id
-            ).exists()
-
-        like_count = Like.objects.filter(
-            content_type=comment_content_type,
-            object_id=comment.id
-        ).count()
-
-        comments_data.append({
-            'id': comment.id,
-            'author_id': comment.author.id,
-            'author_username': comment.author.username,
-            'author_avatar': request.build_absolute_uri(comment.author.profile_picture.url) if getattr(comment.author, 'profile_picture', None) else None,
-            'content': comment.content,
-            'is_edited': comment.is_edited,
-            'like_count': like_count,
-            'reply_count': comment.replies.count(),
-            'is_liked': is_liked,
-            'parent': str(comment.parent_id),
-            'can_edit': request.user.is_authenticated and comment.author == request.user,
-            'created_at': comment.created_at,
-            'updated_at': comment.updated_at
-        })
-
-    return paginator.get_paginated_response(comments_data)
+    return paginator.get_paginated_response(paginated_comments)

@@ -5,7 +5,7 @@ import { queryClient } from "@/config/query-client";
 
 export const usePosts = (params?: Record<string, unknown>) => {
   const list = useQuery({
-    queryKey: ["posts", params],
+    queryKey: ["posts"],
     queryFn: () => posts.list(params || {}),
   });
 
@@ -45,5 +45,35 @@ export const usePost = (id: string) => {
     queryFn: () => posts.comments(id),
   });
 
-  return { retrieve, softDelete, comments };
+  const replies = (comment_id: string, options?: { enabled?: boolean }) =>
+    useQuery({
+      queryKey: ["posts", id, "comments", comment_id, "replies"],
+      queryFn: () => posts.comment_replies(comment_id),
+      enabled: !!comment_id && (options?.enabled ?? true),
+    });
+
+  const postComments = useMutation({
+    mutationFn: (data: any) => posts.postComment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts", id, "comments"] });
+    },
+  });
+
+  const toggleLike = useMutation({
+    mutationFn: () => posts.toggleLike(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts", id] });
+    },
+  });
+
+  return { retrieve, softDelete, comments, toggleLike, postComments, replies };
+};
+
+
+export const useFeed = () => {
+  const feed = useQuery({
+    queryKey: ["posts", "feed"],
+    queryFn: () => posts.feed(),
+  });
+  return { feed };
 };

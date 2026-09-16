@@ -1,7 +1,9 @@
 # apps/interactions/urls.py
 from django.urls import path
 from . import views
-
+from apps.interactions.view import (
+    CommentUpdateDeleteAPIView
+)
 app_name = 'interactions'
 
 urlpatterns = [
@@ -13,8 +15,8 @@ urlpatterns = [
     # # Comments
     path('comments/', views.list_comments, name='list_comments'),  # GET: list comments
     path('comments/create/', views.create_comment, name='create_comment'),  # POST: create comment
-    path('comments/<int:comment_id>/', views.manage_comment, name='manage_comment'),  # GET/PATCH/DELETE
-    path('comments/<int:comment_id>/replies/', views.get_comment_replies, name='comment_replies'),  # GET: get replies
+    path('comments/<uuid:comment_id>/', CommentUpdateDeleteAPIView.as_view(), name='manage_comment'),  # GET/PATCH/DELETE
+    path('comments/<uuid:comment_id>/replies/', views.get_comment_replies, name='comment_replies'),  # GET: get replies
     
     # # Shares
     # path('shares/', views.list_shares, name='list_shares'),  # GET: list shares

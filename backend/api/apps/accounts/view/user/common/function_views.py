@@ -1,10 +1,10 @@
+import logging
+
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
-
 from django.shortcuts import get_object_or_404
-
 from apps.accounts.models import User
 from apps.connections.models import Follow
 from apps.accounts.serialize.user.profile import UserProfileSerializer
@@ -17,6 +17,7 @@ from apps.accounts.policies.user import UserPolicy
 from core.policies.utils import current_user
 
 
+logger = logging.getLogger(__name__)
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -152,8 +153,16 @@ def get_user_clubs(request, username) -> Response:
 @permission_classes([permissions.IsAuthenticated])
 def get_my_affiliations(request: Request) -> Response:
     """List the authenticated user's institute affiliations."""
+    from apps.institutes.models import InstituteAffiliate
+    
     user: User = current_user(request)
-    affiliations = user.affiliations.filter(is_active=True)
+    affiliations = InstituteAffiliate.objects.filter(
+        user=user, 
+        is_active=True
+    ).select_related("institute")
+
+    logger.info(f"Affiliations: {affiliations}")
+    
     serializer = InstituteAffiliateForUserSerializer(
         affiliations, many=True, context={'request': request}
     )

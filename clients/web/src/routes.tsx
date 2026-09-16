@@ -1,5 +1,4 @@
 import type { RouteObject } from "react-router-dom";
-import { routes as appRoutes } from "./settings/routes";
 import { clubRoutes } from "./features/club/router";
 import MainLayout from "./layouts/main-layout";
 import { UserProfileLayout } from "./layouts/user";
@@ -10,6 +9,7 @@ import AuthLayout from "./layouts/auth/auth-layout";
 import { authRoutes } from "./features/auth/router";
 import NotFound from "./shared/pages/not-found";
 import App from "./App";
+import { chatRoutes } from "./features/chat/router";
 
 
 export const routes: RouteObject[] = [
@@ -36,6 +36,10 @@ export const routes: RouteObject[] = [
         id: "settings",
         element: <SettingsLayout />,
         children: [...userSettingsRoutes],
+      },
+      {
+        id: "chat",
+        children: [...chatRoutes],
       },
     ]
   },

@@ -125,10 +125,12 @@ def list_followers(request, user_id):
     """
     Get list of users following this user
     """
+    from apps.accounts.policies.user import UserPolicy
     target_user = get_object_or_404(User, pk=user_id)
 
     # Check if viewer can see followers
-    if not target_user.can_view_profile(request.user):
+    policy = UserPolicy(request.user, target_user)
+    if not policy.can_view_profile(target_user):
         return Response(
             {'detail': 'You do not have permission to view this user\'s followers.'},
             status=status.HTTP_403_FORBIDDEN
@@ -162,10 +164,12 @@ def list_following(request, user_id):
     """
     Get list of users this user is following
     """
+    from apps.accounts.policies.user import UserPolicy
     target_user = get_object_or_404(User, pk=user_id)
 
     # Check if viewer can see following list
-    if not target_user.can_view_profile(request.user):
+    policy = UserPolicy(request.user, target_user)
+    if not policy.can_view_profile(target_user):
         return Response(
             {'detail': 'You do not have permission to view this user\'s following list.'},
             status=status.HTTP_403_FORBIDDEN
@@ -445,7 +449,6 @@ def suggested_users(request):
             'user_id': user.id,
             'username': user.username,
             'avatar': user.avatar,
-            'profile_picture_url': request.build_absolute_uri(user.profile_picture.url if user.profile_picture else None),
             'bio': user.bio,
             'total_followers': user.total_followers,
             'is_private': user.is_private,

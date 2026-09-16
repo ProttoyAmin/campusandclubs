@@ -9,19 +9,27 @@ type Props = {
 };
 
 export default function PageHeaderProvider({ children }: Props) {
-  const [actions, setActions] = React.useState<React.ReactNode>(null);
+  const [stack, setStack] = React.useState<{ id: string; node: React.ReactNode }[]>([]);
 
-  const clearActions = React.useCallback(() => {
-    setActions(null);
+  const push = React.useCallback((node: React.ReactNode) => {
+    const id = crypto.randomUUID();
+    setStack((prev) => [...prev, { id, node }]);
+    return id;
   }, []);
+
+  const pop = React.useCallback((id: string) => {
+    setStack((prev) => prev.filter((entry) => entry.id !== id));
+  }, []);
+
+  const actions = stack.length > 0 ? stack[stack.length - 1].node : null
 
   const value = React.useMemo<PageHeaderContextType>(
     () => ({
       actions,
-      setActions,
-      clearActions,
+      push,
+      pop
     }),
-    [actions, clearActions],
+    [actions, push, pop],
   );
 
   return (

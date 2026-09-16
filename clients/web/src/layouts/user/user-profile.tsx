@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useParams, Outlet, useLocation } from "react-router-dom";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import { Card } from "design/components/ui/card";
 import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
@@ -18,7 +18,6 @@ export const UserProfileLayout: React.FC = () => {
   const { username } = useParams();
   const { user } = useUser(username as string);
   const { data: currentUser } = useSession();
-  const navigate = useNavigate();
   const pageHeader = usePageHeader();
   const scrollRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
@@ -32,31 +31,12 @@ export const UserProfileLayout: React.FC = () => {
     }
   }, [username, user.data]);
 
-  React.useEffect(() => {
-    pageHeader.setActions(
-      <>
-        <ProfileLayoutHeader user={user.data} currentUser={currentUser} />
-      </>,
-    );
-
-    return () => {
-      pageHeader.clearActions();
-    };
-  }, [
-    username,
-    user.data,
-    currentUser,
-    navigate,
-    pageHeader.setActions,
-    pageHeader.clearActions,
-  ]);
-
   return (
     <section className="flex flex-col gap-4 max-w-3xl justify-around">
-      <div className="flex justify-between items-center p-2">
-        {pageHeader.actions}
+      <div className="flex justify-between items-center">
+        {pageHeader.actions ?? <ProfileLayoutHeader user={user.data} currentUser={currentUser} />}
       </div>
-      <Card ref={scrollRef} className="w-full bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none pb-0 pt-0">
+      <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
         <Outlet context={{ user: user.data, currentUser }} />
       </Card>
     </section>

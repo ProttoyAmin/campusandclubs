@@ -8,7 +8,7 @@ export const config = {
       typeof window !== "undefined"
         ? window.location.origin
         : (import.meta.env.VITE_APP_ORIGIN as string) ||
-          "http://localhost:3000",
+        "http://localhost:3000",
     name: "campusandclubs",
     description: "campusandclubs",
   },
@@ -51,7 +51,7 @@ export const config = {
         base: `connections/`,
       },
       interactions: {
-        base: `interactions/`,
+        base: `activities/`,
       },
     },
   },

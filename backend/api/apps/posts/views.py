@@ -14,7 +14,7 @@ from apps.interactions.serializers import CommentSerializer
 # Create your views here.
 from . import serializers
 from apps.interactions.models import Like, Comment, Share
-from apps.posts.serializers import PostSerializer, PostListSerializer
+from apps.posts.serializer import PostSerializer
 from apps.posts.models import (
     Post
 )
@@ -677,7 +677,6 @@ def get_feed(request):
             is_public=True
         ),
         deleted_at__isnull=True,
-        club__isnull=True  # Exclude club posts from user feed
     ).exclude(
         # Exclude posts from blocked users
         author_id__in=blocked_users
@@ -698,7 +697,7 @@ def get_feed(request):
     paginator = StandardResultsSetPagination()
     paginated_posts = paginator.paginate_queryset(posts, request)
 
-    serializer = serializers.PostSerializer(
+    serializer = PostSerializer(
         paginated_posts,
         many=True,
         context={'request': request}

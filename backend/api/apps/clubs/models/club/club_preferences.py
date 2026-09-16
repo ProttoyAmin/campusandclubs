@@ -1,8 +1,7 @@
 from django.db import models
 
-from apps.clubs.models.club import Club
 from apps.clubs.models.enums import ApplicationDecision
-
+from .club import Club
 
 class ClubPreference(models.Model):
     club = models.OneToOneField(
@@ -19,8 +18,12 @@ class ClubPreference(models.Model):
     )
     # add more here as needed, e.g.:
     # max_pending_applications = models.PositiveIntegerField(null=True, blank=True)
+    allow_public_posts = models.BooleanField(default=True)
     allow_reapplication = models.BooleanField(default=True)
     leave_application = models.BooleanField(default=False)
+    requires_interview = models.BooleanField(default=False)
+
+    
 
     # --- Notifications ---
     notify_on_new_member = models.BooleanField(default=True)

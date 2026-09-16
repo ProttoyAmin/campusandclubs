@@ -31,7 +31,7 @@ const PasswordsPage = () => {
     }, [passwordChange]);
 
     React.useEffect(() => {
-        pageHeader.setActions(
+        const id = pageHeader.push(
             <>
                 <div className="flex items-center gap-4">
                     <NavigateButtons
@@ -43,12 +43,9 @@ const PasswordsPage = () => {
         );
 
         return () => {
-            pageHeader.clearActions();
+            pageHeader.pop(id)
         };
-    }, [
-        pageHeader.setActions,
-        pageHeader.clearActions,
-    ]);
+    }, [pageHeader.push, pageHeader.pop]);
     return (
         <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">

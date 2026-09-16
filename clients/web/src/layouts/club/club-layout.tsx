@@ -2,7 +2,7 @@ import { ClubApplicationDialog } from "@/features/club/components/club/club-appl
 import { useClub, useJoin } from "@/features/club/hooks/club.hooks";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React, { useRef } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { ClubApplicationWithdrawDialog } from "@/features/club/components/club/club-withdraw-dialog";
 import ClubLayoutHeader from "@/features/club/components/layout/layout-header";
@@ -13,7 +13,6 @@ import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const pageHeader = usePageHeader();
   const { data: club } = useClub(slug);
   const { mutate: joinClub, isPending: isJoinPending } = useJoin(
@@ -77,59 +76,42 @@ export const ClubMainLayout: React.FC = () => {
     document.title = `${slug ? slug + '- Clubs' : 'Clubs'}`;
   }, [slug]);
 
-  React.useEffect(() => {
-    pageHeader.setActions(
-      <>
-        <ClubLayoutHeader
-          club={club}
-          slug={slug}
-          handleJoin={handleJoin}
-          isJoinPending={isJoinPending}
-        />
-
-        <ClubApplicationDialog
-          open={!!joinDialogData}
-          onOpenChange={(open) => !open && setJoinDialogData(null)}
-          title={`${club?.name}`}
-          description={`is taking submissions to join. Submit an application to apply for a membership.`}
-          clubId={club?.id}
-        />
-        <ClubApplicationWithdrawDialog
-          open={isWithdrawing}
-          onOpenChange={setIsWithdrawing}
-          title={`${club?.name}`}
-          description={`Are you sure you want to withdraw your application?`}
-          clubId={club?.id}
-          // @ts-ignore
-          // TODO: Fix the type later (priority:low)
-          applicationId={club?.application?.id}
-        />
-      </>,
-    );
-
-    return () => {
-      pageHeader.clearActions();
-    };
-  }, [
-    slug,
-    club,
-    isJoinPending,
-    joinDialogData,
-    isWithdrawing,
-    navigate,
-    pageHeader.setActions,
-    pageHeader.clearActions,
-  ]);
-
   return (
     <section
       id={useSectionId()}
       className="flex flex-col gap-4 max-w-3xl justify-around"
     >
-      <div className="flex justify-between items-center p-2">
-        {pageHeader.actions}
+      <div className="flex justify-between items-center">
+        {pageHeader.actions ?? (
+          <>
+            <ClubLayoutHeader
+              club={club}
+              slug={slug}
+              handleJoin={handleJoin}
+              isJoinPending={isJoinPending}
+            />
+
+            <ClubApplicationDialog
+              open={!!joinDialogData}
+              onOpenChange={(open) => !open && setJoinDialogData(null)}
+              title={`${club?.name}`}
+              description={`is taking submissions to join. Submit an application to apply for a membership.`}
+              clubId={club?.id}
+            />
+            <ClubApplicationWithdrawDialog
+              open={isWithdrawing}
+              onOpenChange={setIsWithdrawing}
+              title={`${club?.name}`}
+              description={`Are you sure you want to withdraw your application?`}
+              clubId={club?.id}
+              // @ts-ignore
+              // TODO: Fix the type later (priority:low)
+              applicationId={club?.application?.id}
+            />
+          </>
+        )}
       </div>
-      <Card ref={scrollRef} className="w-full shadow-lg  bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+      <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl shadow-lg bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
         {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
         <Outlet context={{ club }} />
       </Card>
