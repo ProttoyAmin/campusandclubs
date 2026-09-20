@@ -8,14 +8,14 @@ import AppDrawer from '@/shared/components/app-drawer';
 import Menu from '@/shared/components/menu';
 import ResponsiveDialog from '@/shared/components/responsive-dialog';
 import type { ClubCreateRequestWritable } from '@campus/api';
-import { useInstitutes } from '@/features/institute/hooks/institute.hooks';
 import { useClubs, useDepartmentTemplates } from '@/features/club/hooks/club.hooks';
 import { Plus } from 'lucide-react';
+import { useAffiliations } from '@/features/user/hooks/user.hooks';
 
 const Header = () => {
-    const [open, setOpen] = React.useState(false);
-    const [isCreating, setIsCreating] = React.useState<boolean>(false);
-    const { institutes } = useInstitutes("id, name, code");
+    const [menuOpen, setMenuOpen] = React.useState(false);
+    const [createClubOpen, setCreateClubOpen] = React.useState(false);
+    const { data: affiliations } = useAffiliations();
     const { create } = useClubs();
     const { data: templates, isPending: templatesIsPending } = useDepartmentTemplates();
 
@@ -38,49 +38,65 @@ const Header = () => {
         //   },
         // });
     };
+
     return (
         <>
-            <header className='p-4 flex items-center justify-between'>
-                <div className="">
-                    <AppDrawer open={open} onOpenChange={setOpen}
-                        trigger={
-                            <Button variant="ghost">
-                                <HugeiconsIcon icon={Menu09Icon} className="size-6" />
-                            </Button>
-                        }
-                    >
-                        <Menu items={SettingsDropdownMenu()}></Menu>
-                        <ResponsiveDialog
-                            open={isCreating}
-                            onOpenChange={setIsCreating}
-                            trigger={
-                                <Button
-                                    variant="ghost"
-                                    size="default"
-                                    className={
-                                        "rounded-md font-medium transition-colors w-full text-muted-foreground border-transparent self-start"
-                                    }
-                                >
-                                    <Plus /> Start a club
-                                </Button>
-                            }
-                        >
-                            <ClubCreateForm
-                                onSubmit={handleClubCreate}
-                                institutes={institutes?.data?.results}
-                                templates={templates}
-                                isPending={create.isPending || templatesIsPending}
+            <header className="p-4 flex items-center justify-between">
+                <AppDrawer
+                    open={menuOpen}
+                    onOpenChange={setMenuOpen}
+                    trigger={
+                        <Button variant="ghost">
+                            <HugeiconsIcon
+                                icon={Menu09Icon}
+                                className="size-6"
                             />
-                        </ResponsiveDialog>
-                    </AppDrawer>
-                </div>
+                        </Button>
+                    }
+                >
+                    <Menu items={SettingsDropdownMenu()} />
+
+                    <Button
+                        variant="ghost"
+                        size="default"
+                        className="w-full rounded-md font-medium text-muted-foreground"
+                        onClick={() => {
+                            setMenuOpen(false);
+                            setCreateClubOpen(true);
+                        }}
+                    >
+                        <Plus />
+                        Start a club
+                    </Button>
+                </AppDrawer>
+
                 <h1 className="text-xl font-bold text-accent-foreground">
                     campusandclubs
                 </h1>
-                <Button size={"icon"} variant='ghost'>
-                    <HugeiconsIcon icon={Search01Icon} className="size-6" />
+
+                <Button size="icon" variant="ghost">
+                    <HugeiconsIcon
+                        icon={Search01Icon}
+                        className="size-6"
+                    />
                 </Button>
             </header>
+
+            {/* Second overlay lives outside AppDrawer */}
+            <ResponsiveDialog
+                open={createClubOpen}
+                onOpenChange={setCreateClubOpen}
+                title="Start a club"
+            >
+                <ClubCreateForm
+                    onSubmit={handleClubCreate}
+                    affiliations={affiliations}
+                    templates={templates}
+                    isPending={
+                        create.isPending || templatesIsPending
+                    }
+                />
+            </ResponsiveDialog>
         </>
     )
 }

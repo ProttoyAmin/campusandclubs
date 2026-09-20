@@ -3,11 +3,12 @@ import { Button } from "design/components/ui/button";
 import {
   CircleEllipsis
 } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NavigateButtons from "@/shared/components/navigate-buttons";
 import type { UserResponse } from "../../api/user.client";
 import {
   Avatar,
+  AvatarBadge,
   AvatarFallback,
   AvatarImage,
 } from "design/components/ui/avatar";
@@ -25,7 +26,6 @@ const ProfileLayoutHeader = ({
   user: UserResponse;
   currentUser: AuthSession;
 }) => {
-  const location = useLocation();
   const navigate = useNavigate();
 
   return (
@@ -35,10 +35,9 @@ const ProfileLayoutHeader = ({
           <header className="flex items-center justify-between w-full md:p-2 p-1">
             <div className="flex gap-2 items-center">
               <div>
-                {location.pathname !==
-                  paths.private.user.profile(user.username) && (
-                    <NavigateButtons hideForward />
-                  )}
+                {currentUser?.data.user.id !== user.id && (
+                  <NavigateButtons hideForward />
+                )}
               </div>
               <div
                 onClick={(e) => {
@@ -54,6 +53,7 @@ const ProfileLayoutHeader = ({
                     alt={user.username}
                   />
                   <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+                  {user.status === "online" && <AvatarBadge className="bg-green-600 dark:bg-green-800" />}
                 </Avatar>
                 <p className="text-lg">{user.username}</p>
                 {user.is_private && (

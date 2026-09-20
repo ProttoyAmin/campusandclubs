@@ -10,9 +10,13 @@ import type {
   PostsListResponse,
   Club,
   InstituteAffiliateForUser,
+  UserProfile,
+  UserMinimal
 } from "@campus/api";
 
 import { AxiosError, type AxiosResponse } from "axios";
+
+type Status = "online" | "away" | "dnd";
 
 export type PrivateUserResponse = {
   detail: string;
@@ -27,10 +31,12 @@ export type PrivateUserResponse = {
   is_private: boolean;
   is_following: boolean;
   follow_status: string | null;
+  can_view_profile: boolean;
+  status: Status;
 };
 
 export type UserResponse =
-  | AccountsAuthUsersUserRetrieveResponse
+  | UserProfile
   | PrivateUserResponse;
 
 export type PaginatedPostsResult = {
@@ -38,6 +44,14 @@ export type PaginatedPostsResult = {
   next: string | null;
   previous: string | null;
   results: Array<PostsListResponse>;
+};
+
+
+export type PaginatedUserMinimalResult = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Array<UserMinimal>;
 };
 
 export class UserClient extends BaseClient<
@@ -165,6 +179,11 @@ export class UserClient extends BaseClient<
     const response = await this.client.get(
       this.endpoint + `users/${userId}/posts${media ? `?media=${media}` : ""}`,
     );
+    return response;
+  }
+
+  async searchUsers(username?: string) {
+    const response = await this.client.get<PaginatedUserMinimalResult>(this.endpoint + `search${username ? `?q=${username}` : ""}`);
     return response;
   }
 }

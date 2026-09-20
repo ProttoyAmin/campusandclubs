@@ -6,6 +6,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
+from .enums import (
+    UserStatus, Gender
+)
 
 
 if TYPE_CHECKING:
@@ -17,6 +20,7 @@ if TYPE_CHECKING:
     from allauth.account.models import EmailAddress
     from .user_preference import UserPreference
     from apps.clubs.models import Membership
+    from apps.realtime.models import Chat
 
 
 class User(AbstractUser):
@@ -29,21 +33,9 @@ class User(AbstractUser):
         ('other', 'Other'),
     ]
 
-    GENDER_TYPES = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other')
-    ]
-
     EMAIL_PREFERENCE_CHOICES = [
         ('email', 'Personal Email'),
         ('professional_email', 'Professional Email'),
-    ]
-
-    STATUS_CHOICES = [
-        ('online', 'Online'),
-        ('away', 'Away'),
-        ('dnd', 'Do Not Disturb'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -69,12 +61,14 @@ class User(AbstractUser):
 
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(
-        max_length=20, choices=GENDER_TYPES, blank=True, null=True)
+        max_length=20, choices=Gender, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
+
     type = models.CharField(max_length=50, choices=USER_TYPES,
                             blank=True, null=True, default=None)
+
     preferred_email = models.CharField(
         max_length=20,
         choices=EMAIL_PREFERENCE_CHOICES,
@@ -83,8 +77,8 @@ class User(AbstractUser):
     )
     status = models.CharField(
         max_length=10,
-        choices=STATUS_CHOICES,
-        default='online',
+        choices=UserStatus,
+        default=UserStatus.AWAY,
         help_text="User's current online status"
     )
     is_status_manual = models.BooleanField(
@@ -114,6 +108,7 @@ class User(AbstractUser):
         media: RelatedManager["Media"]
         emailaddress_set: RelatedManager["EmailAddress"]
         preferences: RelatedManager["UserPreference"]
+        chats: RelatedManager["Chat"]
 
     def __str__(self):
         return f'{self.username} - {self.id}'
@@ -124,11 +119,6 @@ class User(AbstractUser):
         return full_name if full_name else self.username
 
     # ==================== CLUB RELATED PROPERTIES ====================
-    
-    # @property
-    # def origin(self):
-    #     """Get the user origin (institute name)"""
-    #     return self.institute.name if self.institute else None
 
     @property
     def joined_clubs(self):

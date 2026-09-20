@@ -70,6 +70,7 @@ const Create = () => {
       <ResponsiveDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        size='md'
         trigger={
           <Button variant={"outline"} size={"icon-lg"} className={"shadow-2xl"}>
             <PlusIcon className="size-5" />
@@ -97,7 +98,7 @@ const Create = () => {
             variant={"outline"}
             size={"lg"}
             disabled={create.isPending}
-            className="shadow-2xl w-full rounded-full"
+            className="shadow-2xl w-full mt-auto rounded-full"
           >
             {create.isPending ? <><Spinner /> Posting...</> : "Post"}
           </Button>
@@ -112,11 +113,11 @@ const Create = () => {
                 {user?.username?.[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <div className="text-base">
                 <p className="font-medium">{user?.username}</p>
               </div>
-            </div>
+            </div> */}
             <ChevronRightIcon className="size-4 text-gray-400" />
             <Combobox
               items={clubOptions}

@@ -53,6 +53,11 @@ export const config = {
       interactions: {
         base: `activities/`,
       },
+      realtime: {
+        base: "realtime/",
+        chatList: "realtime/chats/",
+        chatStart: "realtime/chats/start/",
+      }
     },
   },
   // Add more configuration options as needed

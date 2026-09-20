@@ -1,7 +1,7 @@
 import { paths, routes } from "@/settings/routes";
 import { isRouteActive } from "@/utils/route";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Home01Icon, Message01Icon, OpenSourceIcon, UserRoundIcon } from "@hugeicons/core-free-icons";
+import { Home01Icon, MessageCircleIcon, UserRoundIcon } from "@hugeicons/core-free-icons";
 
 export type MenuItemType = {
   id: number | string;
@@ -37,24 +37,24 @@ export const userMenu: (username: string) => MenuItemType[] = (
     },
     {
       id: 3,
-      label: "Messages",
-      icon: <HugeiconsIcon icon={Message01Icon} size={20} />,
+      label: "Chats",
+      icon: <HugeiconsIcon icon={MessageCircleIcon} size={20} />,
       iconActive: (
-        <HugeiconsIcon icon={Message01Icon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
+        <HugeiconsIcon icon={MessageCircleIcon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
       ),
-      link: () => paths.private.chat.inbox,
+      link: () => paths.private.chat.chats,
       isActive: (currentPath) =>
-        isRouteActive(routes.chat.inbox, currentPath)
+        isRouteActive(routes.chat.chats, currentPath)
     },
-    {
-      id: 4,
-      label: "Clubs",
-      icon: <HugeiconsIcon icon={OpenSourceIcon} size={20} />,
-      iconActive: (
-        <HugeiconsIcon icon={OpenSourceIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
-      ),
-      link: () => paths.private.club.list,
-      isActive: (currentPath) =>
-        isRouteActive(routes.club.private.list, currentPath),
-    },
+    // {
+    //   id: 4,
+    //   label: "Clubs",
+    //   icon: <HugeiconsIcon icon={OpenSourceIcon} size={20} />,
+    //   iconActive: (
+    //     <HugeiconsIcon icon={OpenSourceIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
+    //   ),
+    //   link: () => paths.private.club.list,
+    //   isActive: (currentPath) =>
+    //     isRouteActive(routes.club.private.list, currentPath),
+    // },
   ];

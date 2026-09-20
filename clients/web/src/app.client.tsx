@@ -16,7 +16,7 @@ hydrateRoot(
     document.getElementById("root")!,
     <AppProviders queryClient={queryClient}>
         <StrictMode>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools initialIsOpen={false} position="top" buttonPosition="top-right" />
             <ThemeProvider>
                 <RouterProvider router={router} />
             </ThemeProvider>

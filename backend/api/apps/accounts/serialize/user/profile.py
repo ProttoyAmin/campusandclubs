@@ -20,8 +20,7 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar',
-                  'professional_email', 'profile_picture',]
+        fields = ['id', 'username', 'email', 'avatar',]
 
     def get_avatar(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer
@@ -75,14 +74,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
     can_view_profile = serializers.SerializerMethodField()
 
     # Activity stats
-    likes_given = serializers.IntegerField(
-        source='total_likes_given', read_only=True)
-    comments_made = serializers.IntegerField(
-        source='total_comments_made', read_only=True)
-    shares_made = serializers.IntegerField(
-        source='total_shares_made', read_only=True)
-    likes_received = serializers.IntegerField(
-        source='total_likes_received', read_only=True)
+    # likes_given = serializers.IntegerField(
+    #     source='total_likes_given', read_only=True)
+    # comments_made = serializers.IntegerField(
+    #     source='total_comments_made', read_only=True)
+    # shares_made = serializers.IntegerField(
+    #     source='total_shares_made', read_only=True)
+    # likes_received = serializers.IntegerField(
+    #     source='total_likes_received', read_only=True)
 
     # URLs
     url = serializers.SerializerMethodField()
@@ -99,7 +98,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'follower_count', 'following_count', 'pending_requests_count',
             'followers_url', 'following_url',
             'is_following', 'is_followed_by', 'is_mutual', 'follow_status', 'can_view_profile',
-            'likes_given', 'comments_made', 'shares_made', 'likes_received',
+            # 'likes_given', 'comments_made', 'shares_made', 'likes_received',
             'last_active', 'created_at', 'updated_at', 'last_login'
         ]
 

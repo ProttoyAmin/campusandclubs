@@ -16,7 +16,7 @@ export type ProfileOutletContext = {
 function isPrivateUser(
   data: UserProfile | PrivateUserResponse,
 ): data is PrivateUserResponse {
-  return data?.is_private;
+  return data?.is_private && !data?.can_view_profile;
 }
 
 const Profile: React.FC = () => {

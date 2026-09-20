@@ -53,6 +53,11 @@ class AccountService {
     const response = await this.userClient.passwordChange(payload);
     return response.data;
   }
+
+  async search(username: string) {
+    const response = await this.userClient.searchUsers(username);
+    return response.data;
+  }
 }
 
 export const accounts = new AccountService();

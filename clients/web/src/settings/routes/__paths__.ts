@@ -119,8 +119,13 @@ export const paths = {
     },
 
     chat: {
-      inbox: routes.chat.inbox,
+      chats: routes.chat.chats,
       request: routes.chat.request,
+      new: routes.chat.new,
+      inbox: (id: string) =>
+        generateRouteFromPath(routes.chat.inbox, {
+          id,
+        }),
     },
 
     auth: {

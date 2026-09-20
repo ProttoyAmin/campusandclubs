@@ -1,5 +1,6 @@
 import { useMe } from "@/features/user/hooks/user.hooks";
-import { NavLink } from "react-router-dom";
+import NavTabs from "./nav-tabs";
+import { MainMobileMenu, type MenuItemType } from "@/config/menu/main-mobile-menu";
 
 interface BottomBarProps {
   className?: string;
@@ -8,33 +9,13 @@ interface BottomBarProps {
 const BottomBar: React.FC<BottomBarProps> = (props) => {
   const { data: currentUser } = useMe();
 
-  const tabs = [
-    { id: 1, to: "/", label: "Home", icon: "Home" },
-    { id: 2, to: "@/clubs", label: "Clubs", icon: "Clubs" },
-    {
-      id: 3,
-      to: `/@/${currentUser?.username}`,
-      label: "Profile",
-      icon: "User",
-    },
-  ];
-
   return (
-    <div
-      className={`${props.className} bg-background w-full p-2 flex justify-center`}
-    >
-      <div className="flex flex-row items-center justify-between w-full">
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.id}
-            to={tab.to}
-            className="flex flex-col space-y-2 self-start"
-          >
-            {tab.icon}
-          </NavLink>
-        ))}
-      </div>
-    </div>
+    <header className={`${props.className}`}>
+      <NavTabs
+        menu={MainMobileMenu(currentUser?.username || '')}
+        className="flex flex-row md:flex-col space-y-2 self-start"
+      />
+    </header>
   );
 };
 

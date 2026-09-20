@@ -8,8 +8,6 @@ import {
     DrawerTrigger,
     DrawerFooter
 } from "design/components/ui/drawer"
-import { useMediaQuery } from '../hooks/use-media-query';
-import { Button } from 'design/components/ui/button';
 
 interface AppDrawerProps {
     trigger: React.ReactElement;

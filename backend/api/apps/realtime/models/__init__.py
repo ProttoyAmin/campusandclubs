@@ -1,6 +1,8 @@
-from .chat import ChatMessage, ChatRoom
+from .chat import Chat, Message, MessageReaction, ChatParticipant
 
 __all__ = [
-    "ChatRoom",
-    "ChatMessage"
+    "Chat",
+    "Message",
+    "MessageReaction",
+    "ChatParticipant"
 ]

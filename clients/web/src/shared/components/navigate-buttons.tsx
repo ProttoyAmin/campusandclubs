@@ -2,10 +2,10 @@ import { Button } from "design/components/ui/button";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const NavigateButtons = ({ disableForward = false, hideForward = false }) => {
+const NavigateButtons = ({ disableForward = false, hideForward = false, className = "" }) => {
   const navigate = useNavigate();
   return (
-    <>
+    <div className={className}>
       <Button
         variant="ghost"
         className={`
@@ -27,7 +27,7 @@ const NavigateButtons = ({ disableForward = false, hideForward = false }) => {
           <ArrowRightIcon className="size-5" />
         </Button>
       )}
-    </>
+    </div>
   );
 };
 

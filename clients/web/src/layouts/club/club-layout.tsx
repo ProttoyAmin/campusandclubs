@@ -10,6 +10,7 @@ import { Card } from "design/components/ui/card";
 import { toast } from "design/components/ui/toast";
 import { useSectionId } from "@/shared/hooks/id";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
+import defaultBanner from "@/assets/4578-dragon-ball-z.png";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -113,6 +114,15 @@ export const ClubMainLayout: React.FC = () => {
       </div>
       <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl shadow-lg bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
         {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
+        <div className="relative h-64">
+          {/* TODO: shows banner and implement avatar using club preference later */}
+          {club?.banner ? (
+            <img src={club.banner} alt={club?.name} className="w-full h-full object-cover" />
+          ) : (
+            <img src={defaultBanner} alt={`${club?.name} banner`} className="w-full h-full object-cover" />
+          )}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent"></div>
+        </div>
         <Outlet context={{ club }} />
       </Card>
     </section>

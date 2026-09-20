@@ -9,8 +9,7 @@ import NavTabs from "@/components/nav-tabs";
 import { clubProfileMenu } from "@/config/menu/club/club-menu";
 import EmptyState from "@/shared/components/empty-state";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { FileEmpty02Icon } from "@hugeicons/core-free-icons";
-import defaultBanner from "@/assets/4578-dragon-ball-z.png";
+import { FileEmpty02Icon, LockKeyholeIcon } from "@hugeicons/core-free-icons";
 
 const ClubPage: React.FC = () => {
   const { club } = useClubOutlet();
@@ -26,19 +25,21 @@ const ClubPage: React.FC = () => {
     )
   }
 
+  if (club.privacy === "private" && !club.is_member) {
+    return (
+      <EmptyState
+        title=""
+        description="This club is private. You need to be a member to view its content."
+        icon={<HugeiconsIcon icon={LockKeyholeIcon} className="size-10 text-muted-foreground" />}
+      />
+    )
+  }
+
   return (
     <>
       {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
       <CardHeader className="p-0">
-        <div className="relative h-64">
-          {/* TODO: shows banner and implement avatar using club preference later */}
-          {club?.banner ? (
-            <img src={club.banner} alt={club.name} className="w-full h-full object-cover" />
-          ) : (
-            <img src={defaultBanner} alt={`${club.name} banner`} className="w-full h-full object-cover" />
-          )}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
-        </div>
+
         <div className="">
           <NavTabs menu={clubProfileMenu(slug)} className="flex items-center justify-around text-center" itemsClassName="justify-center" variant="tab" />
         </div>

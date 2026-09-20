@@ -28,12 +28,15 @@ class UserPolicy(Policy[User, User]):
         if not getattr(viewer, "is_authenticated", False):
             return not target.is_private
 
+
         from apps.connections.models import Block
         if Block.has_blocked_each_other(target, viewer):
             return False
 
+
         if not target.is_private:
             return True
+
 
         from apps.connections.models import Follow
         return Follow.is_following(viewer, target)

@@ -10,7 +10,7 @@ import { authRoutes } from "./features/auth/router";
 import NotFound from "./shared/pages/not-found";
 import App from "./App";
 import { chatRoutes } from "./features/chat/router";
-import ChatLayout from "./layouts/chat/chat-layout";
+import ChatsLayout from "./layouts/chat/chats-layout";
 
 
 export const routes: RouteObject[] = [
@@ -39,8 +39,8 @@ export const routes: RouteObject[] = [
         children: [...userSettingsRoutes],
       },
       {
-        id: "chat",
-        element: <ChatLayout />,
+        id: "chats",
+        element: <ChatsLayout />,
         children: [...chatRoutes],
       },
     ]

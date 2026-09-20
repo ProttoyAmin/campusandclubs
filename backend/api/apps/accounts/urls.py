@@ -34,7 +34,7 @@ router = DefaultRouter()
 
 urlpatterns = [
     # Djoser auth endpoints
-#     re_path(r'^auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls')),
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
 #     re_path(r'^auth/', include('djoser.urls.jwt')),
 
@@ -93,7 +93,7 @@ urlpatterns = [
     # path('clubs/<uuid:club_id>/roles/<str:role_name>/users/', views.get_users_with_role, name='users_with_role'),
 
     # # Search
-    path('search/', views.search_users, name='search_users'),
+    path('auth/search/', views.search_users, name='search_users'),
 
     # # Include router URLs
     # path('', include(router.urls)),

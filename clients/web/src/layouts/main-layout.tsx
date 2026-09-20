@@ -7,6 +7,7 @@ import Guard from "@/guards/guard";
 import { Toaster } from "design/components/ui/toast";
 import BottomBar from "@/components/bottom-bar";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
+import { SocketProvider } from "@/providers/socket-provider";
 
 const MainLayout: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -14,25 +15,27 @@ const MainLayout: React.FC = () => {
   useScrollRestoration(scrollRef, location.key);
   return (
     <Guard>
-      <PageHeaderProvider>
-        <div className="flex relative h-screen">
-          <div className="w-full md:w-1/7 md:container hidden md:block overflow-y-auto">
-            <SideBar main />
+      <SocketProvider>
+        <PageHeaderProvider>
+          <div className="flex relative h-screen">
+            <div className="w-full md:w-1/7 min-w-fit md:container hidden md:block overflow-y-auto">
+              <SideBar main />
+            </div>
+            <div ref={scrollRef} className="w-full md:w-6/7 pt-2 overflow-y-auto scrollbar-none">
+              <Suspense fallback={<div>this is loading...</div>}>
+                <Outlet />
+              </Suspense>
+            </div>
+            <div className="absolute bottom-14 right-5 md:right-20">
+              <Create />
+            </div>
+            <div className="absolute bottom-0 w-full z-50 h-12 md:hidden">
+              <BottomBar className="flex h-full" />
+            </div>
           </div>
-          <div ref={scrollRef} className="w-full md:w-6/7 pt-2 overflow-y-auto scrollbar-none">
-            <Suspense fallback={<div>this is loading...</div>}>
-              <Outlet />
-            </Suspense>
-          </div>
-          <div className="absolute bottom-14 right-5 md:right-20">
-            <Create />
-          </div>
-          <div className="absolute bottom-0 w-full z-50 h-12 md:hidden">
-            <BottomBar className="flex h-full" />
-          </div>
-        </div>
-        <Toaster />
-      </PageHeaderProvider>
+          <Toaster />
+        </PageHeaderProvider>
+      </SocketProvider>
     </Guard>
   );
 };

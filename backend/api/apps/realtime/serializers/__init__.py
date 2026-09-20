@@ -1,13 +1,19 @@
 from .chat.chat_serializers import (
-    ChatMessageSerializer,
-    ChatRoomSerializer,
-    ChatRoomCreateSerializer,
-    ChatRoomStartSerializer
+    MessageSerializer,
+    ChatSerializer,
+    ChatCreateSerializer,
+    ChatStartSerializer,
+    MessageSendSerializer,
+    MessageEditSerializer,
+    GroupChatCreateSerializer
 )
 
 __all__ = [
-    "ChatMessageSerializer",
-    "ChatRoomSerializer",
-    "ChatRoomCreateSerializer",
-    "ChatRoomStartSerializer"
+    "MessageSerializer",
+    "ChatSerializer",
+    "ChatCreateSerializer",
+    "ChatStartSerializer",
+    "GroupChatCreateSerializer",
+    "MessageSendSerializer",
+    "MessageEditSerializer"
 ]

@@ -286,16 +286,23 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
     banner = serializers.SerializerMethodField()
     total_members = serializers.SerializerMethodField()
     application = serializers.SerializerMethodField()
+    is_member = serializers.SerializerMethodField()
 
     class Meta:
         model = Club
         fields = ['id', 'name', 'origin', 'about', 'join_mode',
-                  'avatar', 'banner', 'privacy', 'allow_public_posts', 'total_members', 'application'
+                  'avatar', 'banner', 'privacy', 'is_member', 'allow_public_posts', 'total_members', 'application'
                   ]
         read_only_fields = ['id']
 
     def _get_request(self) -> Request | None:
         return self.context.get('request')
+
+    def get_is_member(self, obj: Club) -> bool:
+        request = self._get_request()
+        if not (request and request.user.is_authenticated):
+            return False
+        return Membership.objects.filter(user=request.user, club=obj).exists()
 
     def get_avatar(self, obj: Club):
         from apps.media.models import MediaRole

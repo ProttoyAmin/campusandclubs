@@ -9,15 +9,31 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "design/components/ui/avatar";
-import type { UserProfile } from "@campus/api";
+import type { UserMinimal, UserProfile } from "@campus/api";
 import { Button } from "design/components/ui/button";
 import type { AuthSession } from "@/features/auth/services/authentication";
 import ToggleFollowButton from "@/features/user/components/actions/follow-button";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/settings/routes";
 
 export const PublicProfileHeader: React.FC<{
   data: UserProfile;
   currentUser: AuthSession;
 }> = ({ data, currentUser }) => {
+  const navigate = useNavigate();
+
+  const handleMessage = () => {
+    navigate(paths.private.chat.chats, {
+      state: {
+        initialUser: {
+          id: data.id,
+          username: data.username,
+          avatar: data.avatar,
+          email: data.email
+        } as Pick<UserMinimal, "id" | "username" | "avatar" | "email">
+      }
+    })
+  }
   return (
     <>
       <CardHeader className="block md:flex md:flex-row-reverse justify-between">
@@ -61,7 +77,7 @@ export const PublicProfileHeader: React.FC<{
         {data?.id !== currentUser?.data?.user?.id && <div className="p-2">
           <div className="flex gap-2 mt-2">
             <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
-            <Button variant={"outline"} className="w-1/2 rounded-full">Message</Button>
+            <Button variant={"outline"} className="w-1/2 rounded-full" onClick={handleMessage}>Message</Button>
           </div>
         </div>}
         {/* <pre>
