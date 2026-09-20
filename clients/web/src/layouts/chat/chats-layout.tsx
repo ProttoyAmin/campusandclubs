@@ -86,7 +86,7 @@ const ChatsLayout = () => {
                         {chatList}
                     </div>
                 ) : (
-                    <div className="min-h-[calc(100vh-4rem)] px-4 h-full">
+                    <div className="min-h-[calc(100vh-4rem)] h-full">
                         <div className="flex flex-col gap-4 h-[calc(100vh-4rem)]">
                             {pageHeader.actions ?? <>chats</>}
                             <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
@@ -106,7 +106,7 @@ const ChatsLayout = () => {
                 {chatList}
             </div>
 
-            <div className="col-span-9 min-h-[calc(100vh-4rem)] px-4">
+            <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-4rem)] max-h-[calc(100vh-1rem)] p-0">
                 <div className="flex flex-col gap-4 h-full overflow-hidden">
                     {pageHeader.actions ?? <>chats</>}
                     <Outlet context={{ chats: chatsData.data?.data ?? [] }} />

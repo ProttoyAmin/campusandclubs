@@ -16,7 +16,7 @@ const ChatMessageList = ({ messages, currentUserId, header }: ChatMessageListPro
     const reversedMessages = [...messages].reverse();
 
     return (
-        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col-reverse gap-2 px-4 border">
+        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col-reverse gap-2.5 scrollbar-none">
             {reversedMessages.map((message) => (
                 <ChatMessageBubble key={message.id} message={message} isOwn={message.sender.id === currentUserId} />
             ))}

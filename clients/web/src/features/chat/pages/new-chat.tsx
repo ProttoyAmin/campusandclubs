@@ -65,7 +65,7 @@ const NewChat = () => {
 
     return (
         <>
-            <div className="grid grid-rows-[auto_1fr] h-full w-full overflow-hidden">
+            <div className="grid grid-rows-[auto_1fr] h-full w-full overflow-hidden p-2">
                 <UsersSearchInput users={users} setUsers={setUsers} selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
                 {selectedUsers.length > 0 && (
                     <>

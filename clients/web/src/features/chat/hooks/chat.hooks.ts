@@ -35,11 +35,11 @@ export const useChat = (chat_id: string) => {
 
     const messageSend = useMutation({
         mutationFn: (data: { content: string }) => chat.message(chat_id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["chats", chat_id],
-            })
-        }
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: ["chats", chat_id],
+        //     })
+        // }
     })
 
     return {

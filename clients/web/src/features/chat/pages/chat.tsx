@@ -7,7 +7,8 @@ import ChatIntro from '../components/chat-intro';
 import ChatMessageList from '../components/chat-message-list';
 import useChatOutlet from '../context/use-chat-outlet';
 import { useSocketEvent } from '@/shared/hooks/use-socket-event';
-import { socket, socketTyped } from '@/library/socket';
+import { socket } from '@/library/socket';
+import { queryClient } from '@/config/query-client';
 
 const Chat = () => {
     const { id } = useParams();
@@ -32,11 +33,14 @@ const Chat = () => {
 
     useSocketEvent("chat:message", (data) => {
         console.log("Received:", data);
+        queryClient.invalidateQueries({
+            queryKey: ["chats", id],
+        })
     });
 
 
     return (
-        <div className="flex flex-col gap-6 h-full overflow-hidden min-h-0">
+        <div className="flex flex-col gap-6 h-full overflow-hidden min-h-0 p-2">
             <ChatMessageList
                 messages={messages.data ?? []}
                 currentUserId={currentUserId}
