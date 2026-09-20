@@ -1,5 +1,14 @@
+"""MessageRequest — the out-of-band "you have a DM waiting for you" record.
+
+The actual chat/messages are only created *after* the recipient accepts the
+request (the flow is managed by ``ChatService``). This avoids leaking empty
+chats into the sender's chat list while the request is pending.
+"""
+from __future__ import annotations
+
 from django.conf import settings
 from django.db import models
+
 
 class MessageRequest(models.Model):
     class Status(models.TextChoices):
@@ -7,10 +16,27 @@ class MessageRequest(models.Model):
         ACCEPTED = "accepted", "Accepted"
         DECLINED = "declined", "Declined"
 
-    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="message_requests_sent")
-    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="message_requests_received")
-    
-    content = models.TextField()
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
-    created_at = models.DateTimeField(auto_now_add=True)
+    from_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="message_requests_sent",
+    )
+    to_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="message_requests_received",
+    )
+    content = models.TextField(blank=True, default="")
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["to_user", "status", "-created_at"]),
+            models.Index(fields=["from_user", "status", "-created_at"]),
+        ]

@@ -1,19 +1,35 @@
 from .chat.chat_serializers import (
-    MessageSerializer,
     ChatSerializer,
-    ChatCreateSerializer,
     ChatStartSerializer,
-    MessageSendSerializer,
+    GroupChatCreateSerializer,
+    MessageAttachmentSerializer,
+    MessageCreateSerializer,
+    MessageDeleteSerializer,
     MessageEditSerializer,
-    GroupChatCreateSerializer
+    MessageReactionSerializer,
+    MessageRequestSerializer,
+    MessageSerializer,
+    ReactionCreateSerializer,
+    ReceiptSerializer,
 )
+from .chat.dm_serializer import ChatCreateSerializer
+
+# Legacy alias — older code imports ``MessageSendSerializer``.
+MessageSendSerializer = MessageCreateSerializer
 
 __all__ = [
-    "MessageSerializer",
-    "ChatSerializer",
     "ChatCreateSerializer",
+    "ChatSerializer",
     "ChatStartSerializer",
     "GroupChatCreateSerializer",
+    "MessageAttachmentSerializer",
+    "MessageCreateSerializer",
+    "MessageDeleteSerializer",
+    "MessageEditSerializer",
+    "MessageReactionSerializer",
+    "MessageRequestSerializer",
     "MessageSendSerializer",
-    "MessageEditSerializer"
+    "MessageSerializer",
+    "ReactionCreateSerializer",
+    "ReceiptSerializer",
 ]

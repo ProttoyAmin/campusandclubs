@@ -1,8 +1,3 @@
-from ..services.chat_service import ChatService
-from ..events import WSEvent
+from .chat_service import ChatService
 
-chat = ChatService()
-
-INBOUND_HANDLERS = {
-    WSEvent.CHAT_JOIN: chat.handle_chat_join,
-}
+__all__ = ["ChatService"]

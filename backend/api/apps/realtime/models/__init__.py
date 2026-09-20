@@ -1,9 +1,29 @@
-from .chat import Chat, Message, MessageReaction, ChatParticipant, MessageStatus
+from .chat import (
+    Chat,
+    ChatParticipant,
+    ChatType,
+    Message,
+    MessageAttachment,
+    MessageAttachmentKind,
+    MessageDeleteMode,
+    MessageReaction,
+    MessageRequest,
+    MessageStatus,
+    MessageType,
+    UserMessageHidden,
+)
 
 __all__ = [
     "Chat",
+    "ChatParticipant",
+    "ChatType",
     "Message",
-    "MessageStatus",
+    "MessageAttachment",
+    "MessageAttachmentKind",
+    "MessageDeleteMode",
     "MessageReaction",
-    "ChatParticipant"
+    "MessageRequest",
+    "MessageStatus",
+    "MessageType",
+    "UserMessageHidden",
 ]

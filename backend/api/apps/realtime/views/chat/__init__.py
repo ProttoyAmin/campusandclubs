@@ -1,24 +1,25 @@
-from .chat import (
+from .chat_views import (
     ChatAcceptView,
     ChatDeclineView,
     ChatListView,
     ChatStartView,
     GroupChatCreateView,
+    MessageRequestsListView,
+    StartDirectChatView,
+)
+from .message_views import (
     MessageDeleteView,
     MessageEditView,
     MessageListView,
     MessageReactionView,
     MessageSeenView,
     MessageSendView,
-    MessageRequestsListView,
-    StartDirectChatView,
 )
 
 __all__ = [
     "ChatAcceptView",
     "ChatDeclineView",
     "ChatListView",
-    "ChatStartView",
     "ChatStartView",
     "GroupChatCreateView",
     "MessageDeleteView",
