@@ -19,8 +19,8 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
             return
 
         self.joined_chats = set()
-        await self.mark_online()
         await self.accept()
+        await self.mark_online()
 
         # Auto-join all chat groups this user belongs to
         chat_ids = await self.get_user_chat_ids()

@@ -20,9 +20,15 @@ export const useChats = () => {
         }
     })
 
+    const pendingChats = useQuery({
+        queryKey: ["chats", "pending"],
+        queryFn: () => chat.pending(),
+    })
+
     return {
         chats,
-        startChat
+        startChat,
+        pendingChats
     }
 }
 

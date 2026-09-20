@@ -36,6 +36,9 @@ const Chat = () => {
         queryClient.invalidateQueries({
             queryKey: ["chats", id],
         })
+        queryClient.invalidateQueries({
+            queryKey: ["chats"],
+        })
     });
 
 

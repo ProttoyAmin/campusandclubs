@@ -49,12 +49,12 @@ class ChatListView(generics.ListCreateAPIView):
         
         return (
             Chat.objects.filter(participants__user=self.request.user)
-            # .exclude(
-            #     type=ChatType.DIRECT,
-            #     participants__status=ChatParticipant.Status.PENDING,
-            # )
+            .exclude(
+                type=ChatType.DIRECT,
+                participants__status=ChatParticipant.Status.PENDING,
+            )
             .distinct()
-            .order_by("-created_at")
+            .order_by("-updated_at")
         )
     
     def get_serializer_class(self):
@@ -242,6 +242,9 @@ class MessageCreateView(APIView):
             chat=chat, sender=request.user, content=data["content"], reply_to=reply_to
         )
 
+        chat.updated_at = timezone.now()
+        chat.save()
+
         payload = MessageSerializer(message).data
         broadcast(chat.id, ChannelsHandler.CHAT_MESSAGE, payload)
 
@@ -312,7 +315,7 @@ class ChatStartView(APIView):
             if is_new:
                 chat = Chat.objects.create(
                     type=ChatType.GROUP if is_group else ChatType.DIRECT,
-                    name=data.get("name") or None if is_group else None,
+                    name=data.get("name") or None if is_group else others[0].username,
                 )
                 ChatParticipant.objects.create(
                     chat=chat, user=request.user,
@@ -341,3 +344,10 @@ class ChatStartView(APIView):
             },
             status=201 if is_new else 200,
         )
+
+class ChatPendingView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        chats = Chat.objects.filter(participants__user=request.user, type=ChatType.DIRECT, participants__status=ChatParticipant.Status.PENDING)
+        return Response(ChatSerializer(chats, many=True, context={"request": request}).data)

@@ -120,7 +120,7 @@ export const paths = {
 
     chat: {
       chats: routes.chat.chats,
-      request: routes.chat.request,
+      requests: routes.chat.requests,
       new: routes.chat.new,
       inbox: (id: string) =>
         generateRouteFromPath(routes.chat.inbox, {

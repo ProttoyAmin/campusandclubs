@@ -1,6 +1,6 @@
 export const chatRoutes = {
     chats: "/@/chats/",
-    request: "/@/chats/request",
+    requests: "/@/chats/requests",
     inbox: "/@/chats/:id",
     new: "/@/chats/new/",
 } as const;

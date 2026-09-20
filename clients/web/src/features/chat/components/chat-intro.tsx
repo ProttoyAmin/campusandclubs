@@ -12,7 +12,7 @@ interface ChatIntroProps {
 const MAX_VISIBLE = 3;
 
 const ChatIntro = ({ participants, isGroup }: ChatIntroProps) => {
-    if (participants.length === 0) return null;
+    if (participants.length === 0) return <>null</>;
 
     if (!isGroup) {
         const user = participants[0];

@@ -1,29 +1,49 @@
 import { Avatar, AvatarFallback, AvatarImage } from "design/components/ui/avatar";
-import { Bubble, BubbleContent } from "design/components/ui/bubble";
+import { Bubble, BubbleGroup, BubbleContent } from "design/components/ui/bubble";
 import { Message, MessageAvatar, MessageContent } from "design/components/ui/message";
 import type { Message as MessageT } from "../http/chat.http";
 
-interface ChatMessageBubbleProps {
-    message: MessageT;
+interface ChatMessageGroupProps {
+    messages: MessageT[]; // consecutive messages from the same sender, oldest-first
     isOwn: boolean;
 }
 
-const ChatMessageBubble = ({ message, isOwn }: ChatMessageBubbleProps) => (
-    <Message align={isOwn ? "end" : "start"}>
-        {!isOwn && (
-            <MessageAvatar>
-                <Avatar>
-                    <AvatarImage src={message.sender.avatar ?? undefined} alt={message.sender.username} />
-                    <AvatarFallback>{message.sender.username[0]?.toUpperCase()}</AvatarFallback>
-                </Avatar>
-            </MessageAvatar>
-        )}
-        <MessageContent>
-            <Bubble variant={isOwn ? undefined : "muted"}>
-                <BubbleContent>{message.content}</BubbleContent>
-            </Bubble>
-        </MessageContent>
-    </Message>
-);
+const ChatMessageGroup = ({ messages, isOwn }: ChatMessageGroupProps) => {
+    const sender = messages[0].sender;
 
-export default ChatMessageBubble;
+    return (
+        <Message align={isOwn ? "end" : "start"}>
+            {!isOwn && (
+                <MessageAvatar>
+                    <Avatar>
+                        <AvatarImage src={sender.avatar ?? undefined} alt={sender.username} />
+                        <AvatarFallback>{sender.username[0]?.toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                </MessageAvatar>
+            )}
+            <MessageContent>
+                {!isOwn ? (
+                    <>
+                        <BubbleGroup>
+                            {messages.map((message) => (
+                                <Bubble key={message.id} variant={isOwn ? undefined : "muted"}>
+                                    <BubbleContent>{message.content}</BubbleContent>
+                                </Bubble>
+                            ))}
+                        </BubbleGroup>
+                    </>
+                ) : (
+                    <>
+                        {messages.map((message) => (
+                            <Bubble key={message.id} variant={isOwn ? undefined : "muted"}>
+                                <BubbleContent>{message.content}</BubbleContent>
+                            </Bubble>
+                        ))}
+                    </>
+                )}
+            </MessageContent>
+        </Message>
+    );
+};
+
+export default ChatMessageGroup;

@@ -6,7 +6,8 @@ from .views.chat.chat_views import (
     MessageListView,
     MessageCreateView,
     MessageEditView,
-    GroupChatCreateView
+    GroupChatCreateView,
+    ChatPendingView
 )
 
 
@@ -31,4 +32,6 @@ urlpatterns = [
         MessageEditView.as_view(),
         name="message_edit",
     ),
+
+    path("chats/pending/", ChatPendingView.as_view(), name="chat_pending"),
 ]

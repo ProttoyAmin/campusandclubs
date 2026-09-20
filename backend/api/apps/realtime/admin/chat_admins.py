@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ..models import Chat, Message, ChatParticipant, MessageReaction
+from ..models import Chat, Message, ChatParticipant, MessageReaction, MessageStatus
 
 
 class MessageInline(admin.TabularInline):
@@ -30,3 +30,9 @@ class ChatParticipantAdmin(admin.ModelAdmin):
     list_display = ("id", "chat", "user", "status", "is_admin")
     list_filter = ("status", "is_admin")
     search_fields = ("chat__participants__email", "user__email")
+
+@admin.register(MessageStatus)
+class MessageStatusAdmin(admin.ModelAdmin):
+    list_display = ("id", "message", "user", "status")
+    list_filter = ("status",)
+    search_fields = ("message__content", "user__email")

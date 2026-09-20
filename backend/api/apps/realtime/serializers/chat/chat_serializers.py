@@ -2,16 +2,26 @@
 from apps.realtime.models import ChatParticipant
 from apps.accounts.serialize.user.profile import UserMinimalSerializer
 from rest_framework import serializers
-from apps.realtime.models import Chat, Message
+from apps.realtime.models import Chat, Message, MessageStatus
+
+
+class MessageStatusSerializer(serializers.ModelSerializer):
+    user = UserMinimalSerializer()
+    class Meta:
+        model = MessageStatus
+        fields = ["id", "message", "user", "status"]
+        read_only_fields = ["id", "message", "user", "status"]
+
 
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
     reply_to = serializers.SerializerMethodField()
+    statuses = serializers.SerializerMethodField()
 
     class Meta:
         model = Message
-        fields = ["id", "chat", "sender", "content", "reply_to", "created_at", "edited_at"]
+        fields = ["id", "chat", "sender", "content", "reply_to", "created_at", "edited_at", "statuses"]
         read_only_fields = ["id", "sender", "created_at", "edited_at"]
     
     def get_sender(self, obj: Message):
@@ -22,6 +32,9 @@ class MessageSerializer(serializers.ModelSerializer):
         if obj.reply_to:
             return MessageSerializer(obj.reply_to).data
         return None
+
+    def get_statuses(self, obj: Message):
+        return MessageStatusSerializer(obj.statuses.all(), many=True).data
 
 
 class MessageSendSerializer(serializers.Serializer):
@@ -37,7 +50,7 @@ class ChatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
-        fields = ["id", "type", "participants", "created_at", "last_message"]
+        fields = ["id", "type", "name", "participants", "created_at", "last_message"]
         read_only_fields = ["id", "created_at"]
 
     def get_last_message(self, obj):

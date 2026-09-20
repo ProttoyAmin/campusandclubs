@@ -10,7 +10,7 @@ import ChatList from '@/features/chat/components/chat-list';
 import EmptyState from '@/shared/components/empty-state';
 import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import type { UserMinimal } from '@campus/api';
-import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Spinner } from 'design/components/ui/spinner';
 
 const ChatsLayout = () => {
@@ -23,6 +23,8 @@ const ChatsLayout = () => {
     const isMobile = useMediaQuery("(max-width: 768px)");
     const chatDetailMatch = useMatch(routes.chat.inbox);
     const newChatMatch = useMatch(routes.chat.new);
+    const params = useParams()
+
 
     if (initialUser && !newChatMatch && !chatDetailMatch) {
         if (chatsData.isLoading) {
@@ -88,7 +90,14 @@ const ChatsLayout = () => {
                 ) : (
                     <div className="min-h-[calc(100vh-4rem)] h-full">
                         <div className="flex flex-col gap-4 h-[calc(100vh-4rem)]">
-                            {pageHeader.actions ?? <>chats</>}
+                            {pageHeader.actions ?? <>
+                                {params.id ? (
+                                    <>{params.id}</>
+                                ) : (
+                                    <>chats</>
+                                )}
+
+                            </>}
                             <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
                         </div>
                     </div>

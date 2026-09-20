@@ -2,6 +2,7 @@ import Chat from "./pages/chat";
 import Chats from "./pages/chats";
 import { routes } from "@/settings/routes";
 import NewChat from "./pages/new-chat";
+import ChatRequests from "./pages/chat-requests";
 
 export const chatRoutes = [
     {
@@ -18,5 +19,10 @@ export const chatRoutes = [
         id: "new",
         path: routes.chat.new,
         element: <NewChat />,
+    },
+    {
+        id: "chat-requests",
+        path: routes.chat.requests,
+        element: <ChatRequests />,
     },
 ];

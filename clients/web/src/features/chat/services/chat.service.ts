@@ -21,6 +21,10 @@ class ChatService {
         return results
     }
 
+    async pending() {
+        const results = await this.chatClient.getPendingChat();
+        return results
+    }
 }
 
 export const chat = new ChatService();

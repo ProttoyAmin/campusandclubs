@@ -5,8 +5,6 @@ import { getTimeAgo } from "@/utils/format-date"
 const ChatBox = ({ chat }: { chat: ChatResponse }) => {
     return (
         <div className='flex items-center gap-4 py-6 px-2 cursor-pointer hover:border-primary transition-all ease-linear hover:bg-card-foreground/5'>
-            {/* {chat.participants?.map(participant => (
-                <> */}
             {chat?.type === "GROUP" ? (
                 <AvatarGroup>
                     <Avatar className="" key={chat.participants[0].id}>

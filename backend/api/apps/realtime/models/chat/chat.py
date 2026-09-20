@@ -8,7 +8,10 @@ class Chat(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     club = models.ForeignKey("clubs.Club", on_delete=models.CASCADE, null=True, blank=True, related_name="chats")
     type = models.CharField(max_length=10, choices=ChatType.choices, default=ChatType.DIRECT)
+    is_pinned = models.BooleanField(default=False)
+    
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         if self.club:
