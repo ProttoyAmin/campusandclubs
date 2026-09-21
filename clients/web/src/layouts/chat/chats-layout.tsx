@@ -12,27 +12,28 @@ import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import type { UserMinimal } from '@campus/api';
 import { useParams } from 'react-router-dom';
 import { Spinner } from 'design/components/ui/spinner';
+import { ChatSocketProvider } from "@/features/chat/context/chat-socket-context";
 
 const ChatsLayout = () => {
     const location = useLocation();
     const initialUser = (location.state as { initialUser?: UserMinimal } | null)?.initialUser;
-    const { chats: chatsData } = useChats();
+    const { chats } = useChats();
     const navigate = useNavigate();
     const pageHeader = usePageHeader();
     const sectionId = useSectionId("section-layout", 20);
     const isMobile = useMediaQuery("(max-width: 768px)");
     const chatDetailMatch = useMatch(routes.chat.inbox);
     const newChatMatch = useMatch(routes.chat.new);
-    const params = useParams()
-
+    const params = useParams();
+    const chatItems = chats.data ?? [];
 
     if (initialUser && !newChatMatch && !chatDetailMatch) {
-        if (chatsData.isLoading) {
+        if (chats.isLoading) {
             return <Spinner />;
         }
 
-        const existingChat = chatsData.data?.data.find((chat) =>
-            chat.participants.some((user) => user.id === initialUser.id) && chat.type === "DIRECT"
+        const existingChat = chatItems.find((chat) =>
+            chat.participants.some((participant) => participant.user.id === initialUser.id) && chat.type === "DIRECT"
         );
 
         if (existingChat) {
@@ -43,6 +44,7 @@ const ChatsLayout = () => {
     }
 
     const showMobileList = !chatDetailMatch && !newChatMatch;
+
 
     const chatList = (
         <>
@@ -65,8 +67,8 @@ const ChatsLayout = () => {
             </div>
 
             <div className="mt-4">
-                {chatsData.data?.data?.length > 0 ? (
-                    <ChatList chats={chatsData.data.data} />
+                {chatItems.length > 0 ? (
+                    <ChatList chats={chatItems} />
                 ) : (
                     <EmptyState
                         title=""
@@ -79,50 +81,54 @@ const ChatsLayout = () => {
 
     if (isMobile) {
         return (
-            <section
-                id={sectionId}
-                className="min-h-[calc(100vh-1rem)] h-full overflow-hidden"
-            >
-                {showMobileList ? (
-                    <div className="min-h-[calc(100vh-4rem)]">
-                        {chatList}
-                    </div>
-                ) : (
-                    <div className="min-h-[calc(100vh-4rem)] h-full">
-                        <div className="flex flex-col gap-4 h-[calc(100vh-4rem)]">
-                            {pageHeader.actions ?? <>
-                                {params.id ? (
-                                    <>{params.id}</>
-                                ) : (
-                                    <>chats</>
-                                )}
-
-                            </>}
-                            <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
+            <ChatSocketProvider>
+                <section
+                    id={sectionId}
+                    className="min-h-[calc(100vh-1rem)] h-full overflow-hidden"
+                >
+                    {showMobileList ? (
+                        <div className="min-h-[calc(100vh-4rem)]">
+                            {chatList}
                         </div>
-                    </div>
-                )}
-            </section>
+                    ) : (
+                        <div className="min-h-[calc(100vh-4rem)] h-full">
+                            <div className="flex flex-col gap-4 h-[calc(100vh-4rem)]">
+                                {pageHeader.actions ?? <>
+                                    {params.id ? (
+                                        <>{params.id}</>
+                                    ) : (
+                                        <>chats</>
+                                    )}
+
+                                </>}
+                                <Outlet context={{ chats: chatItems }} />
+                            </div>
+                        </div>
+                    )}
+                </section>
+            </ChatSocketProvider>
         );
     }
 
     return (
-        <section
-            id={sectionId}
-            className="grid min-h-[calc(100vh-1rem)] grid-cols-12 overflow-hidden"
-        >
-            <div className="col-span-3 min-h-[calc(100vh-4rem)] border-r border-l">
-                {chatList}
-            </div>
-
-            <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-4rem)] max-h-[calc(100vh-1rem)] p-0">
-                <div className="flex flex-col gap-4 h-full overflow-hidden">
-                    {pageHeader.actions ?? <>chats</>}
-                    <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
+        <ChatSocketProvider>
+            <section
+                id={sectionId}
+                className="grid min-h-[calc(100vh-1rem)] grid-cols-12 overflow-hidden"
+            >
+                <div className="col-span-3 min-h-[calc(100vh-4rem)] border-r border-l">
+                    {chatList}
                 </div>
-            </div>
-        </section>
+
+                <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-4rem)] max-h-[calc(100vh-1rem)] p-0">
+                    <div className="flex flex-col gap-4 h-full overflow-hidden">
+                        {pageHeader.actions ?? <>chats</>}
+                        <Outlet context={{ chats: chatItems }} />
+                    </div>
+                </div>
+            </section>
+        </ChatSocketProvider>
     );
 };
 
-export default ChatsLayout
+export default ChatsLayout;

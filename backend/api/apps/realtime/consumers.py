@@ -1,123 +1,166 @@
-from typing import Any
+"""``AppSocketConsumer`` — single per-user WebSocket connection.
+
+Design (see ``architecture.md``):
+
+* One persistent WS per authenticated user multiplexes chat, notifications,
+  and presence events.
+* Chat groups are joined/left **explicitly** as the user navigates between
+  rooms (``chat:join`` / ``chat:leave``). We do NOT auto-join every chat
+  the user is a member of — that scales poorly and wastes bandwidth on
+  rooms they aren't looking at.
+* On connect we only join the user's personal notification channel (so
+  new-message pings and message-request notifications arrive even when
+  they're not in a chat view).
+* The consumer itself is a thin dispatcher: it routes inbound messages
+  via ``INBOUND_HANDLERS`` and exposes small outbound methods for each
+  ``ChannelsEvent.*`` (Channels maps ``.`` → ``_`` for dispatch).
+
+Auth note
+---------
+``AuthMiddlewareStack`` provides ``scope["user"]`` from Django sessions.
+If a client authenticates using the HttpOnly JWT cookie instead, a
+JWT-aware middleware (see ``apps.accounts.config.authentication``) should
+be added to the ASGI stack; until then the existing session auth path
+continues to work and the consumer gracefully closes unauthenticated
+connections.
+"""
+from __future__ import annotations
+
 import json
-from django.utils import  timezone
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from channels.db import database_sync_to_async
-from .models import Message, Chat
-from apps.accounts.models import User
-from .events import WSEvent, chat_group
 import logging
+from typing import Any
+import uuid
+
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from django.utils import timezone
+
+from apps.accounts.models import User
+from apps.accounts.models.enums import UserStatus
+from apps.realtime.events import (
+    CHAT_GROUP_PREFIX,
+    NOTIFICATION_GROUP_PREFIX,
+    WSEvent,
+    ChannelsEvent,
+    notification_group,
+)
+from apps.realtime.handlers import INBOUND_HANDLERS
 
 logger = logging.getLogger(__name__)
 
-class AppSocketConsumer(AsyncJsonWebsocketConsumer):
-    async def connect(self):
-        self.user: User = self.scope["user"]
 
-        if not self.user or not self.user.is_authenticated:
+class AppSocketConsumer(AsyncJsonWebsocketConsumer):
+    # ----------------------------------------------------------------- #
+    # Lifecycle
+    # ----------------------------------------------------------------- #
+    async def connect(self) -> None:
+        self.user: User = self.scope.get("user")  # type: ignore[assignment]
+        if not self.user or not getattr(self.user, "is_authenticated", False):
             await self.close()
             return
 
-        self.joined_chats = set()
+        self.joined_chats: set[str] = set()
+        self.user_group: str | None = None
+
         await self.accept()
-        await self.mark_online()
+        await self._mark_online()
 
-        # Auto-join all chat groups this user belongs to
-        chat_ids = await self.get_user_chat_ids()
-        for chat_id in chat_ids:
-            group_name = chat_group(chat_id)
-            await self.channel_layer.group_add(group_name, self.channel_name)
-            self.joined_chats.add(str(chat_id))
-        logger.info("User %s joined %d chat groups", self.user.id, len(chat_ids))
+        # Join the personal notification channel.
+        self.user_group = notification_group(self.user.id)
+        await self.channel_layer.group_add(self.user_group, self.channel_name)
 
+        logger.info("WS connected user=%s", self.user.id)
 
-    async def disconnect(self, close_code: int | None):
+    async def disconnect(self, close_code: int | None) -> None:
         for chat_id in list(self.joined_chats):
-            await self.channel_layer.group_discard(chat_group(chat_id), self.channel_name)
-        await self.mark_offline()
-        await self.close(code=1000)
+            await self.channel_layer.group_discard(
+                f"{CHAT_GROUP_PREFIX}{chat_id}", self.channel_name
+            )
+        if self.user_group:
+            await self.channel_layer.group_discard(self.user_group, self.channel_name)
+        await self._mark_offline()
+        logger.info("WS disconnected user=%s code=%s", getattr(self.user, "id", None), close_code)
 
-    async def receive_json(self, content: dict[str, Any]):
+    # ----------------------------------------------------------------- #
+    # Inbound dispatch
+    # ----------------------------------------------------------------- #
+    async def receive_json(self, content: dict[str, Any]) -> None:
         msg_type = content.get("type")
-        logger.info("WS received: type=%s content=%s", msg_type, content)
+        logger.debug("WS recv user=%s type=%s", getattr(self.user, "id", None), msg_type)
+        handler = INBOUND_HANDLERS.get(msg_type)
+        if handler is None:
+            # Unknown event type — ignore rather than disconnect, but log
+            # so we can spot typos/missing handlers.
+            logger.info("WS received unknown event type: %s", msg_type)
+            return
+        try:
+            await handler(self, content)
+        except Exception:
+            logger.exception("WS handler %s raised", msg_type)
+            await self.send_json(
+                {"type": WSEvent.ERROR, "detail": f"Failed to handle {msg_type}"}
+            )
 
-        # if msg_type == WSEvent.CHAT_JOIN:
-        #     await self.handle_join(content["chat_id"])
-
-        # elif msg_type == WSEvent.CHAT_LEAVE:
-        #     await self.handle_leave(content["chat_id"])
-
-        # elif msg_type == WSEvent.CHAT_MESSAGE:
-        #     await self.handle_message(content["chat_id"], content["content"])
-        
-    # async def handle_join(self, chat_id: str):
-    #     is_member = await self.user_in_room(chat_id)
-        
-    #     if not is_member:
-    #         await self.send_json({"type": WSEvent.ERROR, "detail": "Not a member of this room"})
-    #         return
-    #     await self.channel_layer.group_add(chat_group(chat_id), self.channel_name)
-    #     self.joined_chats.add(chat_id)
-
-    # async def handle_leave(self, chat_id: str):
-    #     await self.channel_layer.group_discard(chat_group(chat_id), self.channel_name)
-    #     self.joined_chats.discard(chat_id)
-
-    # async def handle_message(self, chat_id: str, content: str):
-    #     if chat_id not in self.joined_chats:
-    #         await self.send_json({"type": WSEvent.ERROR, "detail": "Not a member of this room"})
-    #         return
-        
-    #     message = await self.save_message(chat_id, content)
-        
-    #     await self.channel_layer.group_send(
-    #         chat_group(chat_id),
-    #         {
-    #             "type": "chat.message",
-    #             "data": {
-    #                 "id": str(message.id),
-    #                 "chat_id": str(chat_id),
-    #                 "sender_id": str(self.user.id),
-    #                 "content": message.content,
-    #                 "created_at": message.created_at.isoformat(),
-    #             },
-    #         },
-    #     )
-        
-    # Group event handler — pushes to this specific client -> type: "chat_message"
-    async def chat_message(self, event):
+    # ----------------------------------------------------------------- #
+    # Outbound handlers — one per ChannelsEvent.* value
+    # ----------------------------------------------------------------- #
+    async def chat_message_new(self, event: dict) -> None:
+        print("event sent", WSEvent.CHAT_MESSAGE)
         await self.send_json({"type": WSEvent.CHAT_MESSAGE, "data": event["data"]})
 
+    async def chat_message_updated(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_EDIT, "data": event["data"]})
 
-    @database_sync_to_async
-    def user_in_room(self, room_id: str):
-        return Chat.objects.filter(id=room_id, participants=self.user).exists()
+    async def chat_message_deleted(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_DELETE, "data": event["data"]})
 
+    async def chat_message_delivered(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_DELIVERED, "data": event["data"]})
+
+    async def chat_message_seen(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_SEEN, "data": event["data"]})
+
+    async def chat_reaction_added(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_REACTION_ADD, "data": event["data"]})
+
+    async def chat_reaction_removed(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_MESSAGE_REACTION_REMOVE, "data": event["data"]})
+
+    async def chat_typing(self, event: dict) -> None:
+        # Don't echo typing back to the sender.
+        data = event["data"]
+        if str(data.get("user_id")) == str(self.user.id):
+            return
+        await self.send_json({"type": WSEvent.CHAT_TYPING, "data": data})
+
+    async def chat_updated(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_UPDATED, "data": event["data"]})
+
+    async def chat_request_new(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_REQUEST_NEW, "data": event["data"]})
+
+    async def chat_request_accepted(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_REQUEST_ACCEPTED, "data": event["data"]})
+
+    async def chat_request_declined(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.CHAT_REQUEST_DECLINED, "data": event["data"]})
+
+    async def notification_message(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.NOTIFICATION, "data": event["data"]})
+
+    async def presence_update(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.PRESENCE_UPDATE, "data": event["data"]})
+
+    # ----------------------------------------------------------------- #
+    # Presence helpers
+    # ----------------------------------------------------------------- #
     @database_sync_to_async
-    def mark_online(self):
-        from apps.accounts.models.enums import UserStatus
+    def _mark_online(self) -> None:
         self.user.status = UserStatus.ONLINE
-        self.user.save()
+        self.user.save(update_fields=["status"])
 
     @database_sync_to_async
-    def mark_offline(self):
-        from apps.accounts.models.enums import UserStatus
+    def _mark_offline(self) -> None:
         self.user.status = UserStatus.AWAY
         self.user.last_active = timezone.now()
-        self.user.save()
-
-    @database_sync_to_async
-    def save_message(self, room_id: str, content: str):
-        return Message.objects.create(
-            room_id=room_id,
-            sender=self.user,
-            content=content
-        )
-
-    @database_sync_to_async
-    def get_user_chat_ids(self):
-        return list(
-            Chat.objects.filter(
-                participants__user=self.user
-            ).values_list("id", flat=True)
-        )
+        self.user.save(update_fields=["status", "last_active"])

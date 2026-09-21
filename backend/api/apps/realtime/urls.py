@@ -1,37 +1,72 @@
 # apps/realtime/urls.py
 from django.urls import path
-from .views.chat.chat_views import (
+from .views import (
+    ChatAcceptView,
+    ChatDeclineView,
     ChatListView,
     ChatStartView,
-    MessageListView,
-    MessageCreateView,
-    MessageEditView,
     GroupChatCreateView,
-    ChatPendingView
+    MessageDeleteView,
+    MessageEditView,
+    MessageListView,
+    MessageReactionView,
+    MessageRequestsListView,
+    # MessageSeenView,
+    MessageSendView,
+    MessageUploadView,
+    StartDirectChatView,
+    ChatLeaveView,
+    ChatBlockView,
+    ChatRemoveMemberView
 )
 
 
 app_name = 'realtime'
 
 urlpatterns = [
-    path("chats/", ChatListView.as_view(), name="chat_list"),
-    path("chats/start/", ChatStartView.as_view(), name="chat_start"),
+    path("chats/", ChatListView.as_view(), name="chat_list"),                   # success
+    path("chats/start-dm/", StartDirectChatView.as_view(), name="chat_start_dm"),
+    path("chats/start/", ChatStartView.as_view(), name="chat_start"),           # success
+    path("chats/group/", GroupChatCreateView.as_view(), name="group_chat_create"),
+    path("chats/requests/", MessageRequestsListView.as_view(), name="chat_pending"),
+
+    
+    path("chats/<uuid:chat_id>/accept/", ChatAcceptView.as_view(), name="chat_accept"),
+    path("chats/<uuid:chat_id>/decline/", ChatDeclineView.as_view(), name="chat_decline"),
+    path("chats/<uuid:chat_id>/leave/", ChatLeaveView.as_view(), name="chat_leave"),
+    path("chats/<uuid:chat_id>/block/", ChatBlockView.as_view(), name="chat_block"),
+    path("chats/<uuid:chat_id>/remove/", ChatRemoveMemberView.as_view(), name="chat_remove_member"),
+
     path("chats/<uuid:chat_id>/messages/",
          MessageListView.as_view(), name="message_list"),
-
-
-    path("chats/group/", GroupChatCreateView.as_view(), name="group_chat_create"),
-
     path(
         "chats/<uuid:chat_id>/messages/send/",
-        MessageCreateView.as_view(),
+        MessageSendView.as_view(),
         name="message_send",
     ),
+    path(
+        "chats/<uuid:chat_id>/messages/upload/",
+        MessageUploadView.as_view(),
+        name="message_upload",
+    ),
+    # path(
+    #     "chats/<uuid:chat_id>/messages/seen/",
+    #     MessageSeenView.as_view(),
+    #     name="message_seen",
+    # ),
     path(
         "messages/<uuid:message_id>/",
         MessageEditView.as_view(),
         name="message_edit",
     ),
-
-    path("chats/pending/", ChatPendingView.as_view(), name="chat_pending"),
+    path(
+        "messages/<uuid:message_id>/delete/",
+        MessageDeleteView.as_view(),
+        name="message_delete",
+    ),
+    path(
+        "messages/reactions/",
+        MessageReactionView.as_view(),
+        name="message_react",
+    ),
 ]

@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 from apps.accounts.models.enums import PostVisibility
-
+from .enums import MessageRequestChoice
 
 
 class UserPreference(models.Model):
@@ -16,6 +16,12 @@ class UserPreference(models.Model):
 
     default_post_visibility = models.CharField(
         max_length=20, choices=PostVisibility.choices, default=PostVisibility.PUBLIC
+    )
+
+    message_request_choice = models.CharField(
+        max_length=20,
+        choices=MessageRequestChoice.choices,
+        default=MessageRequestChoice.EVERYONE,
     )
 
     class Meta:
