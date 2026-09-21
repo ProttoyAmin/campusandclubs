@@ -1,74 +1,69 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useChat, chatKeys } from "../hooks/chat.hooks";
+import { useChat } from "../hooks/chat.hooks";
 import { useSession } from "@/features/auth/hooks";
 import SendMessage from "../components/send-message";
 import ChatIntro from "../components/chat-intro";
 import ChatMessageList from "../components/chat-message-list";
 import useChatOutlet from "../context/use-chat-outlet";
 import { Spinner } from "design/components/ui/spinner";
-import { queryClient } from "@/config/query-client";
 import type { Message } from "../http/chat.http";
 
 const Chat = () => {
-  const { id } = useParams();
-  const { chats } = useChatOutlet();
-  const chatId = id as string;
-  const { messages, messageSend, uploadMessage, deleteMessage, markSeen } = useChat(chatId);
+  const { id } = useParams<{ id: string }>();
+  const { chats = [], isLoading } = useChatOutlet() ?? {};
+  const { messages, messageSend, uploadMessage, markSeen, deleteMessage } = useChat(id as string);
   const [newMessage, setNewMessage] = useState<string>("");
   const { data: session } = useSession();
   const currentUserId = session?.data?.user?.id;
 
-  const currentChat = (chats ?? []).find((c) => c.id === chatId);
-  const participants = currentChat?.participants.filter((p) => p.id !== currentUserId) ?? [];
+  const currentChat = chats?.find((c) => c.id === id);
+  const participants = currentChat?.participants?.filter((p) => p.id !== currentUserId) ?? [];
   const isGroup = currentChat?.type === "GROUP";
 
-  const sendMessage = (opts?: { files?: File[] }) => {
-    const content = newMessage.trim();
-    if (!content && (!opts?.files || opts.files.length === 0)) return;
-    if (opts?.files && opts.files.length > 0) {
-      uploadMessage.mutate({ content, files: opts.files });
-    } else {
-      messageSend.mutate({ content });
-    }
-    setNewMessage("");
-  };
-
-  const onDelete = useCallback(
-    (messageId: string) => {
-      deleteMessage.mutate({ messageId, mode: "FOR_EVERYONE" });
+  const sendMessage = useCallback(
+    (opts?: { files?: File[] }) => {
+      if (!id) return;
+      const content = newMessage.trim();
+      if (!content && (!opts?.files || opts.files.length === 0)) return;
+      if (opts?.files && opts.files.length > 0) {
+        uploadMessage.mutate({ content, files: opts.files });
+      } else {
+        // REST send. After commit the server broadcasts "chat:message:new"
+        // to the chat group. ChatSocketProvider is already joined to that
+        // group and patches the React Query cache — no listener needed here.
+        messageSend.mutate({ content });
+      }
+      setNewMessage("");
     },
-    [deleteMessage],
+    [id, newMessage, messageSend, uploadMessage],
   );
 
-  const onVisible = useCallback(
+  const onVisibleLastMessage = useCallback(
     (msg: Message) => {
       if (msg.sender.id !== currentUserId) markSeen.mutate(msg.id);
     },
     [currentUserId, markSeen],
   );
 
-  // When the chat first loads, mark the last message seen.
-  useEffect(() => {
-    const last = (messages.data ?? []).slice(-1)[0];
-    if (last && last.sender.id !== currentUserId) {
-      markSeen.mutate(last.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId, messages.data?.length]);
+  const onDeleteMessage = useCallback(
+    (messageId: string) => {
+      deleteMessage.mutate({ messageId, mode: "FOR_EVERYONE" });
+    },
+    [deleteMessage],
+  );
 
-  if (messages.isLoading && !messages.data) {
-    return <Spinner className="mx-auto mt-20" />;
-  }
+  if (isLoading) return <Spinner className="mx-auto mt-20" />;
+  const messageList: Message[] = messages.data ?? [];
 
   return (
     <div className="flex flex-col gap-3 h-full overflow-hidden min-h-0 p-2">
       <ChatMessageList
-        messages={messages.data ?? []}
+        messages={messageList}
         currentUserId={currentUserId}
         header={<ChatIntro participants={participants} isGroup={isGroup} />}
-        onVisibleLastMessage={onVisible}
-        onDeleteMessage={onDelete}
+        onVisibleLastMessage={onVisibleLastMessage}
+        onDeleteMessage={onDeleteMessage}
       />
       <SendMessage
         message={newMessage}

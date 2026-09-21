@@ -73,10 +73,14 @@ export const ChatSocketProvider = ({ children }: { children: React.ReactNode }) 
     };
 
     on("chat:message:new", (evt: unknown) => {
+      // Server sends { type: "chat:message:new", data: Message } and the
+      // socket service passes `parsed.data` to handlers (i.e. the Message).
       const payload = (evt as { data?: Message })?.data ?? (evt as Message);
       if (!payload?.id) return;
-      const chatId = payload.chat;
-      qc.setQueryData<Message[]>(chatKeys.messages(chatId), (old) => {
+      // `payload.chat` is the chat id (UUID string); coerce to string in
+      // case it comes through as a non-string primitive.
+      const chatId = String(payload.chat);
+      qc.setQueryData<Message[] | undefined>(chatKeys.messages(chatId), (old) => {
         if (!old) return [payload];
         if (old.some((m) => m.id === payload.id)) return old;
         return [...old, payload];
