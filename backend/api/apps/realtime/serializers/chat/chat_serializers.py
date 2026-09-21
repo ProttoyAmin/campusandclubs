@@ -143,15 +143,40 @@ class MessageSerializer(serializers.ModelSerializer):
         return agg
 
     def get_my_status(self, obj: Message):
-        """Receipt status for the *current* user (the viewer) of this
-        message. Used to render single/double/blue check marks."""
+        """Receipt status, always from the viewer's perspective:
+
+        * For messages **sent by the viewer**, return the best receipt
+          across all OTHER participants (what the sender sees):
+              "seen"      → at least one recipient has read it (blue ticks)
+              "delivered" → at least one recipient's device has received it
+              "sent"      → otherwise (single tick)
+        * For messages **received by the viewer**, return the viewer's own
+          receipt (what the recipient sees for themselves; UIs usually
+          don't render ticks on the other side's bubbles, but callers can
+          use this for unread indicators).
+        """
         request = self.context.get("request")
         if request is None or not getattr(request.user, "is_authenticated", False):
             return None
-        receipt = MessageStatus.objects.filter(
-            message=obj, user=request.user
-        ).first()
-        return receipt.status if receipt else None
+        viewer = request.user
+
+        if obj.sender_id == viewer.id:
+            # Aggregate across everyone except me.
+            other_statuses = list(
+                obj.statuses.exclude(user_id=viewer.id).values_list("status", flat=True)
+            )
+            if not other_statuses:
+                # DM just created, or group with no other members yet → sent.
+                return MessageStatus.Status.SENT
+            if MessageStatus.Status.SEEN in other_statuses:
+                return MessageStatus.Status.SEEN
+            if MessageStatus.Status.DELIVERED in other_statuses:
+                return MessageStatus.Status.DELIVERED
+            return MessageStatus.Status.SENT
+
+        # I'm a recipient — return my own receipt on this message.
+        receipt = obj.statuses.filter(user=viewer).first()
+        return receipt.status if receipt else MessageStatus.Status.SENT
 
 
 # --------------------------------------------------------------------- #

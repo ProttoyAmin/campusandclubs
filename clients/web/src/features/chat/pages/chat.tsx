@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useChat } from "../hooks/chat.hooks";
 import { useSession } from "@/features/auth/hooks";
@@ -6,6 +6,7 @@ import SendMessage from "../components/send-message";
 import ChatIntro from "../components/chat-intro";
 import ChatMessageList from "../components/chat-message-list";
 import useChatOutlet from "../context/use-chat-outlet";
+import { useChatSocket } from "../context/chat-socket-context";
 import { Spinner } from "design/components/ui/spinner";
 import type { Message } from "../http/chat.http";
 
@@ -16,32 +17,61 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState<string>("");
   const { data: session } = useSession();
   const currentUserId = session?.data?.user?.id;
+  const { joinChat } = useChatSocket();
+  const joinedRef = useRef<string | null>(null);
 
   const currentChat = chats?.find((c) => c.id === id);
   const participants = currentChat?.participants?.filter((p) => p.id !== currentUserId) ?? [];
   const isGroup = currentChat?.type === "GROUP";
+
+  // As soon as we have a chat id, explicitly join the WS room (defensive —
+  // ChatSocketProvider already joins on route change, but this covers
+  // first render and late connects).
+  useEffect(() => {
+    if (id && joinedRef.current !== id) {
+      joinChat(id);
+      joinedRef.current = id;
+    }
+  }, [id, joinChat]);
+
+  // When the message list first loads (or we switch chats), mark the latest
+  // non-self message as seen so the sender gets blue ticks when you open the
+  // conversation. We use a ref to avoid re-firing on every re-render.
+  const markedOpenRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!id || !messages.data) return;
+    if (markedOpenRef.current === id) return;
+    const list: Message[] = messages.data;
+    const lastFromOther = list.slice().reverse().find((m) => m.sender.id !== currentUserId);
+    if (lastFromOther && lastFromOther.my_status !== "seen") {
+      markSeen.mutate(lastFromOther.id);
+    }
+    markedOpenRef.current = id;
+  }, [id, messages.data, currentUserId, markSeen]);
 
   const sendMessage = useCallback(
     (opts?: { files?: File[] }) => {
       if (!id) return;
       const content = newMessage.trim();
       if (!content && (!opts?.files || opts.files.length === 0)) return;
+      // Make sure we're in the WS room BEFORE firing the POST so the
+      // broadcasted "chat:message:new" reaches us.
+      joinChat(id);
       if (opts?.files && opts.files.length > 0) {
         uploadMessage.mutate({ content, files: opts.files });
       } else {
-        // REST send. After commit the server broadcasts "chat:message:new"
-        // to the chat group. ChatSocketProvider is already joined to that
-        // group and patches the React Query cache — no listener needed here.
         messageSend.mutate({ content });
       }
       setNewMessage("");
     },
-    [id, newMessage, messageSend, uploadMessage],
+    [id, newMessage, messageSend, uploadMessage, joinChat],
   );
 
   const onVisibleLastMessage = useCallback(
     (msg: Message) => {
-      if (msg.sender.id !== currentUserId) markSeen.mutate(msg.id);
+      if (msg.sender.id !== currentUserId && msg.my_status !== "seen") {
+        markSeen.mutate(msg.id);
+      }
     },
     [currentUserId, markSeen],
   );

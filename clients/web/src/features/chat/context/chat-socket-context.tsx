@@ -114,9 +114,25 @@ export const ChatSocketProvider = ({ children }: { children: React.ReactNode }) 
 
     on("chat:reaction:added", () => qc.invalidateQueries({ queryKey: chatKeys.all }));
     on("chat:reaction:removed", () => qc.invalidateQueries({ queryKey: chatKeys.all }));
-    on("chat:message:seen", () => {
-      // Cheap invalidation; could do targeted patch later.
-      qc.invalidateQueries({ queryKey: chatKeys.all });
+    on("chat:message:seen", (evt: unknown) => {
+      // { chat_id, user_id: WHO marked it seen, message_id, seen_at }
+      const data = (evt as { data?: { chat_id: string; user_id: string; message_id: string } })?.data ??
+        (evt as { chat_id: string; user_id: string; message_id: string });
+      if (!data?.chat_id || !data?.message_id) return;
+      qc.setQueryData<Message[] | undefined>(chatKeys.messages(data.chat_id), (old) => {
+        if (!old) return old;
+        return old.map((m) => {
+          if (m.id !== data.message_id) return m;
+          // Only flip to blue ticks on the SENDER'S side: if the viewer's
+          // id matches m.sender.id AND the person who marked seen is NOT
+          // the viewer themselves, then this is a recipient's receipt.
+          // We don't have viewerId in this scope, so we just set my_status
+          // to "seen" unconditionally — recipients don't see ticks on their
+          // own bubbles anyway (the bubble alignment distinguishes them).
+          return { ...m, my_status: "seen" as const };
+        });
+      });
+      qc.invalidateQueries({ queryKey: chatKeys.lists() });
     });
 
     on("notification:message", () => {

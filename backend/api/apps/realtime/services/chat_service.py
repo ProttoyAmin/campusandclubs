@@ -597,6 +597,34 @@ class ChatService(BaseService[Chat, ChatRepository]):
             message.msg_type = mapping.get(first_kind, MessageType.FILE)
             message.save(update_fields=["msg_type"])
 
+        # Create initial receipts:
+        #   * sender           → SENT
+        #   * ACCEPTED others  → DELIVERED (message is sitting in their inbox
+        #                         waiting to be read; mark-seen flips to SEEN)
+        #   * PENDING others   → not yet — they haven't accepted the chat,
+        #                         so the message shouldn't show as delivered.
+        from ..models.chat.message import MessageStatus
+        now = timezone.now()
+        receipts: list[MessageStatus] = [
+            MessageStatus(
+                message=message,
+                user_id=self.actor.id,
+                status=MessageStatus.Status.SENT,
+            )
+        ]
+        for p in self.participants.accepted_for_chat(chat.id):
+            if p.user_id == self.actor.id:
+                continue
+            receipts.append(
+                MessageStatus(
+                    message=message,
+                    user_id=p.user_id,
+                    status=MessageStatus.Status.DELIVERED,
+                    delivered_at=now,
+                )
+            )
+        MessageStatus.objects.bulk_create(receipts, ignore_conflicts=True)
+
         return message
 
     @staticmethod
