@@ -11,16 +11,13 @@ from core.repositories import BaseRepository
 from ..models.chat.chat import Chat
 from ..models.chat.enums import ChatType
 from ..models.chat.participants import ChatParticipant
+from ..models.chat.message_request import MessageRequest
 
 
 class ChatRepository(BaseRepository[Chat]):
     model = Chat
 
-    # ------------------------------------------------------------------ #
-    # Query helpers
-    # ------------------------------------------------------------------ #
     def get_queryset(self) -> QuerySet[Chat]:
-        """Return chats preloaded with participants for list views."""
         return (
             super()
             .get_queryset()
@@ -34,31 +31,18 @@ class ChatRepository(BaseRepository[Chat]):
         )
 
     def for_user(self, user_id: uuid.UUID) -> QuerySet[Chat]:
-        """All chats in which ``user_id`` is an ACCEPTED participant,
-        ordered by most recent activity first."""
+        """All chats where the user is a JOINED (active) participant, ordered
+        by most recent activity first. Pending/declined requests do NOT
+        appear here — they come from MessageRequestRepository."""
         return (
             self.get_queryset()
             .filter(
                 participants__user_id=user_id,
-                participants__status=ChatParticipant.Status.ACCEPTED,
+                participants__status=ChatParticipant.Status.JOINED,
                 participants__left_at__isnull=True,
             )
             .distinct()
             .order_by("-last_message_at", "-created_at")
-        )
-
-    def for_user_pending(self, user_id: uuid.UUID) -> QuerySet[Chat]:
-        """DMs where the user is the PENDING recipient (= their message
-        requests inbox)."""
-        return (
-            self.get_queryset()
-            .filter(
-                type=ChatType.DIRECT,
-                participants__user_id=user_id,
-                participants__status=ChatParticipant.Status.PENDING,
-            )
-            .distinct()
-            .order_by("-created_at")
         )
 
     def get_with_participants(self, chat_id: uuid.UUID) -> Optional[Chat]:
@@ -67,30 +51,43 @@ class ChatRepository(BaseRepository[Chat]):
     def find_direct_between(
         self, user_a_id: uuid.UUID, user_b_id: uuid.UUID
     ) -> Optional[Chat]:
-        """Return an existing DM between two users regardless of whether the
-        recipient has accepted, EXCLUDING declined ones (so users can
-        re-message after a decline)."""
-        return (
+        """Return an existing DM between two users where user_a is a JOINED
+        participant and B is either a participant (any status) or the
+        target of a pending MessageRequest linked to the chat."""
+        from ..models.chat.message_request import MessageRequest
+        # DMs where both A and B are participants already.
+        exact = (
             self.get_queryset()
             .filter(
                 type=ChatType.DIRECT,
                 club__isnull=True,
                 participants__user_id=user_a_id,
+                participants__status=ChatParticipant.Status.JOINED,
             )
             .filter(participants__user_id=user_b_id)
-            .exclude(
-                participants__status=ChatParticipant.Status.DECLINED,
-                participants__user_id=user_b_id,
-            )
             .first()
         )
+        if exact is not None:
+            return exact
+        # DM where A is JOINED and there is a pending request to B.
+        pending_req = (
+            MessageRequest.objects
+            .filter(
+                from_user_id=user_a_id,
+                to_user_id=user_b_id,
+                status=MessageRequest.Status.PENDING,
+                chat__isnull=False,
+            )
+            .select_related("chat")
+            .first()
+        )
+        if pending_req is not None:
+            return self.get_with_participants(pending_req.chat_id)
+        return None
 
     def list_club_chats(self, club_id: uuid.UUID) -> QuerySet[Chat]:
         return self.get_queryset().filter(club_id=club_id).order_by("-created_at")
 
-    # ------------------------------------------------------------------ #
-    # Mutations
-    # ------------------------------------------------------------------ #
     def create_chat(
         self,
         *,
@@ -107,8 +104,6 @@ class ChatRepository(BaseRepository[Chat]):
         )
 
     def touch_last_message(self, chat: Chat, when) -> Chat:
-        """Denormalized last-message timestamp bump. Called after new
-        messages / reactions so the chat list stays cheap to sort."""
         chat.last_message_at = when
         chat.save(update_fields=["last_message_at", "updated_at"])
         return chat

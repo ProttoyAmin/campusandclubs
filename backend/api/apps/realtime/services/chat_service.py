@@ -45,7 +45,7 @@ from ..models.chat.message import (
 )
 from ..models.chat.message_request import MessageRequest
 from ..models.chat.participants import ChatParticipant
-from ..policies.chat import ChatPolicy
+from ..policies.chat import ChatPolicy, evaluate_message_gate
 from ..policies.message import MessagePolicy
 from ..repositories.chat_repo import ChatRepository
 from ..repositories.message_repo import MessageRepository
@@ -108,52 +108,78 @@ class ChatService(BaseService[Chat, ChatRepository]):
     # ------------------------------------------------------------------ #
     # Chat creation: DMs, groups, start-with-first-message
     # ------------------------------------------------------------------ #
+    def _resolve_gate(self, other: User):
+        """Run the message-request gate and raise PermissionDenied on block."""
+        from ..policies.chat import evaluate_message_gate
+        gate = evaluate_message_gate(self.actor, other)
+        if gate.blocked:
+            raise PermissionDenied(gate.reason)
+        return gate
+
+    def _resolve_existing_dm(self, other: User) -> Optional[Chat]:
+        """Find an existing DM the sender already participates in (JOINED)."""
+        return self.repository.find_direct_between(self.actor.id, other.id)
+
     def start_direct(self, dto: ChatCreateDTO) -> tuple[Chat, bool]:
         """Get-or-create a DM. Returns ``(chat, is_new)``.
 
-        If a prior DECLINED request exists we raise PermissionDenied to
-        prevent spam re-opens. If a chat is already ACCEPTED we return it.
-        Otherwise we create a MessageRequest + a PENDING chat and notify
-        the recipient.
+        Decision matrix (evaluate_message_gate):
+          * allowed (mutual follow)  → chat created with BOTH users JOINED.
+          * requires_request         → chat created with sender JOINED,
+                                       recipient NOT added as a participant;
+                                       a PENDING MessageRequest links to it.
+          * blocked                  → raise PermissionDenied.
+        If an active DM already exists (both sides JOINED) we return it.
         """
         self._require_actor()
         other = User.objects.filter(id=dto.participant_id).first()
         if other is None:
             raise ValidationError("Recipient not found.")
-        if not ChatPolicy(self.actor, None).can_start_dm_with(other):
-            raise PermissionDenied("You cannot start a chat with this user.")
 
-        existing = self.repository.find_direct_between(self.actor.id, other.id)
+        gate = self._resolve_gate(other)
+        existing = self._resolve_existing_dm(other)
         if existing is not None:
-            return existing, False
+            # If the recipient had previously DECLINED but a new request is
+            # possible (gate allows it), reset the request. Otherwise reuse.
+            other_p = next((p for p in existing.participants.all() if p.user_id == other.id), None)
+            if other_p is None or other_p.status == ChatParticipant.Status.JOINED:
+                return existing, False
 
         with transaction.atomic():
-            chat = self.repository.create_chat(type=ChatType.DIRECT)
-            # Sender is ACCEPTED, recipient is PENDING (message request).
-            self.participants.add(
-                chat_id=chat.id, user_id=self.actor.id, status=ChatParticipant.Status.ACCEPTED
-            )
-            self.participants.add(
-                chat_id=chat.id, user_id=other.id, status=ChatParticipant.Status.PENDING
-            )
-            # Create out-of-band request record for the "requests" inbox.
-            req = self.requests.create_request(
-                from_user_id=self.actor.id,
-                to_user_id=other.id,
-                content="",
-            )
-            req.chat = chat
-            req.save(update_fields=["chat"])
+            chat = existing or self.repository.create_chat(type=ChatType.DIRECT)
+            # Ensure the sender is a JOINED participant.
+            self.participants.add(chat_id=chat.id, user_id=self.actor.id, status=ChatParticipant.Status.JOINED)
+
+            if gate.allowed:
+                # Auto-accept: add recipient as JOINED immediately.
+                self.participants.add(chat_id=chat.id, user_id=other.id, status=ChatParticipant.Status.JOINED)
+                # If there was a prior pending request, flip it to accepted.
+                MessageRequest.objects.filter(
+                    to_user=other, chat=chat, status=MessageRequest.Status.PENDING,
+                ).update(status=MessageRequest.Status.ACCEPTED)
+                broadcast_event = ChannelsEvent.CHAT_REQUEST_ACCEPTED
+            else:
+                # Queue as a request: do NOT add recipient as a participant.
+                req = self.requests.get_pending(from_user_id=self.actor.id, to_user_id=other.id)
+                if req is None:
+                    req = self.requests.create_request(
+                        from_user_id=self.actor.id,
+                        to_user_id=other.id,
+                        content="",
+                    )
+                req.chat = chat
+                req.save(update_fields=["chat"])
+                broadcast_event = ChannelsEvent.CHAT_REQUEST_NEW
+
             self.repository.touch_last_message(chat, timezone.now())
 
-        # Notify the recipient over their personal channel.
         from ..serializers import ChatSerializer
         broadcast_to_user_sync(
             other.id,
-            ChannelsEvent.CHAT_REQUEST_NEW,
+            broadcast_event,
             {"chat": ChatSerializer(chat, context={"user": self.actor}).data},
         )
-        return chat, True
+        return chat, existing is None
 
     def create_group(self, dto: GroupChatCreateDTO) -> Chat:
         self._require_actor()
@@ -173,7 +199,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
             self.participants.add(
                 chat_id=chat.id,
                 user_id=self.actor.id,
-                status=ChatParticipant.Status.ACCEPTED,
+                status=ChatParticipant.Status.JOINED,
                 is_admin=True,
                 is_owner=True,
             )
@@ -182,8 +208,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
         return chat
 
     def start_chat_and_send(self, dto: ChatStartDTO) -> tuple[Chat, Message, bool]:
-        """Existing "ChatStart" flow: get-or-create DM/group and send first
-        message atomically. Kept for backward compat with the clients."""
+        """Backward-compat "start + first message" flow used by legacy clients."""
         self._require_actor()
         other_ids = {pid for pid in dto.participant_ids if pid != self.actor.id}
         if not other_ids:
@@ -202,32 +227,49 @@ class ChatService(BaseService[Chat, ChatRepository]):
             is_new = True
             if not is_group:
                 other = others[0]
-                chat = self.repository.find_direct_between(self.actor.id, other.id)
+                gate = self._resolve_gate(other)
+                chat = self._resolve_existing_dm(other)
                 is_new = chat is None
                 if chat is None:
                     chat = self.repository.create_chat(type=ChatType.DIRECT)
                     self.participants.add(
                         chat_id=chat.id, user_id=self.actor.id,
-                        status=ChatParticipant.Status.ACCEPTED,
+                        status=ChatParticipant.Status.JOINED,
                     )
-                    self.participants.add(
-                        chat_id=chat.id, user_id=other.id,
-                        status=ChatParticipant.Status.PENDING,
-                    )
-                    req = self.requests.create_request(
-                        from_user_id=self.actor.id,
-                        to_user_id=other.id,
-                        content=dto.content,
-                    )
-                    req.chat = chat
-                    req.save(update_fields=["chat"])
+                    if gate.allowed:
+                        self.participants.add(
+                            chat_id=chat.id, user_id=other.id,
+                            status=ChatParticipant.Status.JOINED,
+                        )
+                    else:
+                        req = self.requests.create_request(
+                            from_user_id=self.actor.id,
+                            to_user_id=other.id,
+                            content=dto.content,
+                        )
+                        req.chat = chat
+                        req.save(update_fields=["chat"])
+                else:
+                    # Existing chat — make sure we can send into it.
+                    other_p = next((p for p in chat.participants.all() if p.user_id == other.id), None)
+                    if other_p is None:
+                        # recipient never accepted; we must still have a request.
+                        req = self.requests.get_pending(from_user_id=self.actor.id, to_user_id=other.id)
+                        if req is None:
+                            req = self.requests.create_request(
+                                from_user_id=self.actor.id,
+                                to_user_id=other.id,
+                                content=dto.content,
+                            )
+                        req.chat = chat
+                        req.save(update_fields=["chat"])
             else:
                 chat = self.repository.create_chat(
                     type=ChatType.GROUP, name=dto.name or None
                 )
                 self.participants.add(
                     chat_id=chat.id, user_id=self.actor.id,
-                    status=ChatParticipant.Status.ACCEPTED,
+                    status=ChatParticipant.Status.JOINED,
                     is_admin=True, is_owner=True,
                 )
                 self.participants.bulk_add(chat.id, [u.id for u in others])
@@ -240,75 +282,83 @@ class ChatService(BaseService[Chat, ChatRepository]):
             self.repository.touch_last_message(chat, message.created_at)
 
         self._after_message_hook(chat=chat, message=message, is_new_chat=is_new)
+        if not is_group:
+            other = others[0]
+            from ..serializers import ChatSerializer
+            other_joined = chat.participants.filter(user_id=other.id, status=ChatParticipant.Status.JOINED).exists()
+            broadcast_to_user_sync(
+                other.id,
+                ChannelsEvent.CHAT_REQUEST_ACCEPTED if other_joined else ChannelsEvent.CHAT_REQUEST_NEW,
+                {"chat": ChatSerializer(chat, context={"user": self.actor}).data},
+            )
         return chat, message, is_new
 
     # ------------------------------------------------------------------ #
     # Message requests (accept / decline)
     # ------------------------------------------------------------------ #
-    def accept_chat(self, dto: ChatActionDTO) -> Chat:
-        """Accept a pending DM. ``chat_id`` may be either the chat id or a
-        MessageRequest id; we resolve either. Flips the actor's participant
-        row to ACCEPTED and notifies the sender."""
-        self._require_actor()
+    def _resolve_request_target(self, dto: ChatActionDTO) -> tuple[Optional[Chat], Optional[MessageRequest]]:
+        """Accept either a Chat id or a MessageRequest id."""
         chat = self.repository.get_with_participants(dto.chat_id)
-        # If the id refers to a MessageRequest instead of a Chat, resolve.
         request = None
         if chat is None:
-            request = self.requests.get_or_none(id=dto.chat_id, to_user=self.actor, status=MessageRequest.Status.PENDING)
+            request = self.requests.get_or_none(id=dto.chat_id, to_user=self.actor)
             if request is not None and request.chat_id is not None:
                 chat = self.repository.get_with_participants(request.chat_id)
+        else:
+            request = MessageRequest.objects.filter(
+                to_user=self.actor, chat=chat, status=MessageRequest.Status.PENDING,
+            ).first()
+        return chat, request
+
+    def accept_chat(self, dto: ChatActionDTO) -> Chat:
+        """Accept a pending DM: add the actor as a JOINED participant and
+        flip the MessageRequest to ACCEPTED. ``chat_id`` may be either the
+        chat id or a MessageRequest id."""
+        self._require_actor()
+        chat, request = self._resolve_request_target(dto)
         if chat is None or chat.type != ChatType.DIRECT:
             raise ValidationError("Chat not found or is not a direct chat.")
+
+        # Must be the recipient — i.e. the actor is not already a JOINED
+        # member and there is a pending request addressed to them.
         me = self.participants.get(chat.id, self.actor.id)
-        if me is None or me.status != ChatParticipant.Status.PENDING:
+        if me is not None and me.status == ChatParticipant.Status.JOINED:
+            raise ValidationError("You have already joined this chat.")
+        if request is None:
             raise ValidationError("There is no pending request for this chat.")
+
         with transaction.atomic():
-            self.participants.update_status(me, status=ChatParticipant.Status.ACCEPTED)
-            other_participants = [
-                p for p in chat.participants.all() if p.user_id != self.actor.id
-            ]
-            MessageRequest.objects.filter(
-                to_user=self.actor,
-                chat=chat,
-                status=MessageRequest.Status.PENDING,
-            ).update(status=MessageRequest.Status.ACCEPTED)
-            # Also mark any request without a linked chat (legacy rows).
-            MessageRequest.objects.filter(
-                to_user=self.actor,
-                chat__isnull=True,
-                from_user_id__in=[p.user_id for p in other_participants],
-                status=MessageRequest.Status.PENDING,
-            ).update(status=MessageRequest.Status.ACCEPTED, chat=chat)
+            self.participants.add(chat_id=chat.id, user_id=self.actor.id, status=ChatParticipant.Status.JOINED)
+            request.status = MessageRequest.Status.ACCEPTED
+            request.save(update_fields=["status", "updated_at"])
+            self.repository.touch_last_message(chat, timezone.now())
 
         from ..serializers import ChatSerializer
-        other_ids = [p.user_id for p in other_participants]
-        for uid in other_ids:
-            broadcast_to_user_sync(uid, ChannelsEvent.CHAT_REQUEST_ACCEPTED, {
+        other = next((p for p in chat.participants.all() if p.user_id != self.actor.id), None)
+        if other is not None:
+            broadcast_to_user_sync(other.user_id, ChannelsEvent.CHAT_REQUEST_ACCEPTED, {
                 "chat": ChatSerializer(chat, context={"user": self.actor}).data,
             })
         return chat
 
     def decline_chat(self, dto: ChatActionDTO) -> None:
+        """Decline a pending request — no ChatParticipant row is ever created
+        for the recipient. The sender's side of the chat (and any messages
+        they typed before sending) are preserved but the recipient never
+        joins."""
         self._require_actor()
-        chat = self.repository.get_with_participants(dto.chat_id)
-        request = None
-        if chat is None:
-            request = self.requests.get_or_none(id=dto.chat_id, to_user=self.actor, status=MessageRequest.Status.PENDING)
-            if request is not None and request.chat_id is not None:
-                chat = self.repository.get_with_participants(request.chat_id)
-        if chat is None and request is None:
-            raise ValidationError("Chat not found.")
+        chat, request = self._resolve_request_target(dto)
+        if request is None:
+            raise ValidationError("No pending request found.")
         with transaction.atomic():
+            request.status = MessageRequest.Status.DECLINED
+            request.save(update_fields=["status", "updated_at"])
+            # If for some reason a participant row already exists (legacy
+            # data or a re-decline after re-request), mark it REMOVED.
             if chat is not None:
                 me = self.participants.get(chat.id, self.actor.id)
-                if me is not None:
-                    self.participants.update_status(me, status=ChatParticipant.Status.DECLINED)
-                MessageRequest.objects.filter(
-                    to_user=self.actor, chat=chat, status=MessageRequest.Status.PENDING,
-                ).update(status=MessageRequest.Status.DECLINED)
-            elif request is not None:
-                request.status = MessageRequest.Status.DECLINED
-                request.save(update_fields=["status", "updated_at"])
+                if me is not None and me.status != ChatParticipant.Status.JOINED:
+                    self.participants.update_status(me, status=ChatParticipant.Status.REMOVED)
 
     # ------------------------------------------------------------------ #
     # Message send / edit / delete / react / mark-seen
@@ -424,7 +474,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
         if chat is None:
             raise ValidationError("Chat not found.")
         me = self.participants.get(chat.id, self.actor.id)
-        if me is None or me.status != ChatParticipant.Status.ACCEPTED:
+        if me is None or me.status != ChatParticipant.Status.JOINED:
             raise PermissionDenied("You are not a member of this chat.")
         self.messages.mark_chat_seen_up_to(
             chat_id=chat.id,

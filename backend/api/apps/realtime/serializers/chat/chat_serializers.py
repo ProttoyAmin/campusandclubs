@@ -294,7 +294,7 @@ class ChatSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         viewer = request.user if request else self.context.get("user")
         qs = obj.participants.filter(
-            status=ChatParticipant.Status.ACCEPTED,
+            status=ChatParticipant.Status.JOINED,
             left_at__isnull=True,
         )
         if viewer and getattr(viewer, "is_authenticated", False):

@@ -26,6 +26,11 @@ class MessageRequestRepository(BaseRepository[MessageRequest]):
     def get_existing(
         self, from_user_id: uuid.UUID, to_user_id: uuid.UUID
     ) -> Optional[MessageRequest]:
+        return self.get_pending(from_user_id, to_user_id)
+
+    def get_pending(
+        self, from_user_id: uuid.UUID, to_user_id: uuid.UUID
+    ) -> Optional[MessageRequest]:
         return self.get_or_none(
             from_user_id=from_user_id,
             to_user_id=to_user_id,
