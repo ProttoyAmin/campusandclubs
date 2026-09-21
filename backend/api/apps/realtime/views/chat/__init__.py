@@ -1,7 +1,10 @@
 from .chat_views import (
     ChatAcceptView,
+    ChatBlockView,
     ChatDeclineView,
+    ChatLeaveView,
     ChatListView,
+    ChatRemoveMemberView,
     ChatStartView,
     GroupChatCreateView,
     MessageRequestsListView,
@@ -19,8 +22,11 @@ from .message_views import (
 
 __all__ = [
     "ChatAcceptView",
+    "ChatBlockView",
     "ChatDeclineView",
+    "ChatLeaveView",
     "ChatListView",
+    "ChatRemoveMemberView",
     "ChatStartView",
     "GroupChatCreateView",
     "MessageDeleteView",

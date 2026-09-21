@@ -12,8 +12,11 @@ from django.urls import path
 
 from .views import (
     ChatAcceptView,
+    ChatBlockView,
     ChatDeclineView,
+    ChatLeaveView,
     ChatListView,
+    ChatRemoveMemberView,
     ChatStartView,
     GroupChatCreateView,
     MessageDeleteView,
@@ -38,6 +41,9 @@ urlpatterns = [
     path("chats/requests/", MessageRequestsListView.as_view(), name="message_requests"),
     path("chats/<uuid:chat_id>/accept/", ChatAcceptView.as_view(), name="chat_accept"),
     path("chats/<uuid:chat_id>/decline/", ChatDeclineView.as_view(), name="chat_decline"),
+    path("chats/<uuid:chat_id>/leave/", ChatLeaveView.as_view(), name="chat_leave"),
+    path("chats/<uuid:chat_id>/block/", ChatBlockView.as_view(), name="chat_block"),
+    path("chats/<uuid:chat_id>/remove/", ChatRemoveMemberView.as_view(), name="chat_remove_member"),
 
     # Messages
     path(

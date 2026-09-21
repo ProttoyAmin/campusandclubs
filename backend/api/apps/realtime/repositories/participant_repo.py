@@ -63,10 +63,19 @@ class ChatParticipantRepository(BaseRepository[ChatParticipant]):
         return obj
 
     def update_status(
-        self, participant: ChatParticipant, *, status: str
+        self,
+        participant: ChatParticipant,
+        *,
+        status: str,
     ) -> ChatParticipant:
+        """Set status, toggling ``left_at`` appropriately."""
         participant.status = status
-        if status == ChatParticipant.Status.DECLINED:
+        if status in (
+            ChatParticipant.Status.DECLINED,
+            ChatParticipant.Status.LEFT,
+            ChatParticipant.Status.REMOVED,
+            ChatParticipant.Status.BLOCKED,
+        ):
             participant.left_at = timezone.now()
         else:
             participant.left_at = None

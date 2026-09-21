@@ -316,6 +316,48 @@ class ChatService(BaseService[Chat, ChatRepository]):
         with transaction.atomic():
             self.participants.update_status(me, status=ChatParticipant.Status.DECLINED)
 
+    def leave_chat(self, chat_id: uuid.UUID) -> None:
+        """Voluntarily leave an ACCEPTED chat (group/club/DM)."""
+        self._require_actor()
+        chat = self.repository.get_with_participants(chat_id)
+        if chat is None:
+            raise ValidationError("Chat not found.")
+        policy = ChatPolicy(self.actor, chat)
+        if not policy.can_leave():
+            raise PermissionDenied("You cannot leave this chat.")
+        me = self.participants.get(chat.id, self.actor.id)
+        with transaction.atomic():
+            self.participants.update_status(me, status=ChatParticipant.Status.LEFT)
+
+    def remove_member(self, chat_id: uuid.UUID, user_id: uuid.UUID) -> None:
+        """Admin/owner kicks another ACCEPTED member (groups/clubs)."""
+        self._require_actor()
+        chat = self.repository.get_with_participants(chat_id)
+        if chat is None:
+            raise ValidationError("Chat not found.")
+        target = self.participants.get(chat.id, user_id)
+        if target is None:
+            raise ValidationError("That user is not in this chat.")
+        policy = ChatPolicy(self.actor, chat)
+        if not policy.can_remove_member(target):
+            raise PermissionDenied("You are not allowed to remove this member.")
+        with transaction.atomic():
+            self.participants.update_status(target, status=ChatParticipant.Status.REMOVED)
+
+    def block_chat(self, chat_id: uuid.UUID) -> None:
+        """Block a DM: flip the actor's participant row to BLOCKED and
+        auto-DECLINE any pending invite. For DMs only."""
+        self._require_actor()
+        chat = self.repository.get_with_participants(chat_id)
+        if chat is None:
+            raise ValidationError("Chat not found.")
+        policy = ChatPolicy(self.actor, chat)
+        if not policy.can_block():
+            raise PermissionDenied("You cannot block this chat.")
+        me = self.participants.get(chat.id, self.actor.id)
+        with transaction.atomic():
+            self.participants.update_status(me, status=ChatParticipant.Status.BLOCKED)
+
     # ------------------------------------------------------------------ #
     # Message send / edit / delete / react / mark-seen
     # ------------------------------------------------------------------ #

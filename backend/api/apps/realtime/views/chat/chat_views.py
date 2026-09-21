@@ -5,7 +5,7 @@ response. No business logic lives here.
 """
 from __future__ import annotations
 
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -178,6 +178,45 @@ class MessageRequestsListView(generics.GenericAPIView):
         svc = chat_service(request)
         qs = svc.list_message_requests()
         return ApiResponse(
-            data=MessageRequestSerializer(qs, many=True).data,
+            data=MessageRequestSerializer(qs, many=True, context={"request": request}).data,
             message="Message requests",
         )
+
+
+class _MemberIdPayload(serializers.Serializer):
+    user_id = serializers.UUIDField()
+
+
+class ChatLeaveView(generics.GenericAPIView):
+    """``POST /chats/<chat_id>/leave/`` — leave a chat you're a member of."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        svc = chat_service(request)
+        svc.leave_chat(chat_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChatRemoveMemberView(generics.GenericAPIView):
+    """``POST /chats/<chat_id>/remove/`` { user_id } — admin/owner kicks member."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        sz = _MemberIdPayload(data=request.data)
+        sz.is_valid(raise_exception=True)
+        svc = chat_service(request)
+        svc.remove_member(chat_id, sz.validated_data["user_id"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChatBlockView(generics.GenericAPIView):
+    """``POST /chats/<chat_id>/block/`` — block a DM."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        svc = chat_service(request)
+        svc.block_chat(chat_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -30,7 +30,7 @@ class ChatRepository(BaseRepository[Chat]):
         )
 
     def for_user(self, user_id: uuid.UUID) -> QuerySet[Chat]:
-        """All chats where the user is an ACCEPTED participant — main inbox."""
+        """Main chat inbox: only ACCEPTED (active) memberships."""
         return (
             self.get_queryset()
             .filter(
@@ -43,13 +43,10 @@ class ChatRepository(BaseRepository[Chat]):
         )
 
     def pending_for_user(self, user_id: uuid.UUID) -> QuerySet[Chat]:
-        """DMs where the user is a PENDING participant — the message-requests
-        inbox. Returns Chat objects (not requests) so the frontend can
-        render the first message and the other participant."""
+        """Message-requests (DM) / group-invite inbox: PENDING rows."""
         return (
             self.get_queryset()
             .filter(
-                type=ChatType.DIRECT,
                 participants__user_id=user_id,
                 participants__status=ChatParticipant.Status.PENDING,
             )
@@ -63,11 +60,9 @@ class ChatRepository(BaseRepository[Chat]):
     def find_direct_between(
         self, user_a_id: uuid.UUID, user_b_id: uuid.UUID
     ) -> Optional[Chat]:
-        """Find an existing DM between two users where user A is a
-        participant (any status) and B is also a participant. We DO NOT
-        return chats where B has DECLINED — users can re-message after a
-        decline by creating a new chat (or we flip the status back to
-        PENDING on resend, handled in the service)."""
+        """Existing DM between two users where A is a participant (any
+        status) and B is also a participant. Excludes chats where B has
+        BLOCKED A (those are not reopenable without an unblock)."""
         return (
             self.get_queryset()
             .filter(
@@ -77,7 +72,7 @@ class ChatRepository(BaseRepository[Chat]):
             )
             .filter(participants__user_id=user_b_id)
             .exclude(
-                participants__status=ChatParticipant.Status.DECLINED,
+                participants__status=ChatParticipant.Status.BLOCKED,
                 participants__user_id=user_b_id,
             )
             .first()

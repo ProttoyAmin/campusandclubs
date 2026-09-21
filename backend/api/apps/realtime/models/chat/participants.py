@@ -8,23 +8,35 @@ from .chat import Chat
 class ChatParticipant(models.Model):
     """A user's membership in a chat.
 
-    ``status`` controls whether the chat appears in the main list, the
-    message-requests inbox, or is declined/hidden. This is the single
-    source of truth for "has this person accepted this conversation?" —
-    there is no separate MessageRequest model. DMs always create rows
-    for BOTH sides up front:
-      * sender    → ACCEPTED
-      * recipient → PENDING  (if gate requires a request)
-                   → ACCEPTED (if gate auto-accepts, e.g. mutual follow)
-    A pending row means the message is saved and visible to the
-    recipient in their requests inbox, but notifications are silenced
-    until they accept.
+    ``status`` is the single source of truth for whether a chat appears in
+    the main inbox, the requests inbox, or is hidden. One table, one
+    column — no parallel MessageRequest model needed. Group invites
+    reuse the same PENDING status.
+
+    Status lifecycle:
+        PENDING   → message/group-invite request waiting on the user.
+                    Chat appears in "Message Requests", messages are
+                    visible but notifications are silenced.
+        ACCEPTED  → active member. Chat is in the main inbox; full
+                    read/write/notifications.
+        DECLINED  → user rejected an incoming PENDING invite/request.
+                    Sender-side history preserved; recipient can't be
+                    messaged again without a new request.
+        LEFT      → user voluntarily left an ACCEPTED chat (e.g. left a
+                    group). History visible but can't send/receive until
+                    re-added.
+        REMOVED   → user was kicked/banned by an admin after ACCEPTED.
+        BLOCKED   → user blocked the other side (DM) or the chat; hides
+                    it from the inbox and prevents further messages.
     """
 
     class Status(models.TextChoices):
         PENDING = "pending", "Pending"
         ACCEPTED = "accepted", "Accepted"
         DECLINED = "declined", "Declined"
+        LEFT = "left", "Left"
+        REMOVED = "removed", "Removed"
+        BLOCKED = "blocked", "Blocked"
 
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="participants")
     user = models.ForeignKey(

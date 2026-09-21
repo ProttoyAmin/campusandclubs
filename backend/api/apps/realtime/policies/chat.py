@@ -106,8 +106,8 @@ class ChatPolicy:
             )
 
     def can_view(self) -> bool:
-        """True if the user is a participant (ACCEPTED or PENDING — so they
-        can see their request inbox). DECLINED rows can't be viewed."""
+        """True if the chat is visible to the user in either the main inbox
+        or the requests inbox. Hidden when DECLINED/LEFT/REMOVED/BLOCKED."""
         if self.user is None or not self.user.is_authenticated or self.chat is None:
             return False
         if self._me is None:
@@ -118,20 +118,47 @@ class ChatPolicy:
         )
 
     def can_view_history(self) -> bool:
-        return self.can_view()
+        # LEFT users can still see their history in an "archived" view if
+        # we ever build one; for now treat it the same as can_view.
+        if self._me is None:
+            return False
+        return self._me.status in (
+            ChatParticipant.Status.ACCEPTED,
+            ChatParticipant.Status.PENDING,
+            ChatParticipant.Status.LEFT,
+        )
 
     def can_send_message(self) -> bool:
-        """The sender must be an ACCEPTED participant. PENDING recipients can't
-        reply until they accept the chat."""
+        """Only ACCEPTED members can send. PENDING recipients can't reply
+        until they accept; DECLINED/LEFT/REMOVED/BLOCKED can't send."""
         if not self.can_view():
             return False
         if self.chat is None or self._me is None:
             return False
-        if self.chat.type in (ChatType.GROUP, ChatType.CLUB):
-            return self._me.status == ChatParticipant.Status.ACCEPTED
-        # For DMs: sender must be ACCEPTED (i.e. the original sender or the
-        # recipient after they accept).
         return self._me.status == ChatParticipant.Status.ACCEPTED
+
+    def can_leave(self) -> bool:
+        return self._me is not None and self._me.status == ChatParticipant.Status.ACCEPTED
+
+    def can_remove_member(self, other_p: ChatParticipant) -> bool:
+        """Owner/admin can REMOVE other ACCEPTED members; cannot remove
+        the owner. Caller is ``self._me``."""
+        if self._me is None:
+            return False
+        if self.chat is None or self.chat.type == ChatType.DIRECT:
+            return False
+        if not (self._me.is_admin or self._me.is_owner):
+            return False
+        if other_p.is_owner:
+            return False
+        return other_p.status == ChatParticipant.Status.ACCEPTED
+
+    def can_block(self) -> bool:
+        """Only valid on DMs. User can block only if there is any
+        existing participant row (i.e. an open or pending conversation)."""
+        if self.chat is None or self.chat.type != ChatType.DIRECT:
+            return False
+        return self._me is not None and self._me.status != ChatParticipant.Status.BLOCKED
 
     def can_start_dm_with(self, other: "User") -> bool:
         if self.user is None or other is None:
