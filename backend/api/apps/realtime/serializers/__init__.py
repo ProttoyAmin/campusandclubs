@@ -9,6 +9,7 @@ from .chat.chat_serializers import (
     MessageReactionSerializer,
     MessageRequestSerializer,
     MessageSerializer,
+    MessageUploadSerializer,
     ReactionCreateSerializer,
     ReceiptSerializer,
 )
@@ -30,6 +31,7 @@ __all__ = [
     "MessageRequestSerializer",
     "MessageSendSerializer",
     "MessageSerializer",
+    "MessageUploadSerializer",
     "ReactionCreateSerializer",
     "ReceiptSerializer",
 ]

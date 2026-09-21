@@ -26,6 +26,16 @@ class MessageRequest(models.Model):
         on_delete=models.CASCADE,
         related_name="message_requests_received",
     )
+    # The DM chat created alongside this request (only for the new
+    # start_dm flow; legacy requests created before this field may have
+    # NULL here and use the older ChatParticipant.PENDING lookup).
+    chat = models.ForeignKey(
+        "realtime.Chat",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="message_requests",
+    )
     content = models.TextField(blank=True, default="")
     status = models.CharField(
         max_length=10,

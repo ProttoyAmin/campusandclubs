@@ -14,6 +14,7 @@ from .message_views import (
     MessageReactionView,
     MessageSeenView,
     MessageSendView,
+    MessageUploadView,
 )
 
 __all__ = [
@@ -29,5 +30,6 @@ __all__ = [
     "MessageRequestsListView",
     "MessageSeenView",
     "MessageSendView",
+    "MessageUploadView",
     "StartDirectChatView",
 ]

@@ -146,8 +146,10 @@ class MessageAttachmentKind(models.TextChoices):
 class MessageAttachment(models.Model):
     """A piece of media attached to a message.
 
-    Stored separately so a message can have multiple attachments (an image
-    carousel, a gallery, etc.) without bloating the Message table.
+    ``file_url`` / ``thumb_url`` can point to any location; in practice we
+    populate them from a Cloudinary upload (either directly via
+    CloudinaryField or by referencing a :class:`apps.media.models.Media`
+    row that already uploaded the file).
     """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -160,6 +162,16 @@ class MessageAttachment(models.Model):
         max_length=16,
         choices=MessageAttachmentKind.choices,
         default=MessageAttachmentKind.FILE,
+    )
+    # Optional link back to the Media row (when file was uploaded via the
+    # /api/v1/media/ endpoint). Kept nullable so callers can pass raw URLs
+    # too (e.g. client-side signed Cloudinary uploads).
+    media = models.ForeignKey(
+        "media.Media",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="message_attachments",
     )
     file_url = models.URLField(max_length=500)
     thumb_url = models.URLField(max_length=500, null=True, blank=True)

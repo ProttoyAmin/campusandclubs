@@ -1,14 +1,15 @@
-import { useOutletContext } from 'react-router-dom';
-import type { ChatResponse } from '../http/chat.http';
+import { useOutletContext } from "react-router-dom";
+import type { ChatResponse } from "../http/chat.http";
 import type { AppError } from "@/settings/app/error";
 
 type ChatOutletContext = {
-    chats: ChatResponse[] | undefined;
-    chatError: AppError<unknown>;
+  chats: ChatResponse[] | undefined;
+  chatError: AppError<unknown>;
+  isLoading?: boolean;
 };
 
 const useChatOutlet = () => {
-    return useOutletContext<ChatOutletContext>();
-}
+  return useOutletContext<ChatOutletContext>();
+};
 
-export default useChatOutlet
+export default useChatOutlet;

@@ -8,9 +8,10 @@ from .chat import (
     MessageEditView,
     MessageListView,
     MessageReactionView,
+    MessageRequestsListView,
     MessageSeenView,
     MessageSendView,
-    MessageRequestsListView,
+    MessageUploadView,
     StartDirectChatView,
 )
 
@@ -18,7 +19,6 @@ __all__ = [
     "ChatAcceptView",
     "ChatDeclineView",
     "ChatListView",
-    "ChatStartView",
     "ChatStartView",
     "GroupChatCreateView",
     "MessageDeleteView",
@@ -28,5 +28,6 @@ __all__ = [
     "MessageRequestsListView",
     "MessageSeenView",
     "MessageSendView",
+    "MessageUploadView",
     "StartDirectChatView",
 ]

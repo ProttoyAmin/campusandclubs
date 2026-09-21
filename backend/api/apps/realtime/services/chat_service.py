@@ -37,6 +37,8 @@ from ..models.chat.chat import Chat
 from ..models.chat.enums import ChatType
 from ..models.chat.message import (
     Message,
+    MessageAttachment,
+    MessageAttachmentKind,
     MessageDeleteMode,
     MessageStatus,
     MessageType,
@@ -50,6 +52,9 @@ from ..repositories.message_repo import MessageRepository
 from ..repositories.participant_repo import ChatParticipantRepository
 from ..repositories.reaction_repo import MessageReactionRepository
 from ..repositories.request_repo import MessageRequestRepository
+from apps.media.repositories import MediaRepository
+from apps.media.models import MediaRole
+from mimetypes import guess_type
 
 
 class ChatService(BaseService[Chat, ChatRepository]):
@@ -65,6 +70,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
         self.participants = ChatParticipantRepository()
         self.reactions = MessageReactionRepository()
         self.requests = MessageRequestRepository()
+        self.media = MediaRepository()
 
     # ------------------------------------------------------------------ #
     # Listing
@@ -131,11 +137,13 @@ class ChatService(BaseService[Chat, ChatRepository]):
                 chat_id=chat.id, user_id=other.id, status=ChatParticipant.Status.PENDING
             )
             # Create out-of-band request record for the "requests" inbox.
-            self.requests.create_request(
+            req = self.requests.create_request(
                 from_user_id=self.actor.id,
                 to_user_id=other.id,
                 content="",
             )
+            req.chat = chat
+            req.save(update_fields=["chat"])
             self.repository.touch_last_message(chat, timezone.now())
 
         # Notify the recipient over their personal channel.
@@ -206,11 +214,13 @@ class ChatService(BaseService[Chat, ChatRepository]):
                         chat_id=chat.id, user_id=other.id,
                         status=ChatParticipant.Status.PENDING,
                     )
-                    self.requests.create_request(
+                    req = self.requests.create_request(
                         from_user_id=self.actor.id,
                         to_user_id=other.id,
                         content=dto.content,
                     )
+                    req.chat = chat
+                    req.save(update_fields=["chat"])
             else:
                 chat = self.repository.create_chat(
                     type=ChatType.GROUP, name=dto.name or None
@@ -236,10 +246,17 @@ class ChatService(BaseService[Chat, ChatRepository]):
     # Message requests (accept / decline)
     # ------------------------------------------------------------------ #
     def accept_chat(self, dto: ChatActionDTO) -> Chat:
-        """Accept a pending DM. Flips the actor's participant row to
-        ACCEPTED and notifies the sender."""
+        """Accept a pending DM. ``chat_id`` may be either the chat id or a
+        MessageRequest id; we resolve either. Flips the actor's participant
+        row to ACCEPTED and notifies the sender."""
         self._require_actor()
         chat = self.repository.get_with_participants(dto.chat_id)
+        # If the id refers to a MessageRequest instead of a Chat, resolve.
+        request = None
+        if chat is None:
+            request = self.requests.get_or_none(id=dto.chat_id, to_user=self.actor, status=MessageRequest.Status.PENDING)
+            if request is not None and request.chat_id is not None:
+                chat = self.repository.get_with_participants(request.chat_id)
         if chat is None or chat.type != ChatType.DIRECT:
             raise ValidationError("Chat not found or is not a direct chat.")
         me = self.participants.get(chat.id, self.actor.id)
@@ -247,15 +264,21 @@ class ChatService(BaseService[Chat, ChatRepository]):
             raise ValidationError("There is no pending request for this chat.")
         with transaction.atomic():
             self.participants.update_status(me, status=ChatParticipant.Status.ACCEPTED)
-            # Mark any pending request originating from the other side as accepted.
             other_participants = [
                 p for p in chat.participants.all() if p.user_id != self.actor.id
             ]
             MessageRequest.objects.filter(
                 to_user=self.actor,
-                from_user_id__in=[p.user_id for p in other_participants],
+                chat=chat,
                 status=MessageRequest.Status.PENDING,
             ).update(status=MessageRequest.Status.ACCEPTED)
+            # Also mark any request without a linked chat (legacy rows).
+            MessageRequest.objects.filter(
+                to_user=self.actor,
+                chat__isnull=True,
+                from_user_id__in=[p.user_id for p in other_participants],
+                status=MessageRequest.Status.PENDING,
+            ).update(status=MessageRequest.Status.ACCEPTED, chat=chat)
 
         from ..serializers import ChatSerializer
         other_ids = [p.user_id for p in other_participants]
@@ -268,15 +291,24 @@ class ChatService(BaseService[Chat, ChatRepository]):
     def decline_chat(self, dto: ChatActionDTO) -> None:
         self._require_actor()
         chat = self.repository.get_with_participants(dto.chat_id)
+        request = None
         if chat is None:
+            request = self.requests.get_or_none(id=dto.chat_id, to_user=self.actor, status=MessageRequest.Status.PENDING)
+            if request is not None and request.chat_id is not None:
+                chat = self.repository.get_with_participants(request.chat_id)
+        if chat is None and request is None:
             raise ValidationError("Chat not found.")
-        me = self.participants.get(chat.id, self.actor.id)
-        if me is None:
-            raise ValidationError("Not a participant.")
-        self.participants.update_status(me, status=ChatParticipant.Status.DECLINED)
-        MessageRequest.objects.filter(
-            to_user=self.actor, status=MessageRequest.Status.PENDING,
-        ).update(status=MessageRequest.Status.DECLINED)
+        with transaction.atomic():
+            if chat is not None:
+                me = self.participants.get(chat.id, self.actor.id)
+                if me is not None:
+                    self.participants.update_status(me, status=ChatParticipant.Status.DECLINED)
+                MessageRequest.objects.filter(
+                    to_user=self.actor, chat=chat, status=MessageRequest.Status.PENDING,
+                ).update(status=MessageRequest.Status.DECLINED)
+            elif request is not None:
+                request.status = MessageRequest.Status.DECLINED
+                request.save(update_fields=["status", "updated_at"])
 
     # ------------------------------------------------------------------ #
     # Message send / edit / delete / react / mark-seen
@@ -303,8 +335,8 @@ class ChatService(BaseService[Chat, ChatRepository]):
                 msg_type=dto.msg_type,
                 client_msg_id=dto.client_msg_id,
                 attachments=dto.attachments,
+                files=dto.files,
             )
-            # Initial receipt: SENT for every other accepted participant.
             other_user_ids = [
                 p.user_id for p in self.participants.accepted_for_chat(chat.id)
                 if p.user_id != self.actor.id
@@ -443,6 +475,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
         msg_type: str = MessageType.TEXT,
         client_msg_id: Optional[uuid.UUID] = None,
         attachments: Sequence[MessageAttachmentDTO] = (),
+        files: Sequence = (),
     ) -> Message:
         message = self.messages.create_message(
             chat_id=chat.id,
@@ -452,9 +485,83 @@ class ChatService(BaseService[Chat, ChatRepository]):
             reply_to_id=reply_to_id,
             client_msg_id=client_msg_id,
         )
-        if attachments:
-            self.messages.create_attachments(message, attachments)
+
+        created_attachments: list[MessageAttachment] = []
+
+        # 1) Raw uploaded files (multipart send endpoint) — persist them to
+        #    Cloudinary via the Media repository first, then link rows.
+        if files:
+            media_rows = self.media.attach_files(
+                obj=message,
+                files=files,
+                role=MediaRole.ATTACHMENT,
+            )
+            for media in media_rows:
+                secure_url = media.file.source(secure=True) if hasattr(media.file, "source") else media.file.url
+                kind = self._guess_kind(media)
+                created_attachments.append(
+                    MessageAttachment(
+                        message=message,
+                        media=media,
+                        kind=kind,
+                        file_url=media.file.url,
+                        thumb_url=secure_url if kind == MessageAttachmentKind.IMAGE else None,
+                        file_name=media.original_file_name or None,
+                        mime_type=guess_type(media.original_file_name or "")[0]
+                        if media.original_file_name else None,
+                    )
+                )
+
+        # 2) Pre-created attachment references (JSON send endpoint).
+        for a in attachments:
+            media_row = None
+            if a.media_id:
+                media_row = self.media.get_or_none(id=a.media_id)
+            created_attachments.append(
+                MessageAttachment(
+                    message=message,
+                    media=media_row,
+                    kind=a.kind,
+                    file_url=a.file_url,
+                    thumb_url=a.thumb_url,
+                    file_name=a.file_name,
+                    mime_type=a.mime_type,
+                    size_bytes=a.size_bytes,
+                    width=a.width,
+                    height=a.height,
+                    duration_ms=a.duration_ms,
+                )
+            )
+
+        if created_attachments:
+            MessageAttachment.objects.bulk_create(created_attachments)
+
+        # If the message has attachments but no explicit msg_type was set,
+        # pick a reasonable default (first attachment kind, or IMAGE).
+        if created_attachments and msg_type == MessageType.TEXT and not content:
+            first_kind = created_attachments[0].kind
+            mapping = {
+                MessageAttachmentKind.IMAGE: MessageType.IMAGE,
+                MessageAttachmentKind.VIDEO: MessageType.VIDEO,
+                MessageAttachmentKind.AUDIO: MessageType.VOICE,
+                MessageAttachmentKind.FILE: MessageType.FILE,
+            }
+            message.msg_type = mapping.get(first_kind, MessageType.FILE)
+            message.save(update_fields=["msg_type"])
+
         return message
+
+    @staticmethod
+    def _guess_kind(media) -> str:
+        rt = getattr(media.file, "resource_type", "raw")
+        name = (media.original_file_name or "").lower()
+        if rt == "image":
+            return MessageAttachmentKind.IMAGE
+        if rt == "video":
+            if name.endswith((".mp3", ".wav", ".m4a", ".ogg", ".aac", ".flac", ".opus")):
+                return MessageAttachmentKind.AUDIO
+            return MessageAttachmentKind.VIDEO
+        return MessageAttachmentKind.FILE
 
     def _create_initial_receipts(
         self, message_id: uuid.UUID, recipient_ids: Sequence[uuid.UUID]

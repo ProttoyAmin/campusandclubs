@@ -57,6 +57,7 @@ export const config = {
         base: "realtime/",
         chatList: "realtime/chats/",
         chatStart: "realtime/chats/start/",
+        chatUpload: "realtime/chats/:id/messages/upload/",
       }
     },
   },

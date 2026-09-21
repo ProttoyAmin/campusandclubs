@@ -30,11 +30,14 @@ from apps.realtime.models.chat.reaction import MessageReaction
 # Attachments & reactions
 # --------------------------------------------------------------------- #
 class MessageAttachmentSerializer(serializers.ModelSerializer):
+    media_id = serializers.UUIDField(read_only=True, source="media_id")
+
     class Meta:
         model = MessageAttachment
         fields = [
             "id",
             "kind",
+            "media_id",
             "file_url",
             "thumb_url",
             "file_name",
@@ -175,6 +178,22 @@ class MessageAttachmentInSerializer(serializers.Serializer):
         return MessageAttachmentDTO(**data)
 
 
+class MessageAttachmentRefSerializer(serializers.Serializer):
+    """Reference to an already-uploaded attachment (by URL / media id)."""
+    file_url = serializers.URLField(max_length=500)
+    kind = serializers.ChoiceField(
+        choices=["image", "video", "audio", "file"], default="file", required=False,
+    )
+    media_id = serializers.UUIDField(required=False, allow_null=True)
+    thumb_url = serializers.URLField(max_length=500, required=False, allow_null=True)
+    file_name = serializers.CharField(max_length=255, required=False, allow_null=True)
+    mime_type = serializers.CharField(max_length=100, required=False, allow_null=True)
+    size_bytes = serializers.IntegerField(required=False, allow_null=True, min_value=0)
+    width = serializers.IntegerField(required=False, allow_null=True, min_value=0)
+    height = serializers.IntegerField(required=False, allow_null=True, min_value=0)
+    duration_ms = serializers.IntegerField(required=False, allow_null=True, min_value=0)
+
+
 class MessageCreateSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=5000, allow_blank=True, default="")
     reply_to = serializers.UUIDField(required=False, allow_null=True)
@@ -184,7 +203,27 @@ class MessageCreateSerializer(serializers.Serializer):
         required=False,
     )
     client_msg_id = serializers.UUIDField(required=False, allow_null=True)
-    attachments = MessageAttachmentInSerializer(many=True, required=False, default=list)
+    attachments = MessageAttachmentRefSerializer(many=True, required=False, default=list)
+
+
+class MessageUploadSerializer(serializers.Serializer):
+    """multipart/form-data serializer for sending a message with files.
+
+    Files go straight to Cloudinary via the Media repository; other fields
+    are standard form values.
+    """
+    content = serializers.CharField(max_length=5000, allow_blank=True, required=False, default="")
+    reply_to = serializers.UUIDField(required=False, allow_null=True)
+    msg_type = serializers.ChoiceField(
+        choices=MessageType.choices,
+        default=MessageType.TEXT,
+        required=False,
+    )
+    client_msg_id = serializers.UUIDField(required=False, allow_null=True)
+    attachments = serializers.ListField(
+        child=serializers.FileField(),
+        required=False, default=list,
+    )
 
 
 # Legacy alias so existing imports ``MessageSendSerializer`` keep working.
@@ -296,8 +335,9 @@ class ChatStartSerializer(serializers.Serializer):
 # --------------------------------------------------------------------- #
 class MessageRequestSerializer(serializers.ModelSerializer):
     from_user = UserMinimalSerializer(read_only=True)
+    chat_id = serializers.UUIDField(read_only=True, source="chat_id")
 
     class Meta:
         model = MessageRequest
-        fields = ["id", "from_user", "content", "status", "created_at"]
+        fields = ["id", "chat_id", "from_user", "content", "status", "created_at"]
         read_only_fields = fields

@@ -23,6 +23,7 @@ from .views import (
     MessageRequestsListView,
     MessageSeenView,
     MessageSendView,
+    MessageUploadView,
     StartDirectChatView,
 )
 
@@ -48,6 +49,11 @@ urlpatterns = [
         "chats/<uuid:chat_id>/messages/send/",
         MessageSendView.as_view(),
         name="message_send",
+    ),
+    path(
+        "chats/<uuid:chat_id>/messages/upload/",
+        MessageUploadView.as_view(),
+        name="message_upload",
     ),
     path(
         "chats/<uuid:chat_id>/messages/seen/",

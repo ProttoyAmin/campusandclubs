@@ -15,6 +15,7 @@ from .chat.chat_schemas import (
     message_react_schema,
     message_seen_schema,
     message_send_schema,
+    message_upload_schema,
     start_chat_schema,
     start_dm_schema,
 )
@@ -32,6 +33,7 @@ __all__ = [
     "message_requests_list_schema",
     "message_seen_schema",
     "message_send_schema",
+    "message_upload_schema",
     "start_chat_schema",
     "start_dm_schema",
 ]

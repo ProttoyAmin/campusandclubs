@@ -14,6 +14,7 @@ from apps.realtime.serializers import (
     MessageEditSerializer,
     MessageReactionSerializer,
     MessageSerializer,
+    MessageUploadSerializer,
     ReactionCreateSerializer,
     ReceiptSerializer,
 )
@@ -223,5 +224,24 @@ message_seen_schema = extend_schema(
     responses={
         204: OpenApiResponse(description="Seen receipts recorded."),
         403: OpenApiResponse(description="Not a member of this chat."),
+    },
+)
+
+
+message_upload_schema = extend_schema(
+    operation_id="send_message_with_attachments",
+    summary="Send a message with file attachments (multipart)",
+    description=(
+        "Send a message along with one or more files. Files are uploaded "
+        "to Cloudinary by the server and attached to the new message. "
+        "Use multipart/form-data; `attachments` is one or more file parts."
+    ),
+    tags=["Messages"],
+    parameters=[_CHAT_ID_PARAM],
+    request=MessageUploadSerializer,
+    responses={
+        201: OpenApiResponse(MessageSerializer, description="Message sent."),
+        400: OpenApiResponse(description="Validation failed."),
+        403: OpenApiResponse(description="Not allowed to send here."),
     },
 )
