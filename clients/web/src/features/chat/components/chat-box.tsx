@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup, AvatarGroupCount } from "design/components/ui/avatar";
 import { type ChatResponse } from "../http/chat.http";
 import { getTimeAgo } from "@/utils/format-date";
-import { cn } from "design/lib";
+import { cn } from "design/lib/utils";
 
 interface ChatBoxProps {
   chat: ChatResponse;

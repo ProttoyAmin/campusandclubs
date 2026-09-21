@@ -2,7 +2,7 @@ import ChatBox from "./chat-box";
 import { type ChatResponse } from "../http/chat.http";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/settings/routes";
-import { cn } from "design/lib";
+import { cn } from "design/lib/utils";
 
 interface ChatListProps {
   chats: ChatResponse[];
