@@ -21,20 +21,23 @@ class ChatParticipantRepository(BaseRepository[ChatParticipant]):
     def for_chat(self, chat_id: uuid.UUID) -> QuerySet[ChatParticipant]:
         return self.get_queryset().filter(chat_id=chat_id)
 
-    def joined_for_chat(self, chat_id: uuid.UUID) -> QuerySet[ChatParticipant]:
+    def accepted_for_chat(self, chat_id: uuid.UUID) -> QuerySet[ChatParticipant]:
         return self.for_chat(chat_id).filter(
-            status=ChatParticipant.Status.JOINED,
+            status=ChatParticipant.Status.ACCEPTED,
             left_at__isnull=True,
         )
+
+    def pending_for_chat(self, chat_id: uuid.UUID) -> QuerySet[ChatParticipant]:
+        return self.for_chat(chat_id).filter(status=ChatParticipant.Status.PENDING)
 
     def get(self, chat_id: uuid.UUID, user_id: uuid.UUID) -> Optional[ChatParticipant]:
         return self.get_or_none(chat_id=chat_id, user_id=user_id)
 
-    def is_joined_member(self, chat_id: uuid.UUID, user_id: uuid.UUID) -> bool:
+    def is_accepted_member(self, chat_id: uuid.UUID, user_id: uuid.UUID) -> bool:
         return self.get_queryset().filter(
             chat_id=chat_id,
             user_id=user_id,
-            status=ChatParticipant.Status.JOINED,
+            status=ChatParticipant.Status.ACCEPTED,
             left_at__isnull=True,
         ).exists()
 
@@ -43,7 +46,7 @@ class ChatParticipantRepository(BaseRepository[ChatParticipant]):
         *,
         chat_id: uuid.UUID,
         user_id: uuid.UUID,
-        status: str = ChatParticipant.Status.JOINED,
+        status: str = ChatParticipant.Status.ACCEPTED,
         is_admin: bool = False,
         is_owner: bool = False,
     ) -> ChatParticipant:
@@ -63,8 +66,10 @@ class ChatParticipantRepository(BaseRepository[ChatParticipant]):
         self, participant: ChatParticipant, *, status: str
     ) -> ChatParticipant:
         participant.status = status
-        if status == ChatParticipant.Status.LEFT:
+        if status == ChatParticipant.Status.DECLINED:
             participant.left_at = timezone.now()
+        else:
+            participant.left_at = None
         participant.save(update_fields=["status", "left_at", "updated_at"])
         return participant
 
@@ -78,7 +83,7 @@ class ChatParticipantRepository(BaseRepository[ChatParticipant]):
         chat_id: uuid.UUID,
         user_ids: Iterable[uuid.UUID],
         *,
-        status: str = ChatParticipant.Status.JOINED,
+        status: str = ChatParticipant.Status.ACCEPTED,
         is_admin: bool = False,
     ) -> list[ChatParticipant]:
         objs = [

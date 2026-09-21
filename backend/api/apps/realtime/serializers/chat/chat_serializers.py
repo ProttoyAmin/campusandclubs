@@ -21,7 +21,6 @@ from apps.realtime.models.chat.message import (
     MessageStatus,
     MessageType,
 )
-from apps.realtime.models.chat.message_request import MessageRequest
 from apps.realtime.models.chat.participants import ChatParticipant
 from apps.realtime.models.chat.reaction import MessageReaction
 
@@ -294,7 +293,7 @@ class ChatSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         viewer = request.user if request else self.context.get("user")
         qs = obj.participants.filter(
-            status=ChatParticipant.Status.JOINED,
+            status=ChatParticipant.Status.ACCEPTED,
             left_at__isnull=True,
         )
         if viewer and getattr(viewer, "is_authenticated", False):
@@ -333,11 +332,43 @@ class ChatStartSerializer(serializers.Serializer):
 # --------------------------------------------------------------------- #
 # Message requests
 # --------------------------------------------------------------------- #
-class MessageRequestSerializer(serializers.ModelSerializer):
-    from_user = UserMinimalSerializer(read_only=True)
-    chat_id = serializers.UUIDField(read_only=True, source="chat_id")
+class MessageRequestSerializer(serializers.Serializer):
+    """Serialize a pending DM Chat for the requests inbox.
 
-    class Meta:
-        model = MessageRequest
-        fields = ["id", "chat_id", "from_user", "content", "status", "created_at"]
-        read_only_fields = fields
+    Returns the shape the frontend already expects from the previous
+    MessageRequest model: ``id`` (request alias = chat id, so accept/
+    decline endpoints keep working with chat ids), ``chat_id``,
+    ``from_user`` (the other participant, i.e. the sender), ``content``
+    (preview of the most recent message), ``status`` (always ``pending``),
+    ``created_at`` (chat creation time)."""
+
+    id = serializers.UUIDField(read_only=True)
+    chat_id = serializers.UUIDField(read_only=True)
+    from_user = serializers.SerializerMethodField()
+    content = serializers.SerializerMethodField()
+    status = serializers.CharField(read_only=True, default="pending")
+    created_at = serializers.DateTimeField(read_only=True)
+
+    def _viewer(self):
+        request = self.context.get("request")
+        return request.user if request else self.context.get("user")
+
+    def get_from_user(self, obj: Chat):
+        viewer = self._viewer()
+        other = next(
+            (p.user for p in obj.participants.all() if p.user_id != getattr(viewer, "id", None)),
+            None,
+        )
+        return UserMinimalSerializer(other, context=self.context).data if other else None
+
+    def get_content(self, obj: Chat) -> str:
+        msg = obj.messages.order_by("-created_at").first()
+        return msg.content if msg and msg.content is not None else ""
+
+    def to_representation(self, obj: Chat):
+        data = super().to_representation(obj)
+        data["id"] = str(obj.id)
+        data["chat_id"] = str(obj.id)
+        data["status"] = "pending"
+        data["created_at"] = obj.created_at
+        return data

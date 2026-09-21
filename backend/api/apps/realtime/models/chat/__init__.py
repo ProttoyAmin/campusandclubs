@@ -8,7 +8,6 @@ from .message import (
     MessageStatus,
     MessageType,
 )
-from .message_request import MessageRequest
 from .participants import ChatParticipant
 from .reaction import MessageReaction
 from .user_hidden import UserMessageHidden
@@ -22,7 +21,6 @@ __all__ = [
     "MessageAttachmentKind",
     "MessageDeleteMode",
     "MessageReaction",
-    "MessageRequest",
     "MessageStatus",
     "MessageType",
     "UserMessageHidden",

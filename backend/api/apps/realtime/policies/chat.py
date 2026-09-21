@@ -1,4 +1,13 @@
-"""Chat policy helpers — access-control for chats + who can start DMs with whom."""
+"""Chat policy helpers — access-control for chats + who can start DMs with whom.
+
+The chat-participant row is the single source of truth for membership state:
+    ACCEPTED → chat appears in the main inbox; messages flow normally.
+    PENDING  → chat appears in the recipient's "message requests" inbox;
+               the sender still sees their messages, but the recipient
+               has not accepted yet. Notifications to the recipient are
+               suppressed until they accept.
+    DECLINED → hidden; no further messages can be sent until re-opened.
+"""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
@@ -17,16 +26,19 @@ if TYPE_CHECKING:
 UserModel = get_user_model()
 
 
-# ------------------------------------------------------------------ #
-# Message-request gate (for brand-new DMs)
-# ------------------------------------------------------------------ #
 class MessageGateResult:
-    """Routing decision for a new DM start."""
+    """Routing decision for a new DM start.
 
-    __slots__ = ("allowed", "requires_request", "blocked", "reason")
+    auto_accept   → both participants are added ACCEPTED (mutual follow etc.).
+    requires_request → recipient is added PENDING; message is saved but lands
+                   in their requests inbox.
+    blocked       → raise PermissionDenied.
+    """
 
-    def __init__(self, allowed: bool, requires_request: bool, blocked: bool, reason: str) -> None:
-        self.allowed = allowed
+    __slots__ = ("auto_accept", "requires_request", "blocked", "reason")
+
+    def __init__(self, auto_accept: bool, requires_request: bool, blocked: bool, reason: str) -> None:
+        self.auto_accept = auto_accept
         self.requires_request = requires_request
         self.blocked = blocked
         self.reason = reason
@@ -40,18 +52,10 @@ def _follows(a_id, b_id) -> bool:
 
 
 def evaluate_message_gate(from_user, to_user) -> MessageGateResult:
-    """Decide how to route a brand-new DM from ``from_user`` to ``to_user``.
-
-    - ``allowed``        → auto-accept (mutual follow); recipient gets a
-                           JOINED participant row immediately.
-    - ``requires_request`` → a pending MessageRequest is created; recipient
-                             does NOT become a participant until they accept.
-    - ``blocked``        → raise PermissionDenied to the caller.
-    """
+    """Decide how to route a brand-new DM from ``from_user`` to ``to_user``."""
     if from_user.id == to_user.id:
         return MessageGateResult(False, False, True, "Cannot message yourself.")
 
-    # Existing block relationship wins.
     if Block.has_blocked_each_other(from_user, to_user):
         return MessageGateResult(False, False, True, "Blocked users cannot message each other.")
 
@@ -88,9 +92,6 @@ def evaluate_message_gate(from_user, to_user) -> MessageGateResult:
     return MessageGateResult(False, True, False, "Message queued as a request.")
 
 
-# ------------------------------------------------------------------ #
-# Per-chat access policy (view / send / history)
-# ------------------------------------------------------------------ #
 class ChatPolicy:
     """Access checks against an existing ``Chat`` instance."""
 
@@ -104,38 +105,39 @@ class ChatPolicy:
                 None,
             )
 
-    # -- View / send ---------------------------------------------------- #
     def can_view(self) -> bool:
-        """User is a JOINED/LEFT participant (i.e. the chat exists in their
-        history). BLOCKED/REMOVED rows still exist but are not viewable."""
+        """True if the user is a participant (ACCEPTED or PENDING — so they
+        can see their request inbox). DECLINED rows can't be viewed."""
         if self.user is None or not self.user.is_authenticated or self.chat is None:
             return False
         if self._me is None:
             return False
-        return self._me.status in (ChatParticipant.Status.JOINED, ChatParticipant.Status.LEFT)
+        return self._me.status in (
+            ChatParticipant.Status.ACCEPTED,
+            ChatParticipant.Status.PENDING,
+        )
 
     def can_view_history(self) -> bool:
         return self.can_view()
 
     def can_send_message(self) -> bool:
+        """The sender must be an ACCEPTED participant. PENDING recipients can't
+        reply until they accept the chat."""
         if not self.can_view():
             return False
-        if self.chat is None:
+        if self.chat is None or self._me is None:
             return False
-        # For groups/clubs any JOINED member can send.
         if self.chat.type in (ChatType.GROUP, ChatType.CLUB):
-            return self._me is not None and self._me.status == ChatParticipant.Status.JOINED
-        # For DMs both sides must be JOINED (chat is bidirectionally accepted).
-        active = [p for p in self.chat.participants.all() if p.status == ChatParticipant.Status.JOINED]
-        return len(active) == 2
+            return self._me.status == ChatParticipant.Status.ACCEPTED
+        # For DMs: sender must be ACCEPTED (i.e. the original sender or the
+        # recipient after they accept).
+        return self._me.status == ChatParticipant.Status.ACCEPTED
 
     def can_start_dm_with(self, other: "User") -> bool:
-        """Used before start_direct; permission is delegated to evaluate_message_gate."""
         if self.user is None or other is None:
             return False
         return not evaluate_message_gate(self.user, other).blocked
 
-    # -- Admin / management -------------------------------------------- #
     def can_edit_chat(self) -> bool:
         return self._me is not None and (self._me.is_admin or self._me.is_owner)
 

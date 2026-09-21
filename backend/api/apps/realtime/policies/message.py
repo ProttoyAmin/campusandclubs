@@ -33,7 +33,7 @@ class MessagePolicy(Policy[User, Optional[Message]]):
         p = self._participant()
         return (
             p is not None
-            and p.status == ChatParticipant.Status.JOINED
+            and p.status == ChatParticipant.Status.ACCEPTED
             and p.left_at is None
         )
 

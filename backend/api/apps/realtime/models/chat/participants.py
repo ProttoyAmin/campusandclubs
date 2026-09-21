@@ -1,22 +1,30 @@
 from __future__ import annotations
+
 from django.db import models
 from django.conf import settings
 from .chat import Chat
 
 
 class ChatParticipant(models.Model):
-    """A user's active membership in a chat.
+    """A user's membership in a chat.
 
-    A row in this table means: "this chat belongs in my inbox/history".
-    Pending / declined state lives on ``MessageRequest`` only — a recipient
-    does NOT get a ChatParticipant row until they accept the request.
+    ``status`` controls whether the chat appears in the main list, the
+    message-requests inbox, or is declined/hidden. This is the single
+    source of truth for "has this person accepted this conversation?" —
+    there is no separate MessageRequest model. DMs always create rows
+    for BOTH sides up front:
+      * sender    → ACCEPTED
+      * recipient → PENDING  (if gate requires a request)
+                   → ACCEPTED (if gate auto-accepts, e.g. mutual follow)
+    A pending row means the message is saved and visible to the
+    recipient in their requests inbox, but notifications are silenced
+    until they accept.
     """
 
     class Status(models.TextChoices):
-        JOINED = "joined", "Joined"
-        LEFT = "left", "Left"
-        BLOCKED = "blocked", "Blocked"
-        REMOVED = "removed", "Removed"
+        PENDING = "pending", "Pending"
+        ACCEPTED = "accepted", "Accepted"
+        DECLINED = "declined", "Declined"
 
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="participants")
     user = models.ForeignKey(
@@ -27,7 +35,7 @@ class ChatParticipant(models.Model):
     status = models.CharField(
         max_length=10,
         choices=Status.choices,
-        default=Status.JOINED,
+        default=Status.ACCEPTED,
     )
     is_admin = models.BooleanField(default=False)
     is_owner = models.BooleanField(default=False)

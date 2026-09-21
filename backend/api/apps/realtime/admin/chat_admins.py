@@ -7,7 +7,6 @@ from ..models import (
     Message,
     MessageAttachment,
     MessageReaction,
-    MessageRequest,
     MessageStatus,
     UserMessageHidden,
 )
@@ -69,13 +68,6 @@ class ChatParticipantAdmin(admin.ModelAdmin):
     list_display = ("id", "chat", "user", "status", "is_admin", "is_owner", "last_read_at")
     list_filter = ("status", "is_admin", "is_owner")
     search_fields = ("user__username", "chat__name")
-
-
-@admin.register(MessageRequest)
-class MessageRequestAdmin(admin.ModelAdmin):
-    list_display = ("id", "from_user", "to_user", "status", "created_at")
-    list_filter = ("status", "created_at")
-    search_fields = ("from_user__username", "to_user__username")
 
 
 @admin.register(UserMessageHidden)
