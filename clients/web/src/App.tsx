@@ -10,6 +10,8 @@ import { useFeed } from "./features/posts/hooks/posts.hooks";
 import PostCard from "./features/posts/components/post-card";
 import type { PostExtended } from "./features/posts/components/post-card";
 import { Card } from "design/components/ui/card";
+import Create from "@/components/create";
+import BottomBar from "./components/bottom-bar";
 
 function App() {
   const { data: users } = useUsers();
@@ -18,11 +20,11 @@ function App() {
   const { feed } = useFeed();
 
   return (
-    <Card className="max-w-3xl md:ms-44 gap-0">
+    <section className="max-w-3xl md:ms-44 gap-0">
       <div className="md:hidden">
         <Header />
       </div>
-      <p>{data?.meta?.is_authenticated ? "true" : "false"}</p>
+      {/* <p>{data?.meta?.is_authenticated ? "true" : "false"}</p>
       <div className="flex gap-4 w-full flex-wrap">
         {users?.data?.results.map((user) => (
           <Link key={user?.id} to={paths.private.user.profile(user.username)}>
@@ -36,13 +38,19 @@ function App() {
             <p>{club.name}</p>
           </Link>
         ))}
+      </div> */}
+      <div className="flex justify-end">
+        <Create />
       </div>
       {feed?.data?.results.map((post: PostExtended) => (
         <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
           <PostCard post={post} />
         </div>
       ))}
-    </Card>
+      <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+        <BottomBar />
+      </div>
+    </section>
   );
 }
 

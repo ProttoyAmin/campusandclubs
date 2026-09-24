@@ -113,9 +113,9 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectSeparator />
+                      {props.affiliations.length > 1 && <SelectSeparator />}
                       {props.affiliations?.map((affiliation) => (
-                        <SelectItem key={affiliation.id} value={affiliation.id}>
+                        <SelectItem key={affiliation.id} value={affiliation.institute?.id} >
                           {`${formatLabel(affiliation.institute.name)} (${affiliation.institute.code})`}
                         </SelectItem>
                       ))}

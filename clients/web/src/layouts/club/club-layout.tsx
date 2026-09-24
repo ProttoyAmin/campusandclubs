@@ -11,6 +11,9 @@ import { toast } from "design/components/ui/toast";
 import { useSectionId } from "@/shared/hooks/id";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
 import defaultBanner from "@/assets/4578-dragon-ball-z.png";
+import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
+import { Avatar, AvatarFallback, AvatarImage } from "design/components/ui/avatar";
+import BottomBar from "@/components/bottom-bar";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -80,9 +83,9 @@ export const ClubMainLayout: React.FC = () => {
   return (
     <section
       id={useSectionId()}
-      className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around"
+      className="md:ms-33 flex flex-col gap-4 max-w-full"
     >
-      <div className="flex justify-between items-center">
+      <div className="max-w-3xl w-full">
         {pageHeader.actions ?? (
           <>
             <ClubLayoutHeader
@@ -112,19 +115,36 @@ export const ClubMainLayout: React.FC = () => {
           </>
         )}
       </div>
-      <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl shadow-lg bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
-        {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
-        <div className="relative h-64">
-          {/* TODO: shows banner and implement avatar using club preference later */}
-          {club?.banner ? (
-            <img src={club.banner} alt={club?.name} className="w-full h-full object-cover" />
-          ) : (
-            <img src={defaultBanner} alt={`${club?.name} banner`} className="w-full h-full object-cover" />
-          )}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent"></div>
+      <div className="">
+        <Card ref={scrollRef} className="max-w-fit border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+          <Outlet context={{ club }} />
+        </Card>
+        <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+          <BottomBar />
         </div>
-        <Outlet context={{ club }} />
-      </Card>
+        {/* <Card className="w-md max-h-fit bg-background p-0 hidden xl:block">
+          <div className="relative">
+            <img src={defaultBanner} alt={`${club?.name} banner`} className="object-cover" />
+            <Avatar
+              size="2xl"
+              className={"absolute -bottom-8 right-8"}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <AvatarImage src={GokuImage} alt={club?.name} />
+              <AvatarFallback>{club?.name?.[0].toUpperCase()}</AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="p-4 flex flex-col gap-2.5">
+            <div className="flex gap-2.5">
+              <p className="text-muted-foreground"> • {club?.total_members} members</p>
+              <p className="text-green-500">• {club?.total_members} online</p>
+            </div>
+            <p className="text-muted-foreground">{club?.about}</p>
+          </div>
+        </Card> */}
+      </div>
     </section>
   );
 };

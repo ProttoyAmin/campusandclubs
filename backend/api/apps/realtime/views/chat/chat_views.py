@@ -1,3 +1,9 @@
+from rest_framework import serializers
+from apps.realtime.serializers.chat.chat_serializers import ChatDetailSerializer
+from apps.realtime.dtos.chat import ChatActionDTO
+from apps.realtime.serializers import ChatAcceptSerializer
+from apps.realtime.views._utils import chat_service
+from apps.realtime.dtos import ChatCreateDTO
 import json
 from rest_framework import status
 from rest_framework.request import Request
@@ -26,6 +32,9 @@ from ...models import ChatParticipant
 from apps.realtime.models.chat.enums import ChatType
 from apps.realtime.events import ChannelsHandler, chat_group
 
+from django.contrib.auth import models
+
+
 User = get_user_model()
 EDIT_WINDOW = timedelta(minutes=15)
 
@@ -39,6 +48,16 @@ def broadcast(chat_id, event_type, data):
         chat_group(chat_id), {"type": event_type, "data": safe_data}
     )
 
+class ModelInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Permission
+        fields = '__all__'
+
+class ModelInfoTestView(APIView):
+    def get(self, request: Request):
+        return Response(ModelInfoSerializer(models.Permission.objects.all(), many=True).data)
+
+
 
 class ChatListView(generics.ListCreateAPIView):
     """Chats the current user belongs to. Pending DM requests are hidden
@@ -46,13 +65,15 @@ class ChatListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        
+        user = self.request.user
+        excluded_chat_ids = ChatParticipant.objects.filter(
+            chat__type=ChatType.DIRECT,
+            user=user,
+            status=ChatParticipant.Status.PENDING,
+        ).values_list("chat_id", flat=True)
         return (
-            Chat.objects.filter(participants__user=self.request.user)
-            .exclude(
-                type=ChatType.DIRECT,
-                participants__status=ChatParticipant.Status.PENDING,
-            )
+            Chat.objects.filter(participants__user=user)
+            .exclude(id__in=excluded_chat_ids)
             .distinct()
             .order_by("-updated_at")
         )
@@ -82,22 +103,6 @@ class ChatListView(generics.ListCreateAPIView):
         )
         if existing:
             return Response(ChatSerializer(existing, context={"request": request}).data)
-
-
-        # with transaction.atomic():
-        #     chat = Chat.objects.create(
-        #         type=ChatType.DIRECT
-        #     )
-        #     ChatParticipant.objects.create(
-        #         chat=chat, user=request.user, status=ChatParticipant.Status.ACCEPTED
-        #     )
-        #     ChatParticipant.objects.create(
-        #         chat=chat, user=other_user, status=ChatParticipant.Status.PENDING
-        #     )
-
-            # TODO: once message-request UI exists, this chat stays invisible to both
-            # users (see ChatListView) until other_user accepts.
-            
         
         chat = Chat.objects.create(
                 type=ChatType.DIRECT
@@ -109,10 +114,35 @@ class ChatListView(generics.ListCreateAPIView):
                     status=ChatParticipant.Status.ACCEPTED
                 ) for user in [request.user, other_user]
             )
-
-        print(chat)
-
         return Response(ChatSerializer(chat, context={"request": request}).data, status=status.HTTP_201_CREATED)
+
+class StartDirectChatView(generics.GenericAPIView):
+    """Start or return an existing DM with a user."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChatCreateSerializer
+
+    def post(self, request: Request) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        svc = chat_service(request)
+        dto = ChatCreateDTO(participant_id=serializer.validated_data["participant_id"])
+        
+        
+        try:
+            chat, is_new = svc.start_direct(dto)
+        except ValueError as exc:
+            return Response({"message": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        from rest_framework.exceptions import PermissionDenied as DRFPerm, ValidationError as DRFVal
+        # PermissionDenied / ValidationError are raised by the service and
+        # translated to 4xx by DRF's exception handler automatically.
+        code = status.HTTP_201_CREATED if is_new else status.HTTP_200_OK
+        return Response(
+            {
+                "data": ChatSerializer(chat, context={"request": request}).data,
+                "message": "Chat started" if is_new else "Existing chat returned",
+            }, status=code)
 
 class ChatCreateView(APIView):
     """Start (or return existing) DM room with another user."""
@@ -154,7 +184,35 @@ class ChatCreateView(APIView):
 
         return Response(ChatSerializer(chat, context={"request": request}).data, status=status.HTTP_201_CREATED)
 
+class ChatAcceptView(APIView):
+    """``POST /chats/<chat_id>/accept/``"""
 
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        svc = chat_service(request)
+        chat = svc.accept_chat(ChatActionDTO(chat_id=chat_id))
+        return Response(ChatSerializer(chat, context={"request": request}).data, status=status.HTTP_200_OK)
+
+class ChatDeclineView(APIView):
+    """``POST /chats/<chat_id>/decline/``"""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        svc = chat_service(request)
+        svc.decline_chat(ChatActionDTO(chat_id=chat_id))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ChatLeaveView(APIView):
+    """``POST /chats/<chat_id>/leave/`` — leave a chat you're a member of."""
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, chat_id) -> Response:
+        svc = chat_service(request)
+        svc.leave_chat(chat_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class GroupChatCreateView(APIView):
     """Create a group chat. Creator is admin; all listed members join as ACCEPTED
@@ -215,6 +273,17 @@ class MessageListView(generics.ListAPIView):
         return chat.messages.order_by("created_at")
 
 
+class ChatDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ChatDetailSerializer
+    queryset = Chat.objects.all()
+    lookup_field =  'pk'
+    lookup_url_kwarg = 'chat_id'
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            participants__user=self.request.user
+        )
 
 
 class MessageCreateView(APIView):
@@ -297,12 +366,15 @@ class ChatStartView(APIView):
 
         is_group = len(others) > 1
 
+        from apps.accounts.models.enums import MessageRequestChoice
+        from apps.connections.models import Follow
+        
         with transaction.atomic():
             chat = None
             is_new = True
 
             if not is_group:
-                other_user = others[0]
+                other_user: User = others[0]
 
                 chat = (
                     Chat.objects.filter(type=ChatType.DIRECT, participants__user=request.user)
@@ -322,9 +394,25 @@ class ChatStartView(APIView):
                     status=ChatParticipant.Status.ACCEPTED, is_admin=is_group,
                 )
                 for other in others:
+                    can_message = bool
+
+                    if (other.preferences.message_request_choice == MessageRequestChoice.EVERYONE):
+                        can_message = True
+                        print("everyone: ", can_message)
+                    elif (other.preferences.message_request_choice == MessageRequestChoice.FOLLOWERS):
+                        can_message = Follow.objects.filter(follower=request.user, following=other, status="accepted").exists()
+                        print("follower: ", can_message)
+                    elif (other.preferences.message_request_choice == MessageRequestChoice.MUTUAL):
+                        can_message = Follow.objects.filter(follower=request.user, following=other, status="accepted").exists() and Follow.objects.filter(follower=other, following=request.user, status="accepted").exists()
+                        print("mutual: ", can_message)
+
+
+                    print(can_message, other.preferences.message_request_choice)
+
+                        
                     ChatParticipant.objects.create(
                         chat=chat, user=other,
-                        status=ChatParticipant.Status.ACCEPTED if is_group else ChatParticipant.Status.PENDING,
+                        status=ChatParticipant.Status.ACCEPTED if can_message else ChatParticipant.Status.PENDING,
                     )
 
             message = Message.objects.create(

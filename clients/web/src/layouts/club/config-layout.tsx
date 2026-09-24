@@ -25,12 +25,12 @@ const ClubConfigLayout = () => {
   }
 
   return (
-    <section className="flex flex-col gap-4 max-w-full justify-around pt-6">
-      <CardContent className="flex flex-col md:flex-row gap-4 md:h-[calc(100vh-150px)]">
-        <div className="relative w-full md:w-3/7 pr-4 md:border-r">
+    <section className="flex flex-col gap-4 w-full justify-around pt-6">
+      <CardContent className="flex flex-col lg:flex-row gap-4 md:h-[calc(100vh-150px)] min-w-screen xl:min-w-6xl">
+        <div className="relative w-full md:w-3/7 pr-4 lg:border-r">
           <SideBar menu={clubConfigureMenu} menuParam={slug} className="sticky top-0 left-0" />
         </div>
-        <div className="w-full overflow-hidden">
+        <div className="w-full">
           <Outlet context={{ club }} />
         </div>
       </CardContent>

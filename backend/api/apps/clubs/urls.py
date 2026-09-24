@@ -21,7 +21,7 @@ from apps.clubs.viewss.club.common import (
     ClubMediaUploadView,
 )
 
-from apps.clubs.viewss.membership.common import list_members
+from apps.clubs.viewss.membership.common import list_members, member_detail
 from apps.clubs.viewss.membership.generics import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
@@ -83,9 +83,9 @@ urlpatterns = [
     #     # ==================== MEMBER MANAGEMENT ====================
     path('<uuid:pk>/members/', list_members,
          name='list_members'),    # ---- checked
-    # path('<int:pk>/members/search/', views_members_views.search_members,
-    #      name='search_members'),  # NEW
-    path('<uuid:pk>/members/<uuid:user_id>/', views_members_views.member_detail,
+    path('<int:pk>/members/search/', views_members_views.search_members,
+         name='search_members'),  # NEW
+    path('<uuid:pk>/members/<uuid:user_id>/', member_detail,
          name='member_detail'),  # NEW
     # path('<int:pk>/members/<int:user_id>/role/',
     #      views_members_views.update_member_role, name='update_member_role'),

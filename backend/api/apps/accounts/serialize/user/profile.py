@@ -20,9 +20,12 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar',]
+        fields = ['id', 'username', 'email', 'avatar', 'status']
 
     def get_avatar(self, obj: models.User):
+
+        if  obj.avatar: return obj.avatar
+
         from apps.media.serializers import MediaListSerializer
         media = obj.media.filter(role="avatar").first()
 
@@ -193,14 +196,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return emails
 
     def get_avatar(self, obj: models.User):
-        from apps.media.models import MediaRole
-        from allauth.socialaccount.models import SocialAccount
 
-        social_account = SocialAccount.objects.filter(user=obj).first()
-        if social_account and social_account.extra_data:
-            return social_account.get_avatar_url()
-        # type: ignore
-        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+        if obj.avatar: return obj.avatar
+        # from apps.media.models import MediaRole
+        # from allauth.socialaccount.models import SocialAccount
+
+        # social_account = SocialAccount.objects.filter(user=obj).first()
+        # if social_account and social_account.extra_data:
+        #     return social_account.get_avatar_url()
+            
+        # return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
     def get_media(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer

@@ -26,7 +26,7 @@ const ResponsiveDropDownMenu = (props: DropDownProps) => {
             <>
                 <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
                     <DropdownMenuTrigger render={props.trigger}></DropdownMenuTrigger>
-                    <DropdownMenuContent className={'w-fit'} align='end'>
+                    <DropdownMenuContent className={'w-45'} align='end'>
                         {props.children}
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -37,14 +37,20 @@ const ResponsiveDropDownMenu = (props: DropDownProps) => {
 
     return (
         <>
-            <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
-                <Drawer open={props.open} onOpenChange={props.onOpenChange} showSwipeHandle>
+            <Drawer open={props.open} onOpenChange={props.onOpenChange} showSwipeHandle>
+                <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
                     <DrawerTrigger render={props.trigger}></DrawerTrigger>
                     <DrawerContent className={'bg-background border-t border-[#27272a]'}>
                         {props.children}
                     </DrawerContent>
-                </Drawer>
-            </DropdownMenu>
+                </DropdownMenu>
+            </Drawer>
+            {/* <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
+                <DropdownMenuTrigger render={props.trigger}></DropdownMenuTrigger>
+                <DropdownMenuContent className={'w-fit'} align='end'>
+                    {props.children}
+                </DropdownMenuContent>
+            </DropdownMenu> */}
         </>
     )
 }

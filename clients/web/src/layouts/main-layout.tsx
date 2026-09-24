@@ -27,11 +27,11 @@ const MainLayout: React.FC = () => {
               </Suspense>
             </div>
             <div className="absolute bottom-14 right-5 md:right-20">
-              {/* <Create /> */}
+              <Create />
             </div>
-            <div className="absolute bottom-0 w-full z-50 h-12 md:hidden">
+            {/* <div className="absolute bottom-0 w-full z-50 h-12 md:hidden">
               <BottomBar className="flex h-full" />
-            </div>
+            </div> */}
           </div>
           <Toaster />
         </PageHeaderProvider>

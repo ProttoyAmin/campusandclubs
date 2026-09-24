@@ -97,7 +97,7 @@ def list_members(request, pk):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def member_detail(request, pk, user_id):
+def member_detail(request, pk: str, user_id: str):
     """
     Get detailed information about a specific member
     """

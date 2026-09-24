@@ -1,3 +1,4 @@
+from typing import Optional
 from django.db.models import QuerySet
 import uuid
 from core.repositories import BaseRepository
@@ -17,3 +18,11 @@ class ChatRepository(BaseRepository[Chat]):
             participants__id__in=user_ids,
             club__isnull=True,
         )
+    
+    def get_with_participants(self, chat_id: uuid.UUID) -> Optional[Chat]:
+        return self.get_queryset().filter(id=chat_id).first()
+    
+    def touch_last_message(self, chat: Chat, when) -> Chat:
+        chat.last_message_at = when
+        chat.save(update_fields=["last_message_at", "updated_at"])
+        return chat

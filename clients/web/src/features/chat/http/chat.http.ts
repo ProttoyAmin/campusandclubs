@@ -6,23 +6,16 @@ import type { AxiosResponse } from "axios";
 export type ChatResponse = {
     id: string
     type: string;
+    name: string
     participants: Array<{
         id: string
-        username: string
-        email: string
-        avatar: string
-        professional_email: any
-        profile_picture: any
+        user: UserMinimal
+        status: string;
+        joined_at: string;
+        left_at: string
     }>
     created_at: string
-    last_message: {
-        id: string
-        room: string
-        sender: string
-        sender_username: string
-        content: string
-        created_at: string
-    }
+    last_message: Message
 }
 
 export type Message = {
@@ -33,6 +26,7 @@ export type Message = {
     reply_to: string | null;
     created_at: string
     edited_at: string | null
+    has_user_seen: boolean
 }
 
 export type ChatStartDTO = {
@@ -50,6 +44,11 @@ class ChatHttp extends BaseClient<ChatResponse, any, any> {
         return response;
     }
 
+    async getChatById(chatId: string): Promise<AxiosResponse<ChatResponse>> {
+        const response = await this.client.get<ChatResponse>(`${this.endpoint}chats/${chatId}/`);
+        return response;
+    }
+
     async getChatStart(data: ChatStartDTO) {
         const response = await this.client.post(`${this.endpoint}chats/start/`, data);
         return response;
@@ -62,11 +61,11 @@ class ChatHttp extends BaseClient<ChatResponse, any, any> {
 
     async getChatInbox(chatId: string) {
         const response = await this.client.get<Message[]>(`${this.endpoint}chats/${chatId}/messages/`);
-        return response.data;
+        return response;
     }
 
     async getPendingChat() {
-        const response = await this.client.get<ChatResponse[]>(`${this.endpoint}chats/pending/`);
+        const response = await this.client.get<ChatResponse[]>(`${this.endpoint}chats/requests/`);
         return response.data;
     }
 }

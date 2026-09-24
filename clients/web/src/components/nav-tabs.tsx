@@ -54,7 +54,7 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
               to={link}
               end
               className={`${classes(variant)} ${active && !onlyIcon
-                ? `text-secondary-foreground ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
+                ? `text-secondary-foreground w-fit ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
                 : "text-muted-foreground border-b-2 border-transparent"
                 }`}
             >

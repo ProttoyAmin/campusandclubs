@@ -5,6 +5,7 @@ from .chat.chat_serializers import (
     ChatStartSerializer,
     MessageSendSerializer,
     MessageEditSerializer,
+    ChatAcceptSerializer,
     GroupChatCreateSerializer
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "ChatStartSerializer",
     "GroupChatCreateSerializer",
     "MessageSendSerializer",
-    "MessageEditSerializer"
+    "MessageEditSerializer",
+    "ChatAcceptSerializer"
 ]

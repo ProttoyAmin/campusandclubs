@@ -1,52 +1,45 @@
 import { Avatar, AvatarFallback, AvatarImage, AvatarGroup, AvatarGroupCount } from "design/components/ui/avatar"
 import { type ChatResponse } from "../http/chat.http"
-import { getTimeAgo } from "@/utils/format-date"
+import { getTimeAgo } from "@/utils/format-date";
+import { useLocation } from "react-router-dom";
 
-const ChatBox = ({ chat }: { chat: ChatResponse }) => {
+
+const MAX_VISIBLE = 3;
+
+const ChatBox = ({ chat, currentUserId }: { chat: ChatResponse, currentUserId: string }) => {
+    const location = useLocation()
+    const participants = chat.participants.filter((p) => p.user.id !== currentUserId)
+    console.log(participants);
+
+    const getChatLabel = () => {
+        if (chat.type === "GROUP") return chat.name as string
+        return participants[0]?.user.username as string
+    }
+
     return (
-        <div className='flex items-center gap-4 py-6 px-2 cursor-pointer hover:border-primary transition-all ease-linear hover:bg-card-foreground/5'>
+        <div className={`flex items-center gap-4 py-6 px-2 cursor-pointer hover:border-primary transition-all ease-linear hover:bg-card-foreground/5 ${location.pathname.includes(chat.id) && 'bg-card-foreground/7'}`}>
             {chat?.type === "GROUP" ? (
                 <AvatarGroup>
-                    <Avatar className="" key={chat.participants[0].id}>
-                        <AvatarImage
-                            src={chat.participants[0].avatar ?? undefined}
-                            alt={`${chat.participants[0].username}`}
-                        />
-                        <AvatarFallback className="text-primary text-sm">
-                            {chat.participants[0].username && chat.participants[0].username.length > 0
-                                ? `${chat.participants[0].username.charAt(0).toUpperCase()}`
-                                : "U"}
-                        </AvatarFallback>
-                    </Avatar>
-                    <Avatar className="" key={chat.participants[1]?.id}>
-                        <AvatarImage
-                            src={chat.participants[1]?.avatar ?? undefined}
-                            alt={`${chat.participants[1]?.username}`}
-                        />
-                        <AvatarFallback className="text-primary text-sm">
-                            {chat.participants[1]?.username && chat.participants[1]?.username.length > 0
-                                ? `${chat.participants[1]?.username.charAt(0)}`
-                                : "U"}
-                        </AvatarFallback>
-                    </Avatar>
-                    <AvatarGroupCount>+{chat.participants.length - 2}</AvatarGroupCount>
+                    {participants.slice(0, MAX_VISIBLE).map((p) => (
+                        <Avatar key={p.user.id} size="xl">
+                            <AvatarImage src={p.user.avatar ?? undefined} />
+                            <AvatarFallback>{p.user.username[0]?.toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                    ))}
+                    {participants.length > MAX_VISIBLE && (
+                        <AvatarGroupCount>+{participants.length - MAX_VISIBLE}</AvatarGroupCount>
+                    )}
                 </AvatarGroup>
             ) : (
-                <Avatar className="" key={chat.participants[0]?.id} size="lg">
-                    <AvatarImage
-                        src={chat.participants[0]?.avatar ?? undefined}
-                        alt={`${chat.participants[0]?.username}`}
-                    />
-                    <AvatarFallback className="text-primary text-sm">
-                        {chat.participants[0]?.username && chat.participants[0]?.username.length > 0
-                            ? `${chat.participants[0]?.username.charAt(0).toUpperCase()}`
-                            : "U"}
-                    </AvatarFallback>
+                <Avatar size="xl">
+                    <AvatarImage src={participants[0]?.user.avatar ?? undefined} />
+                    <AvatarFallback>{participants[0]?.user.username[0]?.toUpperCase()}</AvatarFallback>
                 </Avatar>
             )}
-            {/* </>
-            ))} */}
             <div className='flex-1'>
+                <span>
+                    {getChatLabel()}
+                </span>
                 {/* <h3 className='text-sm font-semibold'>{chat?.id}</h3> */}
                 <h3 className='text-sm text-muted-foreground'>{chat.last_message?.content}</h3>
             </div>

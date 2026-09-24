@@ -8,6 +8,7 @@ import type { UserResponse } from "@/features/user/api/user.client";
 import { useSession } from "@/features/auth/hooks";
 import type { AuthSession } from "@/features/auth/services/authentication";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
+import BottomBar from "@/components/bottom-bar";
 
 export type UserProfileLayoutProps = {
   user: UserResponse;
@@ -39,6 +40,9 @@ export const UserProfileLayout: React.FC = () => {
       <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
         <Outlet context={{ user: user.data, currentUser }} />
       </Card>
+      <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+        <BottomBar />
+      </div>
     </section>
   );
 };

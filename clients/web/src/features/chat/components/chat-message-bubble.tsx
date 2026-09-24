@@ -16,8 +16,8 @@ const ChatMessageGroup = ({ messages, isOwn }: ChatMessageGroupProps) => {
             {!isOwn && (
                 <MessageAvatar>
                     <Avatar>
-                        <AvatarImage src={sender.avatar ?? undefined} alt={sender.username} />
-                        <AvatarFallback>{sender.username[0]?.toUpperCase()}</AvatarFallback>
+                        <AvatarImage src={sender?.avatar ?? undefined} alt={sender?.username} />
+                        <AvatarFallback>{sender?.username[0]?.toUpperCase()}</AvatarFallback>
                     </Avatar>
                 </MessageAvatar>
             )}

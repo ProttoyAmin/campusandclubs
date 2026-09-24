@@ -23,7 +23,7 @@ import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
 
 type ProfileUpdateProps = {
-  onSubmit: (data: z.infer<typeof updateProfileSchema>) => void;
+  onSubmit: (data: z.infer<typeof updateProfileSchema>, isDirty?: boolean) => void;
   isPending?: boolean;
 };
 
@@ -47,8 +47,12 @@ const ProfileUpdateForm = (
     { label: "Other", value: "other" },
   ] as const;
 
+  const submit = (values: z.infer<typeof updateProfileSchema>) => {
+    props.onSubmit(values, form.formState.isDirty)
+  }
+
   return (
-    <form id="profile-update-form" onSubmit={form.handleSubmit(props.onSubmit)}>
+    <form id="profile-update-form" onSubmit={form.handleSubmit(submit)}>
       <FieldGroup>
         <div className="flex gap-2">
           <Controller

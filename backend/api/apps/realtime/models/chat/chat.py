@@ -10,6 +10,8 @@ class Chat(models.Model):
     type = models.CharField(max_length=10, choices=ChatType.choices, default=ChatType.DIRECT)
     is_pinned = models.BooleanField(default=False)
     
+    last_message_at = models.DateTimeField(null=True, blank=True, db_index=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

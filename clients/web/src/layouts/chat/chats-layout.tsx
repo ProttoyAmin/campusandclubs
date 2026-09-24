@@ -12,11 +12,12 @@ import { useMediaQuery } from '@/shared/hooks/use-media-query';
 import type { UserMinimal } from '@campus/api';
 import { useParams } from 'react-router-dom';
 import { Spinner } from 'design/components/ui/spinner';
+import BottomBar from '@/components/bottom-bar';
 
 const ChatsLayout = () => {
     const location = useLocation();
     const initialUser = (location.state as { initialUser?: UserMinimal } | null)?.initialUser;
-    const { chats: chatsData } = useChats();
+    const { chats } = useChats();
     const navigate = useNavigate();
     const pageHeader = usePageHeader();
     const sectionId = useSectionId("section-layout", 20);
@@ -27,12 +28,12 @@ const ChatsLayout = () => {
 
 
     if (initialUser && !newChatMatch && !chatDetailMatch) {
-        if (chatsData.isLoading) {
+        if (chats.isLoading) {
             return <Spinner />;
         }
 
-        const existingChat = chatsData.data?.data.find((chat) =>
-            chat.participants.some((user) => user.id === initialUser.id) && chat.type === "DIRECT"
+        const existingChat = chats.data?.data.find((chat) =>
+            chat.participants.some((p) => p.user.id === initialUser.id) && chat.type === "DIRECT"
         );
 
         if (existingChat) {
@@ -65,8 +66,9 @@ const ChatsLayout = () => {
             </div>
 
             <div className="mt-4">
-                {chatsData.data?.data?.length > 0 ? (
-                    <ChatList chats={chatsData.data.data} />
+                {/* <pre>{JSON.stringify(chatsData.data, null, 2)}</pre> */}
+                {chats.data?.data?.length > 0 ? (
+                    <ChatList chats={chats.data?.data} />
                 ) : (
                     <EmptyState
                         title=""
@@ -89,17 +91,15 @@ const ChatsLayout = () => {
                     </div>
                 ) : (
                     <div className="min-h-[calc(100vh-4rem)] h-full">
-                        <div className="flex flex-col gap-4 h-[calc(100vh-4rem)]">
-                            {pageHeader.actions ?? <>
-                                {params.id ? (
-                                    <>{params.id}</>
-                                ) : (
-                                    <>chats</>
-                                )}
-
-                            </>}
-                            <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
+                        <div className="flex flex-col h-[calc(100vh-1rem)]">
+                            {pageHeader.actions}
+                            <Outlet context={{ chats: chats.data?.data ?? [] }} />
                         </div>
+                    </div>
+                )}
+                {!chatDetailMatch && (
+                    <div className="fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+                        <BottomBar />
                     </div>
                 )}
             </section>
@@ -115,10 +115,10 @@ const ChatsLayout = () => {
                 {chatList}
             </div>
 
-            <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-4rem)] max-h-[calc(100vh-1rem)] p-0">
-                <div className="flex flex-col gap-4 h-full overflow-hidden">
+            <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-1rem)] max-h-[calc(100vh-1rem)]">
+                <div className="flex flex-col h-full overflow-hidden">
                     {pageHeader.actions ?? <>chats</>}
-                    <Outlet context={{ chats: chatsData.data?.data ?? [] }} />
+                    <Outlet context={{ chats: chats.data?.data ?? [] }} />
                 </div>
             </div>
         </section>

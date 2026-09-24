@@ -7,8 +7,15 @@ type ChatOutletContext = {
     chatError: AppError<unknown>;
 };
 
-const useChatOutlet = () => {
-    return useOutletContext<ChatOutletContext>();
+type ChatDetailOutletContext = {
+    chat: ChatResponse | undefined;
+    chatError: AppError<unknown>;
 }
 
-export default useChatOutlet
+export const useDMOutlet = () => {
+    return useOutletContext<ChatDetailOutletContext>();
+}
+
+export const useChatOutlet = () => {
+    return useOutletContext<ChatOutletContext>();
+}

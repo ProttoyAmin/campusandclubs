@@ -287,13 +287,21 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
     total_members = serializers.SerializerMethodField()
     application = serializers.SerializerMethodField()
     is_member = serializers.SerializerMethodField()
+    owner_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'origin', 'about', 'join_mode',
-                  'avatar', 'banner', 'privacy', 'is_member', 'allow_public_posts', 'total_members', 'application'
+        fields = ['id', 'name', 'origin', 'about', 'join_mode', 'owner_details',
+                  'avatar', 'banner', 'privacy', 'is_member', 'allow_public_posts', 'total_members', 'application', 'created_at'
                   ]
         read_only_fields = ['id']
+
+    def get_owner_details(self, obj: Club):
+        from apps.accounts.models import User
+        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        owner: User = obj.owner
+
+        return UserMinimalSerializer(owner).data 
 
     def _get_request(self) -> Request | None:
         return self.context.get('request')

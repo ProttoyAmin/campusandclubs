@@ -58,8 +58,11 @@ export type PostExtended = Post & {
 }
 
 const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableNavigate?: boolean }) => {
+
     const navigate = useNavigate();
     const [liked, setLiked] = useState(!!post.is_liked)
+    const [open, setOpen] = useState<boolean>(false)
+
     const { toggleLike } = usePost(post.id);
     const media: MediaListExtended[] = post.media.sort((a, b) => a.position - b.position)
     return (
@@ -99,12 +102,17 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                             )}
                         </div>
                         <ResponsiveDropDownMenu
+                            open={open}
+                            onOpenChange={setOpen}
                             trigger={<Button variant={"ghost"} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); }}>
                                 <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
                             </Button>}
                         >
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem>First Item</DropdownMenuItem>
+                            <DropdownMenuGroup className={''}>
+                                <DropdownMenuItem className={'p-4'}>Copy link</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4'}>Save</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4'}>Not interested</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4'}>First Item</DropdownMenuItem>
                             </DropdownMenuGroup>
                         </ResponsiveDropDownMenu>
                     </CardDescription>
@@ -129,8 +137,8 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                             return null;
                                     }
                                 })}
-                                <img className="h-90 w-90 object-cover" src={'https://www.superherotoystore.com/cdn/shop/articles/e33c2fa94c03efa06678116f80d62d0d_1c4bccf2-0e38-4f4c-8dcd-f51830857d15_708x.jpg?v=1757494254'} alt={''} />
-                                <img className="h-90 w-90 object-cover" src={'https://images.immediate.co.uk/production/volatile/sites/3/2023/03/goku-dragon-ball-guru-824x490-11b2006-e1697471244240.jpg?quality=90&resize=600,400'} alt={''} />
+                                {/* <img className="h-90 w-90 object-cover" src={'https://www.superherotoystore.com/cdn/shop/articles/e33c2fa94c03efa06678116f80d62d0d_1c4bccf2-0e38-4f4c-8dcd-f51830857d15_708x.jpg?v=1757494254'} alt={''} />
+                                <img className="h-90 w-90 object-cover" src={'https://images.immediate.co.uk/production/volatile/sites/3/2023/03/goku-dragon-ball-guru-824x490-11b2006-e1697471244240.jpg?quality=90&resize=600,400'} alt={''} /> */}
                             </div>
                         ) : null}
                     </CardContent>

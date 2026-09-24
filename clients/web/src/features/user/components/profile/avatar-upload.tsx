@@ -7,7 +7,7 @@ type AvatarUploadProps = {
     currentAvatar?: string | null;
     avatar: File | null;
     setAvatar: React.Dispatch<React.SetStateAction<File | null>>;
-    onSubmit: (avatar: File | null) => void;
+    onSubmit: (avatar: File | null, isDirty?: boolean) => void;
     isPending?: boolean;
 };
 
@@ -66,10 +66,6 @@ export function AvatarUpload({
                 className="hidden"
                 onChange={handleFileChange}
             />
-
-            <button type="button" >
-                Submit
-            </button>
         </div>
     );
 }

@@ -47,13 +47,13 @@ class MediaListSerializer(serializers.ModelSerializer):
         from cloudinary import CloudinaryResource
         file: CloudinaryResource = obj.file
         return {
-            "url": file.url,
+            "url": file.url if file.url else None,
             "public_id": file.public_id,
             "resource_type": file.resource_type,
             "type": file.type,
             "version": file.version,
             "format": file.format,
-            "secure_url": file.source(secure=True)
+            "secure_url": file.source(secure=True) if file.url else None
         }
 
     def get_target(self, obj: Media):
@@ -76,3 +76,5 @@ class MediaListSerializer(serializers.ModelSerializer):
             "id": obj.content_object.id,
             "model": obj.content_object.__class__.__name__
         }
+
+        

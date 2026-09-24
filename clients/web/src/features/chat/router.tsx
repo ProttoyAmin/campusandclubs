@@ -3,6 +3,11 @@ import Chats from "./pages/chats";
 import { routes } from "@/settings/routes";
 import NewChat from "./pages/new-chat";
 import ChatRequests from "./pages/chat-requests";
+import ChatLayout from "@/layouts/chat/chat-layout";
+import React from "react";
+
+
+const ChatInfo = React.lazy(() => import("./pages/chat-info"));
 
 export const chatRoutes = [
     {
@@ -13,7 +18,19 @@ export const chatRoutes = [
     {
         id: "inbox",
         path: routes.chat.inbox,
-        element: <Chat />,
+        element: <ChatLayout />,
+        children: [
+            {
+                index: true,
+                path: routes.chat.inbox,
+                element: <Chat />,
+            },
+            {
+                id: "chat-info",
+                path: routes.chat.info,
+                element: <ChatInfo />
+            }
+        ]
     },
     {
         id: "new",

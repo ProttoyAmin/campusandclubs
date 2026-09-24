@@ -39,4 +39,4 @@ class ListCreateMediaAPIView(ListCreateAPIView):
         output_serializer = MediaListSerializer(media, context=self.get_serializer_context())
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
-        
+

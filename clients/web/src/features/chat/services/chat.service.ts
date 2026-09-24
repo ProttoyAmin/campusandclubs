@@ -8,6 +8,10 @@ class ChatService {
         return this.chatClient.getChatList();
     }
 
+    get(chatId: string) {
+        return this.chatClient.getChatById(chatId);
+    }
+
     start(data: ChatStartDTO) {
         return this.chatClient.getChatStart(data);
     }
@@ -17,8 +21,7 @@ class ChatService {
     }
 
     async messages(chatId: string) {
-        const results = await this.chatClient.getChatInbox(chatId);
-        return results
+        return await this.chatClient.getChatInbox(chatId);
     }
 
     async pending() {

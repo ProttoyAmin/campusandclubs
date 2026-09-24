@@ -27,6 +27,10 @@ import { toast } from "design/components/ui/toast";
 import { Spinner } from "design/components/ui/spinner";
 import { queryClient } from "@/config/query-client";
 
+type CreateProps = {
+  variant: "default" | "icon"
+}
+
 const Create = () => {
   const { data: user } = useMe();
   const { clubs } = useProfile();
@@ -70,7 +74,6 @@ const Create = () => {
       <ResponsiveDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        size='md'
         trigger={
           <Button variant={"outline"} size={"icon-lg"} className={"shadow-2xl"}>
             <PlusIcon className="size-5" />
@@ -106,18 +109,13 @@ const Create = () => {
         showCloseButton={false}
       >
         <div className="flex flex-col gap-4">
-          <div className="flex gap-2 items-center px-4">
+          <div className="flex gap-2 items-center">
             <Avatar size="lg">
               <AvatarImage src={user?.avatar} />
               <AvatarFallback>
                 {user?.username?.[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            {/* <div className="flex flex-col">
-              <div className="text-base">
-                <p className="font-medium">{user?.username}</p>
-              </div>
-            </div> */}
             <ChevronRightIcon className="size-4 text-gray-400" />
             <Combobox
               items={clubOptions}
@@ -131,24 +129,19 @@ const Create = () => {
                 <ComboboxValue>
                   {value.map((id) => {
                     const club = clubOptions.find((club) => club.id === id);
-
                     if (!club) return null;
-
                     return (
                       <ComboboxChip key={club.id}>{club.label}</ComboboxChip>
                     );
                   })}
                 </ComboboxValue>
-
                 <ComboboxChipsInput
                   placeholder={value.length === 0 ? "Club" : ""}
                   className="border-none focus:outline-none focus-visible:ring-transparent"
                 />
               </ComboboxChips>
-
               <ComboboxContent>
                 <ComboboxEmpty>No items found.</ComboboxEmpty>
-
                 <ComboboxList>
                   {(item) => (
                     <ComboboxItem key={item.id} value={item.id}>
@@ -159,7 +152,7 @@ const Create = () => {
               </ComboboxContent>
             </Combobox>
           </div>
-          <div className="flex flex-col gap-2 no-scrollbar overflow-y-auto px-4">
+          <div className="flex flex-col gap-2 no-scrollbar overflow-y-auto">
             <PostCreateForm
               user={{ username: user?.username, avatar: user?.avatar }}
               onSubmit={handleSubmit}

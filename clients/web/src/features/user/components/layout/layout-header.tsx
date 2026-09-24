@@ -18,6 +18,8 @@ import type { AuthSession } from "@/features/auth/services/authentication";
 import ProfileDropdown from "../profile/profile-dropdown";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon, SquareLockIcon } from "@hugeicons/core-free-icons";
+import { uploadProfilePicture } from "@/library/media";
+import React from "react";
 
 const ProfileLayoutHeader = ({
   user,
@@ -27,6 +29,24 @@ const ProfileLayoutHeader = ({
   currentUser: AuthSession;
 }) => {
   const navigate = useNavigate();
+
+  const uploadAvatar = async (avatar: File) => {
+    const payload = {
+      media: avatar,
+      file: avatar,
+      role: "avatar",
+      target_type: "user",
+      object_id: user.id
+    }
+    console.log(payload);
+    const res = await uploadProfilePicture(payload);
+    console.log(res);
+  }
+
+  const getNameLabel = () => {
+    if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`
+    return user.username
+  }
 
   return (
     <>
@@ -55,7 +75,7 @@ const ProfileLayoutHeader = ({
                   <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
                   {user.status === "online" && <AvatarBadge className="bg-green-600 dark:bg-green-800" />}
                 </Avatar>
-                <p className="text-lg">{user.username}</p>
+                <p className="text-lg">{`${getNameLabel()}`}</p>
                 {user.is_private && (
                   <HugeiconsIcon icon={SquareLockIcon} className="size-5 text-muted-foreground" />
                 )}
@@ -68,6 +88,7 @@ const ProfileLayoutHeader = ({
                     trigger={<Button variant={"glass"}>Edit</Button>}
                     title="Edit Profile"
                     data={user as UserProfile}
+                    uploadAvatar={uploadAvatar}
                   />
                 </>
               ) : (

@@ -33,8 +33,8 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     owner_details = serializers.SerializerMethodField()
     total_members = serializers.SerializerMethodField()
-    # post_count = serializers.SerializerMethodField()
-    # event_count = serializers.SerializerMethodField()
+    total_posts = serializers.SerializerMethodField()
+    total_events = serializers.SerializerMethodField()
     user_role = serializers.SerializerMethodField()
     is_member = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
@@ -58,7 +58,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
-            'total_members', 'join_mode', 'status', 'scope', 'category', 'application',
+            'total_members', 'total_posts', 'total_events', 'join_mode', 'status', 'scope', 'category', 'application',
             'user_role', 'is_member', 'is_owner', 'preferences',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
@@ -131,11 +131,11 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     def get_total_members(self, obj: Club) -> int:
         return getattr(obj, 'total_members', obj.members.count())
 
-    # def get_post_count(self, obj: Club) -> int:
-    #     return getattr(obj, 'post_count', obj.total_posts)
+    def get_total_posts(self, obj: Club) -> int:
+        return obj.posts.count()
 
-    # def get_event_count(self, obj: Club) -> int:
-    #     return getattr(obj, 'event_count', obj.total_events)
+    def get_total_events(self, obj: Club) -> int:
+        return obj.events.count()
 
     def get_user_role(self, obj: Club) -> UserRoleDetails | None:
         request = self._get_request()

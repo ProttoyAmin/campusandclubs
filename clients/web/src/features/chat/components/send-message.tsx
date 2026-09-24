@@ -25,7 +25,9 @@ const SendMessage = ({ message, setMessage, sendMessage }: SendMessageProps) => 
 
     return (
         <div className="max-w-full flex gap-2 items-center relative">
-            <Input autoFocus placeholder="Type your message..." className='h-12 rounded-full border-none bg-muted' value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={handleKeyDown} />
+            <Input autoFocus placeholder="Type your message..." className='h-12 rounded-full border-none bg-muted' value={message} onChange={(e) => {
+                setMessage(e.target.value)
+            }} onKeyDown={handleKeyDown} />
             {message && (
                 <>
                     <Button

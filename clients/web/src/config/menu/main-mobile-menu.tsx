@@ -19,7 +19,7 @@ export const MainMobileMenu: (username: string) => MenuItemType[] = (
             id: 1,
             label: "Home",
             icon: <HugeiconsIcon icon={Home01Icon} size={20} />,
-            iconActive: <HugeiconsIcon icon={Home01Icon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />,
+            iconActive: <HugeiconsIcon icon={Home01Icon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />,
             link: () => paths.public.home,
             isActive: (currentPath) => isRouteActive(routes.home, currentPath),
         },
@@ -40,7 +40,7 @@ export const MainMobileMenu: (username: string) => MenuItemType[] = (
             label: "Chats",
             icon: <HugeiconsIcon icon={MessageCircleIcon} size={20} />,
             iconActive: (
-                <HugeiconsIcon icon={MessageCircleIcon} size={20} color="currentColor" strokeWidth={2} stroke="currentColor" fill="currentColor" />
+                <HugeiconsIcon icon={MessageCircleIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
             ),
             link: () => paths.private.chat.chats,
             isActive: (currentPath) =>

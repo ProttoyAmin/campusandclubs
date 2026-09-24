@@ -33,11 +33,16 @@ export const useChats = () => {
 }
 
 export const useChat = (chat_id: string) => {
-    const messages = useQuery
-        ({
-            queryKey: ["chats", chat_id],
-            queryFn: () => chat.messages(chat_id),
-        })
+
+    const chatDetail = useQuery({
+        queryKey: ["chats", chat_id],
+        queryFn: () => chat.get(chat_id),
+    })
+
+    const messagesData = useQuery({
+        queryKey: ["chats", chat_id, "messages"],
+        queryFn: () => chat.messages(chat_id),
+    })
 
     const messageSend = useMutation({
         mutationFn: (data: { content: string }) => chat.message(chat_id, data),
@@ -49,7 +54,8 @@ export const useChat = (chat_id: string) => {
     })
 
     return {
-        messages,
+        chatDetail,
+        messagesData,
         messageSend
     }
 }

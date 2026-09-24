@@ -62,6 +62,20 @@ const ClubLayoutHeader = ({
     });
   };
 
+  const getJoinLabel = () => {
+
+    if (isJoinPending) return "Joining"
+
+    if (club?.is_member) return "Joined"
+
+    //@ts-ignore
+    if (club?.application?.status === "pending") return "Pending"
+
+    if (!club.is_public) return "Ask to join"
+
+    return "Join"
+  }
+
   return (
     <>
       {club && (
@@ -113,14 +127,7 @@ const ClubLayoutHeader = ({
                   <Spinner className="mr-2" data-icon="inline-start" />
                 )}
 
-                {isJoinPending
-                  ? "Joining..."
-                  : club?.is_member
-                    ? "Joined"
-                    //@ts-ignore  
-                    : club?.application?.status === "pending"
-                      ? "Pending"
-                      : "Join"}
+                {getJoinLabel()}
               </Button>
             )}
 
