@@ -40,7 +40,7 @@ const ResponsiveDropDownMenu = (props: DropDownProps) => {
             <Drawer open={props.open} onOpenChange={props.onOpenChange} showSwipeHandle>
                 <DropdownMenu open={props.open} onOpenChange={props.onOpenChange}>
                     <DrawerTrigger render={props.trigger}></DrawerTrigger>
-                    <DrawerContent className={'bg-background border-t border-[#27272a]'}>
+                    <DrawerContent className={'bg-background'}>
                         {props.children}
                     </DrawerContent>
                 </DropdownMenu>

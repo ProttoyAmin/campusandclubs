@@ -10,10 +10,10 @@ import { Card } from "design/components/ui/card";
 import { toast } from "design/components/ui/toast";
 import { useSectionId } from "@/shared/hooks/id";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
-import defaultBanner from "@/assets/4578-dragon-ball-z.png";
-import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
-import { Avatar, AvatarFallback, AvatarImage } from "design/components/ui/avatar";
 import BottomBar from "@/components/bottom-bar";
+import { Avatar, AvatarFallback, AvatarImage } from "design/components/ui/avatar";
+import defaultBanner from "@/assets/4578-dragon-ball-z.png";
+import gokuImage from "@/assets/411912a0598fbae0462b0136c3e978ca.jpg";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -83,9 +83,9 @@ export const ClubMainLayout: React.FC = () => {
   return (
     <section
       id={useSectionId()}
-      className="md:ms-33 flex flex-col gap-4 max-w-full"
+      className="flex flex-col gap-4 max-w-fit justify-around mx-auto"
     >
-      <div className="max-w-3xl w-full">
+      <div className="flex justify-between w-full items-center">
         {pageHeader.actions ?? (
           <>
             <ClubLayoutHeader
@@ -115,11 +115,11 @@ export const ClubMainLayout: React.FC = () => {
           </>
         )}
       </div>
-      <div className="">
-        <Card ref={scrollRef} className="max-w-fit border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+      <div className="w-auto">
+        <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-6rem)] scrollbar-none p-0 shadow-2xl shadow-muted">
           <Outlet context={{ club }} />
         </Card>
-        <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+        <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
           <BottomBar />
         </div>
         {/* <Card className="w-md max-h-fit bg-background p-0 hidden xl:block">
@@ -132,7 +132,7 @@ export const ClubMainLayout: React.FC = () => {
                 e.preventDefault();
               }}
             >
-              <AvatarImage src={GokuImage} alt={club?.name} />
+              <AvatarImage src={gokuImage} alt={club?.name} />
               <AvatarFallback>{club?.name?.[0].toUpperCase()}</AvatarFallback>
             </Avatar>
           </div>

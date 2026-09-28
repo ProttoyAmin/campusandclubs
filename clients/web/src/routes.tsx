@@ -12,6 +12,9 @@ import App from "./App";
 import { chatRoutes } from "./features/chat/router";
 import ChatsLayout from "./layouts/chat/chats-layout";
 
+import NotificationLayout from "./layouts/notification/notification-layout";
+import { notificationRoutes } from "./features/notifications/router";
+
 
 export const routes: RouteObject[] = [
   {
@@ -43,6 +46,11 @@ export const routes: RouteObject[] = [
         element: <ChatsLayout />,
         children: [...chatRoutes],
       },
+      {
+        id: "notification",
+        element: <NotificationLayout />,
+        children: [...notificationRoutes],
+      }
     ]
   },
   {

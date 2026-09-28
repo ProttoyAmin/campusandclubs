@@ -13,7 +13,7 @@ const BottomBar: React.FC<BottomBarProps> = (props) => {
     <header className={`${props.className}`}>
       <NavTabs
         menu={MainMobileMenu(currentUser?.username || '')}
-        className="flex flex-row md:flex-col self-start"
+        className="flex"
       />
     </header>
   );

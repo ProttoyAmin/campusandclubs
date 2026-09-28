@@ -25,6 +25,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
     Image03Icon
 } from "@hugeicons/core-free-icons";
+import { useFormDialog } from "@/shared/hooks/use-form-dialog";
 
 interface PostCreateFormProps {
     user?: {
@@ -36,6 +37,7 @@ interface PostCreateFormProps {
 }
 
 const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
+    const dialog = useFormDialog();
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [media, setMedia] = React.useState<File[] | null>(null);
     const form = useForm({
@@ -45,6 +47,13 @@ const PostCreateForm = ({ user, onSubmit, isPending }: PostCreateFormProps) => {
             content: "",
         },
     });
+
+    console.log("DIRTY  FORM: ", form.formState.isDirty);
+
+    React.useEffect(() => {
+        dialog.registerDirtyChecker(() => form.formState.isDirty);
+        console.log("CHECK DIRTY", dialog.checkDirty());
+    }, [form.formState.isDirty]);
 
     const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;

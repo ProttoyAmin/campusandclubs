@@ -12,7 +12,7 @@ const AuthLayout: React.FC = () => {
   return (
     // <Suspense fallback={<div>Loading...</div>}>
     <Guard>
-      <div className="h-screen flex flex-col justify-center items-center">
+      <div className="h-screen flex flex-col justify-center items-center w-full">
         <h1 className="mb-10 text-primary text-xl font-bold">
           campusandclubs
         </h1>

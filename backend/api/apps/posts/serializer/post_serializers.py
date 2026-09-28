@@ -14,10 +14,11 @@ from apps.media.serializers import MediaListSerializer
 class PostMinimalSerializer(serializers.ModelSerializer):
     id = serializers.CharField()
     content = serializers.CharField()
+    media = MediaListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'content']
+        fields = ['id', 'content', 'media']
 
 
 class PostSerializer(serializers.ModelSerializer):

@@ -1,6 +1,5 @@
 import { useClubOutlet } from "@/features/club/context/club-layout-context";
 import { useMembers } from "@/features/club/hooks/membership.hooks";
-import MemberCard from "@/features/club/components/club/member-card";
 import {
   Avatar,
   AvatarImage,
@@ -8,7 +7,7 @@ import {
 } from "design/components/ui/avatar"
 import EmptyState from "@/shared/components/empty-state";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { UsersRoundIcon } from "@hugeicons/core-free-icons";
+import { MoreVerticalIcon, UsersRoundIcon } from "@hugeicons/core-free-icons";
 import {
   Table,
   TableBody,
@@ -19,6 +18,7 @@ import {
   TableRow,
 } from "design/components/ui/table"
 import { getTimeAgo } from "@/utils/format-date";
+import { Button } from "design/components/ui/button";
 
 const ClubMembersPage = () => {
   const { club } = useClubOutlet();
@@ -27,54 +27,62 @@ const ClubMembersPage = () => {
   if (!data && isLoading) {
     return <>Loading...</>
   }
+
+  if (data?.results?.members.length === 0) {
+    return (
+      <div className="w-full">
+        <EmptyState title="No Members" description="No members joined yet" icon={<HugeiconsIcon icon={UsersRoundIcon} />} />
+      </div>
+    )
+  }
   return (
-    <div className="grid gap-3 grid-cols-1 px-4 min-h-0 overflow-y-auto">
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-      {/* <MemberCard
-            key={member.id}
-            member={member}
-            showActions={club?.is_owner}
-            variant="card"
-          /> */}
-      {data?.results?.members.length > 0 ? (
-        data?.results?.members.map((member) => (
-          <>
-            <Table>
-              <TableCaption>
-                <span className="text-muted-foreground">Showing {data.count} members</span>
-              </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Username</TableHead>
-                  <TableHead>Member since</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Join method</TableHead>
-                  <TableHead className="text-right">Role</TableHead>
-                </TableRow>
-              </TableHeader>
+    <div className="min-h-0 overflow-y-auto">
+      <Table>
+        <TableCaption>
+          <span className="text-muted-foreground">Showing {data.count} members</span>
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-25">Username</TableHead>
+            <TableHead>Member since</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Join method</TableHead>
+            <TableHead className="text-right">Roles</TableHead>
+          </TableRow>
+        </TableHeader>
+        {data?.results?.members.length > 0 ? (
+          data?.results?.members.map((member) => (
+            <>
               <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium flex items-center gap-2.5">
-                    <Avatar>
-                      <AvatarImage src={member.profile_picture_url ?? undefined}></AvatarImage>
-                      <AvatarFallback>{member.username[0].toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    {member.username}
+                <TableRow className="">
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src={member.avatar ?? undefined}></AvatarImage>
+                        <AvatarFallback>{member.username[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      {member.username}
+                    </div>
                   </TableCell>
-                  <TableCell>{getTimeAgo(member.joined_at)}</TableCell>
+                  <TableCell className="text-muted-foreground text-sm">{getTimeAgo(member.joined_at)}</TableCell>
                   <TableCell>{member.email}</TableCell>
                   <TableCell className="text-muted-foreground">Unknown</TableCell>
                   <TableCell className="text-right">{member.primary_role_details?.name}</TableCell>
+                  <TableCell className="text-right p-0">
+                    <Button size="icon-lg" className={'p-0 m-0'} variant="ghost">
+                      <HugeiconsIcon icon={MoreVerticalIcon} />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               </TableBody>
-            </Table>
-          </>
-        ))
-      ) : (
-        <div className="w-full">
-          <EmptyState title="No Members" description="No members joined yet" icon={<HugeiconsIcon icon={UsersRoundIcon} />} />
-        </div>
-      )}
+            </>
+          ))
+        ) : (
+          <div className="w-full">
+            <EmptyState title="No Members" description="No members joined yet" icon={<HugeiconsIcon icon={UsersRoundIcon} />} />
+          </div>
+        )}
+      </Table>
       {/* </Table> */}
     </div>
   );

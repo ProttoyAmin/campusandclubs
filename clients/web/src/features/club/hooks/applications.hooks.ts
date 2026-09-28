@@ -10,19 +10,38 @@ export const useApplications = (clubId: string) => {
     });
 };
 
+export const useApplicationBulkActions = (clubId: string) => {
+    const bulkApplicationsApprove = useMutation({
+        mutationFn: (application_ids: string[]) => club.application.bulkApplicationsApprove(clubId, application_ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["applications", clubId] });
+        },
+    });
+
+    const bulkApplicationsReject = useMutation({
+        mutationFn: (application_ids: string[]) => club.application.bulkApplicationsReject(clubId, application_ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["applications", clubId] });
+        },
+    });
+
+    return { bulkApplicationsApprove, bulkApplicationsReject };
+}
+
 export const useApplication = (clubId: string, applicationID: string) => {
     const application = useQuery({
         queryKey: ["application", clubId, applicationID],
         queryFn: () => club.application.application(clubId, applicationID),
     });
 
-    const approve = useMutation({
+    const approve = (applicationID: string) => useMutation({
         mutationFn: () => club.application.approve(clubId, applicationID),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["applications", clubId] });
         },
     });
-    const reject = useMutation({
+
+    const reject = (applicationID: string) => useMutation({
         mutationFn: () => club.application.reject(clubId, applicationID),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["applications", clubId] });

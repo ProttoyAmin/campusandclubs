@@ -10,15 +10,21 @@ import { usePageHeader } from '@/shared/hooks/use-page-header';
 import React, { useEffect } from 'react';
 import NavigateButtons from '@/shared/components/navigate-buttons';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { paths } from '@/settings/routes';
 
 const PostDetail = () => {
-    const { postId } = useParams();
+    const { username, postId } = useParams();
+    console.log(username);
     const commentFormRef = React.useRef<CommentBoxFormHandle>(null);
     const { retrieve, comments, postComments } = usePost(postId as string);
     const pageHeader = usePageHeader();
     const { data: currentUser } = useMe();
     const location = useLocation();
     const navigate = useNavigate();
+
+    if (retrieve.data && retrieve.data?.author?.username !== username) {
+        navigate(paths.private.user.posts.detail(retrieve.data?.author?.username, retrieve.data?.id), { replace: true });
+    }
 
     useEffect(() => {
         if (retrieve.data) {

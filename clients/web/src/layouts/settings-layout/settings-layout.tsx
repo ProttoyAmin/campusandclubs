@@ -9,6 +9,7 @@ import type { UserProfile } from "@campus/api";
 import { routes } from "@/settings/routes";
 import NavTabs from "@/components/nav-tabs";
 import { APP_NAME } from "@/config/constants";
+import NavigateButtons from "@/shared/components/navigate-buttons";
 
 export interface UserSettingsLayoutProps {
   me: UserProfile;
@@ -33,10 +34,11 @@ const SettingsLayout = () => {
     <>
       {location.pathname === routes.settings.base ? (
         <>
-          <section className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around">
+          <section className="flex flex-col gap-4 max-w-3xl justify-around mx-auto w-full">
             <div className="flex items-center p-2">
               {pageHeader.actions ?? (
                 <div className="flex items-center gap-4">
+                  <NavigateButtons className="md:hidden" hideForward />
                   <h1 className="text-lg font-semibold">Settings</h1>
                 </div>
               )}
@@ -53,7 +55,7 @@ const SettingsLayout = () => {
         </>
       ) : (
         <>
-          <section className="flex md:ms-44 flex-col gap-4 max-w-3xl justify-around">
+          <section className="flex flex-col gap-4 max-w-3xl justify-around mx-auto w-full">
             <div className="flex justify-between items-center p-2">
               {pageHeader.actions}
             </div>

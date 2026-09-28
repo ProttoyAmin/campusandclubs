@@ -33,7 +33,7 @@ const MemberCard = ({
     return (
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={member?.profile_picture_url} />
+          <AvatarImage src={member?.avatar} />
           <AvatarFallback>{member?.username[0]}</AvatarFallback>
         </Avatar>
         <Link to={paths.private.user.profile(member.username)}>
@@ -55,7 +55,7 @@ const MemberCard = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-1">
           <Avatar size="sm">
-            <AvatarImage src={member?.profile_picture_url} />
+            <AvatarImage src={member?.avatar} />
             <AvatarFallback>{member?.username[0]}</AvatarFallback>
           </Avatar>
           <Link to={paths.private.user.profile(member.username)}>

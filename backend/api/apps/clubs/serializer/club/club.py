@@ -288,6 +288,7 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
     application = serializers.SerializerMethodField()
     is_member = serializers.SerializerMethodField()
     owner_details = serializers.SerializerMethodField()
+    origin = serializers.SerializerMethodField()
 
     class Meta:
         model = Club
@@ -295,6 +296,15 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
                   'avatar', 'banner', 'privacy', 'is_member', 'allow_public_posts', 'total_members', 'application', 'created_at'
                   ]
         read_only_fields = ['id']
+
+    def get_origin(self, obj: Club):
+        if obj.origin:
+            return {
+                'id': obj.origin.id,
+                'name': obj.origin.name,
+                'code': obj.origin.code
+            }
+        return "Local"
 
     def get_owner_details(self, obj: Club):
         from apps.accounts.models import User

@@ -20,7 +20,7 @@ function App() {
   const { feed } = useFeed();
 
   return (
-    <section className="max-w-3xl md:ms-44 gap-0">
+    <Card className="max-w-3xl h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
       <div className="md:hidden">
         <Header />
       </div>
@@ -39,18 +39,18 @@ function App() {
           </Link>
         ))}
       </div> */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Create />
-      </div>
+      </div> */}
       {feed?.data?.results.map((post: PostExtended) => (
         <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
           <PostCard post={post} />
         </div>
       ))}
-      <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+      <div className="md:hidden sticky bottom-0 w-full z-50 bg-background">
         <BottomBar />
       </div>
-    </section>
+    </Card>
   );
 }
 

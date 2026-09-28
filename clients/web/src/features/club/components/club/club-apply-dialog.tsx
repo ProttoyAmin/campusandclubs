@@ -11,6 +11,7 @@ import { useApplyToClub } from "../../hooks/club.hooks";
 import { useParams } from "react-router-dom";
 import { toast } from "design/components/ui/toast";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
+import type { AppError } from "@/settings/app/error";
 
 type DialogProps = {
   open: boolean;
@@ -46,6 +47,13 @@ export function ClubApplicationDialog({
           },
         });
       },
+      onError: (error) => {
+        onOpenChange(false);
+        toast.add({
+          title: "Failed",
+          description: error?.response?.data?.detail
+        })
+      }
     });
   };
   return (

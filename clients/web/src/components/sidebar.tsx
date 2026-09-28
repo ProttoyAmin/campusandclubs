@@ -102,7 +102,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
             clubs.map((club: any) => (
               <NavTabs
                 key={club?.id}
-                menu={clubMenu(club?.id, club.name, club.slug)}
+                menu={clubMenu(club?.id, club.avatar, club.slug, club.name)}
                 className="flex flex-row md:flex-col space-y-2 w-full self-start"
               />
             ))}
@@ -125,7 +125,7 @@ const SideBar: React.FC<SideBarProps> = (props) => {
     <header className={`${props.className}`}>
       <NavTabs
         menu={props.menu ? props.menu(props.menuParam) : []}
-        className="flex flex-row md:flex-col space-y-2 self-start"
+        className="flex flex-col space-y-2 w-full self-start"
       />
     </header>
   );

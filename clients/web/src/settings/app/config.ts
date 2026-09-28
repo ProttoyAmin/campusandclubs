@@ -57,7 +57,10 @@ export const config = {
         base: "realtime/",
         chatList: "realtime/chats/",
         chatStart: "realtime/chats/start/",
-      }
+      },
+      notification: {
+        base: "notifications/",
+      },
     },
   },
   // Add more configuration options as needed

@@ -1,6 +1,6 @@
 # apps/notifications/admin.py
 from django.contrib import admin
-from .models import Notification, NotificationActor, NotificationTarget, NotificationDelivery
+from .models import Notification, NotificationActor, NotificationDelivery
 
 
 class NotificationActorInline(admin.TabularInline):
@@ -9,9 +9,9 @@ class NotificationActorInline(admin.TabularInline):
     raw_id_fields = ['actor']
 
 
-class NotificationTargetInline(admin.TabularInline):
-    model = NotificationTarget
-    extra = 0
+# class NotificationTargetInline(admin.TabularInline):
+#     model = NotificationTarget
+#     extra = 0
 
 
 class NotificationDeliveryInline(admin.TabularInline):
@@ -27,8 +27,7 @@ class NotificationAdmin(admin.ModelAdmin):
     search_fields = ['recipient__username', 'description']
     raw_id_fields = ['recipient']
     readonly_fields = ['id', 'created_at']
-    inlines = [NotificationActorInline,
-               NotificationTargetInline, NotificationDeliveryInline]
+    inlines = [NotificationActorInline, NotificationDeliveryInline]
     date_hierarchy = 'created_at'
     ordering = ['-created_at']
 
@@ -40,11 +39,11 @@ class NotificationActorAdmin(admin.ModelAdmin):
     search_fields = ['actor__username']
 
 
-@admin.register(NotificationTarget)
-class NotificationTargetAdmin(admin.ModelAdmin):
-    list_display = ['id', 'notification', 'content_type', 'object_id']
-    raw_id_fields = ['notification']
-    list_filter = ['content_type']
+# @admin.register(NotificationTarget)
+# class NotificationTargetAdmin(admin.ModelAdmin):
+#     list_display = ['id', 'notification', 'content_type', 'object_id']
+#     raw_id_fields = ['notification']
+#     list_filter = ['content_type']
 
 
 @admin.register(NotificationDelivery)

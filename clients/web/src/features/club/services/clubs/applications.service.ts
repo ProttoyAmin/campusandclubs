@@ -21,6 +21,16 @@ export class ClubApplicationsService {
         return response.data;
     }
 
+    async bulkApplicationsApprove(clubId: string, application_ids: string[]) {
+        const response = await this.applicationClient.bulkApplicationsApprove(clubId, application_ids);
+        return response.data;
+    }
+
+    async bulkApplicationsReject(clubId: string, application_ids: string[]) {
+        const response = await this.applicationClient.bulkApplicationsReject(clubId, application_ids);
+        return response.data;
+    }
+
     async reject(clubId: string, applicationID: string) {
         const response = await this.applicationClient.rejectApplication(clubId, applicationID);
         return response.data;

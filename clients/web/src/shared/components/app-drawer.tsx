@@ -24,7 +24,7 @@ const AppDrawer = ({ open, onOpenChange, trigger, children, title, description, 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection='left'>
             <DrawerTrigger render={trigger} />
-            <DrawerContent className={'bg-background border-t border-[#27272a]'}>
+            <DrawerContent className={'bg-background'}>
                 <DrawerHeader className="pb-4">
                     <DrawerTitle>{title}</DrawerTitle>
                     <DrawerDescription>{description}</DrawerDescription>

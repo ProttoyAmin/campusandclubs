@@ -9,15 +9,14 @@ class MembershipApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipApplication
         fields = ['id', 'club', 'applicant', 'message', 'status', 'created_at']
-
-
+    
 
 class MembershipSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         source='user.username', read_only=True)
     email = serializers.EmailField(source='user.email', read_only=True)
     user_id = serializers.UUIDField(source='user.id', read_only=True)
-    profile_picture_url = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
 
     # CHANGE: roles is now a list
     roles = serializers.PrimaryKeyRelatedField(
@@ -38,7 +37,7 @@ class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = [
-            'id', 'user_id', 'username', 'email', 'profile_picture_url',
+            'id', 'user_id', 'username', 'email', 'avatar',
             'roles', 'role_details', 'role_names',
             'primary_role', 'primary_role_details', 'joined_at'
         ]
@@ -46,10 +45,9 @@ class MembershipSerializer(serializers.ModelSerializer):
     def _get_request(self)-> Request | None:
         return self.context.get('request')
 
-    def get_profile_picture_url(self, obj):
-        request = self._get_request()
-        if obj.user.profile_picture:
-            return request.build_absolute_uri(obj.user.profile_picture.url)
+    def get_avatar(self, obj: Membership):
+        if obj.user.avatar:
+            return obj.user.avatar
         return None
 
     def get_role_names(self, obj):

@@ -4,6 +4,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 
+class FollowStatus(models.TextChoices):
+    PENDING = 'pending', 'Pending'
+    ACCEPTED = 'accepted', 'Accepted'
+    BLOCKED = 'blocked', 'Blocked'
+    RESTRICTED = 'restricted', 'Restricted'
+
 class Follow(models.Model):
     """
     Optimized Follow relationship model
@@ -11,11 +17,6 @@ class Follow(models.Model):
     - Includes status for handling private accounts (pending/accepted)
     - Indexed for fast lookups
     """
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('blocked', 'Blocked'),
-    ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     
@@ -37,8 +38,8 @@ class Follow(models.Model):
     
     status = models.CharField(
         max_length=10,
-        choices=STATUS_CHOICES,
-        default='accepted'
+        choices=FollowStatus,
+        default=FollowStatus.ACCEPTED
     )
     
     created_at = models.DateTimeField(auto_now_add=True)

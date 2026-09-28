@@ -22,6 +22,8 @@ const Requests = React.lazy(
   () => import("./pages/private/config-club/requests-page"),
 );
 
+const Submissions = React.lazy(() => import("./pages/private/config-club/submissions/index"))
+
 const Approved = React.lazy(
   () => import("./pages/private/config-club/requests/approved"),
 );
@@ -75,6 +77,11 @@ export const clubRoutes = [
         id: "club-members",
         path: routes.club.private.config.members,
         element: <Members />,
+      },
+      {
+        id: "club-submissions",
+        path: routes.club.private.config.submissions,
+        element: <Submissions />,
       },
       {
         id: "club-requests-layout",

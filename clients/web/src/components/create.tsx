@@ -52,7 +52,7 @@ const Create = () => {
         });
         setDialogOpen(false);
         setValue([]);
-        queryClient.invalidateQueries({ queryKey: ["user", user.username, "posts"] });
+        queryClient.invalidateQueries({ queryKey: ["users", user.username, "posts"] });
       },
       onError(error: any) {
         console.log(error.response.data);

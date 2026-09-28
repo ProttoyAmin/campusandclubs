@@ -32,20 +32,20 @@ const NewChat = () => {
 
 
 
-    useEffect(() => {
-        const id = pageHeader.push(
-            <>
-                <div className="flex items-center gap-4">
-                    <NavigateButtons hideForward />
-                    <h1 className="text-lg font-semibold">New Chat</h1>
-                </div>
-            </>,
-        );
+    // useEffect(() => {
+    //     const id = pageHeader.push(
+    //         <>
+    //             <div className="flex items-center gap-4">
+    //                 <NavigateButtons hideForward />
+    //                 <h1 className="text-lg font-semibold">New Chat</h1>
+    //             </div>
+    //         </>,
+    //     );
 
-        return () => {
-            pageHeader.pop(id)
-        };
-    }, [pageHeader.push, pageHeader.pop]);
+    //     return () => {
+    //         pageHeader.pop(id)
+    //     };
+    // }, [pageHeader.push, pageHeader.pop]);
 
     const hanleSend = () => {
         const data: ChatStartDTO = {
@@ -66,7 +66,10 @@ const NewChat = () => {
     return (
         <>
             <div className="grid grid-rows-[auto_1fr] h-full w-full overflow-hidden p-2">
-                <UsersSearchInput users={users} setUsers={setUsers} selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
+                <div className="flex items-center gap-2.5">
+                    <NavigateButtons hideForward />
+                    <UsersSearchInput users={users} setUsers={setUsers} selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
+                </div>
                 {selectedUsers.length > 0 && (
                     <>
                         <div className="flex flex-col items-center justify-center gap-4">

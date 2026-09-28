@@ -30,12 +30,7 @@ class RoleRepository(BaseRepository[Role]):
             club=club,
             name=DEFAULT_MEMBER_ROLE,
             defaults={
-                "permissions": {
-                    "manage:members": True,
-                    "manage:posts": True,
-                    "manage:events": True,
-                    "manage:settings": True,
-                },
+                "permissions": {},
                 "is_default": True,
                 "color": DEFAULT_MEMBER_COLOR,
             },

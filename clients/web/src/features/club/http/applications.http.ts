@@ -1,9 +1,17 @@
 import type {
   ClubsApplicationsCreateResponse,
   ClubsApplicationsList2Response,
+  MembershipApplicationCreate,
+  UserMinimal,
 } from "@campus/api";
 import { BaseClient } from "@/settings/api";
 import { config } from "@/settings/app";
+
+
+export type Applications = MembershipApplicationCreate & {
+  readonly reviewed_by: UserMinimal
+  readonly created_at: string
+}
 
 export class ClubsApplicationsClient extends BaseClient<
   ClubsApplicationsList2Response,
@@ -15,7 +23,7 @@ export class ClubsApplicationsClient extends BaseClient<
   }
 
   public async list(clubId: string) {
-    return this.client.get<ClubsApplicationsList2Response>(
+    return this.client.get<Applications[]>(
       `${this.endpoint}${clubId}/applications/`,
     );
   }
@@ -31,6 +39,21 @@ export class ClubsApplicationsClient extends BaseClient<
       {},
     );
   }
+
+  public async bulkApplicationsApprove(clubId: string, application_ids: string[]) {
+    return this.client.post<ClubsApplicationsCreateResponse>(
+      `${this.endpoint}${clubId}/applications/bulk-approve/`,
+      { application_ids },
+    );
+  }
+
+  public async bulkApplicationsReject(clubId: string, application_ids: string[]) {
+    return this.client.post<ClubsApplicationsCreateResponse>(
+      `${this.endpoint}${clubId}/applications/bulk-reject/`,
+      { application_ids },
+    );
+  }
+
   public async rejectApplication(clubId: string, applicationId: string) {
     return this.client.post<ClubsApplicationsCreateResponse>(
       `${this.endpoint}${clubId}/applications/${applicationId}/reject/`,

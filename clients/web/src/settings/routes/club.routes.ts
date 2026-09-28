@@ -14,6 +14,7 @@ export const clubRoutes = {
         pendings: "/@/clubs/:slug/config/requests/pendings/",
         rejected: "/@/clubs/:slug/config/requests/rejected/",
       },
+      submissions: "/@/clubs/:slug/config/submissions/",
       settings: "/@/clubs/:slug/config/settings/",
     },
   },

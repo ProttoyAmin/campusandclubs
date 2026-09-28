@@ -64,7 +64,7 @@ const ProfileLayoutHeader = ({
                   e.preventDefault();
                   navigate(paths.private.user.profile(user.username));
                 }}
-                className="flex gap-2 items-center cursor-pointer">
+                className="flex gap-2.5 items-center cursor-pointer">
                 <Avatar
                   size="lg"
                 >
@@ -73,12 +73,15 @@ const ProfileLayoutHeader = ({
                     alt={user.username}
                   />
                   <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
-                  {user.status === "online" && <AvatarBadge className="bg-green-600 dark:bg-green-800" />}
+                  {user.status === "online" && <AvatarBadge className="bg-green-600" />}
                 </Avatar>
-                <p className="text-lg">{`${getNameLabel()}`}</p>
-                {user.is_private && (
-                  <HugeiconsIcon icon={SquareLockIcon} className="size-5 text-muted-foreground" />
-                )}
+                <div className="flex flex-col">
+                  <p className="text-lg flex items-center gap-2">{`${getNameLabel()}`} <span className="">
+                    {user.is_private && (
+                      <HugeiconsIcon icon={SquareLockIcon} className="size-4 text-muted-foreground" />
+                    )}</span></p>
+                  <p className="text-xs text-muted-foreground">{`${user.user_post_count || 0} posts`}</p>
+                </div>
               </div>
             </div>
             <div className="flex gap-2 items-center">
@@ -123,6 +126,7 @@ const ProfileLayoutHeader = ({
                       <CircleEllipsis className="size-5 transition-transform duration-200" />
                     </Button>
                   }
+                  user={user as UserProfile}
                 />
               )}
             </div>

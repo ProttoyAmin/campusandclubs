@@ -26,7 +26,9 @@ from apps.clubs.viewss.membership.generics import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
     MA_WithdrawAPIView,
-    MA_ListCreateAPIView
+    MA_ListCreateAPIView,
+    MA_BulkApproveAPIView,
+    MA_BulkRejectAPIView
 )
 
 
@@ -54,6 +56,10 @@ urlpatterns = [
 
 
     path('<uuid:pk>/applications/', MA_ListCreateAPIView.as_view(),
+         name='application'),      # ---- checked
+    path('<uuid:pk>/applications/bulk-approve/', MA_BulkApproveAPIView.as_view(),
+         name='application'),      # ---- checked
+    path('<uuid:pk>/applications/bulk-reject/', MA_BulkRejectAPIView.as_view(),
          name='application'),      # ---- checked
     path('<uuid:pk>/applications/<uuid:application_pk>/', MA_ListCreateAPIView.as_view(),
          name='application_detail'),      # ---- checked

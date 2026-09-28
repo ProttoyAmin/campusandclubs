@@ -3,6 +3,8 @@ from .application import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
     MA_WithdrawAPIView,
+    MA_BulkApproveAPIView,
+    MA_BulkRejectAPIView
 )
 
 
@@ -11,4 +13,6 @@ __all__ = [
     'MA_ApproveAPIView',
     'MA_RejectAPIView',
     'MA_WithdrawAPIView',
+    'MA_BulkApproveAPIView',
+    'MA_BulkRejectAPIView',
 ]

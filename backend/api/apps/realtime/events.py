@@ -20,6 +20,14 @@ class WSEvent:
 
     # Notifications
     NOTIFICATION = "notification:message"
+    NOTIFICATION_CREATED = "notification:created"
+    NOTIFICATION_UPDATED = "notification:updated"
+    NOTIFICATION_DELETED = "notification:deleted"
+    NOTIFICATION_SEEN = "notification:seen"
+    NOTIFICATION_READ = "notification:read"
+
+    # Posts
+    POST_LIKED = "post:liked"
 
     # Presence
     PRESENCE_UPDATE = "presence:update"
@@ -35,6 +43,10 @@ class ChannelsHandler:
     translates each one into its WSEvent counterpart in send_json."""
 
     CHAT_MESSAGE = "chat.message"
+    
+    NOTIFICATION_CREATED = "notification.created"
+
+    POST_LIKED = "post.liked"
 
 
 def chat_group(chat_id: uuid.UUID) -> str:

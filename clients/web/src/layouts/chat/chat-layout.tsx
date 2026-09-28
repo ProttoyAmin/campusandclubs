@@ -19,7 +19,7 @@ const ChatLayout = () => {
             <ChatLayoutHeader chat={chatDetail.data?.data} currentUserId={currentUserId} />
         );
         return () => pageHeader.pop(id)
-    }, [id, chatDetail.data])
+    }, [id, chatDetail.data, pageHeader.pop, pageHeader.push])
 
     return (
         <div className='h-full'>

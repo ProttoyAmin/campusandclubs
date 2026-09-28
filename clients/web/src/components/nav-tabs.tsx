@@ -1,5 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import type { MenuItemType } from "@/config/menu/main-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "design/components/ui/sidebar";
+import { unLink } from "@/utils/link";
 
 interface NavTabsProps {
   menu: MenuItemType[];
@@ -9,9 +11,10 @@ interface NavTabsProps {
   onlyIcon?: boolean;
   avatar?: string;
   id?: string;
+  showToolTip?: boolean
 }
 
-const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "default", onlyIcon = false }: NavTabsProps) => {
+const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "default", onlyIcon = false, showToolTip = false }: NavTabsProps) => {
   const { pathname } = useLocation();
 
   const getIcon = (item: MenuItemType, active: boolean) => {
@@ -31,11 +34,11 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
   const classes = (variant: string) => {
     switch (variant) {
       case "tab":
-        return "w-full text-sm rounded-t-md p-2 font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary";
+        return "w-full text-sm rounded-t-md p-2 font-medium transition-colors";
       case "link":
         return "";
       case "default":
-        return "border w-full text-sm p-2 rounded-md font-medium transition-colors hover:text-secondary-foreground hover:bg-secondary";
+        return "w-full text-sm rounded-md font-medium transition-colors";
     }
   }
 
@@ -53,12 +56,23 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
               id={`sidebar-nav-${item.id}`}
               to={link}
               end
-              className={`${classes(variant)} ${active && !onlyIcon
-                ? `text-secondary-foreground w-fit ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
-                : "text-muted-foreground border-b-2 border-transparent"
-                }`}
             >
-              <span className={`flex gap-2 items-center  ${itemsClassName}`}>{getIcon(item, active)} {renderLabel(item)}</span>
+              <SidebarMenu>
+                <SidebarMenuItem key={unLink(item.link)}
+                  className={`${classes(variant)} ${active && !onlyIcon
+                    ? `text-secondary-foreground ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
+                    : "text-muted-foreground"
+                    }`}>
+                  <SidebarMenuButton tooltip={showToolTip ? item.label : undefined}>
+                    <span className="flex size-4 shrink-0 items-center justify-center">
+                      {getIcon(item, active)}
+                    </span>
+                    <span className="truncate">
+                      {renderLabel(item)}
+                    </span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
             </NavLink>
           </>
         );

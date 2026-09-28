@@ -1,4 +1,4 @@
-import { Search01Icon, Menu09Icon, MenuTwoLineIcon } from '@hugeicons/core-free-icons';
+import { Search01Icon, Menu09Icon, MenuTwoLineIcon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Button } from 'design/components/ui/button';
 import React from 'react';
@@ -11,8 +11,12 @@ import type { ClubCreateRequestWritable } from '@campus/api';
 import { useClubs, useDepartmentTemplates } from '@/features/club/hooks/club.hooks';
 import { Plus } from 'lucide-react';
 import { useAffiliations } from '@/features/user/hooks/user.hooks';
+import { ModeToggle } from '@/shared/components/mode-toggle';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '@/settings/routes';
 
 const Header = () => {
+    const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = React.useState(false);
     const [createClubOpen, setCreateClubOpen] = React.useState(false);
     const { data: affiliations } = useAffiliations();
@@ -54,20 +58,38 @@ const Header = () => {
                         </Button>
                     }
                 >
-                    <Menu items={SettingsDropdownMenu()} />
+                    <div className="flex flex-col justify-between h-full">
+                        <div>
+                            {/* <Menu items={SettingsDropdownMenu()} /> */}
 
-                    <Button
-                        variant="ghost"
-                        size="default"
-                        className="w-full rounded-md font-medium text-muted-foreground"
-                        onClick={() => {
-                            setMenuOpen(false);
-                            setCreateClubOpen(true);
-                        }}
-                    >
-                        <Plus />
-                        Start a club
-                    </Button>
+                            <Button
+                                variant="ghost"
+                                size="default"
+                                className="w-full rounded-md font-medium text-muted-foreground"
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    setCreateClubOpen(true);
+                                }}
+                            >
+                                <Plus />
+                                Start a club
+                            </Button>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 px-4">
+                            <ModeToggle />
+                            <Button
+                                variant="ghost"
+                                size="default"
+                                className="rounded-md font-medium"
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    navigate(paths.private.settings.base, { replace: true })
+                                }}
+                            >
+                                <HugeiconsIcon icon={Settings01Icon} className='size-5' />
+                            </Button>
+                        </div>
+                    </div>
                 </AppDrawer>
 
                 <h1 className="text-xl font-bold text-accent-foreground">
@@ -81,8 +103,6 @@ const Header = () => {
                     />
                 </Button>
             </header>
-
-            {/* Second overlay lives outside AppDrawer */}
             <ResponsiveDialog
                 open={createClubOpen}
                 onOpenChange={setCreateClubOpen}

@@ -1,4 +1,6 @@
 # apps/notifications/views.py
+from core.policies.utils import current_user
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -13,11 +15,12 @@ from .serializers import (
     NotificationDeliverySerializer,
 )
 from core.pagination import StandardResultsSetPagination
+from apps.notifications.repositories import NotificationRepository
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def list_notifications(request):
+def list_notifications(request: Request):
     """
     Get all notifications for the current user.
 
@@ -27,11 +30,10 @@ def list_notifications(request):
     - is_seen: Filter by seen status (true/false)
     - page: Page number for pagination
     """
-    user = request.user
-    notifications = Notification.objects.filter(recipient=user).prefetch_related(
-        'actors__actor',
-        'targets__content_type',
-    )
+    user = current_user(request)
+
+    repo = NotificationRepository()
+    notifications = repo.get_user_notifications(user)
 
     # Filter by notification type
     notification_type = request.query_params.get('type', None)

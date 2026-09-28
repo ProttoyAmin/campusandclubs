@@ -227,6 +227,17 @@
       opacity: 1;
     }
   }
+  @keyframes slideOutDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
 
   @keyframes slideInDown {
     from {
@@ -237,6 +248,17 @@
     to {
       transform: translateY(0);
       opacity: 1;
+    }
+  }
+  @keyframes slideOutUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
     }
   }
 }

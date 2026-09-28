@@ -7,6 +7,7 @@ import { Outlet } from "react-router-dom";
 import NavTabs from "@/components/nav-tabs";
 import { profileMenu } from "@/config/menu/user/profile-menu";
 import type { AuthSession } from "@/features/auth/services/authentication";
+import BottomBar from "@/components/bottom-bar";
 
 export type ProfileOutletContext = {
   user: UserProfile | PrivateUserResponse;
@@ -38,6 +39,9 @@ const Profile: React.FC = () => {
       <NavTabs menu={profileMenu(user?.username as string)} className="flex items-center" itemsClassName="justify-center" variant="tab" />
     </div>
     <Outlet context={{ user: user, currentUser: currentUser }} />
+    <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
+      <BottomBar />
+    </div>
   </div>;
 };
 

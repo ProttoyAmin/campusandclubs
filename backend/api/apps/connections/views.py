@@ -1,4 +1,6 @@
 # apps/followers/views.py
+from core.policies.utils import current_user
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -22,22 +24,23 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def toggle_follow(request, user_id):
+def toggle_follow(request: Request, user_id: str):
     """
     Follow or unfollow a user (toggle)
     - If target user is private: creates pending request
     - If target user is public: creates accepted follow
     - If already following: unfollows
     """
+    user = current_user(request)
     target_user = get_object_or_404(User, pk=user_id)
     
-    if request.user == target_user:
+    if user.id == target_user.id:
         return Response(
             {'detail': 'You cannot follow yourself.'},
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    if Block.has_blocked_each_other(request.user, target_user):
+    if Block.has_blocked_each_other(user, target_user):
         return Response(
             {'detail': 'Unable to follow this user.'},
             status=status.HTTP_403_FORBIDDEN
@@ -45,7 +48,7 @@ def toggle_follow(request, user_id):
 
     # Check if already following
     existing_follow = Follow.objects.filter(
-        follower=request.user,
+        follower=user,
         following=target_user
     ).first()
 
@@ -62,7 +65,7 @@ def toggle_follow(request, user_id):
     # Notifications are created automatically via signals in apps.notifications.signals
     follow_status = 'pending' if target_user.is_private else 'accepted'
     follow = Follow.objects.create(
-        follower=request.user,
+        follower=user,
         following=target_user,
         status=follow_status
     )

@@ -33,16 +33,13 @@ export const UserProfileLayout: React.FC = () => {
   }, [username, user.data]);
 
   return (
-    <section className="flex md:ms-44 ms-0 flex-col gap-4 max-w-3xl justify-around">
+    <section className="flex flex-col gap-4 max-w-3xl justify-around mx-auto">
       <div className="flex justify-between items-center">
         {pageHeader.actions ?? <ProfileLayoutHeader user={user.data} currentUser={currentUser} />}
       </div>
-      <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+      <Card ref={scrollRef} className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-6rem)] max-h-[calc(100vh-6rem)] scrollbar-none p-0 shadow-2xl shadow-muted">
         <Outlet context={{ user: user.data, currentUser }} />
       </Card>
-      <div className="md:hidden fixed bottom-0 w-full z-50 h-12 w-full bg-background">
-        <BottomBar />
-      </div>
     </section>
   );
 };

@@ -9,7 +9,6 @@ from apps.interactions.models import Like, Comment, Share
 from apps.clubs.models import Role
 import os
 
-
 class PostMediaSerializer(serializers.ModelSerializer):
     """Serializer for PostMedia model"""
     media_url = serializers.ReadOnlyField()

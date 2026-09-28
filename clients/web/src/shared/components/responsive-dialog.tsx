@@ -76,7 +76,7 @@ const ResponsiveDialog = (props: DialogProps) => {
     return (
         <Drawer open={props.open} onOpenChange={props.onOpenChange} showSwipeHandle>
             {props.trigger && <DrawerTrigger render={props.trigger}></DrawerTrigger>}
-            <DrawerContent className={cn('bg-background border-t border-[#27272a]', drawerSizeMap[props.size || ''])}>
+            <DrawerContent className={cn('bg-background', drawerSizeMap[props.size || ''])}>
                 {props.title || props.description ? (
                     <DrawerHeader className="pb-4">
                         {props.title && <DrawerTitle>{props.title}</DrawerTitle>}

@@ -5,7 +5,7 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Message, Chat
 from apps.accounts.models import User
-from .events import WSEvent, chat_group
+from .events import WSEvent, chat_group, notification_group
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,12 +23,16 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
         await self.mark_online()
 
         # Auto-join all chat groups this user belongs to
+        self.user_notification_group = notification_group(self.user.id)
+        await self.channel_layer.group_add(self.user_notification_group, self.channel_name)
+
         chat_ids = await self.get_user_chat_ids()
         for chat_id in chat_ids:
             group_name = chat_group(chat_id)
             await self.channel_layer.group_add(group_name, self.channel_name)
             self.joined_chats.add(str(chat_id))
         logger.info("User %s joined %d chat groups", self.user.id, len(chat_ids))
+        logger.info("User %s joined notification group %s", self.user.id, self.user_notification_group)
 
 
     async def disconnect(self, close_code: int | None):
@@ -87,6 +91,9 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
     # Group event handler — pushes to this specific client -> type: "chat_message"
     async def chat_message(self, event):
         await self.send_json({"type": WSEvent.CHAT_MESSAGE, "data": event["data"]})
+
+    async def notification_created(self, event: dict) -> None:
+        await self.send_json({"type": WSEvent.NOTIFICATION_CREATED, "data": event["data"]})
 
 
     @database_sync_to_async

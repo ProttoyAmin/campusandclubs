@@ -70,6 +70,15 @@ export const paths = {
       replies: routes.activity.comments,
     },
 
+    notification: {
+      base: routes.notification.base,
+      unread: routes.notification.unread,
+      read: routes.notification.read,
+      requests: {
+        base: routes.notification.requests.base,
+      }
+    },
+
     club: {
       list: routes.club.private.list,
       create: routes.club.private.create,
@@ -94,6 +103,11 @@ export const paths = {
           slug,
         }),
 
+      submissions: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.submissions, {
+          slug
+        }),
+
       requests: {
         base: (slug: string) =>
           generateRouteFromPath(routes.club.private.config.requests.base, {
@@ -116,6 +130,7 @@ export const paths = {
         generateRouteFromPath(routes.club.private.config.settings, {
           slug,
         }),
+
     },
 
     chat: {

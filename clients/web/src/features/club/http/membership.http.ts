@@ -26,7 +26,7 @@ export interface Member {
   user_id: string;
   username: string;
   email: string;
-  profile_picture_url: string | null;
+  avatar: string | null;
   roles: string[];
   role_details: RoleDetails[];
   role_names: string[];

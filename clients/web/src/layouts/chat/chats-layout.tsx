@@ -98,7 +98,7 @@ const ChatsLayout = () => {
                     </div>
                 )}
                 {!chatDetailMatch && (
-                    <div className="fixed bottom-0 w-full z-50 h-12 w-full bg-background">
+                    <div className="fixed bottom-0 w-full z-50 h-12 bg-background">
                         <BottomBar />
                     </div>
                 )}
@@ -117,7 +117,7 @@ const ChatsLayout = () => {
 
             <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-1rem)] max-h-[calc(100vh-1rem)]">
                 <div className="flex flex-col h-full overflow-hidden">
-                    {pageHeader.actions ?? <>chats</>}
+                    {pageHeader.actions}
                     <Outlet context={{ chats: chats.data?.data ?? [] }} />
                 </div>
             </div>

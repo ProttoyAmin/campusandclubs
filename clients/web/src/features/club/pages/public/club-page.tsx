@@ -41,8 +41,7 @@ const ClubPage: React.FC = () => {
 
   return (
     <>
-      <CardHeader className="p-0 min-w-3xl">
-
+      <section className="p-0 ">
         <div className="relative h-64">
           {/* TODO: shows banner and implement avatar using club preference later */}
           {club?.banner ? (
@@ -56,11 +55,11 @@ const ClubPage: React.FC = () => {
         <div className="">
           <NavTabs menu={clubProfileMenu(slug)} className="flex items-center justify-center text-center max-w-40" itemsClassName="justify-center" variant="tab" />
         </div>
-      </CardHeader>
-      <CardContent className="p-0">
+      </section>
+      <section className="p-0">
         {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
         <Outlet context={{ club }} />
-      </CardContent>
+      </section>
     </>
   );
 };

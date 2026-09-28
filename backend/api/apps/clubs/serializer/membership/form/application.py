@@ -15,12 +15,13 @@ class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
     message = serializers.CharField(required=True, allow_blank=True, allow_null=True, max_length=500)
 
     applicant = UserMinimalSerializer(read_only=True)
+    reviewed_by = UserMinimalSerializer(read_only=True)
 
     # url = serializers.SerializerMethodField()
 
     class Meta:
         visible_fields = [
-            'id', 'applicant', 'club', 'status', 'reviewed_by', 'reviewed_at',
+            'id', 'applicant', 'club', 'status', 'reviewed_by', 'reviewed_at', 'created_at'
         ]
         model = MembershipApplication
         fields =  visible_fields + ["message"]
@@ -42,4 +43,8 @@ class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
     #         "category": obj.club.category,
     #         "about": obj.club.about,
     #     }
-        
+
+
+
+class MembershipBulkApproveSerializer(serializers.Serializer):
+    application_ids = serializers.ListField(child=serializers.UUIDField(), write_only=True)

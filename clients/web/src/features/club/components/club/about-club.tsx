@@ -20,7 +20,8 @@ const AboutClub = ({ club }: { club: ClubDetail }) => {
             <div className="flex items-center justify-between mt-8">
                 <div className="flex flex-col gap-2 border-b w-full">
                     <p className="text-sm">Origin</p>
-                    <p className='text-sm text-muted-foreground'>{club?.origin ? club?.origin : "Local"}</p>
+                    {/* @ts-ignore  */}
+                    <p className='text-sm text-muted-foreground'>{club?.origin ? `${club?.origin?.name} - ${club?.origin?.code}` : "Local"}</p>
                 </div>
             </div>
 
@@ -41,7 +42,8 @@ const AboutClub = ({ club }: { club: ClubDetail }) => {
                     <p className='text-sm text-muted-foreground'>@{club?.owner_details?.username}</p>
                 </div>
                 <Avatar size="lg">
-                    <AvatarImage src={club?.owner_details?.profile_picture} />
+                    {/* @ts-ignore  */}
+                    <AvatarImage src={club?.owner_details?.avatar || club?.owner_details?.profile_picture || undefined} />
                     <AvatarFallback>{club?.owner_details?.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
             </div>

@@ -269,6 +269,9 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                     autoComplete="off"
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <FieldLabel className="text-xs text-orange-400">
+                    slug will be {`${form.watch('origin') ? `${form.watch('origin')}` : 'local'}-${form.watch('name').toLowerCase().replace(/\s+/g, '-')}`}
+                  </FieldLabel>
                 </Field>
               )}
             />
