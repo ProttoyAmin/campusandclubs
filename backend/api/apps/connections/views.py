@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from .models import Follow, Block, FollowRequest
+from .models import Follow, Block, FollowRequest, FollowStatus
 from . import serializers
 from apps.accounts.models import User
 
@@ -63,7 +63,7 @@ def toggle_follow(request: Request, user_id: str):
 
     # Create new follow
     # Notifications are created automatically via signals in apps.notifications.signals
-    follow_status = 'pending' if target_user.is_private else 'accepted'
+    follow_status = FollowStatus.PENDING if target_user.is_private else FollowStatus.ACCEPTED
     follow = Follow.objects.create(
         follower=user,
         following=target_user,
@@ -71,11 +71,11 @@ def toggle_follow(request: Request, user_id: str):
     )
 
     # Create follow request if pending
-    if follow_status == 'pending':
+    if follow_status == FollowStatus.PENDING:
         FollowRequest.objects.create(follow=follow)
 
     return Response({
-        'detail': f'Follow request sent to {target_user.username}.' if follow_status == 'pending' else f'Now following {target_user.username}.',
+        'detail': f'Follow request sent to {target_user.username}.' if follow_status == FollowStatus.PENDING else f'Now following {target_user.username}.',
         'is_following': True,
         'status': follow_status
     }, status=status.HTTP_201_CREATED)
@@ -83,7 +83,7 @@ def toggle_follow(request: Request, user_id: str):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def follow_status(request, user_id):
+def follow_status(request: Request, user_id: str):
     """
     Get follow status between current user and target user
     """
@@ -95,8 +95,8 @@ def follow_status(request, user_id):
     # Check incoming follow (them -> you)
     received_follow = Follow.objects.filter(follower=target_user, following=request.user).first()
 
-    is_following = sent_follow.status == 'accepted' if sent_follow else False
-    is_followed_by = received_follow.status == 'accepted' if received_follow else False
+    is_following = sent_follow.status == FollowStatus.ACCEPTED if sent_follow else False
+    is_followed_by = received_follow.status == FollowStatus.ACCEPTED if received_follow else False
     is_mutual = is_following and is_followed_by
     
     # follow_status_value represents YOUR follow status toward THEM
@@ -104,16 +104,17 @@ def follow_status(request, user_id):
     
     # Determine the verb based on pending requests
     verb = None
-    if sent_follow and sent_follow.status == 'pending':
+    if sent_follow and sent_follow.status == FollowStatus.PENDING:
         verb = 'sent'
-    elif received_follow and received_follow.status == 'pending':
+    elif received_follow and received_follow.status == FollowStatus.PENDING:
         verb = 'received'
 
     serializer = serializers.FollowStatusSerializer({
         'is_following': is_following,
         'is_followed_by': is_followed_by,
         'is_mutual': is_mutual,
-        'follow_status': follow_status_value,
+        'my_follow_status': follow_status_value,
+        'their_follow_status': received_follow.status if received_follow else None,
         'verb': verb
     })
 
@@ -280,7 +281,7 @@ def pending_follow_requests(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def accept_follow_request(request, user_id):
+def accept_follow_request(request: Request, user_id: str):
     """
     Accept a pending follow request
     """
@@ -289,7 +290,7 @@ def accept_follow_request(request, user_id):
     follow = Follow.objects.filter(
         follower=requester,
         following=request.user,
-        status='pending'
+        status=FollowStatus.PENDING
     ).first()
 
     if not follow:
@@ -298,7 +299,7 @@ def accept_follow_request(request, user_id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    follow.status = 'accepted'
+    follow.status = FollowStatus.ACCEPTED
     follow.save()
 
     return Response({
@@ -308,7 +309,7 @@ def accept_follow_request(request, user_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def reject_follow_request(request, user_id):
+def reject_follow_request(request: Request, user_id: str):
     """
     Reject/delete a pending follow request
     """
@@ -317,7 +318,7 @@ def reject_follow_request(request, user_id):
     follow = Follow.objects.filter(
         follower=requester,
         following=request.user,
-        status='pending'
+        status=FollowStatus.PENDING
     ).first()
 
     if not follow:
@@ -337,7 +338,7 @@ def reject_follow_request(request, user_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def block_user(request, user_id):
+def block_user(request: Request, user_id: str):
     """
     Block a user
     - Removes any existing follow relationships
@@ -368,7 +369,7 @@ def block_user(request, user_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def unblock_user(request, user_id):
+def unblock_user(request: Request, user_id: str):
     """
     Unblock a user
     """
@@ -392,7 +393,7 @@ def unblock_user(request, user_id):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def list_blocked_users(request):
+def list_blocked_users(request: Request):
     """
     Get list of users current user has blocked
     """

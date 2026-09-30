@@ -46,16 +46,50 @@ export const useChat = (chat_id: string) => {
 
     const messageSend = useMutation({
         mutationFn: (data: { content: string }) => chat.message(chat_id, data),
-        // onSuccess: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: ["chats", chat_id],
-        //     })
-        // }
+    })
+
+    const acceptPendingChat = useMutation({
+        mutationFn: (chatId: string) => chat.accept_pending(chatId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["chats", chat_id, "messages"],
+            })
+            queryClient.invalidateQueries({
+                queryKey: ["chats"],
+            })
+            queryClient.invalidateQueries({
+                queryKey: ["chats", "pending"],
+            })
+        }
+    })
+
+    const declinePendingChat = useMutation({
+        mutationFn: (chatId: string) => chat.decline_pending(chatId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["chats", chat_id, "messages"],
+            })
+            queryClient.invalidateQueries({
+                queryKey: ["chats"],
+            })
+        }
+    })
+
+    const leaveChat = useMutation({
+        mutationFn: (chatId: string) => chat.leave(chatId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["chats", "pending"],
+            })
+        }
     })
 
     return {
         chatDetail,
         messagesData,
-        messageSend
+        messageSend,
+        acceptPendingChat,
+        declinePendingChat,
+        leaveChat
     }
 }

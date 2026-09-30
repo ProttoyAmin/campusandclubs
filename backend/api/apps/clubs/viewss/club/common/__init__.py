@@ -11,7 +11,7 @@ from .class_views import (
     LeaveClubView,
     ClubMediaUploadView,
 )
-from .application_forms import AF_ListCreateAPIView
+from .application_forms import AF_ListCreateAPIView, AF_RetrieveAPIView
 
 
 __all__ = [
@@ -25,4 +25,5 @@ __all__ = [
     "LeaveClubView",
     "ClubMediaUploadView",
     "AF_ListCreateAPIView",
+    "AF_RetrieveAPIView",
 ]

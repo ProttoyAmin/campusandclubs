@@ -28,6 +28,19 @@ export class ClubsApplicationsClient extends BaseClient<
     );
   }
 
+  public async getApplicationForms(clubId: string) {
+    return this.client.get(
+      `${this.endpoint}${clubId}/application-forms/`,
+    );
+  }
+
+  public async createApplicationForm(clubId: string, data: any) {
+    return this.client.post(
+      `${this.endpoint}${clubId}/application-forms/`,
+      data,
+    );
+  }
+
   public async fetchApplication(clubId: string, applicationId: string) {
     return this.client.get<ClubsApplicationsCreateResponse>(
       `${this.endpoint}${clubId}/applications/${applicationId}/`,

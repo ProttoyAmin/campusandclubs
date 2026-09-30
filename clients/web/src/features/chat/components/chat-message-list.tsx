@@ -6,6 +6,7 @@ interface ChatMessageListProps {
     messages: MessageT[];
     currentUserId?: string;
     header?: ReactNode;
+    className?: string;
 }
 
 const groupBySender = (messages: MessageT[]): MessageT[][] => {
@@ -21,7 +22,7 @@ const groupBySender = (messages: MessageT[]): MessageT[][] => {
     return groups;
 };
 
-const ChatMessageList = ({ messages, currentUserId, header }: ChatMessageListProps) => {
+const ChatMessageList = ({ messages, currentUserId, header, className }: ChatMessageListProps) => {
     // Container is flex-col-reverse, so the DOM's first child renders at the
     // bottom of the screen. Reversing the array puts the newest message
     // first in the DOM → bottom of screen, oldest last → top, right under `header`.
@@ -29,7 +30,7 @@ const ChatMessageList = ({ messages, currentUserId, header }: ChatMessageListPro
     const groups = groupBySender(messages).reverse();
 
     return (
-        <div className="flex-1 min-h-0 overflow-y-auto flex flex-col-reverse gap-2.5 scrollbar-none">
+        <div className={`flex-1 min-h-0 overflow-y-auto flex flex-col-reverse gap-2.5 scrollbar-none ${className}`}>
             {groups.map((group) => (
                 <ChatMessageBubble key={group[0].id} messages={group} isOwn={group[0].sender.id === currentUserId} />
             ))}

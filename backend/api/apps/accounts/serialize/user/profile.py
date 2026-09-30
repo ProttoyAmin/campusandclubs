@@ -17,10 +17,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserMinimalSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
+    is_followed_by = serializers.SerializerMethodField()
+    follow_status = serializers.SerializerMethodField()
 
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar', 'status']
+        fields = ['id', 'username', 'email', 'avatar', 'status', 'is_following', 'is_followed_by', 'follow_status']
 
     def get_avatar(self, obj: models.User):
 
@@ -34,6 +37,32 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
         serializer = MediaListSerializer(media, context=self.context)
         return serializer.data['file']['url']
+
+    def get_is_following(self, obj: models.User) -> bool | None:
+        """Is current user following this user?"""
+
+        request = self.context.get('request')
+        if request and request.user.is_authenticated and request.user != obj:
+            return obj.is_followed_by(request.user) if hasattr(obj, 'is_followed_by') else False
+        return False
+    
+    def get_is_followed_by(self, obj: models.User) -> bool | None:
+        """Is this user following current user?"""
+
+        request = self.context.get('request')
+        if request and request.user.is_authenticated and request.user != obj:
+            return obj.is_following(request.user) if hasattr(obj, 'is_following') else False
+        return False
+
+    def get_follow_status(self, obj: models.User) -> Any | None:
+        """Get follow status (pending, accepted, None)"""
+
+        from apps.connections.models import Follow
+        request = self.context.get('request')
+        
+        if request and request.user.is_authenticated and request.user != obj:
+            return Follow.get_follow_status(request.user, obj)
+        return None
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

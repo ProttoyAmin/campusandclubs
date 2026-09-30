@@ -65,7 +65,7 @@ const ChatsLayout = () => {
                 </Button>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 h-full">
                 {/* <pre>{JSON.stringify(chatsData.data, null, 2)}</pre> */}
                 {chats.data?.data?.length > 0 ? (
                     <ChatList chats={chats.data?.data} />
@@ -111,7 +111,7 @@ const ChatsLayout = () => {
             id={sectionId}
             className="grid min-h-[calc(100vh-1rem)] grid-cols-12 overflow-hidden"
         >
-            <div className="col-span-3 min-h-[calc(100vh-4rem)] border-r border-l">
+            <div className="col-span-3 max-h-[calc(100vh-1rem)] border-r border-l overflow-y-auto scrollbar-none">
                 {chatList}
             </div>
 

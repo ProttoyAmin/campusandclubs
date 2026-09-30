@@ -2,7 +2,8 @@
 from django.urls import path
 # from . import views
 from .views import (
-     UserNotificationListView
+     UserNotificationListView,
+     UserFollowRequestNotificationsView
 )
 
 app_name = 'notifications'
@@ -41,8 +42,8 @@ urlpatterns = [
 #     path('likes/', views.like_notifications, name='like_notifications'),  # GET
 #     path('comments/', views.comment_notifications,
 #          name='comment_notifications'),  # GET
-#     path('follow-requests/', views.follow_request_notifications,
-#          name='follow_request_notifications'),  # GET
+    path('follow-requests/', UserFollowRequestNotificationsView.as_view(),
+         name='follow_request_notifications'),  # GET
 #     path('follow-accepts/', views.follow_accept_notifications,
 #          name='follow_accept_notifications'),  # GET
 ]

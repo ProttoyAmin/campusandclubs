@@ -19,13 +19,22 @@ class PrivateUserSerializer(serializers.ModelSerializer):
         model = models.User
         fields = [
             "id", "username", "first_name", "last_name", "avatar",
-            "following_count", "follower_count", "user_post_count",
+            "following_count", "follower_count", "user_post_count", "status", "created_at",
             "is_private", "is_following", "follow_status", 'can_view_profile',
         ]
 
     def get_avatar(self, obj: models.User):
-        from apps.media.models import MediaRole
-        return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+
+        if  obj.avatar: return obj.avatar
+
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.filter(role="avatar").first()
+
+        if not media:
+            return obj.avatar
+
+        serializer = MediaListSerializer(media, context=self.context)
+        return serializer.data['file']['url']
 
     def get_is_following(self, obj: models.User) -> bool:
         request = self.context.get("request")

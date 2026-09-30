@@ -1,7 +1,7 @@
 import { useClubOutlet } from '@/features/club/context/club-layout-context';
 import { useApplication, useApplicationBulkActions, useApplications } from '@/features/club/hooks/applications.hooks';
 import React, { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
     Table,
     TableBody,
@@ -26,6 +26,7 @@ import {
 import { ChevronDownIcon } from 'lucide-react';
 import { Checkbox } from "design/components/ui/checkbox"
 import { cn } from 'design/lib/utils';
+import { paths } from '@/settings/routes';
 
 type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected' | 'withdrawn';
 
@@ -73,6 +74,8 @@ const ApplicationSubmissions = () => {
     const { bulkApplicationsApprove, bulkApplicationsReject } = useApplicationBulkActions(club.id)
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [selectedApplicants, setSelectedApplicants] = useState<Set<string>>(new Set());
+    const navigate = useNavigate();
+
 
     const filteredApplications = useMemo(() => {
         if (!applications) return [];
@@ -85,14 +88,21 @@ const ApplicationSubmissions = () => {
     if (applications.length === 0) {
         return (
             <div className="w-full">
-                <EmptyState title="No Applications" description="No membership applications yet" icon={<HugeiconsIcon icon={UserListIcon} />} />
+                <EmptyState title="No Applications" description="No membership applications yet" icon={<HugeiconsIcon icon={UserListIcon} />}>
+                    <Button variant="outline" onClick={() => navigate(paths.private.club.submissions.form(club?.slug))}>
+                        Forms
+                    </Button>
+                </EmptyState>
             </div>
         );
     }
 
     return (
         <div className=''>
-            <div className="flex items-center justify-end pb-4">
+            <div className="flex items-center justify-end gap-4 pb-4">
+                <Button variant="outline" onClick={() => navigate(paths.private.club.submissions.form(club?.slug))}>
+                    Forms
+                </Button>
                 <FilterDropDown value={statusFilter} onChange={setStatusFilter} />
             </div>
             <Table>

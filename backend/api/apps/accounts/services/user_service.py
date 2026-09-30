@@ -24,6 +24,9 @@ class AccountService(BaseService[User, UserRepository]):
     """
     repository_class = UserRepository
 
+    def get_object_or_404(self, user_id: uuid.UUID) -> User:
+        return self.repository.get_queryset().filter(id=user_id).first()
+
     def list_users(self) -> QuerySet[User]:
         return self.repository.get_queryset()
 

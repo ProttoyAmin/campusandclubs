@@ -55,7 +55,7 @@ class ChatService(BaseService[Chat, ChatRepository]):
         self._require_actor()
         chat = self.repository.get_with_participants(dto.chat_id)
 
-        if chat is None or chat.type != ChatType.DIRECT:
+        if chat is None:
             raise ValidationError("Chat not found or is not a direct chat.")
 
         me = self.participants.get(chat.id, self.actor.id)

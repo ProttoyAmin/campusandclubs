@@ -132,7 +132,9 @@ class FollowStatusSerializer(serializers.Serializer):
     is_following = serializers.BooleanField()
     is_followed_by = serializers.BooleanField()
     is_mutual = serializers.BooleanField()
-    follow_status = serializers.CharField(
+    my_follow_status = serializers.CharField(
+        allow_null=True)  # pending, accepted, blocked, None
+    their_follow_status = serializers.CharField(
         allow_null=True)  # pending, accepted, blocked, None
     verb = serializers.CharField()
 

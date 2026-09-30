@@ -17,6 +17,10 @@ export type Notification = {
         first_name: string
         last_name: string
         avatar: string
+        is_following: boolean
+        is_followed_by: boolean
+        status: string
+        follow_status: string
     }
     actor_count: number
     target_ct: string
@@ -24,6 +28,7 @@ export type Notification = {
     target_type: string;
     target_id: string
     notification_url: string
+    preview_url: string
     message: string
     created_at: string
 }
@@ -42,6 +47,11 @@ export class NotificationHttp extends BaseClient<NotificationsPaginated, any, an
 
     async getNotifications() {
         const response = await this.client.get<NotificationsPaginated>(this.endpoint);
+        return response;
+    }
+
+    async getFollowNotifications() {
+        const response = await this.client.get<NotificationsPaginated>(`${this.endpoint}follow-requests/`)
         return response;
     }
 }

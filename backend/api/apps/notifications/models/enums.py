@@ -7,6 +7,7 @@ class NotificationVerb(models.TextChoices):
     COMMENT = 'comment', 'Comment'
     FOLLOW_REQUEST = 'follow_request', 'Follow Request'
     FOLLOW_ACCEPT = 'follow_accept', 'Follow Accept'
+    NEW_FOLLOWER = 'new_follower', 'New Follower'
     MENTION = 'mention', 'Mention'
     SHARE = 'share', 'Share'
     REPLY = 'reply', 'Reply'

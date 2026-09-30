@@ -1,3 +1,4 @@
+from apps.realtime.events import ChannelsHandler
 from typing import Any
 import json
 from django.utils import  timezone
@@ -42,8 +43,31 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
         await self.close(code=1000)
 
     async def receive_json(self, content: dict[str, Any]):
+        import uuid
+
         msg_type = content.get("type")
         logger.info("WS received: type=%s content=%s", msg_type, content)
+
+        if msg_type == WSEvent.CHAT_TYPING:
+            try:
+                chat_id = uuid.UUID(str(content.get("chat_id")))
+            except (TypeError, ValueError):
+                return
+            if str(chat_id) not in getattr(self, "joined_chats", set()):
+                return
+            is_typing = bool(content.get("is_typing", True))
+            await self.channel_layer.group_send(
+                chat_group(chat_id),
+                {
+                    "type": ChannelsHandler.CHAT_TYPING,
+                    "data": {
+                        "chat_id": str(chat_id),
+                        "user_id": str(self.user.id),
+                        "typer_name": self.user.username,
+                        "is_typing": is_typing,
+                    },
+                },
+            )
 
         # if msg_type == WSEvent.CHAT_JOIN:
         #     await self.handle_join(content["chat_id"])
@@ -91,6 +115,12 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
     # Group event handler — pushes to this specific client -> type: "chat_message"
     async def chat_message(self, event):
         await self.send_json({"type": WSEvent.CHAT_MESSAGE, "data": event["data"]})
+
+    async def chat_typing(self, event):
+        # Don't echo the typing event back to the sender
+        if event["data"].get("user_id") == str(self.user.id):
+            return
+        await self.send_json({"type": WSEvent.CHAT_TYPING, "data": event["data"]})
 
     async def notification_created(self, event: dict) -> None:
         await self.send_json({"type": WSEvent.NOTIFICATION_CREATED, "data": event["data"]})

@@ -103,10 +103,16 @@ export const paths = {
           slug,
         }),
 
-      submissions: (slug: string) =>
-        generateRouteFromPath(routes.club.private.config.submissions, {
-          slug
-        }),
+      submissions: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.submissions.base, {
+            slug
+          }),
+        form: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.submissions.form, {
+            slug
+          }),
+      },
 
       requests: {
         base: (slug: string) =>

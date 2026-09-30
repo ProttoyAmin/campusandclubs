@@ -140,6 +140,11 @@
     @apply hidden;
   } */
 
+  ::selection {
+    background-color: oklch(62.067% 0.01796 285.816);
+    color: oklch(100% 0 0);
+  }
+
   @keyframes menuIn {
     from {
       opacity: 0;

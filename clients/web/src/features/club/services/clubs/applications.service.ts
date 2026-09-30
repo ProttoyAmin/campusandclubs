@@ -36,6 +36,15 @@ export class ClubApplicationsService {
         return response.data;
     }
 
+    async application_forms(clubId: string) {
+        const response = await this.applicationClient.getApplicationForms(clubId);
+        return response.data;
+    }
+
+    async create_application_form(clubId: string, data: any) {
+        const response = await this.applicationClient.createApplicationForm(clubId, data);
+        return response.data;
+    }
 
 }
 

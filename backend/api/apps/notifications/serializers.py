@@ -231,6 +231,7 @@ class NotificationListSerializer(serializers.ModelSerializer):
     target_preview = serializers.SerializerMethodField()
     # target_post_id = serializers.SerializerMethodField()
     notification_url = serializers.SerializerMethodField()
+    preview_url = serializers.SerializerMethodField()
     message = serializers.SerializerMethodField()
 
     class Meta:
@@ -240,20 +241,15 @@ class NotificationListSerializer(serializers.ModelSerializer):
             'primary_actor', 'actor_count', 'target_ct', 'target_preview', 'target_id',
             # 'target_type', 'target_id', 'target_post_id', 'target_preview', 
             'target_type',
-            'notification_url', 'message', 'created_at'
+            'notification_url', 'preview_url', 'message', 'created_at'
         ]
 
     def get_primary_actor(self, obj):
         """Get the primary (most recent) actor"""
+        from apps.accounts.serialize.user.profile import UserMinimalSerializer
         actor = obj.actors.first()
         if actor:
-            return {
-                'id': actor.actor.id,
-                'username': actor.actor.username,
-                'first_name': actor.actor.first_name,
-                'last_name': actor.actor.last_name,
-                'avatar': self._get_avatar(actor.actor),
-            }
+            return UserMinimalSerializer(actor.actor, context=self.context).data
         return None
 
     def _get_avatar(self, user):
@@ -411,6 +407,11 @@ class NotificationListSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(f'/api/v1/notifications/{obj.id}/')
         return None
+
+    def get_preview_url(self, obj: Notification):
+        from django.conf import settings
+        
+        return f"{settings.FRONTEND_URL}/@/{obj.recipient.username}/posts/{obj.target_id}/"
 
     def get_message(self, obj):
         """

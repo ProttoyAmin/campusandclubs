@@ -35,9 +35,9 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <HugeiconsIcon icon={FolderUploadIcon} size={18} />
       ),
-      link: () => paths.private.club.submissions(slug),
+      link: () => paths.private.club.submissions.base(slug),
       isActive: (currentPath) =>
-        isRouteActive(routes.club.private.config.submissions, currentPath),
+        isRouteActive(routes.club.private.config.submissions.base, currentPath),
     },
     // {
     //   id: 4,

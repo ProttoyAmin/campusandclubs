@@ -87,6 +87,18 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
     props.onSubmit(data);
   }, [props.onSubmit]);
 
+  const getOriginLabel = React.useCallback((origin: string) => {
+    return props.affiliations?.find(
+      (affiliation) => affiliation.institute?.id === origin
+    )?.institute?.name;
+  }, [props.affiliations]);
+
+  const getOriginCode = React.useCallback((origin: string) => {
+    return props.affiliations?.find(
+      (affiliation) => affiliation.institute?.id === origin
+    )?.institute?.code;
+  }, [props.affiliations]);
+
   const renderStepContent = React.useCallback(() => {
     switch (step) {
       case 1:
@@ -110,13 +122,17 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                       aria-invalid={fieldState.invalid}
                       className="min-w-30"
                     >
-                      <SelectValue placeholder="Select" />
+                      <SelectValue placeholder="Select">
+                        {
+                          getOriginLabel(field.value)
+                        }
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {props.affiliations.length > 1 && <SelectSeparator />}
                       {props.affiliations?.map((affiliation) => (
-                        <SelectItem key={affiliation.id} value={affiliation.institute?.id} >
-                          {`${formatLabel(affiliation.institute.name)} (${affiliation.institute.code})`}
+                        <SelectItem key={affiliation.id} value={affiliation.institute?.id}>
+                          {`${formatLabel(affiliation.institute?.name)} (${affiliation.institute?.code})`}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -126,11 +142,11 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                       <FieldLabel className="text-xs text-orange-400">
                         You need to join an institute to create a club with an origin. You can claim one from the settings page.
                       </FieldLabel>
-                      <FieldLabel className="text-xs text-orange-400">
-                        Clubs with no origin will be treated as a Local club.
-                      </FieldLabel>
                     </>
                   )}
+                  <FieldLabel className="text-xs text-orange-400">
+                    Clubs with no origin will be treated as a Local club.
+                  </FieldLabel>
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
@@ -270,7 +286,7 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   <FieldLabel className="text-xs text-orange-400">
-                    slug will be {`${form.watch('origin') ? `${form.watch('origin')}` : 'local'}-${form.watch('name').toLowerCase().replace(/\s+/g, '-')}`}
+                    slug will be {`${getOriginCode(form.watch("origin")).toLowerCase()}-${form.watch("name").toLowerCase().replace(/\s+/g, "-")}`}
                   </FieldLabel>
                 </Field>
               )}

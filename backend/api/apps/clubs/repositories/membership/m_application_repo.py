@@ -14,7 +14,7 @@ class MembershipApplicationRepository(BaseRepository[MembershipApplication]):
         return super().get_queryset()
 
     def get_membership_applications(self, club: Club) -> QuerySet[MembershipApplication]:
-        return self.get_queryset().filter(club=club).prefetch_related('applicant', 'club', 'membership')
+        return self.get_queryset().filter(club=club).prefetch_related('applicant', 'club', 'membership', 'responses')
 
     def get_application(self, club_id: uuid.UUID, application_id: int) -> MembershipApplication:
         return self.get_queryset().select_related("club", "applicant").get(

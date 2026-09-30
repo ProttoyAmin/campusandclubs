@@ -194,11 +194,71 @@ class NotificationSignalHandlers:
 
     @staticmethod
     def _create_new_follower_notification(follow: Follow) -> Notification:
-        pass
+
+        follower: User = follow.follower
+        following: User = follow.following
+
+        notification = Notification.objects.create(
+            recipient=follower,
+            target_ct=ContentType.objects.get_for_model(follow),
+            target_id=follow.id,
+            verb=NotificationVerb.NEW_FOLLOWER,
+            description=f'started following you.'
+        )
+
+        NotificationActor.objects.create(
+            notification=notification,
+            actor=following
+        )
+
+        NotificationDelivery.objects.create(
+            notification=notification,
+            channel=NotificationChannel.IN_APP,
+            status=NotificationStatus.DELIVERED
+        )
+
+        NotificationSignalHandlers._send_websocket_event(notification)
+
+        return notification
 
     @staticmethod
     def _create_follow_accepted_notification(follow: Follow) -> Notification:
-        pass
+
+        follower: User = follow.follower
+        following: User = follow.following
+
+        existing_notification = Notification.objects.filter(
+            recipient=follower,
+            target_ct=ContentType.objects.get_for_model(follow),
+            target_id=follow.id,
+            verb=NotificationVerb.FOLLOW_REQUEST,
+        ).first()
+
+        if existing_notification:
+            existing_notification.delete()
+
+        notification = Notification.objects.create(
+            recipient=follower,
+            target_ct=ContentType.objects.get_for_model(follow),
+            target_id=follow.id,
+            verb=NotificationVerb.FOLLOW_ACCEPT,
+            description=f'accepted your follow request.'
+        )
+
+        NotificationActor.objects.create(
+            notification=notification,
+            actor=following
+        )
+
+        NotificationDelivery.objects.create(
+            notification=notification,
+            channel=NotificationChannel.IN_APP,
+            status=NotificationStatus.DELIVERED
+        )
+
+        NotificationSignalHandlers._send_websocket_event(notification)
+
+        return notification
 
     @staticmethod
     def _create_post_like_notification(instance: Like, liker: User, post_object: Post) -> Notification:

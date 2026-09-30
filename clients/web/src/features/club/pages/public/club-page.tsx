@@ -41,7 +41,7 @@ const ClubPage: React.FC = () => {
 
   return (
     <>
-      <section className="p-0 ">
+      <section className="p-0">
         <div className="relative h-64">
           {/* TODO: shows banner and implement avatar using club preference later */}
           {club?.banner ? (

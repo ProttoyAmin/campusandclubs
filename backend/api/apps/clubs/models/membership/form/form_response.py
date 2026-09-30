@@ -8,7 +8,7 @@ class MembershipApplicationResponse(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     application = models.ForeignKey(
-        MembershipApplication, on_delete=models.CASCADE, related_name="answers"
+        MembershipApplication, on_delete=models.CASCADE, related_name="responses"
     )
     question = models.ForeignKey(
         FormQuestion, on_delete=models.CASCADE, related_name="answers"

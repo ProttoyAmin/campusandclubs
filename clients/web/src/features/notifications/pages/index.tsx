@@ -13,11 +13,11 @@ const NotificationsPage = () => {
             ) : getNotifications.isError ? (
                 <div className="flex items-center justify-center">Error</div>
             ) : (
-                notificationsData?.map(notification => (
-                    <div key={notification.id} className='grid grid-rows-[auto] gap-2 p-4'>
-                        <NotificationCard notification={notification} />
-                    </div>
-                ))
+                <div className="grid grid-rows-[auto] gap-2 p-4">
+                    {notificationsData?.map(notification => (
+                        <NotificationCard key={notification.id} notification={notification} />
+                    ))}
+                </div>
             )}
         </>
     )

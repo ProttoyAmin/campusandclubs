@@ -7,10 +7,11 @@ import { Input } from 'design/components/ui/input';
 type SendMessageProps = {
     message: string;
     setMessage: React.Dispatch<React.SetStateAction<string>>;
-    sendMessage: () => void
+    sendMessage: () => void;
+    onKeystroke: () => void;
 }
 
-const SendMessage = ({ message, setMessage, sendMessage }: SendMessageProps) => {
+const SendMessage = ({ message, setMessage, sendMessage, onKeystroke }: SendMessageProps) => {
 
     const handleSend = () => {
         sendMessage()
@@ -25,9 +26,18 @@ const SendMessage = ({ message, setMessage, sendMessage }: SendMessageProps) => 
 
     return (
         <div className="max-w-full flex gap-2 items-center relative">
-            <Input autoFocus placeholder="Type your message..." className='h-12 rounded-full border-none bg-muted' value={message} onChange={(e) => {
-                setMessage(e.target.value)
-            }} onKeyDown={handleKeyDown} />
+            <Input
+                autoFocus
+                autoComplete="off"
+                placeholder="Type your message..."
+                className="h-12 rounded-full border-none bg-muted"
+                value={message}
+                onChange={(e) => {
+                    setMessage(e.target.value)
+                    onKeystroke()
+                }}
+                onKeyDown={handleKeyDown}
+            />
             {message && (
                 <>
                     <Button

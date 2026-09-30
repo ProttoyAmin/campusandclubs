@@ -23,6 +23,7 @@ const Requests = React.lazy(
 );
 
 const Submissions = React.lazy(() => import("./pages/private/config-club/submissions/index"))
+const SubmissionForm = React.lazy(() => import("./pages/private/config-club/submissions/submission-form"))
 
 const Approved = React.lazy(
   () => import("./pages/private/config-club/requests/approved"),
@@ -37,12 +38,13 @@ const Rejected = React.lazy(
 );
 
 export const clubRoutes = [
-  {
-    id: "clubs-page-layout",
-    path: routes.club.private.list,
-    element: <ClubsLayout />,
-    children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
-  },
+  // {
+  //   id: "clubs-page-layout",
+  //   path: routes.club.private.list,
+  //   element: <ClubsLayout />,
+  //   children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
+  // },
+  { id: "clubs-base", index: true, element: <Clubs /> },
   {
     id: "club-main", path: routes.club.public.base, element: <ClubPage />,
     children: [
@@ -80,8 +82,13 @@ export const clubRoutes = [
       },
       {
         id: "club-submissions",
-        path: routes.club.private.config.submissions,
+        path: routes.club.private.config.submissions.base,
         element: <Submissions />,
+      },
+      {
+        id: "club-submissions-form",
+        path: routes.club.private.config.submissions.form,
+        element: <SubmissionForm />,
       },
       {
         id: "club-requests-layout",

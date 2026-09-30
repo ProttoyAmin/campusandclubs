@@ -1,3 +1,4 @@
+from apps.clubs.serializer.membership.m_serializers import MembershipApplicationResponseSerializer
 from apps.clubs.repositories import MembershipRepository
 from apps.clubs.models.membership.form.enums import ApplicationStatus
 from django.db.models import QuerySet
@@ -11,7 +12,7 @@ from apps.clubs.serializer.membership.form.application import MembershipBulkAppr
 from core.policies.utils import current_user
 
 from core.views import PolicyMixin, ServiceMixin
-from apps.clubs.models import Club, MembershipApplication
+from apps.clubs.models import Club, MembershipApplication, MembershipApplicationResponse
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.policies.club import ClubPolicy
 
@@ -34,10 +35,10 @@ class MA_ListCreateAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Cl
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         club = generics.get_object_or_404(Club, pk=self.kwargs.get("pk"))
-        decision = self.get_policy(request, club).can_review_application()
+        # decision = self.get_policy(request, club).can_review_application()
 
-        if not decision.allowed:
-            return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
+        # if not decision.allowed:
+        #     return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
         return super().list(request, *args, **kwargs)
 
@@ -219,3 +220,23 @@ class MA_WithdrawAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class MA_ApplicationResponses(generics.ListCreateAPIView):
+    serializer_class = MembershipApplicationResponseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = "pk"
+    lookup_url_kwarg = "application_pk"
+
+    def get_queryset(self) -> QuerySet[MembershipApplicationResponse]:
+        application = generics.get_object_or_404(MembershipApplication, pk=self.kwargs["application_pk"])
+        return MembershipApplicationResponse.objects.filter(application=application).select_related("question")
+
+    def list(self, request: Request, *args, **kwargs) -> Response:
+        responses = self.get_queryset()
+        serializer = self.get_serializer(responses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # def create(self, request: Request, *args, **kwargs) -> Response:
+    #     serializer = self.get_serializer(data=request.data, many=True)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)

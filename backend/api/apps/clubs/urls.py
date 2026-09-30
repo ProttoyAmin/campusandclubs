@@ -19,6 +19,7 @@ from apps.clubs.viewss.club.common import (
     clubs_by_origin,
     club_stats,
     ClubMediaUploadView,
+    AF_RetrieveAPIView,
 )
 
 from apps.clubs.viewss.membership.common import list_members, member_detail
@@ -28,7 +29,8 @@ from apps.clubs.viewss.membership.generics import (
     MA_WithdrawAPIView,
     MA_ListCreateAPIView,
     MA_BulkApproveAPIView,
-    MA_BulkRejectAPIView
+    MA_BulkRejectAPIView,
+    MA_ApplicationResponses
 )
 
 
@@ -54,15 +56,34 @@ urlpatterns = [
          name='leave_club'),    # ---- checked
 
 
+    path('test/manager/', views.SuperuserOnlyStrictTestView.as_view(),
+         name='manager_only_test'),
 
+    #     path('<uuid:pk>/stats/', views.club_stats, name='club_stats'),  # NEW
+
+    #     path('<uuid:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
+
+
+    #     # ==================== CLUB APPLICATIONS ====================
+    path('<uuid:pk>/application-forms/', AF_ListCreateAPIView.as_view(),
+         name='application_forms'),      # ---- checked
+    path('<uuid:pk>/application-forms/<int:form_pk>/', AF_RetrieveAPIView.as_view(),
+         name='application_forms_detail'),      # ---- checked
+         
     path('<uuid:pk>/applications/', MA_ListCreateAPIView.as_view(),
          name='application'),      # ---- checked
+
     path('<uuid:pk>/applications/bulk-approve/', MA_BulkApproveAPIView.as_view(),
          name='application'),      # ---- checked
+
     path('<uuid:pk>/applications/bulk-reject/', MA_BulkRejectAPIView.as_view(),
          name='application'),      # ---- checked
+
     path('<uuid:pk>/applications/<uuid:application_pk>/', MA_ListCreateAPIView.as_view(),
          name='application_detail'),      # ---- checked
+     
+    path('<uuid:pk>/applications/<uuid:application_pk>/responses/', MA_ApplicationResponses.as_view(),
+         name='application_form_detail'),      # ---- checked
 
     path('<uuid:pk>/applications/<uuid:application_pk>/approve/',
          MA_ApproveAPIView.as_view(), name='application_approve'),
@@ -72,18 +93,6 @@ urlpatterns = [
 
     path('<uuid:pk>/applications/<uuid:application_pk>/withdraw/',
          MA_WithdrawAPIView.as_view(), name='application_withdraw'),
-
-    path('test/manager/', views.SuperuserOnlyStrictTestView.as_view(),
-         name='manager_only_test'),
-
-    #     path('<uuid:pk>/stats/', views.club_stats, name='club_stats'),  # NEW
-
-    #     path('<uuid:pk>/upload-media/', views.ClubMediaUploadView.as_view(), name='ClubMediaUploadView'),  # NEW
-
-
-    #     # ==================== APPLICATION FORMS ====================
-    path('<uuid:pk>/application-forms/', AF_ListCreateAPIView.as_view(),
-         name='application_forms'),      # ---- checked
 
 
     #     # ==================== MEMBER MANAGEMENT ====================

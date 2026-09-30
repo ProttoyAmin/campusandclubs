@@ -2,13 +2,13 @@ import { type Notification } from '../http/notifications.http';
 import { Avatar, AvatarFallback, AvatarImage } from 'design/components/ui/avatar';
 import { getTimeAgo } from '@/utils/format-date';
 import { } from "@campus/api";
-import PostCard, { type PostExtended } from '@/features/posts/components/post-card';
+import type { PostExtended } from '@/features/posts/components/post-card';
 import { Link } from 'react-router-dom';
 import { paths } from '@/settings/routes';
 
 const LikedVerb = ({ notification }: { notification: Notification }) => {
     return (
-        <>
+        <Link to={notification.preview_url} className='w-full flex items-start gap-3 hover:bg-muted p-3 rounded-lg'>
             <div className={'flex flex-col h-full justify-start'}>
                 <Avatar size='lg' >
                     <AvatarImage src={notification.primary_actor.avatar} />
@@ -35,7 +35,7 @@ const LikedVerb = ({ notification }: { notification: Notification }) => {
                     </>
                 )}
             </div>
-        </>
+        </Link>
     )
 }
 

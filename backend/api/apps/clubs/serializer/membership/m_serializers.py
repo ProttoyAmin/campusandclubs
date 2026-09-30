@@ -1,5 +1,5 @@
 from rest_framework.request import Request
-from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication
+from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication, MembershipApplicationResponse
 from rest_framework import serializers
 
 from apps.clubs.serializers import RoleSerializer
@@ -9,6 +9,11 @@ class MembershipApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembershipApplication
         fields = ['id', 'club', 'applicant', 'message', 'status', 'created_at']
+
+class MembershipApplicationResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MembershipApplicationResponse
+        fields = ['id', 'application', 'question', 'answer']
     
 
 class MembershipSerializer(serializers.ModelSerializer):

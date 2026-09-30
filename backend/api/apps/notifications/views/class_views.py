@@ -46,3 +46,20 @@ class UserNotificationListView(ServiceMixin[NotificationService], generics.ListA
         serializer = self.get_serializer(self.get_queryset(), many=True, context={'request': request})
         paginated_resopnse = self.paginate_queryset(serializer.data)
         return self.get_paginated_response(paginated_resopnse)
+
+
+class UserFollowRequestNotificationsView(ServiceMixin[NotificationService], generics.ListAPIView):
+    permission_classes = [
+        IsAuthenticated
+    ]
+    service_class = NotificationService
+    serializer_class = NotificationListSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self) -> QuerySet[Notification]:
+        return self.get_service(self.request).list_follow_request_notifications(user=current_user(self.request))
+
+    def list(self, request: Request):
+        serializer = self.get_serializer(self.get_queryset(), many=True, context={'request': request})
+        paginated_resopnse = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(paginated_resopnse)

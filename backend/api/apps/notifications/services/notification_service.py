@@ -11,3 +11,6 @@ class NotificationService(BaseService[Notification, NotificationRepository]):
 
     def list_user_notifications(self, user: User):
         return self.repository.get_user_notifications(user)
+
+    def list_follow_request_notifications(self, user: User):
+        return self.repository.get_follow_request_notifications(user)

@@ -8,6 +8,7 @@ interface ChatMessageGroupProps {
     isOwn: boolean;
 }
 
+
 const ChatMessageGroup = ({ messages, isOwn }: ChatMessageGroupProps) => {
     const sender = messages[0].sender;
 

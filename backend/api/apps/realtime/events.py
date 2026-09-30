@@ -12,6 +12,7 @@ class WSEvent:
     CHAT_MESSAGE_EDIT = "chat:message:edit"
     CHAT_MESSAGE_DELETE = "chat:message:delete"
     CHAT_MESSAGE_SEEN = "chat:message:seen"
+    CHAT_TYPING = "chat:typing"
 
     # Feed
     FEED_SUBSCRIBE = "feed:subscribe"
@@ -43,6 +44,7 @@ class ChannelsHandler:
     translates each one into its WSEvent counterpart in send_json."""
 
     CHAT_MESSAGE = "chat.message"
+    CHAT_TYPING = "chat.typing"
     
     NOTIFICATION_CREATED = "notification.created"
 

@@ -68,6 +68,21 @@ class ChatHttp extends BaseClient<ChatResponse, any, any> {
         const response = await this.client.get<ChatResponse[]>(`${this.endpoint}chats/requests/`);
         return response.data;
     }
+
+    async acceptPendingChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/accept/`);
+        return response;
+    }
+
+    async declinePendingChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/decline/`);
+        return response;
+    }
+
+    async leaveChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/leave/`);
+        return response;
+    }
 }
 
 export const chatHttp = new ChatHttp();

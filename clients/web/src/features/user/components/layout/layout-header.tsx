@@ -38,7 +38,6 @@ const ProfileLayoutHeader = ({
       target_type: "user",
       object_id: user.id
     }
-    console.log(payload);
     const res = await uploadProfilePicture(payload);
     console.log(res);
   }

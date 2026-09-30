@@ -28,10 +28,10 @@ export const useApplicationBulkActions = (clubId: string) => {
     return { bulkApplicationsApprove, bulkApplicationsReject };
 }
 
-export const useApplication = (clubId: string, applicationID: string) => {
-    const application = useQuery({
-        queryKey: ["application", clubId, applicationID],
-        queryFn: () => club.application.application(clubId, applicationID),
+export const useApplication = (clubId: string) => {
+    const application = (applicationId: string) => useQuery({
+        queryKey: ["application", clubId, applicationId],
+        queryFn: () => club.application.application(clubId, applicationId),
     });
 
     const approve = (applicationID: string) => useMutation({
@@ -48,5 +48,17 @@ export const useApplication = (clubId: string, applicationID: string) => {
         },
     });
 
-    return { application, approve, reject };
+    const applicationForms = useQuery({
+        queryKey: ["application_forms", clubId],
+        queryFn: () => club.application.application_forms(clubId),
+    });
+
+    const createApplicationForm = () => useMutation({
+        mutationFn: (data: any) => club.application.create_application_form(clubId, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["application_forms", clubId] });
+        },
+    });
+
+    return { application, approve, reject, applicationForms, createApplicationForm };
 };

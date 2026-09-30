@@ -22,7 +22,7 @@ const AboutProfile = ({ user }: { user: UserProfile }) => {
                 <div className="flex flex-col gap-2 border-b w-full">
                     <p className="text-sm">Affiliation</p>
                     {/* @ts-ignore  */}
-                    <p className='text-sm text-muted-foreground'>{user.affiliations.length > 0 ? user.affiliations[0].institute.name : "N/A"}</p>
+                    <p className='text-sm text-muted-foreground'>{user.affiliations?.length > 0 ? user.affiliations[0].institute.name : "N/A"}</p>
                 </div>
             </div>
 
@@ -36,18 +36,6 @@ const AboutProfile = ({ user }: { user: UserProfile }) => {
                     })}</p>
                 </div>
             </div>
-
-            {/* <div className="flex items-center mt-8">
-                <div className="flex flex-col gap-2 border-b w-full">
-                    <p className="text-sm">Owner</p>
-                    <p className='text-sm text-muted-foreground'>@{club?.owner_details?.username}</p>
-                </div>
-                <Avatar size="lg">
-                    <AvatarImage src={club?.owner_details?.avatar || club?.owner_details?.profile_picture || undefined} />
-                    <AvatarFallback>{club?.owner_details?.username[0].toUpperCase()}</AvatarFallback>
-                </Avatar>
-            </div> */}
-
         </div>
     )
 }

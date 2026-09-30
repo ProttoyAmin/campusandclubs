@@ -20,12 +20,9 @@ import {
 const MainLayout: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-
-
   useScrollRestoration(scrollRef, location.key);
 
   useSocketEvent("notification:created", (data: any) => {
-    console.log(data);
     queryClient.invalidateQueries({
       queryKey: ["notifications"]
     })

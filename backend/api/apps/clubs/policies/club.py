@@ -39,9 +39,8 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         #     return Decision(False, "You are not the owner of this club.")
         
 
-        # TODO: AVOID DB CALL. MOVE THE LOGIC TO REPO LAYER <- SERVICE <- POLICY
         if club.privacy == Visibility.PRIVATE:
-            return Decision(Membership.objects.filter(user=self.actor, club=club).exists(), "This is a private club and you're not a member.")
+            return Decision(self.membership_exists(), "This is a private club and you are not a member.")
         
 
         return Decision(False, "You do not have permission to view this club.")
@@ -111,7 +110,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return False, "This club is exclusive to members of a specific institute."
 
         if club.scope == MembershipScope.CROSS_INSTITUTE:
-            if actor.affiliations.filter(institute=club.origin).exists():
+            if actor.affiliations.count() > 0:
                 return True, ""
             return False, "This club requires a verified institute affiliation."
 
@@ -144,8 +143,11 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return Decision(allowed=False, reason="You don't have permission to review applications.")
 
     def can_create_application(self) -> Decision:
-        if self.membership_exists():
-            return Decision(allowed=False, reason="You are already a member of this club.")
+        if not self.membership_exists():
+            return Decision(allowed=False, reason="You are not a member of this club.")
+
+        if self.actor.id == self.record.owner.id:
+            return Decision(allowed=True, reason="")
 
         membership = self.get_membership()
         if membership and membership.has_permission("manage:members"):

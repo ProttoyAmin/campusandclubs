@@ -28,6 +28,21 @@ class ChatService {
         const results = await this.chatClient.getPendingChat();
         return results
     }
+
+    async accept_pending(chatId: string) {
+        const response = await this.chatClient.acceptPendingChat(chatId);
+        return response;
+    }
+
+    async decline_pending(chatId: string) {
+        const response = await this.chatClient.declinePendingChat(chatId);
+        return response;
+    }
+
+    async leave(chatId: string) {
+        const response = await this.chatClient.leaveChat(chatId);
+        return response;
+    }
 }
 
 export const chat = new ChatService();
