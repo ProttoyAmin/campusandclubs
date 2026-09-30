@@ -1,28 +1,48 @@
-import cloudinary
-from apps.clubs.policies.club import ClubPolicy
-from apps.clubs.dtos.club_create import ClubCreateDTO
-from core.views import PolicyMixin
+from __future__ import annotations
+
 import logging
-from django.contrib.auth.models import AnonymousUser
-from django.utils import timezone
+from typing import Iterable, Optional
+from uuid import UUID
+
+import cloudinary
 from django.contrib.auth.base_user import AbstractBaseUser
-from typing import Optional
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.db.models import QuerySet
-from django.views.generic.dates import timezone_today
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
-from apps.clubs.models import Membership, ApplicationStatus, Role
-from apps.clubs.repositories.form import FormRepository
-from core.services import BaseService
-from apps.clubs.models import Club, Visibility, MembershipApplication, JoinMode
-from apps.clubs.repositories.club.club_repo import ClubRepository
-from apps.clubs.dtos import ClubListFilters
-from apps.clubs.repositories.role.role_repo import RoleRepository
-from apps.clubs.repositories import MembershipRepository, MembershipApplicationRepository
-
 from apps.accounts.models import User
-from django.core.files.uploadedfile import UploadedFile
+from apps.clubs.dtos import ClubListFilters
+from apps.clubs.dtos.club_create import ClubCreateDTO
+from apps.clubs.models import (
+    ApplicationStatus,
+    Club,
+    ClubDepartment,
+    ClubPreference,
+    Form,
+    FormQuestion,
+    FormSubmission,
+    JoinMode,
+    Membership,
+    MembershipApplication,
+    Role,
+    Visibility,
+)
+from apps.clubs.policies.club import ClubPolicy
+from apps.clubs.repositories import (
+    ClubRepository,
+    FormRepository,
+    FormSubmissionRepository,
+    MembershipApplicationRepository,
+    MembershipRepository,
+)
+from apps.clubs.repositories.role.role_repo import RoleRepository
+from core.services import BaseService
+from core.views import PolicyMixin
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +64,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         self.membership_repository = MembershipRepository()
         self.membership_application_repository = MembershipApplicationRepository()
         self.form_repository = FormRepository()
+        self.form_submission_repository = FormSubmissionRepository()
 
     def _get_object(self, pk: int) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
@@ -155,13 +176,134 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
 
         raise ValidationError({"detail": decision.reason})
 
-    def apply_to_club(self, club: Club, user: User, message: str) -> MembershipApplication:
+    def apply_to_club(
+        self,
+        club: Club,
+        user: User,
+        *,
+        message: str | None = None,
+        answers: Iterable[dict] | None = None,
+    ) -> MembershipApplication:
+        """Submit an application to join ``club``.
 
+        If the club has an active form, ``answers`` must be supplied with
+        entries for every required question; answers are validated against
+        the form's question set and persisted onto a new FormSubmission.
+        If there is no form, a freeform ``message`` is allowed.
+        """
         if self.membership_application_repository.application_exists(club, user):
             raise ValidationError(
-                {"detail": "You already have a pending application for this club."})
+                {"detail": "You already have a pending application for this club."}
+            )
 
-        return self.membership_application_repository.create_membership_application(club, user, message)
+        active_form = self.form_repository.get_active_form(club)
+
+        submission: FormSubmission | None = None
+
+        answers_list = list(answers or [])
+        if active_form is not None:
+            submission = self._submit_form(active_form, user, answers_list)
+        else:
+            # Without a form we don't accept structured answers.
+            if any((a.get("answer") or "").strip() for a in answers_list) or any(
+                a.get("question_id") for a in answers_list
+            ):
+                raise ValidationError(
+                    {"answers": "This club does not have an application form."}
+                )
+
+        with transaction.atomic():
+            application = (
+                self.membership_application_repository.create_membership_application(
+                    club,
+                    user,
+                    message=message,
+                    submission=submission,
+                )
+            )
+
+        return application
+
+    # ------------------------------------------------------------------ #
+    # Form management (for club admins)
+    # ------------------------------------------------------------------ #
+    def set_club_form(
+        self,
+        club: Club,
+        *,
+        title: str,
+        questions: list[dict],
+        created_by: User,
+    ) -> Form:
+        """Create (or replace) the club's active application form."""
+        policy = self.get_policy(created_by, club)
+        decision = policy.can_manage_forms()
+        if not decision.allowed:
+            raise ValidationError({"detail": decision.reason})
+        return self.form_repository.create_form_for(
+            target=club,
+            title=title,
+            created_by=created_by,
+            questions=questions,
+        )
+
+    def get_club_form(self, club: Club) -> Form | None:
+        return self.form_repository.get_active_form(club)
+
+    # ------------------------------------------------------------------ #
+    # Helpers
+    # ------------------------------------------------------------------ #
+    def _submit_form(
+        self, form: Form, user: User, raw_answers: list[dict]
+    ) -> FormSubmission:
+        """Validate a user's answers against a form's questions."""
+        if not form.is_active:
+            raise ValidationError(
+                {"detail": "This form is no longer accepting submissions."}
+            )
+
+        questions = {str(q.id): q for q in form.questions.all()}
+        if not questions:
+            raise ValidationError(
+                {"detail": "This form has no questions configured yet."}
+            )
+
+        seen: set[str] = set()
+        answer_pairs: list[tuple[FormQuestion, str]] = []
+        for entry in raw_answers:
+            qid = str(entry.get("question_id", ""))
+            if not qid:
+                raise ValidationError({"answers": "Every answer needs a question_id."})
+            if qid in seen:
+                raise ValidationError(
+                    {"answers": f"Duplicate answer for question {qid}."}
+                )
+            seen.add(qid)
+            question = questions.get(qid)
+            if question is None:
+                raise ValidationError(
+                    {"answers": f"Question {qid} does not belong to this form."}
+                )
+            answer_text = (entry.get("answer") or "").strip()
+            if question.required and not answer_text:
+                raise ValidationError(
+                    {"answers": f"Question '{question.question}' is required."}
+                )
+            answer_pairs.append((question, answer_text))
+
+        # Enforce required questions even if omitted.
+        missing = [
+            q.question for q in questions.values()
+            if q.required and str(q.id) not in seen
+        ]
+        if missing:
+            raise ValidationError(
+                {"answers": f"Missing required questions: {', '.join(missing)}"}
+            )
+
+        return self.form_submission_repository.submit(
+            form=form, respondent=user, answers=answer_pairs
+        )
 
     def get_membership_applications(self, club: Club) -> QuerySet[MembershipApplication]:
         return self.membership_application_repository.get_membership_applications(club)

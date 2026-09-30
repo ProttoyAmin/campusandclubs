@@ -1,14 +1,16 @@
 from rest_framework.request import Request
-from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication
+from apps.clubs.models import Membership, Role
 from rest_framework import serializers
 
 from apps.clubs.serializers import RoleSerializer
 
 
-class MembershipApplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MembershipApplication
-        fields = ['id', 'club', 'applicant', 'message', 'status', 'created_at']
+# MembershipApplicationSerializer lives in
+# apps.clubs.serializer.membership.form.application (richer version with
+# submission + answers). Re-exported here for convenience / backwards compat.
+from apps.clubs.serializer.membership.form.application import (  # noqa: F401
+    MembershipApplicationSerializer,
+)
 
 
 

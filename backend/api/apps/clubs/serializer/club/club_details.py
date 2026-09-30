@@ -44,6 +44,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     is_public = serializers.SerializerMethodField()
     application = serializers.SerializerMethodField()
+    application_form = serializers.SerializerMethodField()
     preferences = ClubPreferenceSerializer()
 
     url = serializers.SerializerMethodField()
@@ -59,6 +60,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
             'total_members', 'join_mode', 'status', 'scope', 'category', 'application',
+            'application_form',
             'user_role', 'is_member', 'is_owner', 'preferences',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
@@ -183,7 +185,16 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         )
 
         if application is None:
-            return {
-                'status': None
-            }
+            return {'status': None}
         return MembershipApplicationSerializer(application).data
+
+    def get_application_form(self, obj: Club):
+        """Active questionnaire (with questions) the applicant must fill
+        out when applying, or ``null`` if the club doesn't require one."""
+        from apps.clubs.repositories import FormRepository
+        from apps.clubs.serializer.forms import FormSerializer
+
+        form = FormRepository().get_active_form(obj)
+        if form is None:
+            return None
+        return FormSerializer(form, context=self.context).data

@@ -8,7 +8,10 @@ from .membership.form import (
     MembershipApplication,
     Form,
     FormQuestion,
-    MembershipApplicationResponse,
+    FormSubmission,
+    FormAnswer,
+    # Kept as alias for any out-of-tree imports; MembershipApplicationResponse
+    # no longer exists as a model — answers live on FormAnswer now.
     ApplicationStatus,
     QuestionType,
 )
@@ -34,10 +37,10 @@ __all__ = [
     'Event',
     'MembershipApplication',
     'Form',
-    'MembershipApplicationResponse',
+    'FormSubmission',
+    'FormAnswer',
     'Category',
     'FormQuestion',
-
 
     'ApplicationStatus',
     'QuestionType',

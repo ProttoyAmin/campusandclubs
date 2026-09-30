@@ -1,7 +1,3 @@
-from .form_serializers import FormSerializers, QuestionSerializers
+from .form_serializers import FormSerializer, QuestionSerializer
 
-
-__all__ = [
-    "FormSerializers",
-    "QuestionSerializers",
-]
+__all__ = ["FormSerializer", "QuestionSerializer"]

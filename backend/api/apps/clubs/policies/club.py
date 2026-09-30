@@ -143,6 +143,10 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to review applications.")
 
+    def can_manage_forms(self) -> Decision:
+        """Owners and members with manage:members can create/edit the club's application form."""
+        return self.can_review_application()
+
     def can_create_application(self) -> Decision:
         if self.membership_exists():
             return Decision(allowed=False, reason="You are already a member of this club.")

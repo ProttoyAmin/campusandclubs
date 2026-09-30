@@ -1,137 +1,180 @@
+from __future__ import annotations
+
 from django.db.models import QuerySet
-from rest_framework.response import Response
+from rest_framework import generics, permissions, status
 from rest_framework.request import Request
-from rest_framework import permissions, status, generics
+from rest_framework.response import Response
 
-
-from apps.clubs.serializer.membership.m_serializers import MembershipApplicationSerializer
-from core.policies.utils import current_user
-
-from core.views import PolicyMixin, ServiceMixin
 from apps.clubs.models import Club, MembershipApplication
-from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.policies.club import ClubPolicy
+from apps.clubs.serializer.membership.form.application import (
+    MembershipApplicationCreateSerializer,
+    MembershipApplicationSerializer,
+)
+from apps.clubs.services.club.club_service import ClubService
+from core.policies.utils import current_user
+from core.views import PolicyMixin, ServiceMixin
 
-from apps.clubs.serializer import MembershipApplicationCreateSerializer
 
-# COME BACK TO THIS LATER
-# TODO: think about moving this view to membership generics
+class MA_ListCreateAPIView(
+    ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.ListCreateAPIView
+):
+    """GET  /clubs/<pk>/applications/              -> list (admins only)
+    POST /clubs/<pk>/applications/              -> submit application
+    GET  /clubs/<pk>/applications/<app_pk>/     -> retrieve one (admins or applicant)
+    """
 
-class MA_ListCreateAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.ListCreateAPIView):
     policy_class = ClubPolicy
     service_class = ClubService
-    serializer_class = MembershipApplicationCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
+    # ---- DRF plumbing ----
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return MembershipApplicationCreateSerializer
+        return MembershipApplicationSerializer
 
     def get_queryset(self) -> QuerySet[MembershipApplication]:
-        return self.get_service(self.request).get_membership_applications(self.kwargs.get("pk"))
+        club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
+        return self.get_service(self.request).get_membership_applications(club)
 
-
+    # ---- List ----
     def list(self, request: Request, *args, **kwargs) -> Response:
-        club = generics.get_object_or_404(Club, pk=self.kwargs.get("pk"))
+        club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
         decision = self.get_policy(request, club).can_review_application()
-
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
-
         return super().list(request, *args, **kwargs)
 
+    # ---- Retrieve ----
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        # /clubs/<pk>/applications/<app_pk>/
+        if "application_pk" not in self.kwargs:
+            return self.list(request, *args, **kwargs)
 
+        club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
+        application = generics.get_object_or_404(
+            self.get_queryset(), pk=self.kwargs["application_pk"]
+        )
+        # Admins or the applicant themselves can view.
+        can_review = self.get_policy(request, club).can_review_application()
+        is_applicant = application.applicant_id == current_user(request).id
+        if not (can_review.allowed or is_applicant):
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(
+            MembershipApplicationSerializer(application, context={"request": request}).data,
+            status=status.HTTP_200_OK,
+        )
+
+    # ---- Create ----
     def create(self, request: Request, *args, **kwargs) -> Response:
         club = generics.get_object_or_404(Club, pk=self.kwargs.get("pk"))
         decision = self.get_policy(request, club).can_join()
-
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
+        if not decision.requires_application:
+            return Response(
+                {"detail": "This club is instant-join; use POST /clubs/<pk>/join/ instead."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         application = self.get_service(request).apply_to_club(
             club,
             current_user(request),
             message=serializer.validated_data.get("message"),
+            answers=serializer.validated_data.get("answers", []),
         )
-        serializer = self.get_serializer(application)
-        return Response({
-            "detail": "Your application has been submitted.",
-            "application": serializer.data,
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "detail": "Your application has been submitted.",
+                "application": MembershipApplicationSerializer(
+                    application, context={"request": request}
+                ).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
-class MA_ApproveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
+class MA_ApproveAPIView(
+    ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView
+):
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = MembershipApplicationSerializer
-    queryset = MembershipApplication.objects.all()
-    lookup_field = "pk"
-    lookup_url_kwarg = "application_pk"
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
-        decision = self.get_policy(request, club).membership_exists() and self.get_policy(request, club).can_review_application()
-
-        if not decision.allowed:
-            return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
-
-        application = self.get_service(request).membership_application_repository.get_application(
-            club_id=club.pk, application_id=self.kwargs["application_pk"]
-        )
-        application = self.get_service(request).approve_application(application, current_user(request))
-
-        serializer = self.get_serializer(application)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class MA_RejectAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
-    policy_class = ClubPolicy
-    service_class = ClubService
-    serializer_class = MembershipApplicationSerializer
-    queryset = MembershipApplication.objects.all()
-    lookup_field = "pk"
-    lookup_url_kwarg = "application_pk"
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
         decision = self.get_policy(request, club).can_review_application()
-
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
-        application = self.get_service(request).membership_application_repository.get_application(
-            club_id=club.pk, application_id=self.kwargs["application_pk"]
+        application = generics.get_object_or_404(
+            MembershipApplication,
+            pk=self.kwargs["application_pk"],
+            club=club,
         )
-        application = self.get_service(request).reject_application(application, current_user(request))
+        application = self.get_service(request).approve_application(
+            application, current_user(request)
+        )
+        return Response(
+            MembershipApplicationSerializer(application, context={"request": request}).data
+        )
 
-        serializer = self.get_serializer(application)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class MA_WithdrawAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
+class MA_RejectAPIView(
+    ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView
+):
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = MembershipApplicationSerializer
-    queryset = MembershipApplication.objects.all()
-    lookup_field = "pk"
-    lookup_url_kwarg = "application_pk"
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
-        application = self.get_service(request).membership_application_repository.get_application(
-            club_id=club.pk, application_id=self.kwargs["application_pk"]
+        decision = self.get_policy(request, club).can_review_application()
+        if not decision.allowed:
+            return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
+
+        application = generics.get_object_or_404(
+            MembershipApplication,
+            pk=self.kwargs["application_pk"],
+            club=club,
+        )
+        application = self.get_service(request).reject_application(
+            application, current_user(request)
+        )
+        return Response(
+            MembershipApplicationSerializer(application, context={"request": request}).data
         )
 
-        decision = self.get_policy(request, club).can_withdraw(application, current_user(request))
+
+class MA_WithdrawAPIView(
+    ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView
+):
+    policy_class = ClubPolicy
+    service_class = ClubService
+    serializer_class = MembershipApplicationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        club = generics.get_object_or_404(Club, pk=self.kwargs["pk"])
+        application = generics.get_object_or_404(
+            MembershipApplication,
+            pk=self.kwargs["application_pk"],
+            club=club,
+        )
+        decision = self.get_policy(request, club).can_withdraw(
+            application, current_user(request)
+        )
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
         application = self.get_service(request).withdraw_application(application)
-        serializer = self.get_serializer(application)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+        return Response(
+            MembershipApplicationSerializer(application, context={"request": request}).data
+        )

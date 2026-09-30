@@ -81,6 +81,11 @@ class Club(models.Model):
 
     # generic relation fields
     media = GenericRelation('media.Media', related_query_name='clubs')
+    forms = GenericRelation(
+        "clubs.Form",
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
 
     status = models.CharField(
         max_length=20, choices=ClubStatus.choices, default=ClubStatus.ACTIVE
