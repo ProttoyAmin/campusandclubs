@@ -1,5 +1,4 @@
 from django.db.models import QuerySet
-from apps.clubs.models import MembershipApplicationResponse
 from typing import Any
 
 

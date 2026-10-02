@@ -5,6 +5,24 @@ import { } from "@campus/api";
 import type { PostExtended } from '@/features/posts/components/post-card';
 import { Link } from 'react-router-dom';
 import { paths } from '@/settings/routes';
+import { Skeleton } from 'design/components/ui/skeleton';
+
+export const NotificationCardSkeleton = () => {
+    return (
+        <div className='flex gap-3 px-6 py-2 mt-4'>
+            <div className={'flex flex-col h-full justify-start'}>
+                <Skeleton className='w-12 h-12 rounded-full' />
+            </div>
+
+            <div className='flex flex-col gap-2.5 w-1/2'>
+                <div className='flex flex-row gap-1'>
+                    <Skeleton className='w-32 h-4' />
+                </div>
+                <Skeleton className='h-12' />
+            </div>
+        </div>
+    )
+}
 
 const LikedVerb = ({ notification }: { notification: Notification }) => {
     return (

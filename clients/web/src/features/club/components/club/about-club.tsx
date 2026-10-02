@@ -1,8 +1,9 @@
 import type { ClubDetail } from '@campus/api';
 import DummyImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg"
 import { Avatar, AvatarFallback, AvatarImage } from 'design/components/ui/avatar';
+import type { ClubDetailExtended } from '../../http/club.http';
 
-const AboutClub = ({ club }: { club: ClubDetail }) => {
+const AboutClub = ({ club }: { club: ClubDetailExtended }) => {
     return (
         <div className=''>
             {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}

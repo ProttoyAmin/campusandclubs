@@ -12,6 +12,7 @@ import type { PostExtended } from "./features/posts/components/post-card";
 import { Card } from "design/components/ui/card";
 import Create from "@/components/create";
 import BottomBar from "./components/bottom-bar";
+import { PostCardSkeleton } from "./features/posts/components/post-card";
 
 function App() {
   const { data: users } = useUsers();
@@ -24,31 +25,21 @@ function App() {
       <div className="md:hidden">
         <Header />
       </div>
-      {/* <p>{data?.meta?.is_authenticated ? "true" : "false"}</p>
-      <div className="flex gap-4 w-full flex-wrap">
-        {users?.data?.results.map((user) => (
-          <Link key={user?.id} to={paths.private.user.profile(user.username)}>
-            <p>{user.username}</p>
-          </Link>
+      {feed.isLoading ? <>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <PostCardSkeleton key={index} />
         ))}
-      </div>
-      <div className="flex gap-4 w-full flex-wrap">
-        {clubs?.results.map((club: Club) => (
-          <Link key={club?.id} to={paths.public.club.slug(club?.slug || "")}>
-            <p>{club.name}</p>
-          </Link>
-        ))}
-      </div> */}
-      {/* <div className="flex justify-end">
-        <Create />
-      </div> */}
-      {feed?.data?.results.map((post: PostExtended) => (
-        <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
-          <PostCard post={post} />
-        </div>
-      ))}
+      </> : <>
+        {feed?.data?.results.map((post: PostExtended) => (
+          <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
+            <PostCard post={post} />
+          </div>
+        ))}</>}
       <div className="md:hidden sticky bottom-0 w-full z-50 bg-background">
         <BottomBar />
+      </div>
+      <div className="absolute bottom-14 right-5 md:right-20">
+        <Create />
       </div>
     </Card>
   );

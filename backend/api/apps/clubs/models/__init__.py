@@ -8,7 +8,9 @@ from .membership.form import (
     MembershipApplication,
     Form,
     FormQuestion,
-    MembershipApplicationResponse,
+    FormAnswer,
+    FormSubmission,
+    # MembershipApplicationResponse,
     ApplicationStatus,
     QuestionType,
 )
@@ -34,7 +36,8 @@ __all__ = [
     'Event',
     'MembershipApplication',
     'Form',
-    'MembershipApplicationResponse',
+    'FormAnswer',
+    'FormSubmission',
     'Category',
     'FormQuestion',
 

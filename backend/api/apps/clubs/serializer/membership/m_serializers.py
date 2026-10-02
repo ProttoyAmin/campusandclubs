@@ -1,19 +1,38 @@
+from apps.clubs.serializer.membership.form.application import FormSubmissionOutSerializer
+from apps.accounts.serialize.user.profile import UserMinimalSerializer
 from rest_framework.request import Request
-from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication, MembershipApplicationResponse
+from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication
 from rest_framework import serializers
 
 from apps.clubs.serializers import RoleSerializer
 
 
 class MembershipApplicationSerializer(serializers.ModelSerializer):
+    """Used for list/detail responses for admins reviewing applications."""
+
+    applicant = UserMinimalSerializer(read_only=True)
+    submission = FormSubmissionOutSerializer(read_only=True)
+
     class Meta:
         model = MembershipApplication
-        fields = ['id', 'club', 'applicant', 'message', 'status', 'created_at']
+        fields = [
+            "id",
+            "club",
+            "applicant",
+            "message",
+            "submission",
+            "status",
+            "reviewed_by",
+            "reviewed_at",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = fields
 
-class MembershipApplicationResponseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MembershipApplicationResponse
-        fields = ['id', 'application', 'question', 'answer']
+# class MembershipApplicationResponseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = MembershipApplicationResponse
+#         fields = ['id', 'application', 'question', 'answer']
     
 
 class MembershipSerializer(serializers.ModelSerializer):

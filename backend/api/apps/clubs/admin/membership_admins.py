@@ -1,5 +1,14 @@
 from django.contrib import admin
-from apps.clubs.models import Membership, MembershipDepartment, Role, MembershipApplication, MembershipApplicationResponse
+
+from apps.clubs.models import (
+    FormAnswer,
+    FormSubmission,
+    Membership,
+    MembershipApplication,
+    MembershipDepartment,
+    Role,
+)
+
 
 class MembershipInline(admin.TabularInline):
     model = Membership
@@ -7,29 +16,58 @@ class MembershipInline(admin.TabularInline):
     raw_id_fields = ("user", "primary_role", "application")
 
 
-
-class MembershipApplicationResponseInline(admin.TabularInline):
-    """Answers submitted for a single application."""
-    model = MembershipApplicationResponse
+class FormAnswerInline(admin.TabularInline):
+    model = FormAnswer
     extra = 0
     fields = ("question", "answer")
     raw_id_fields = ("question",)
 
 
+@admin.register(FormSubmission)
+class FormSubmissionAdmin(admin.ModelAdmin):
+    list_display = ("id", "form", "respondent", "submitted_at")
+    list_filter = ("form",)
+    search_fields = ("respondent__username", "form__title")
+    raw_id_fields = ("form", "respondent")
+    readonly_fields = ("submitted_at", "updated_at")
+    inlines = [FormAnswerInline]
+
+
+class FormSubmissionInline(admin.StackedInline):
+    """Show the filled-in answers inline on the application admin page."""
+
+    model = FormSubmission
+    extra = 0
+    max_num = 1
+    fields = ("form", "respondent", "submitted_at")
+    readonly_fields = ("form", "respondent", "submitted_at")
+    show_change_link = True
+
+
 admin.site.register(MembershipDepartment)
+
 
 @admin.register(MembershipApplication)
 class MembershipApplicationAdmin(admin.ModelAdmin):
-    list_display = ("club", "applicant", "status", "reviewed_by", "reviewed_at", "created_at")
+    list_display = (
+        "club",
+        "applicant",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "created_at",
+    )
     list_filter = ("club", "status", "created_at")
     search_fields = ("club__name", "applicant__username")
-    raw_id_fields = ("club", "applicant", "reviewed_by")
+    raw_id_fields = ("club", "applicant", "reviewed_by", "submission")
     readonly_fields = ("created_at", "updated_at")
-    inlines = [MembershipApplicationResponseInline]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("club", "applicant", "reviewed_by")
-
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("club", "applicant", "reviewed_by", "submission")
+        )
 
 
 @admin.register(Membership)
@@ -41,20 +79,34 @@ class MembershipAdmin(admin.ModelAdmin):
     filter_horizontal = ("roles",)
 
     fieldsets = (
-        ("Membership Info", {"fields": ("user", "club", "primary_role", "application")}),
-        ("Roles", {"fields": ("roles",), "description": "Select multiple roles for this member"}),
-        ("Timestamps", {"fields": ("joined_at",), "classes": ("collapse",)}),
+        (
+            "Membership Info",
+            {"fields": ("user", "club", "primary_role", "application")},
+        ),
+        (
+            "Roles",
+            {
+                "fields": ("roles",),
+                "description": "Select multiple roles for this member",
+            },
+        ),
+        (
+            "Timestamps",
+            {"fields": ("joined_at",), "classes": ("collapse",)},
+        ),
     )
 
     readonly_fields = ("joined_at",)
 
     def get_role_names(self, obj: Membership) -> str:
         return ", ".join(role.name for role in obj.roles.all())
-    get_role_names.short_description = "Roles"              # type: ignore
+
+    get_role_names.short_description = "Roles"  # type: ignore
 
     def primary_role_name(self, obj: Membership) -> str:
         return obj.primary_role.name if obj.primary_role else "None"
-    primary_role_name.short_description = "Primary Role"              # type: ignore
+
+    primary_role_name.short_description = "Primary Role"  # type: ignore
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "roles":
@@ -63,7 +115,9 @@ class MembershipAdmin(admin.ModelAdmin):
                 kwargs["queryset"] = Role.objects.filter(club_id=club_id)
             else:
                 kwargs["queryset"] = Role.objects.none()
-                kwargs["help_text"] = "Please select a club first, then save and edit to assign roles."
+                kwargs["help_text"] = (
+                    "Please select a club first, then save and edit to assign roles."
+                )
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -73,7 +127,9 @@ class MembershipAdmin(admin.ModelAdmin):
                 kwargs["queryset"] = Role.objects.filter(club_id=club_id)
             else:
                 kwargs["queryset"] = Role.objects.none()
-                kwargs["help_text"] = "Please select a club first, then save and edit to assign primary role."
+                kwargs["help_text"] = (
+                    "Please select a club first, then save and edit to assign primary role."
+                )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def _get_club_id(self, request):
@@ -87,6 +143,6 @@ class MembershipAdmin(admin.ModelAdmin):
             return membership.club.id if membership else None
         return None
 
-    def get_form(self, request, obj=None, **kwargs):        # type: ignore
+    def get_form(self, request, obj=None, **kwargs):  # type: ignore
         request._obj_ = obj
         return super().get_form(request, obj, **kwargs)

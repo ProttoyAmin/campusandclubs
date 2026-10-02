@@ -1,10 +1,12 @@
 import ClubRequestsLayout from "@/layouts/club/club-config/requests-layout";
-import ClubsLayout from "@/layouts/club/clubs-layout";
-import ClubConfigLayout from "@/layouts/club/config-layout";
 import { routes } from "@/settings/routes";
 import React from "react";
 import ClubMedia from "./pages/private/c-media";
 import ClubPosts from "./pages/private/c-posts";
+
+
+// Layouts
+const ClubConfigLayout = React.lazy(() => import("@/layouts/club/config-layout"));
 
 const Clubs = React.lazy(() => import("./pages/private/clubs"));
 const ClubPage = React.lazy(() => import("./pages/public/club-page"));

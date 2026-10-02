@@ -6,7 +6,7 @@ import type {
   PaginatedClubList,
   PatchedClubDetailRequest,
 } from "@campus/api";
-import { clubClient } from "../../http/club.http";
+import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended } from "../../http/club.http";
 import { clubApplicationsService } from "./applications.service";
 import { membershipService } from "./membership.service";
 
@@ -14,7 +14,7 @@ class ClubService {
   private clubClient = clubClient;
   public application = clubApplicationsService;
   public members = membershipService;
-  constructor() {}
+  constructor() { }
 
   async create(data: ClubCreateRequestWritable) {
     const res = await this.clubClient.createClub(data);
@@ -36,7 +36,7 @@ class ClubService {
     return res.data;
   }
 
-  async club(slug: string): Promise<ClubDetail> {
+  async club(slug: string): Promise<ClubDetailExtended> {
     const res = await this.clubClient.fetchClub(slug);
     return res.data;
   }
@@ -65,7 +65,7 @@ class ClubService {
     return res.data;
   }
 
-  async apply(clubId: string, data: MembershipApplicationCreateRequest) {
+  async apply(clubId: string, data: ApplicationCreateRequest) {
     const res = await this.clubClient.applyToClub(clubId, data);
     return res.data;
   }

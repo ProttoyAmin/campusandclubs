@@ -1,6 +1,6 @@
 import { useUser } from '@/features/user/hooks/user.hooks';
 import { useProfileOutlet } from '@/features/user/context/user-layout-context';
-import PostCard, { type PostExtended } from '@/features/posts/components/post-card';
+import PostCard, { PostCardSkeleton, type PostExtended } from '@/features/posts/components/post-card';
 import type { Post } from '@campus/api';
 import EmptyState from '@/shared/components/empty-state';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -9,10 +9,17 @@ import { Upload01Icon } from '@hugeicons/core-free-icons';
 const UserPosts = () => {
     const { user } = useProfileOutlet();
     const { posts } = useUser(user?.username)
-    const { data } = posts(user?.id)
+    const { data, isLoading } = posts(user?.id)
+
     return (
         <>
-            {data?.results.length === 0 ? (
+            {isLoading ? (
+                <>
+                    {Array.from({ length: 3 }).map((_, index) => (
+                        <PostCardSkeleton key={index} />
+                    ))}
+                </>
+            ) : data?.results.length === 0 ? (
                 <EmptyState
                     title=''
                     description='No posts'

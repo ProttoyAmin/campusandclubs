@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNotifications } from '../hooks/notifications.hooks';
 import NotificationCard from '../components/notification-card';
+import { NotificationCardSkeleton } from '../components/liked-verb';
 
 const NotificationsPage = () => {
     const { getNotifications } = useNotifications();
@@ -9,7 +10,11 @@ const NotificationsPage = () => {
     return (
         <>
             {getNotifications.isLoading ? (
-                <div className="flex items-center justify-center">Loading...</div>
+                <>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                        <NotificationCardSkeleton key={index} />
+                    ))}
+                </>
             ) : getNotifications.isError ? (
                 <div className="flex items-center justify-center">Error</div>
             ) : (

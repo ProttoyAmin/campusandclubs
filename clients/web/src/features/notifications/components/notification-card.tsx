@@ -11,21 +11,6 @@ import FollowAcceptVerb from './follow-accept-verb';
 
 const NotificationCard = ({ notification }: { notification: Notification }) => {
 
-    // switch (notification.verb) {
-    //     case "liked":
-    //         return <LikedVerb notification={notification} />
-    //     case "commented":
-    //         return <CommentedVerb notification={notification} />
-    //     case "new_post":
-    //         return <NewPostVerb notification={notification} />
-    //     case "follow_request":
-    //         return <FollowRequestVerb notification={notification} />
-    //     case "follow_accept":
-    //         return <FollowAcceptVerb notification={notification} />
-    //     default:
-    //         return <></>
-    // }
-
     return (
         <div className='flex items-center gap-2'>
             {(() => {

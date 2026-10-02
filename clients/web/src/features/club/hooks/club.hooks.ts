@@ -15,7 +15,7 @@ import type {
 } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
-import { type PaginaatedClubPostsResponse } from "../http/club.http";
+import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse } from "../http/club.http";
 
 export const useGetClubs = () => {
   return useQuery<PaginatedClubList, AppError<{}>>({
@@ -35,7 +35,7 @@ export const useDepartmentTemplates = () => {
 };
 
 export const useClub = (slug: string) => {
-  return useQuery<ClubDetail, AppError>({
+  return useQuery<ClubDetailExtended, AppError>({
     queryKey: ["club", slug],
     queryFn: () => {
       return club.club(slug);
@@ -114,7 +114,7 @@ export const useJoin = (id: string, slug: string) => {
 
 export const useApplyToClub = (id: string, slug: string) => {
   return useMutation({
-    mutationFn: (data: MembershipApplicationCreateRequest) => {
+    mutationFn: (data: ApplicationCreateRequest) => {
       const response = club.apply(id, data);
       return response;
     },

@@ -19,16 +19,39 @@ import ProfileDropdown from "../profile/profile-dropdown";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon, SquareLockIcon } from "@hugeicons/core-free-icons";
 import { uploadProfilePicture } from "@/library/media";
-import React from "react";
+import { Skeleton } from "design/components/ui/skeleton";
+
+export const ProfileLayoutHeaderSkeleton = () => {
+  return (
+    <div className="flex items-center justify-between w-full md:p-2 p-1">
+      <div className="flex gap-2.5 items-center">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-25" />
+          <Skeleton className="h-4 w-12.5" />
+        </div>
+      </div>
+      <div className="flex gap-2 items-center">
+        <Skeleton className="h-8 w-18 rounded-md" />
+        <Skeleton className="h-8 w-8 rounded-full" />
+        <Skeleton className="h-8 w-8 rounded-full" />
+      </div>
+    </div>
+  )
+}
 
 const ProfileLayoutHeader = ({
   user,
   currentUser,
+  isLoading
 }: {
   user: UserResponse;
   currentUser: AuthSession;
+  isLoading: boolean;
 }) => {
   const navigate = useNavigate();
+
+  if (isLoading) return <ProfileLayoutHeaderSkeleton />
 
   const uploadAvatar = async (avatar: File) => {
     const payload = {

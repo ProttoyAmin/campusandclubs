@@ -56,16 +56,15 @@ const MainLayout: React.FC = () => {
             <AppSidebar />
           </div>
           <main ref={scrollRef} className="grid-2 pt-2 w-full h-screen scrollbar-none overflow-hidden">
-            <Suspense fallback={<div>this is loading...</div>}>
-              <Outlet />
-            </Suspense>
+            {/* <Suspense fallback={<div className="absolute h-screen w-screen bg-black text-white flex items-center justify-center">
+              loadingl...
+            </div>}> */}
+            <Outlet />
+            {/* </Suspense> */}
           </main>
           <aside className="grid-3 hidden md:block justify-self-start">
 
           </aside>
-        </div>
-        <div className="absolute bottom-14 right-5 md:right-20">
-          <Create />
         </div>
         <Toaster />
       </SocketProvider>

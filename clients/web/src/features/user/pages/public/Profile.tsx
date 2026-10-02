@@ -1,7 +1,7 @@
 import type { UserProfile } from "@campus/api";
 import type { PrivateUserResponse } from "../../api/user.client";
 import { PrivateProfileHeader } from "../../components/profile/private-profie";
-import { PublicProfileHeader } from "../../components/profile/public-profile";
+import { PublicProfileHeader, PublicProfileSkeleton } from "../../components/profile/public-profile";
 import { useUserOutlet } from "../../context/user-layout-context";
 import { Outlet } from "react-router-dom";
 import NavTabs from "@/components/nav-tabs";
@@ -12,6 +12,7 @@ import BottomBar from "@/components/bottom-bar";
 export type ProfileOutletContext = {
   user: UserProfile | PrivateUserResponse;
   currentUser: AuthSession;
+  isLoading: boolean;
 }
 
 function isPrivateUser(
@@ -21,9 +22,19 @@ function isPrivateUser(
 }
 
 const Profile: React.FC = () => {
-  const { user, currentUser } = useUserOutlet();
+  const { user, currentUser, isLoading } = useUserOutlet();
 
-  if (!user) return <div>Not found</div>;
+  if (isLoading) {
+    return (
+      <>
+        <PublicProfileSkeleton />
+      </>
+    )
+  }
+
+  if (!user) return <>
+    Not found
+  </>;
 
   if (isPrivateUser(user)) {
     return (
@@ -34,11 +45,11 @@ const Profile: React.FC = () => {
   }
 
   return <div className="pt-4">
-    <PublicProfileHeader data={user as UserProfile} currentUser={currentUser} />
+    <PublicProfileHeader data={user as UserProfile} currentUser={currentUser} isLoading={isLoading} />
     <div className="p-2">
       <NavTabs menu={profileMenu(user?.username as string)} className="flex items-center" itemsClassName="justify-center" variant="tab" />
     </div>
-    <Outlet context={{ user: user, currentUser: currentUser }} />
+    <Outlet context={{ user: user, currentUser: currentUser, isLoading: isLoading }} />
     <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
       <BottomBar />
     </div>

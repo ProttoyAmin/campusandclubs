@@ -14,6 +14,8 @@ import {
 } from "design/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { paths, routes } from "@/settings/routes";
+import BottomBar from "@/components/bottom-bar";
+import Create from "@/components/create";
 
 
 const NotificationLayout = () => {
@@ -53,6 +55,12 @@ const NotificationLayout = () => {
                 <Card className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] scrollbar-none p-0 shadow-2xl shadow-muted">
                     <Outlet />
                 </Card>
+                <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
+                    <BottomBar />
+                </div>
+                <div className="absolute bottom-14 right-5 md:right-20">
+                    <Create />
+                </div>
             </section>
         </>
     )

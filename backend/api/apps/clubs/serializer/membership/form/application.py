@@ -8,43 +8,43 @@ from apps.clubs.models import MembershipApplication
 from apps.clubs.models.club.club import Club
 from apps.accounts.serialize.user.profile import UserMinimalSerializer
 
+
+class AnswerPayloadSerializer(serializers.Serializer):
+    """{ question_id, answer }"""
+
+    question_id = serializers.UUIDField()
+    answer = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, default=""
+    )
 class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
-    """
-    Serializer for creating a membership application.
-    """
-    message = serializers.CharField(required=True, allow_blank=True, allow_null=True, max_length=500)
+    """Inbound serializer for POST /clubs/<id>/applications/.
 
-    applicant = UserMinimalSerializer(read_only=True)
-    reviewed_by = UserMinimalSerializer(read_only=True)
+    Accepts either a freeform ``message`` (when the club has no form) or
+    an ``answers`` list keyed by question_id (when the club does).
+    """
 
-    # url = serializers.SerializerMethodField()
+    message = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=1000
+    )
+    answers = AnswerPayloadSerializer(many=True, required=False, default=list)
 
     class Meta:
-        visible_fields = [
-            'id', 'applicant', 'club', 'status', 'reviewed_by', 'reviewed_at', 'created_at'
-        ]
         model = MembershipApplication
-        fields =  visible_fields + ["message"]
-        read_only_fields = visible_fields
-
-    def _get_request(self) -> Any:
-        return self.context.get('request')
-
-    # def get_url(self, obj: MembershipApplication):
-    #     request: Request = self._get_request()
-    #     assert request is not None
-    #     return request.build_absolute_uri(reverse('clubs:application_detail', kwargs={'application_pk': obj.pk}))
-
-    # def get_club(self, obj: MembershipApplication):
-    #     return {
-    #         "id": obj.club.id,
-    #         "owner": obj.club.owner.username,
-    #         "name": obj.club.name,
-    #         "category": obj.club.category,
-    #         "about": obj.club.about,
-    #     }
+        fields = ["message", "answers"]
 
 
+class _AnswerOutSerializer(serializers.Serializer):
+    question_id = serializers.UUIDField(source="question.id")
+    question = serializers.CharField(source="question.question")
+    type = serializers.CharField(source="question.type")
+    answer = serializers.CharField()
 
 class MembershipBulkApproveSerializer(serializers.Serializer):
     application_ids = serializers.ListField(child=serializers.UUIDField(), write_only=True)
+
+
+class FormSubmissionOutSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    form_id = serializers.UUIDField(source="form.id")
+    submitted_at = serializers.DateTimeField()
+    answers = _AnswerOutSerializer(many=True)

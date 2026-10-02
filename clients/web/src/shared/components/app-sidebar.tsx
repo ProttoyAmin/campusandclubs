@@ -23,7 +23,7 @@ import { clubMenu } from "@/config/menu/club-menu";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MenuTwoLineIcon } from "@hugeicons/core-free-icons";
+import { LayoutAlignLeftIcon, LayoutAlignRightIcon, MenuTwoLineIcon } from "@hugeicons/core-free-icons";
 import { Button } from "design/components/ui/button";
 import { useSidebar } from "design/components/ui/sidebar";
 

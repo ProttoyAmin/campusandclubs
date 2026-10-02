@@ -1,7 +1,7 @@
 import { paths, routes } from "@/settings/routes";
 import { isRouteActive } from "@/utils/route";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Home01Icon, MessageCircleIcon, UserRoundIcon } from "@hugeicons/core-free-icons";
+import { BellRingIcon, Home01Icon, MessageCircleIcon, UserRoundIcon } from "@hugeicons/core-free-icons";
 
 export type MenuItemType = {
     id: number | string;
@@ -45,5 +45,16 @@ export const MainMobileMenu: (username: string) => MenuItemType[] = (
             link: () => paths.private.chat.chats,
             isActive: (currentPath) =>
                 isRouteActive(routes.chat.chats, currentPath)
+        },
+        {
+            id: 4,
+            label: "Notifications",
+            icon: <HugeiconsIcon icon={BellRingIcon} size={20} />,
+            iconActive: (
+                <HugeiconsIcon icon={BellRingIcon} size={20} color="currentColor" stroke="currentColor" fill="currentColor" />
+            ),
+            link: () => paths.private.notification.base,
+            isActive: (currentPath) =>
+                isRouteActive(routes.notification.base, currentPath),
         },
     ];

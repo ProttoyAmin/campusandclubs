@@ -13,12 +13,13 @@ import { useNavigate } from "react-router-dom";
 import AppAlertDialog from "@/shared/components/alert";
 import type { ClubDetail } from "@campus/api";
 import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu";
+import type { ClubDetailExtended } from "../../http/club.http";
 
 type DropDownProps = {
   trigger: React.ReactElement;
   menu?: () => MenuItemType[];
   onLeave: () => void;
-  club: ClubDetail;
+  club: ClubDetailExtended;
   isMember: boolean;
 };
 

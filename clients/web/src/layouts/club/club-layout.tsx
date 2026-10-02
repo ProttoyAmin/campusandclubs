@@ -14,6 +14,9 @@ import BottomBar from "@/components/bottom-bar";
 import { Avatar, AvatarFallback, AvatarImage } from "design/components/ui/avatar";
 import defaultBanner from "@/assets/4578-dragon-ball-z.png";
 import gokuImage from "@/assets/411912a0598fbae0462b0136c3e978ca.jpg";
+import Create from "@/components/create";
+import type { ClubDetail } from "@campus/api";
+import type { ClubDetailExtended } from "@/features/club/http/club.http";
 
 export const ClubMainLayout: React.FC = () => {
   const { slug } = useParams();
@@ -94,13 +97,13 @@ export const ClubMainLayout: React.FC = () => {
               handleJoin={handleJoin}
               isJoinPending={isJoinPending}
             />
-
+            {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
             <ClubApplicationDialog
               open={!!joinDialogData}
               onOpenChange={(open) => !open && setJoinDialogData(null)}
               title={`${club?.name}`}
-              description={`is taking submissions to join. Submit an application to apply for a membership.`}
               clubId={club?.id}
+              club={club as Pick<ClubDetailExtended, "id" | "name" | "origin" | "scope" | "join_mode">}
             />
             <ClubApplicationWithdrawDialog
               open={isWithdrawing}
@@ -144,6 +147,9 @@ export const ClubMainLayout: React.FC = () => {
             <p className="text-muted-foreground">{club?.about}</p>
           </div>
         </Card> */}
+        <div className="absolute bottom-14 right-5 md:right-20">
+          <Create />
+        </div>
       </div>
     </section>
   );

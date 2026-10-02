@@ -9,6 +9,7 @@ import type {
   PaginatedClubList,
   DepartmentTemplate,
   Post,
+  Institute,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
@@ -20,8 +21,23 @@ export type PaginaatedClubPostsResponse = {
   results: Post[];
 };
 
+
+export type AnswerCreateRequest = {
+  question_id: string | number;
+  answer: string;
+}
+
+export type ApplicationCreateRequest = {
+  message: string;
+  answers: AnswerCreateRequest[];
+}
+
+export interface ClubDetailExtended extends Omit<ClubDetail, 'origin'> {
+  origin: Institute;
+}
+
 export class ClubClient extends BaseClient<
-  ClubDetail,
+  ClubDetailExtended,
   ClubCreateRequestWritable,
   PatchedClubDetailRequest
 > {
@@ -46,8 +62,8 @@ export class ClubClient extends BaseClient<
     return response;
   }
 
-  async fetchClub(slug: string): Promise<AxiosResponse<ClubDetail>> {
-    const response = await this.client.get<ClubDetail>(
+  async fetchClub(slug: string): Promise<AxiosResponse<ClubDetailExtended>> {
+    const response = await this.client.get<ClubDetailExtended>(
       `${this.endpoint}${slug}`,
     );
     return response;
@@ -93,7 +109,7 @@ export class ClubClient extends BaseClient<
 
   async applyToClub(
     clubId: string | number,
-    data: MembershipApplicationCreateRequest,
+    data: ApplicationCreateRequest,
   ): Promise<AxiosResponse> {
     const response = await this.client.post<MembershipApplicationCreateRequest>(
       `${this.endpoint}${clubId}/applications/`,

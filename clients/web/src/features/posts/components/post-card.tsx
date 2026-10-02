@@ -32,6 +32,7 @@ import {
 import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu";
 import { queryClient } from "@/config/query-client";
 import { usePost } from "../hooks/posts.hooks";
+import { Skeleton } from "design/components/ui/skeleton";
 
 export type MediaListExtended = MediaList & {
     id: string | number;
@@ -48,6 +49,32 @@ export type MediaListExtended = MediaList & {
     }
     position: number,
     role: string
+}
+
+export const PostCardSkeleton = () => {
+    return (
+        <>
+            <div className="bg-background rounded-none h-fit flex flex-col gap-2 px-1 py-1 md:px-4 md:py-2">
+                <div className="flex gap-2.5 items-center justify-between">
+                    <div className="flex gap-2.5 items-center">
+                        <Skeleton className="h-12 w-12 rounded-full" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-4 w-25" />
+                            <Skeleton className="h-4 w-12.5" />
+                        </div>
+                    </div>
+                    <div>
+                        <Skeleton className="h-6 w-10" />
+                    </div>
+                </div>
+                <div className={`w-full`}>
+                    <div className="pl-14 flex flex-col gap-1 items-start">
+                        <Skeleton className="w-1/2 h-40" />
+                    </div>
+                </div>
+            </div>
+        </>
+    )
 }
 
 

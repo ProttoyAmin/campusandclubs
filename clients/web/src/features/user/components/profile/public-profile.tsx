@@ -15,11 +15,44 @@ import type { AuthSession } from "@/features/auth/services/authentication";
 import ToggleFollowButton from "@/features/user/components/actions/follow-button";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/settings/routes";
+import { Skeleton } from "design/components/ui/skeleton";
+
+
+export const PublicProfileSkeleton = () => {
+  return (
+    <>
+      <div className="block md:flex md:flex-row-reverse justify-between p-4">
+        <div className="place-items-center">
+          <Skeleton className="h-40 w-40 rounded-full" />
+        </div>
+        <div className="space-y-4">
+          <div className="flex md:flex-col gap-2 text-center justify-center md:justify-start md:text-start mt-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <div className="flex gap-2 items-center mt-2 justify-center">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-20" />
+          </div>
+          <Skeleton className="h-4 w-full" />
+        </div>
+      </div>
+      <div className="px-8">
+        <div className="flex gap-2">
+          <Skeleton className="h-8 w-1/2 rounded-full" />
+          <Skeleton className="h-8 w-1/2 rounded-full" />
+        </div>
+      </div>
+    </>
+  )
+}
 
 export const PublicProfileHeader: React.FC<{
   data: UserProfile;
   currentUser: AuthSession;
-}> = ({ data, currentUser }) => {
+  isLoading: boolean;
+}> = ({ data, currentUser, isLoading }) => {
   const navigate = useNavigate();
 
   const handleMessage = () => {
@@ -34,6 +67,11 @@ export const PublicProfileHeader: React.FC<{
       }
     })
   }
+
+  if (isLoading) {
+    return <PublicProfileSkeleton />
+  }
+
   return (
     <>
       <CardHeader className="block md:flex md:flex-row-reverse justify-between">

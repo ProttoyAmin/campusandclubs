@@ -16,7 +16,7 @@ import { toast } from "design/components/ui/toast";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
 import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
-import type { ClubDetail } from "@campus/api";
+import type { ClubDetailExtended } from "../../http/club.http";
 
 const ClubLayoutHeader = ({
   club,
@@ -24,7 +24,7 @@ const ClubLayoutHeader = ({
   handleJoin,
   isJoinPending,
 }: {
-  club: ClubDetail;
+  club: ClubDetailExtended;
   slug: string;
   handleJoin: () => void;
   isJoinPending: boolean;

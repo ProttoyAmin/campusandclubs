@@ -292,7 +292,7 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ['id', 'name', 'origin', 'about', 'join_mode', 'owner_details',
+        fields = ['id', 'name', 'origin', 'about', 'join_mode', 'owner_details', 'scope',
                   'avatar', 'banner', 'privacy', 'is_member', 'allow_public_posts', 'total_members', 'application', 'created_at'
                   ]
         read_only_fields = ['id']

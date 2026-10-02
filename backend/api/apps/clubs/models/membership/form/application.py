@@ -16,6 +16,14 @@ class MembershipApplication(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="club_applications"
     )
     form = models.ForeignKey("clubs.Form", on_delete=models.SET_NULL, null=True, blank=True, related_name="application_forms")
+    submission = models.OneToOneField(
+        "clubs.FormSubmission",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="membership_application",
+        help_text="Filled-in questionnaire when the club requires one.",
+    )
     status = models.CharField(
         max_length=20, choices=ApplicationStatus.choices, default=ApplicationStatus.PENDING
     )
