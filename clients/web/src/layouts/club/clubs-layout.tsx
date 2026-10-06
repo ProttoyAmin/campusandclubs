@@ -28,12 +28,12 @@ export const ClubsLayout: React.FC = () => {
   return (
     <section
       id={useSectionId()}
-      className="flex flex-col gap-4 max-w-3xl justify-around"
+      className="flex w-full flex-col gap-4 md:ms-44 md:max-w-3xl"
     >
       <div className="flex justify-between items-center p-2">
         {pageHeader.actions ?? <ClubsLayoutHeader clubs={clubs} onCreateClub={handleCreateClub} />}
       </div>
-      <Card className="w-full bg-background overflow-y-auto md:max-h-[calc(100vh-5rem)]">
+      <Card className="w-full bg-background overflow-y-auto min-h-[calc(100dvh-7rem)] md:min-h-[calc(100vh-5rem)] md:max-h-[calc(100vh-5rem)]">
         <Outlet context={{ clubs: clubs }} />
       </Card>
     </section>

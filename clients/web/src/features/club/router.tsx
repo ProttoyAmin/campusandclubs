@@ -1,13 +1,14 @@
 import ClubRequestsLayout from "@/layouts/club/club-config/requests-layout";
 import ClubsLayout from "@/layouts/club/clubs-layout";
 import ClubConfigLayout from "@/layouts/club/config-layout";
+import ClubShellLayout from "@/layouts/club/club-shell";
 import { routes } from "@/settings/routes";
 import React from "react";
-import ClubMedia from "./pages/private/c-media";
-import ClubPosts from "./pages/private/c-posts";
 
 const Clubs = React.lazy(() => import("./pages/private/clubs"));
 const ClubPage = React.lazy(() => import("./pages/public/club-page"));
+const ClubMedia = React.lazy(() => import("./pages/private/c-media"));
+const ClubPosts = React.lazy(() => import("./pages/private/c-posts"));
 const Settings = React.lazy(
   () => import("./pages/private/config-club/settings-page"),
 );
@@ -21,92 +22,61 @@ const Info = React.lazy(() => import("./pages/private/config-club/info-page"));
 const Requests = React.lazy(
   () => import("./pages/private/config-club/requests-page"),
 );
-
 const Approved = React.lazy(
   () => import("./pages/private/config-club/requests/approved"),
 );
-
 const Pending = React.lazy(
   () => import("./pages/private/config-club/requests/pending"),
 );
-
 const Rejected = React.lazy(
   () => import("./pages/private/config-club/requests/rejected"),
 );
 
 export const clubRoutes = [
+  // Top-level /@/clubs/ (list)
   {
     id: "clubs-page-layout",
     path: routes.club.private.list,
     element: <ClubsLayout />,
     children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
   },
+  // Everything under /@/clubs/:slug/* shares the shell (banner + header).
   {
-    id: "club-main", path: routes.club.public.base, element: <ClubPage />,
+    id: "club-shell",
+    path: routes.club.public.base, // /@/clubs/:slug/
+    element: <ClubShellLayout />,
     children: [
+      // Public profile pages (posts, media) — ClubPage wraps them with tabs.
       {
-        id: "club-posts",
-        index: true,
-        element: <ClubPosts />,
-      },
-      {
-        id: "club-media",
-        path: routes.club.private.media,
-        element: <ClubMedia />,
-      },
-    ]
-  },
-  {
-    id: "club-config-layout",
-    path: routes.club.private.config.base,
-    element: <ClubConfigLayout />,
-    children: [
-      {
-        id: "club-config",
-        path: routes.club.private.config.base,
-        element: <Info />,
-      },
-      {
-        id: "club-permissions",
-        path: routes.club.private.config.permissions,
-        element: <Permissions />,
-      },
-      {
-        id: "club-members",
-        path: routes.club.private.config.members,
-        element: <Members />,
-      },
-      {
-        id: "club-requests-layout",
-        path: routes.club.private.config.requests.base,
-        element: <ClubRequestsLayout />,
+        id: "club-main",
+        element: <ClubPage />,
         children: [
-          {
-            id: "club-requests",
-            index: true,
-            element: <Requests />,
-          },
-          {
-            id: "club-requests-approved",
-            path: routes.club.private.config.requests.approved,
-            element: <Approved />,
-          },
-          {
-            id: "club-requests-pending",
-            path: routes.club.private.config.requests.pendings,
-            element: <Pending />,
-          },
-          {
-            id: "club-requests-rejected",
-            path: routes.club.private.config.requests.rejected,
-            element: <Rejected />,
-          },
+          { id: "club-posts", index: true, element: <ClubPosts /> },
+          { id: "club-media", path: "media", element: <ClubMedia /> },
         ],
       },
+      // Owner config pages.
       {
-        id: "club-settings",
-        path: routes.club.private.config.settings,
-        element: <Settings />,
+        id: "club-config-layout",
+        path: "config",
+        element: <ClubConfigLayout />,
+        children: [
+          { id: "club-config-info", index: true, element: <Info /> },
+          { id: "club-permissions", path: "permissions", element: <Permissions /> },
+          { id: "club-members", path: "members", element: <Members /> },
+          {
+            id: "club-requests-layout",
+            path: "requests",
+            element: <ClubRequestsLayout />,
+            children: [
+              { id: "club-requests", index: true, element: <Requests /> },
+              { id: "club-requests-approved", path: "approved", element: <Approved /> },
+              { id: "club-requests-pending", path: "pending", element: <Pending /> },
+              { id: "club-requests-rejected", path: "rejected", element: <Rejected /> },
+            ],
+          },
+          { id: "club-settings", path: "settings", element: <Settings /> },
+        ],
       },
     ],
   },

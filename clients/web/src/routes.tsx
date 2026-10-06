@@ -3,7 +3,6 @@ import { clubRoutes } from "./features/club/router";
 import MainLayout from "./layouts/main-layout";
 import { UserProfileLayout } from "./layouts/user";
 import { userRoutes, userSettingsRoutes } from "./features/user/router";
-import { ClubMainLayout } from "./layouts/club";
 import SettingsLayout from "./layouts/settings-layout/settings-layout";
 import AuthLayout from "./layouts/auth/auth-layout";
 import { authRoutes } from "./features/auth/router";
@@ -30,7 +29,6 @@ export const routes: RouteObject[] = [
       },
       {
         id: "club",
-        element: <ClubMainLayout />,
         children: [...clubRoutes],
       },
       {
