@@ -8,8 +8,8 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 1,
       label: "Posts",
-      icon: <></>,
-      iconActive: <></>,
+      icon: "",
+      iconActive: "",
       link: () => paths.private.user.profile(username),
       isActive: (currentPath) =>
         isRouteActive(routes.user.private.profile.username, currentPath),
@@ -17,8 +17,8 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 2,
       label: "Media",
-      icon: <></>,
-      iconActive: <></>,
+      icon: "",
+      iconActive: "",
       link: () => paths.private.user.media(username),
       isActive: (currentPath) =>
         isRouteActive(routes.user.private.profile.media, currentPath),
@@ -26,8 +26,8 @@ export const profileMenu: (username: string) => MenuItemType[] = (
     {
       id: 3,
       label: "Reposts",
-      icon: <></>,
-      iconActive: <></>,
+      icon: "",
+      iconActive: "",
       link: () => paths.private.user.reposts(username),
       isActive: (currentPath) =>
         isRouteActive(routes.user.private.profile.reposts, currentPath),

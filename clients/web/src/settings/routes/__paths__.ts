@@ -59,7 +59,13 @@ export const paths = {
     settings: {
       base: routes.settings.base,
       account: routes.settings.account,
-      privacy: routes.settings.privacy,
+      privacy: {
+        base: routes.settings.privacy.base,
+        account: routes.settings.privacy.account,
+        messages: routes.settings.privacy.messages,
+        onlineStatus: routes.settings.privacy.onlineStatus,
+        blockedUsers: routes.settings.privacy.blockedUsers,
+      },
       affiliations: routes.settings.affiliations,
     },
 
@@ -92,6 +98,10 @@ export const paths = {
         }),
       config: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.base, {
+          slug,
+        }),
+      info: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.info, {
           slug,
         }),
       permissions: (slug: string) =>
@@ -132,10 +142,20 @@ export const paths = {
             slug,
           }),
       },
-      settings: (slug: string) =>
-        generateRouteFromPath(routes.club.private.config.settings, {
-          slug,
-        }),
+      settings: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.base, {
+            slug,
+          }),
+        privacy: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.privacy, {
+            slug,
+          }),
+        scope: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.scope, {
+            slug,
+          }),
+      },
 
     },
 

@@ -16,6 +16,7 @@ import type {
 import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
 import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse } from "../http/club.http";
+import type { JoinMode, Privacy, Scope } from "validation/club";
 
 export const useGetClubs = () => {
   return useQuery<PaginatedClubList, AppError<{}>>({
@@ -68,8 +69,8 @@ export const useClubInfo = (slug: string) => {
   return { posts, postsWithMedia, postsWithoutMedia };
 };
 
-export const useUpdateClub = (slug: string, id: string) => {
-  const update = useMutation({
+export const useUpdateClub = (slug: string) => {
+  const update = (id: string) => useMutation({
     mutationFn: (data: PatchedClubDetailRequest) => {
       const response = club.update(id, data);
       return response;
@@ -82,7 +83,31 @@ export const useUpdateClub = (slug: string, id: string) => {
     },
   });
 
-  const leave = useMutation({
+  const updatePrivacyJoinMode = (id: string) => useMutation({
+    mutationFn: (data: { privacy: Privacy, join_mode: JoinMode }) => {
+      return club.updatePrivacy(id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error updating club privacy:", error.response.data);
+    },
+  })
+
+  const updateScope = (id: string) => useMutation({
+    mutationFn: (data: { scope: Scope }) => {
+      return club.updateScope(id, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error updating club scope:", error.response.data);
+    },
+  })
+
+  const leave = (id: string) => useMutation({
     mutationFn: () => {
       return club.leave(id);
     },
@@ -94,7 +119,7 @@ export const useUpdateClub = (slug: string, id: string) => {
     },
   });
 
-  return { update, leave };
+  return { update, updatePrivacyJoinMode, updateScope, leave };
 };
 
 export const useJoin = (id: string, slug: string) => {

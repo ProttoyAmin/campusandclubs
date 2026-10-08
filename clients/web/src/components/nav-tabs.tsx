@@ -34,7 +34,7 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
   const classes = (variant: string) => {
     switch (variant) {
       case "tab":
-        return "w-full text-sm rounded-t-md p-2 font-medium transition-colors";
+        return `p-2 hover:bg-secondary rounded-md`;
       case "link":
         return "";
       case "default":
@@ -60,13 +60,13 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
               <SidebarMenu>
                 <SidebarMenuItem key={unLink(item.link)}
                   className={`${classes(variant)} ${active && !onlyIcon
-                    ? `text-secondary-foreground ${variant === "tab" ? "border-b border-foreground" : "bg-secondary"}`
+                    ? `text-secondary-foreground ${variant === "tab" ? "bg-secondary" : "bg-secondary"}`
                     : "text-muted-foreground"
                     }`}>
-                  <SidebarMenuButton tooltip={showToolTip ? item.label : undefined}>
-                    <span className="flex size-4 shrink-0 items-center justify-center">
+                  <SidebarMenuButton tooltip={showToolTip ? item.label : undefined} className="gap-2.5">
+                    {item.icon && <span className="flex size-4 shrink-0 items-center justify-center">
                       {getIcon(item, active)}
-                    </span>
+                    </span>}
                     <span className="truncate">
                       {renderLabel(item)}
                     </span>

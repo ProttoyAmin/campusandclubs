@@ -1,3 +1,8 @@
+from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
+from apps.clubs.models import MembershipScope
+from apps.clubs.dtos.club_create import ClubUpdateSettingsDTO
+import uuid
+from apps.clubs.dtos.club_create import ClubCreateDTO
 from django.utils import timezone
 from django.db.models import (
     Count,
@@ -26,6 +31,27 @@ class ClubRepository(BaseRepository[Club]):
         if isinstance(user, AnonymousUser):
             return self.get_queryset().filter(privacy=Visibility.PUBLIC)
         return self.get_queryset().filter(Q(privacy=Visibility.PUBLIC) | Q(members=user) | Q(privacy=Visibility.PRIVATE))
+
+    def update_club_settings(self, pk: uuid.UUID, dto: ClubUpdateSettingsDTO):
+        club = self.get_queryset().get(pk=pk)
+        club.privacy = dto.privacy
+        club.scope = dto.scope
+        club.join_mode = dto.join_mode
+        club.status = dto.status
+        club.full_clean()
+        club.save(update_fields=["privacy", "scope", "join_mode", "status"])
+        return club
+
+    def update_club_privacy_join_mode(self, club: Club, dto: ClubPrivacyJoinModeDTO) -> Club:
+        club.privacy = dto.privacy
+        club.join_mode = dto.join_mode
+        club.save(update_fields=["privacy", "join_mode"])
+        return club
+
+    def update_club_scope(self, club: Club, scope: MembershipScope) -> Club:
+        club.scope = scope
+        club.save(update_fields=["scope"])
+        return club
 
     def joined_by(self, user) -> QuerySet[Club]:
         return self.get_queryset().filter(members=user)

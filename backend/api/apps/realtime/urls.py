@@ -20,7 +20,7 @@ from .views.chat.chat_views import (
 app_name = 'realtime'
 
 urlpatterns = [
-    path("app-models/", ModelInfoTestView.as_view(), name="test_model_info"),
+    # path("app-models/", ModelInfoTestView.as_view(), name="test_model_info"),
     path("chats/", ChatListView.as_view(), name="chat_list"),
     path("chats/start/", ChatStartView.as_view(), name="chat_start"),
     path("chats/start-dm/", StartDirectChatView.as_view(), name="start_dm"),

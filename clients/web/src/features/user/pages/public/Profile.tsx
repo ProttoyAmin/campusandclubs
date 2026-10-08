@@ -47,7 +47,12 @@ const Profile: React.FC = () => {
   return <div className="pt-4">
     <PublicProfileHeader data={user as UserProfile} currentUser={currentUser} isLoading={isLoading} />
     <div className="p-2">
-      <NavTabs menu={profileMenu(user?.username as string)} className="flex items-center" itemsClassName="justify-center" variant="tab" />
+      <NavTabs
+        menu={profileMenu(user?.username as string)}
+        className="flex justify-start w-full"
+        itemsClassName="justify-start flex-1"
+        variant="tab"
+      />
     </div>
     <Outlet context={{ user: user, currentUser: currentUser, isLoading: isLoading }} />
     <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">

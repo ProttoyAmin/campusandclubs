@@ -13,6 +13,7 @@ import type {
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
+import type { JoinMode, Privacy, Scope } from "validation/club";
 
 export type PaginaatedClubPostsResponse = {
   count: number;
@@ -86,6 +87,22 @@ export class ClubClient extends BaseClient<
   ): Promise<AxiosResponse<ClubsUpdate2Response>> {
     const response = await this.client.patch<ClubsUpdate2Response>(
       `${this.endpoint}${clubId}/`,
+      data,
+    );
+    return response;
+  }
+
+  async updateClubPrivacy(clubId: string, data: { privacy: Privacy, join_mode: JoinMode }) {
+    const response = await this.client.patch<ClubsUpdate2Response>(
+      `${this.endpoint}${clubId}/settings/privacy-join-mode/`,
+      data,
+    );
+    return response;
+  }
+
+  async updateClubScope(clubId: string, data: { scope: Scope }) {
+    const response = await this.client.patch<ClubsUpdate2Response>(
+      `${this.endpoint}${clubId}/settings/scope/`,
       data,
     );
     return response;

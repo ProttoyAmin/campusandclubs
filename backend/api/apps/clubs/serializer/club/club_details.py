@@ -1,3 +1,9 @@
+from apps.clubs.models.club.club import _ALLOWED_JOIN_MODES
+from django.core.exceptions import ValidationError
+from apps.clubs.models import JoinMode
+from apps.clubs.models import MembershipScope
+from apps.clubs.models import Visibility
+from apps.clubs.dtos.club_create import ClubCreateDTO
 from typing import Any, Mapping, TypedDict
 from django.urls import reverse
 from rest_framework import serializers
@@ -25,6 +31,22 @@ class ClubPreferenceSerializer(serializers.ModelSerializer):
         model = ClubPreference
         fields = '__all__'
 
+
+class ClubUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Club
+        fields = [
+            'privacy',
+            'join_mode', 'status', 'scope',
+        ]
+        partial = True
+
+class ClubPrivacyJoinModeUpdateSerializer(serializers.Serializer):
+    privacy = serializers.ChoiceField(choices=Visibility.choices)
+    join_mode = serializers.ChoiceField(choices=JoinMode.choices)
+
+class ClubScopeUpdateSerializer(serializers.Serializer):
+    scope = serializers.ChoiceField(choices=MembershipScope.choices)
 
 class ClubDetailSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)

@@ -41,6 +41,7 @@ class AF_ListCreateAPIView(
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = FormSerializers
+    queryset = Form.objects.all()
 
     def get(self, request: Request, pk) -> Response:
         club = generics.get_object_or_404(Club, pk=pk)
@@ -50,7 +51,7 @@ class AF_ListCreateAPIView(
 
         form = self.get_service(request).get_club_form(club)
         if form is None:
-            return Response({"form": None}, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
         return Response(
             FormSerializers(form, context={"request": request}).data,
             status=status.HTTP_200_OK,

@@ -75,8 +75,8 @@ const Create = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         trigger={
-          <Button variant={"outline"} size={"icon-lg"} className={"shadow-2xl"}>
-            <PlusIcon className="size-5" />
+          <Button variant={"glass"} className={"shadow-2xl w-16 h-12"}>
+            <PlusIcon className="size-6" />
           </Button>
         }
         title={

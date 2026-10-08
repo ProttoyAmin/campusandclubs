@@ -41,7 +41,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                                 type="password"
                                 id="change-password-form-old_password"
                                 aria-invalid={fieldState.invalid}
-                                placeholder="Old password"
+                                placeholder="Current password"
                                 autoComplete="off"
                             />
                             {fieldState.invalid && (

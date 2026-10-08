@@ -56,142 +56,140 @@ const ClubSettingsForm = (props: ClubSettingsFormProps) => {
   } = form;
 
   return (
-    <div>
-      <form id={formId} onSubmit={handleSubmit(props.onSubmit)}>
-        <FieldGroup>
+    <form id={formId} onSubmit={handleSubmit(props.onSubmit)}>
+      <FieldGroup>
+        <Controller
+          name="privacy"
+          control={control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Privacy</FieldLabel>
+              <Select
+                value={field.value || ""}
+                onValueChange={field.onChange}
+              >
+                <SelectTrigger onBlur={field.onBlur}>
+                  <SelectValue placeholder="Select privacy" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Privacy</SelectLabel>
+                    {PrivacyOptions.map((privacy) => (
+                      <SelectItem key={privacy} value={privacy}>
+                        {formatLabel(privacy)}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.privacy && <FieldError errors={[errors.privacy]} />}
+            </Field>
+          )}
+        />
+
+        <div className="flex gap-2">
           <Controller
-            name="privacy"
+            name="join_mode"
             control={control}
             render={({ field }) => (
               <Field>
-                <FieldLabel>Privacy</FieldLabel>
+                <FieldLabel>Join Mode</FieldLabel>
                 <Select
                   value={field.value || ""}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger onBlur={field.onBlur}>
-                    <SelectValue placeholder="Select privacy" />
+                    <SelectValue placeholder="Select join mode" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Privacy</SelectLabel>
-                      {PrivacyOptions.map((privacy) => (
-                        <SelectItem key={privacy} value={privacy}>
-                          {formatLabel(privacy)}
+                      <SelectLabel>Join Mode</SelectLabel>
+                      {JoinModeOptions.map((join_mode) => (
+                        <SelectItem key={join_mode} value={join_mode}>
+                          {formatLabel(join_mode)}
                         </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                {errors.privacy && <FieldError errors={[errors.privacy]} />}
+                {errors.join_mode && (
+                  <FieldError errors={[errors.join_mode]} />
+                )}
               </Field>
             )}
           />
 
-          <div className="flex gap-2">
-            <Controller
-              name="join_mode"
-              control={control}
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel>Join Mode</FieldLabel>
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger onBlur={field.onBlur}>
-                      <SelectValue placeholder="Select join mode" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Join Mode</SelectLabel>
-                        {JoinModeOptions.map((join_mode) => (
-                          <SelectItem key={join_mode} value={join_mode}>
-                            {formatLabel(join_mode)}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  {errors.join_mode && (
-                    <FieldError errors={[errors.join_mode]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="scope"
-              control={control}
-              render={({ field }) => (
-                <Field>
-                  <FieldLabel>Scope</FieldLabel>
-                  <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger onBlur={field.onBlur}>
-                      <SelectValue placeholder="Select scope" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Scope</SelectLabel>
-                        {ScopeOptions.map((scope) => (
-                          <SelectItem key={scope} value={scope}>
-                            {formatLabel(scope)}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  {errors.scope && <FieldError errors={[errors.scope]} />}
-                </Field>
-              )}
-            />
-          </div>
-
           <Controller
-            name="status"
+            name="scope"
             control={control}
             render={({ field }) => (
               <Field>
-                <FieldLabel>Status</FieldLabel>
+                <FieldLabel>Scope</FieldLabel>
                 <Select
                   value={field.value || ""}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger onBlur={field.onBlur}>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Select scope" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Status</SelectLabel>
-                      {StatusOptions.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {formatLabel(status)}
+                      <SelectLabel>Scope</SelectLabel>
+                      {ScopeOptions.map((scope) => (
+                        <SelectItem key={scope} value={scope}>
+                          {formatLabel(scope)}
                         </SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                {errors.status && <FieldError errors={[errors.status]} />}
+                {errors.scope && <FieldError errors={[errors.scope]} />}
               </Field>
             )}
           />
-          <div className="w-full flex flex-col gap-2">
-            <Button type="submit" variant="glass" className={'rounded-full'} size="lg" disabled={props.pending}>
-              {props.pending && (
-                <Spinner className="size-4" data-icon="inline-start" />
-              )}
-              {props.pending ? "Saving settings..." : "Save settings"}
-            </Button>
-            {/* <Button variant="default" type="reset" onClick={() => form.reset()}>
+        </div>
+
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Status</FieldLabel>
+              <Select
+                value={field.value || ""}
+                onValueChange={field.onChange}
+              >
+                <SelectTrigger onBlur={field.onBlur}>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Status</SelectLabel>
+                    {StatusOptions.map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {formatLabel(status)}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.status && <FieldError errors={[errors.status]} />}
+            </Field>
+          )}
+        />
+        <div className="w-full flex flex-col gap-2">
+          <Button type="submit" variant="glass" className={'rounded-full'} size="lg" disabled={props.pending}>
+            {props.pending && (
+              <Spinner className="size-4" data-icon="inline-start" />
+            )}
+            {props.pending ? "Saving settings..." : "Save settings"}
+          </Button>
+          {/* <Button variant="default" type="reset" onClick={() => form.reset()}>
               Reset
             </Button> */}
-          </div>
-        </FieldGroup>
-      </form>
-    </div>
+        </div>
+      </FieldGroup>
+    </form>
   );
 };
 

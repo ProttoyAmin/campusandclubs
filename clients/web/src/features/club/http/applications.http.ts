@@ -6,11 +6,27 @@ import type {
 } from "@campus/api";
 import { BaseClient } from "@/settings/api";
 import { config } from "@/settings/app";
+import type { QuestionType } from "@/components/forms/club/apply-club";
 
 
 export type Applications = MembershipApplicationCreate & {
   readonly reviewed_by: UserMinimal
+  readonly submission: Submission
   readonly created_at: string
+}
+
+export type Submission = {
+  id: string;
+  form_id: string;
+  submitted_at: string;
+  answers: FormAnswer[]
+}
+
+export type FormAnswer = {
+  question_id: string
+  question: string
+  answer: string
+  type: QuestionType
 }
 
 export class ClubsApplicationsClient extends BaseClient<

@@ -1,16 +1,7 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "design/components/ui/alert-dialog";
 import { useWithdraw } from "../../hooks/club.hooks";
 import { useParams } from "react-router-dom";
 import { toast } from "design/components/ui/toast";
+import AppAlertDialog from "@/shared/components/alert";
 
 type DialogProps = {
   open: boolean;
@@ -57,19 +48,16 @@ export function ClubApplicationWithdrawDialog({
     });
   };
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent size="sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel variant="default">Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={() => onSubmit()}>
-            Withdraw
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <AppAlertDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={title}
+      description={description}
+      cancelText="Cancel"
+      confirmText="Withdraw"
+      onConfirm={onSubmit}
+      onCancel={() => onOpenChange(false)}
+      variant="outline"
+    />
   );
 }

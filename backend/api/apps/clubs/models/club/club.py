@@ -33,8 +33,9 @@ _ALLOWED_JOIN_MODES: dict[str, tuple[str, ...]] = {
 }
 
 _ALLOWED_SCOPE: dict[str, MembershipScope] = {
-
-    
+    MembershipScope.GLOBAL: (Visibility.PUBLIC, Visibility.PRIVATE),
+    MembershipScope.EXCLUSIVE: (Visibility.PRIVATE, Visibility.SECRET),
+    MembershipScope.CROSS_INSTITUTE: (Visibility.PUBLIC, Visibility.PRIVATE, Visibility.SECRET),
 }
 
 

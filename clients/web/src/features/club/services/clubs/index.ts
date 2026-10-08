@@ -9,6 +9,7 @@ import type {
 import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended } from "../../http/club.http";
 import { clubApplicationsService } from "./applications.service";
 import { membershipService } from "./membership.service";
+import type { ClubSettingsRequest, JoinMode, Privacy, Scope } from "validation/club";
 
 class ClubService {
   private clubClient = clubClient;
@@ -45,7 +46,25 @@ class ClubService {
     clubId: string,
     data: PatchedClubDetailRequest,
   ): Promise<ClubDetail> {
-    const res = await this.clubClient.updateClub(clubId, data);
+
+    const settingsPayload: ClubSettingsRequest = {
+      privacy: data.privacy,
+      join_mode: data.join_mode,
+      scope: data.scope,
+      status: data.status,
+    };
+
+    const res = await this.clubClient.updateClub(clubId, settingsPayload);
+    return res.data;
+  }
+
+  async updatePrivacy(clubId: string, data: { privacy: Privacy, join_mode: JoinMode }) {
+    const res = await this.clubClient.updateClubPrivacy(clubId, data);
+    return res.data;
+  }
+
+  async updateScope(clubId: string, data: { scope: Scope }) {
+    const res = await this.clubClient.updateClubScope(clubId, data);
     return res.data;
   }
 

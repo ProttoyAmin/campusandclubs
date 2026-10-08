@@ -13,6 +13,14 @@ const ClubPage = React.lazy(() => import("./pages/public/club-page"));
 const Settings = React.lazy(
   () => import("./pages/private/config-club/settings-page"),
 );
+
+const ClubPrivacySettings = React.lazy(
+  () => import("./pages/private/config-club/c-settings/privacy"),
+);
+const ClubScopeSettings = React.lazy(
+  () => import("./pages/private/config-club/c-settings/scope"),
+);
+
 const Permissions = React.lazy(
   () => import("./pages/private/config-club/permissions-page"),
 );
@@ -69,7 +77,7 @@ export const clubRoutes = [
     children: [
       {
         id: "club-config",
-        path: routes.club.private.config.base,
+        path: routes.club.private.config.info,
         element: <Info />,
       },
       {
@@ -121,8 +129,18 @@ export const clubRoutes = [
       },
       {
         id: "club-settings",
-        path: routes.club.private.config.settings,
+        path: routes.club.private.config.settings.base,
         element: <Settings />,
+      },
+      {
+        id: "club-settings-privacy",
+        path: routes.club.private.config.settings.privacy,
+        element: <ClubPrivacySettings />,
+      },
+      {
+        id: "club-settings-scope",
+        path: routes.club.private.config.settings.scope,
+        element: <ClubScopeSettings />,
       },
     ],
   },

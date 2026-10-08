@@ -1,3 +1,9 @@
+from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
+from apps.clubs.dtos.club_create import ClubUpdateSettingsDTO
+from apps.clubs.models import MembershipScope
+from apps.clubs.models.club.club import _ALLOWED_JOIN_MODES
+from rest_framework.exceptions import PermissionDenied
+from uuid import UUID
 from apps.clubs.repositories.form.f_submission_repo import FormSubmissionRepository
 from apps.clubs.models import FormQuestion
 from typing import Iterable
@@ -53,6 +59,9 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
     def _get_object(self, pk: int) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
 
+    def exclude_secret_clubs(self) -> QuerySet[Club]:
+        return self.repository.get_queryset().exclude(privacy=Visibility.SECRET).order_by("-created_at")
+
     def list_clubs(self, viewer: User | AnonymousUser, filters: ClubListFilters | None = None) -> QuerySet[Club]:
         if filters is None:
             filters = ClubListFilters()
@@ -72,6 +81,60 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
             clubs = clubs.filter(origin=filters.origin)
 
         return self.repository.with_list_annotations(clubs, viewer)
+
+    def update_settings(self, pk: UUID, dto: ClubUpdateSettingsDTO) -> Club:
+        club = self._get_object(pk)
+
+        allowed = _ALLOWED_JOIN_MODES.get(club.privacy, ())
+        if dto.join_mode not in allowed:
+            raise ValidationError(
+                {
+                    "detail": (
+                        f"'{dto.join_mode}' is not valid for a "
+                        f"'{club.privacy}' club. Allowed: {', '.join(allowed)}."
+                    )
+                }
+            )
+
+        if not club.origin and dto.scope != MembershipScope.GLOBAL:
+            raise ValidationError(
+                {
+                    "detail": (
+                        f"'{dto.scope}' is not valid for a local club. "
+                        f"Allowed: {MembershipScope.GLOBAL}."
+                    )
+                }
+            )
+
+        return self.repository.update_club_settings(pk, dto)
+
+    def update_privacy_join_mode(self, club: Club, dto: ClubPrivacyJoinModeDTO) -> Club:
+
+        allowed = _ALLOWED_JOIN_MODES.get(dto.privacy, ())
+        if dto.join_mode not in allowed:
+            raise ValidationError(
+                {
+                    "detail": (
+                        f"'{dto.join_mode}' is not valid for a "
+                        f"'{dto.privacy}' club. Allowed: {', '.join(allowed)}."
+                    )
+                }
+            )
+
+        return self.repository.update_club_privacy_join_mode(club, dto)
+
+    def update_scope(self, club: Club, scope: MembershipScope) -> Club:
+        if not club.origin and scope != MembershipScope.GLOBAL:
+            raise ValidationError(
+                {
+                    "detail": (
+                        f"'{scope}' is not valid for a local club. "
+                        f"Allowed: {MembershipScope.GLOBAL}."
+                    )
+                }
+            )
+
+        return self.repository.update_club_scope(club, scope)
 
     def create_club(self, owner: User, dto: ClubCreateDTO) -> Club:
         from apps.clubs.models import ClubDepartment, ClubPreference

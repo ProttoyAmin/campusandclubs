@@ -1,12 +1,26 @@
-import { Building2, ShieldCheck, Clock, XCircle } from "lucide-react";
+import { ShieldCheck, Clock, XCircle } from "lucide-react";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback
+} from "design/components/ui/avatar";
+import { type Institute } from "@campus/api";
+import { CardContent } from "design/components/ui/card";
+import { useMe } from "@/features/user/hooks/user.hooks";
+import { type UserProfile } from "@campus/api";
 
-import { Card, CardContent } from "design/components/ui/card";
+const useCachedUser = () => {
+  const { data } = useMe();
+  const user = data as UserProfile
+
+  return user;
+}
 
 type AffiliationStatus = "pending" | "verified" | "rejected";
 
 type Affiliation = {
   id: string | number;
-  institute: { id: string; name: string; code?: string | null };
+  institute: Institute;
   role: string;
   status: AffiliationStatus;
 };
@@ -39,12 +53,22 @@ const STATUS_META: Record<
 const AffiliationCard = ({ affiliation }: { affiliation: Affiliation }) => {
   const meta = STATUS_META[affiliation.status];
   const StatusIcon = meta.icon;
+  const user = useCachedUser();
+  console.log(user);
 
   return (
-    <Card>
-      <CardContent className="flex items-start gap-3 py-4">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-          <Building2 className="size-5" />
+    <div className="border rounded-md">
+      {/* <pre>{JSON.stringify(affiliation, null, 2)}</pre> */}
+      <CardContent className="flex items-start gap-3 p-4">
+        <div className="flex flex-col gap-6 items-center">
+          <Avatar>
+            <AvatarImage src={affiliation.institute.logo || undefined} />
+            <AvatarFallback>{affiliation.institute.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <Avatar size="sm">
+            <AvatarImage src={user.avatar || undefined} />
+            <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+          </Avatar>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
@@ -65,16 +89,12 @@ const AffiliationCard = ({ affiliation }: { affiliation: Affiliation }) => {
               {meta.label}
             </span>
           </div>
-          <div className="my-3 h-px bg-border" />
-          <p className="text-xs text-muted-foreground">
-            Role:{" "}
-            <span className="font-medium capitalize text-foreground">
-              {affiliation.role}
-            </span>
+          <p className="text-xs text-muted-foreground mt-6 capitalize">
+            {affiliation.role}
           </p>
         </div>
       </CardContent>
-    </Card>
+    </div>
   );
 };
 

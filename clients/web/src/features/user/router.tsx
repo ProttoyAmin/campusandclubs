@@ -21,6 +21,22 @@ const Privacy = React.lazy(
   () => import("./pages/private/profile-settings/privacy-page"),
 );
 
+const AccountPrivacy = React.lazy(
+  () => import("./pages/private/profile-settings/privacy/account-privacy"),
+);
+
+const OnlineStatusPrivacy = React.lazy(
+  () => import("./pages/private/profile-settings/privacy/online-status"),
+);
+
+const MessagePrivacy = React.lazy(
+  () => import("./pages/private/profile-settings/privacy/message-privacy"),
+);
+
+const BlockedUsers = React.lazy(
+  () => import("./pages/private/profile-settings/privacy/blocked-users"),
+);
+
 const Settings = React.lazy(
   () => import("./pages/private/profile-settings/settings-page"),
 );
@@ -78,8 +94,28 @@ export const userSettingsRoutes = [
   },
   {
     id: "user-settings-privacy",
-    path: routes.settings.privacy,
+    path: routes.settings.privacy.base,
     element: <Privacy />,
+  },
+  {
+    id: "user-settings-privacy-account",
+    path: routes.settings.privacy.account,
+    element: <AccountPrivacy />,
+  },
+  {
+    id: "user-settings-privacy-online-status",
+    path: routes.settings.privacy.onlineStatus,
+    element: <OnlineStatusPrivacy />,
+  },
+  {
+    id: "user-settings-privacy-messages",
+    path: routes.settings.privacy.messages,
+    element: <MessagePrivacy />,
+  },
+  {
+    id: "user-settings-privacy-blocked-users",
+    path: routes.settings.privacy.blockedUsers,
+    element: <BlockedUsers />,
   },
   {
     id: "user-settings-account-password",

@@ -1,5 +1,3 @@
-// features/club/components/application-form-create-form.tsx
-import React from "react";
 import { Controller, useFieldArray, useForm, type Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
@@ -30,7 +28,6 @@ interface ApplicationFormCreateFormProps {
     isPending?: boolean;
 }
 
-// OptionsFieldGroup — field.value is now { value: string }, not a bare string
 const OptionsFieldGroup = ({
     control,
     questionIndex,
@@ -172,7 +169,7 @@ const ApplicationFormCreateForm = ({ onSubmit, isPending }: ApplicationFormCreat
                                         render={({ field }) => (
                                             <Field className="flex flex-row items-center gap-2 pt-6">
                                                 <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                                <FieldLabel className="">Required</FieldLabel>
+                                                <FieldLabel>Required</FieldLabel>
                                             </Field>
                                         )}
                                     />

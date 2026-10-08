@@ -20,6 +20,7 @@ import type { ClubDetailExtended } from "../../http/club.http";
 
 const ClubLayoutHeader = ({
   club,
+  headerTitle,
   slug,
   handleJoin,
   isJoinPending,
@@ -28,8 +29,10 @@ const ClubLayoutHeader = ({
   slug: string;
   handleJoin: () => void;
   isJoinPending: boolean;
+  headerTitle?: React.ReactNode;
 }) => {
-  const { leave } = useUpdateClub(club?.slug, club?.id);
+  const { leave } = useUpdateClub(club?.slug);
+  const leaveClub = leave(club?.id || '')
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,7 +46,7 @@ const ClubLayoutHeader = ({
       return;
     }
 
-    leave.mutate(undefined, {
+    leaveClub.mutate(undefined, {
       onSuccess: () => {
         toast.add({
           title: "Left",
@@ -100,12 +103,15 @@ const ClubLayoutHeader = ({
               <AvatarImage src={club.avatar || GokuImage} alt={club.name} />
               <AvatarFallback>{club?.name[0].toUpperCase()}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
-              <p className="text-lg">{club?.name}</p>
-              <span className="text-sm text-muted-foreground">
-                {club?.total_members} members
-              </span>
-            </div>
+            {headerTitle && headerTitle}
+            {!headerTitle && (
+              <div className="flex flex-col">
+                <p className="text-lg">{club?.name}</p>
+                <span className="text-sm text-muted-foreground">
+                  {club?.total_members} members
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 items-center">

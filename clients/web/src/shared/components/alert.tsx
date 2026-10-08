@@ -18,7 +18,7 @@ type AppAlertDialogProps = {
   confirmText?: string;
   onCancel?: () => void;
   onConfirm?: () => void;
-  variant?: "default" | "destructive" | "warning" | "success" | "info";
+  variant?: "default" | "destructive" | "link" | "outline" | "secondary" | "ghost" | "glass";
 };
 
 const AppAlertDialog = ({
@@ -43,7 +43,7 @@ const AppAlertDialog = ({
           <AlertDialogCancel variant="ghost" onClick={onCancel}>
             {cancelText || "Cancel"}
           </AlertDialogCancel>
-          <AlertDialogAction variant={variant === "destructive" ? "destructive" : "default"} onClick={onConfirm}>
+          <AlertDialogAction variant={variant} onClick={onConfirm}>
             {confirmText || "Continue"}
           </AlertDialogAction>
         </AlertDialogFooter>

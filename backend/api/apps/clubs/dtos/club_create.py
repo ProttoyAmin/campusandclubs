@@ -1,4 +1,5 @@
 # apps/clubs/dtos.py
+from apps.clubs.models import ClubStatus
 from dataclasses import dataclass
 from typing import Optional
 import uuid
@@ -41,3 +42,25 @@ class ClubCreateDTO:
             avatar=data.get("avatar"),
             banner=data.get("banner"),
         )
+
+
+@dataclass(frozen=True)
+class ClubUpdateSettingsDTO:
+    privacy: Visibility
+    join_mode: JoinMode
+    scope: MembershipScope
+    status: ClubStatus
+
+    @classmethod
+    def from_validated_data(cls, data: dict) -> "ClubUpdateSettingsDTO":
+        return cls(
+            privacy=data["privacy"],
+            join_mode=data["join_mode"],
+            scope=data["scope"],
+            status=data["status"],
+        )
+
+@dataclass(frozen=True)
+class ClubPrivacyJoinModeDTO:
+    privacy: Visibility
+    join_mode: JoinMode

@@ -123,7 +123,6 @@ const ProfileLayoutHeader = ({
                 </>
               )}
               <Button variant={"ghost"} className={"rounded-full"} size="icon">
-                {/* <Search className="size-5" /> */}
                 <HugeiconsIcon icon={Search01Icon} className="size-5" />
               </Button>
               {user?.id === currentUser?.data.user.id ? (

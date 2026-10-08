@@ -22,5 +22,11 @@ export const settingsRoutes = {
     theme: "/@/settings/account/theme/",
   },
   affiliations: "/@/settings/affiliations/",
-  privacy: "/@/settings/privacy/",
+  privacy: {
+    base: "/@/settings/privacy/",
+    account: "/@/settings/privacy/account/",
+    messages: "/@/settings/privacy/messages/",
+    onlineStatus: "/@/settings/privacy/online-status/",
+    blockedUsers: "/@/settings/privacy/blocked-users/",
+  },
 } as const;

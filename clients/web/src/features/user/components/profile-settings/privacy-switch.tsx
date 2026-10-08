@@ -1,13 +1,28 @@
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+} from "design/components/ui/field"
 import { Switch } from "design/components/ui/switch"
 
-const PrivacySwitch = () => {
+const PrivacySwitch = ({ isPrivate, setIsPrivate }: { isPrivate: boolean, setIsPrivate: React.Dispatch<React.SetStateAction<boolean>> }) => {
   return (
-    <div className="flex items-center justify-between gap-2">
-      <label htmlFor="privacy-switch" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-75">
-        Private Profile
-      </label>
-      <Switch id="privacy-switch"/>
-    </div>
+    <Field orientation="horizontal">
+      <FieldContent className="w-full">
+        <FieldLabel htmlFor="switch-focus-mode" className="font-semibold text-md">
+          Private Profile
+        </FieldLabel>
+        <FieldDescription className="text-sm">
+          When your profile is private, only followers can see and interact with your posts. Your replies will be visible to followers and individual profiles you reply to and you will receive message requests from people you don't follow.
+        </FieldDescription>
+      </FieldContent>
+      <Switch
+        id="switch-focus-mode"
+        checked={isPrivate}
+        onCheckedChange={setIsPrivate}
+      />
+    </Field>
   )
 }
 

@@ -13,9 +13,9 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       label: "Info",
       icon: <InfoIcon size={18} />,
       iconActive: <InfoIcon size={18} fill="currentColor" stroke="currentColor" />,
-      link: () => paths.private.club.config(slug),
+      link: () => paths.private.club.info(slug),
       isActive: (currentPath) =>
-        isRouteActive(routes.club.private.config.base, currentPath),
+        isRouteActive(routes.club.private.config.info, currentPath),
     },
     {
       id: 2,
@@ -68,8 +68,8 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <Settings2Icon size={18} fill="currentColor" stroke="currentColor" />
       ),
-      link: () => paths.private.club.settings(slug),
+      link: () => paths.private.club.settings.base(slug),
       isActive: (currentPath) =>
-        isRouteActive(routes.club.private.config.settings, currentPath),
+        isRouteActive(routes.club.private.config.settings.base, currentPath),
     },
   ];

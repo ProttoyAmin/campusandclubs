@@ -1,7 +1,7 @@
 import { useClubOutlet } from '@/features/club/context/club-layout-context';
-import { useApplication, useApplicationBulkActions, useApplications } from '@/features/club/hooks/applications.hooks';
-import React, { useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useApplicationBulkActions, useApplications } from '@/features/club/hooks/applications.hooks';
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Table,
     TableBody,
@@ -13,7 +13,7 @@ import {
 } from "design/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from 'design/components/ui/avatar';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { CheckIcon, UserListIcon, XIcon } from '@hugeicons/core-free-icons';
+import { EllipsisIcon, FileTextIcon, UserListIcon, XIcon } from '@hugeicons/core-free-icons';
 import EmptyState from '@/shared/components/empty-state';
 import { Button } from "design/components/ui/button"
 import {
@@ -25,8 +25,10 @@ import {
 } from "design/components/ui/dropdown-menu";
 import { ChevronDownIcon } from 'lucide-react';
 import { Checkbox } from "design/components/ui/checkbox"
-import { cn } from 'design/lib/utils';
 import { paths } from '@/settings/routes';
+import ResponsiveDialog from '@/shared/components/responsive-dialog';
+import { Card, CardContent } from 'design/components/ui/card';
+import ConfirmationBarBottom from '@/shared/components/confirmation-bar-bottom';
 
 type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected' | 'withdrawn';
 
@@ -36,6 +38,10 @@ const FILTERS: { label: string; value: StatusFilter }[] = [
     { label: 'Approved', value: 'approved' },
     { label: 'Rejected', value: 'rejected' },
     { label: 'Withdrawn', value: 'withdrawn' },
+];
+
+const ActionItems: { label: string }[] = [
+    { label: 'Send email' },
 ];
 
 const FilterDropDown = ({
@@ -71,11 +77,14 @@ const FilterDropDown = ({
 const ApplicationSubmissions = () => {
     const { club } = useClubOutlet();
     const { data: applications, isLoading } = useApplications(club?.id);
-    const { bulkApplicationsApprove, bulkApplicationsReject } = useApplicationBulkActions(club.id)
+    const { bulkApplicationsApprove, bulkApplicationsReject } = useApplicationBulkActions(club.id);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+    const [showApplicationForm, setShowApplicationForm] = useState<boolean>(false);
     const [selectedApplicants, setSelectedApplicants] = useState<Set<string>>(new Set());
+    const [isExiting, setIsExiting] = useState(false);
     const navigate = useNavigate();
 
+    const showBar = selectedApplicants.size > 0 || isExiting;
 
     const filteredApplications = useMemo(() => {
         if (!applications) return [];
@@ -85,7 +94,7 @@ const ApplicationSubmissions = () => {
 
     if (isLoading) return <>Loading...</>;
 
-    if (applications.length === 0) {
+    if (applications && applications.length === 0) {
         return (
             <div className="w-full">
                 <EmptyState title="No Applications" description="No membership applications yet" icon={<HugeiconsIcon icon={UserListIcon} />}>
@@ -98,7 +107,7 @@ const ApplicationSubmissions = () => {
     }
 
     return (
-        <div className=''>
+        <div className='relative min-h-full'>
             <div className="flex items-center justify-end gap-4 pb-4">
                 <Button variant="outline" onClick={() => navigate(paths.private.club.submissions.form(club?.slug))}>
                     Forms
@@ -132,7 +141,7 @@ const ApplicationSubmissions = () => {
                         <TableHead className="w-25">Applicant</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Applied at</TableHead>
-                        <TableHead>Message</TableHead>
+                        <TableHead>Submission</TableHead>
                         <TableHead className="text-right">Reviewed By</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -172,7 +181,14 @@ const ApplicationSubmissions = () => {
                                     month: 'short',
                                     day: 'numeric'
                                 })}</TableCell>
-                                <TableCell className="text-muted-foreground">{applicaition.message}</TableCell>
+                                <TableCell className="flex items-center justify-between">
+                                    <span className="text-muted-foreground line-clamp-2 max-w-50">{applicaition.message}</span>
+                                    {applicaition.submission && (<>
+                                        <Button size='icon' variant='ghost' onClick={() => setShowApplicationForm(true)}>
+                                            <HugeiconsIcon icon={FileTextIcon} />
+                                        </Button>
+                                    </>)}
+                                </TableCell>
                                 <TableCell className="text-right">
                                     {applicaition.reviewed_at ? (
                                         <div className="flex items-center justify-end gap-2">
@@ -187,51 +203,92 @@ const ApplicationSubmissions = () => {
                                     )}
                                 </TableCell>
                             </TableRow>
+                            {applicaition.submission && (<>
+                                <ResponsiveDialog open={showApplicationForm} onOpenChange={setShowApplicationForm} title='Application Form'>
+                                    {applicaition.submission?.answers && (
+                                        applicaition.submission?.answers.map((answer, index: number) => {
+                                            return (
+                                                <Card key={index}>
+                                                    {/* <CardHeader className='flex flex-row items-center gap-2'>
+                                                        <span className='text-muted-foreground'>{index + 1}.</span>
+                                                        <CardTitle>{answer.question}</CardTitle>
+                                                    </CardHeader> */}
+                                                    <CardContent>
+                                                        <ul className='list-none space-y-1'>
+                                                            <li className='text-md font-semibold'> Q: {answer.question}</li>
+                                                            <li className='text-sm text-muted-foreground ml-5'> • {answer.answer}</li>
+                                                        </ul>
+                                                    </CardContent>
+                                                </Card>
+                                            )
+                                        })
+                                    )}
+                                </ResponsiveDialog>
+                            </>)}
                         </TableBody>
                     ))
                 )}
             </Table>
-            {selectedApplicants.size > 0 && (
-                <div className={cn(
-                    "absolute bottom-4 right-1/2 translate-x-1/2 z-50",
-                    "bg-primary-foreground rounded-full px-6 py-2 shadow-md",
-                    "flex items-center gap-4",
-                    selectedApplicants.size > 0
-                        ? "animate-[slideInUp_0.3s_ease-out]"
-                        : "animate-[slideOutDown_0.3s_ease-out]",
-                )} >
-                    <span className='text-muted-foreground'>{selectedApplicants.size} selected</span>
-                    <div className='flex gap-1 items-center'>
-                        <Button
-                            variant="glass"
-                            onClick={() => {
-                                const application_ids = Array.from(selectedApplicants);
-                                bulkApplicationsApprove.mutate(application_ids, {
-                                    onSuccess: () => {
-                                        setSelectedApplicants(new Set());
-                                    }
-                                });
-                            }}
-                            className='rounded-full'
-                        >
-                            <HugeiconsIcon icon={CheckIcon} /> Approve
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={() => {
-                                const application_ids = Array.from(selectedApplicants);
-                                bulkApplicationsReject.mutate(application_ids, {
-                                    onSuccess: () => {
-                                        setSelectedApplicants(new Set());
-                                    }
-                                });
-                            }}
-                            className='rounded-full'
-                        >
-                            <HugeiconsIcon icon={XIcon} /> Reject
-                        </Button>
-                    </div>
-                </div>
+            {showBar && (
+                <ConfirmationBarBottom
+                    isExiting={isExiting}
+                    selectedCount={selectedApplicants.size}
+                    onConfirm={() => {
+                        const application_ids = Array.from(selectedApplicants);
+                        bulkApplicationsApprove.mutate(application_ids, {
+                            onSuccess: () => {
+                                setSelectedApplicants(new Set());
+                            }
+                        });
+                    }}
+                    onCancel={() => {
+                        setIsExiting(true);
+                    }}
+                    onAnimationEnd={() => {
+                        if (isExiting) {
+                            setSelectedApplicants(new Set());
+                            setIsExiting(false);
+                        }
+                    }}
+                >
+                    <Button
+                        variant="destructive"
+                        onClick={() => {
+                            const application_ids = Array.from(selectedApplicants);
+                            bulkApplicationsReject.mutate(application_ids, {
+                                onSuccess: () => {
+                                    setSelectedApplicants(new Set());
+                                }
+                            });
+                        }}
+                        className='rounded-full'
+                        size='icon-lg'
+                    >
+                        <HugeiconsIcon icon={XIcon} />
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <Button
+                                variant="ghost"
+                                size='icon-lg'
+                                className='rounded-full'
+                            >
+                                <HugeiconsIcon icon={EllipsisIcon} className='size-5' />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align='end' className={'w-fit'}>
+                            <DropdownMenuGroup>
+                                {ActionItems.map((filter, index: number) => (
+                                    <DropdownMenuItem key={index} className={'p-4'} onClick={() => {
+
+                                    }}>
+                                        {filter.label}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </ConfirmationBarBottom>
             )}
         </div>
     );

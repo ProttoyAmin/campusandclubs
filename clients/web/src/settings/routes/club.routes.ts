@@ -6,6 +6,7 @@ export const clubRoutes = {
     create: "/@/clubs/create/",
     config: {
       base: "/@/clubs/:slug/config/",
+      info: "/@/clubs/:slug/config/info/",
       permissions: "/@/clubs/:slug/config/permissions/",
       members: "/@/clubs/:slug/config/members/",
       requests: {
@@ -18,7 +19,11 @@ export const clubRoutes = {
         base: "/@/clubs/:slug/config/submissions/",
         form: "/@/clubs/:slug/config/submissions/form/",
       },
-      settings: "/@/clubs/:slug/config/settings/",
+      settings: {
+        base: "/@/clubs/:slug/config/settings/",
+        privacy: "/@/clubs/:slug/config/settings/privacy/",
+        scope: "/@/clubs/:slug/config/settings/scope/",
+      },
     },
   },
   public: {

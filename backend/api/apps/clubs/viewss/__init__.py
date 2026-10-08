@@ -1,6 +1,10 @@
 
-from .club.generics import ClubListCreateView
+from .club.generics import (
+    ClubListCreateView,
+    ClubPrivacyJoinModeUpdateView
+)
 
 __all__ = [
     'ClubListCreateView',
+    'ClubPrivacyJoinModeUpdateView',
 ]

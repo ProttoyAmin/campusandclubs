@@ -20,7 +20,8 @@ import {
     SendIcon,
     MessageCircleIcon,
     FavouriteIcon,
-    MenuTwoLineIcon
+    MenuTwoLineIcon,
+    RefreshCcwDotIcon
 } from "@hugeicons/core-free-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { getTimeAgo } from "@/utils/format-date";
@@ -33,6 +34,9 @@ import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu
 import { queryClient } from "@/config/query-client";
 import { usePost } from "../hooks/posts.hooks";
 import { Skeleton } from "design/components/ui/skeleton";
+import { useSession } from "@/features/auth/hooks";
+import Like from "@/features/interactions/components/like";
+import Repost from "@/features/interactions/components/repost";
 
 export type MediaListExtended = MediaList & {
     id: string | number;
@@ -87,7 +91,9 @@ export type PostExtended = Post & {
 const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableNavigate?: boolean }) => {
 
     const navigate = useNavigate();
+    const { data: session } = useSession()
     const [liked, setLiked] = useState(!!post.is_liked)
+    const [isReposted, setIsReposted] = useState(false);
     const [open, setOpen] = useState<boolean>(false)
 
     const { toggleLike } = usePost(post.id);
@@ -131,15 +137,17 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                         <ResponsiveDropDownMenu
                             open={open}
                             onOpenChange={setOpen}
-                            trigger={<Button variant={"ghost"} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); }}>
+                            trigger={<Button variant={"ghost"} onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation() }}>
                                 <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
                             </Button>}
                         >
                             <DropdownMenuGroup className={''}>
-                                <DropdownMenuItem className={'p-4'}>Copy link</DropdownMenuItem>
-                                <DropdownMenuItem className={'p-4'}>Save</DropdownMenuItem>
-                                <DropdownMenuItem className={'p-4'}>Not interested</DropdownMenuItem>
-                                <DropdownMenuItem className={'p-4'}>First Item</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4 cursor-pointer'}>Copy link</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4 cursor-pointer'}>Save</DropdownMenuItem>
+                                <DropdownMenuItem className={'p-4 cursor-pointer'}>Not interested</DropdownMenuItem>
+                                {session.meta?.is_authenticated && post.author.id === session?.data.user.id && (
+                                    <DropdownMenuItem variant="destructive" className={'p-4 cursor-pointer'}>Remove</DropdownMenuItem>
+                                )}
                             </DropdownMenuGroup>
                         </ResponsiveDropDownMenu>
                     </CardDescription>
@@ -171,43 +179,21 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                     </CardContent>
                     <CardFooter className="p-0 mt-2">
                         <div className="flex items-center">
-                            <CardAction onClick={(e: React.MouseEvent) => {
-                                e.stopPropagation();
-                                setLiked(prev => !prev);
-                                toggleLike.mutate(undefined, {
-                                    onSuccess: () => {
-                                        queryClient.invalidateQueries({ queryKey: ["users", post.author?.username, 'posts'] });
-                                    },
-                                    onError: () => {
-                                        setLiked(prev => !prev);
-                                    }
-                                });
-                            }}>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
-                                    <HugeiconsIcon icon={FavouriteIcon} className={`size-5 ${liked ? 'text-red-500' : 'text-muted-foreground'}`} fill={liked ? 'red' : 'none'} />
-                                    <span className={`text-xs text-muted-foreground ${liked ? 'text-red-500' : 'text-muted-foreground'}`}>
-                                        {post.like_count}
-                                    </span>
-                                </Button>
+                            <CardAction>
+                                <Like post={post} />
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
-                                    <HugeiconsIcon icon={MessageCircleIcon} className="size-5" />
-                                    <span className="text-xs text-muted-foreground">
-                                        {post.comment_count}
-                                    </span>
-                                </Button>
+                                <Link to={paths.private.user.posts.detail(post.author?.username, post.id)}>
+                                    <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
+                                        <HugeiconsIcon icon={MessageCircleIcon} className="size-5" />
+                                        <span className="text-xs text-muted-foreground">
+                                            {post.comment_count}
+                                        </span>
+                                    </Button>
+                                </Link>
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
-                                    <HugeiconsIcon
-                                        icon={Refresh03Icon}
-                                        className="size-5"
-                                    />
-                                    <span className="text-xs text-muted-foreground">
-                                        {post.repost_count}
-                                    </span>
-                                </Button>
+                                <Repost post={post} />
                             </CardAction>
                             <CardAction>
                                 <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">

@@ -37,7 +37,7 @@ export function ClubApplicationDialog({
   const [questions, setQuestions] = useState([])
   const [answers, setAnswers] = useState<{ question_id: string, answer: string }[]>([])
   const { slug } = useParams();
-  const { mutate: applyToClub } = useApplyToClub(clubId || "", slug || "");
+  const { mutateAsync: applyToClub } = useApplyToClub(clubId || "", slug || "");
   const { applicationForms } = useApplication(clubId);
   const affiliations = useCacheAffiliations()
   let isAffiliated = false

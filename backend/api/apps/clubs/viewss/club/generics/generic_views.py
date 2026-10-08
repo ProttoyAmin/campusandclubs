@@ -1,3 +1,14 @@
+from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
+from rest_framework.viewsets import GenericViewSet
+from apps.clubs.serializer.club.club_details import ClubScopeUpdateSerializer
+from apps.clubs.models import JoinMode
+from apps.clubs.models import Visibility
+from apps.clubs.serializer import ClubPrivacyJoinModeUpdateSerializer
+from apps.clubs.dtos.club_create import ClubUpdateSettingsDTO
+from apps.clubs.dtos.club_create import ClubCreateDTO
+from rest_framework import serializers
+from rest_framework.decorators import action
+from apps.clubs.serializer import ClubUpdateSerializer
 from django.core.exceptions import PermissionDenied
 from django.db.models import QuerySet
 from rest_framework import generics, permissions, status
@@ -53,7 +64,7 @@ class ClubListCreateView(
             return ClubSerializer
 
     def get_queryset(self) -> QuerySet[Club]:
-        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
+        return self.get_service(self.request).exclude_secret_clubs()
 
     def get_permissions(self) -> list[permissions.BasePermission]:
         if self.request.method == "POST":
@@ -71,8 +82,9 @@ class ClubListCreateView(
             origin=request.query_params.get("origin"),
         )
 
-        clubs = self.get_service(request).list_clubs(
-            viewer=current_user(request), filters=filters)
+        # clubs = self.get_service(request).list_clubs(
+        #     viewer=current_user(request), filters=filters)
+        clubs = self.get_service(request).exclude_secret_clubs()
 
         page = self.paginate_queryset(clubs)
         serializer = self.get_serializer(page, many=True)
@@ -113,6 +125,12 @@ class ClubRetrieveUpdateDestroyAPIView(
     def get_queryset(self) -> QuerySet[Club]:
         return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
+    def get_serializer_class(self) -> type[serializers]:
+        if self.request.method == "PUT" or self.request.method == "PATCH":
+            return ClubUpdateSerializer
+        else:
+            return ClubDetailSerializer
+
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         from apps.clubs.models import Visibility
 
@@ -140,7 +158,13 @@ class ClubRetrieveUpdateDestroyAPIView(
         if not decision.allowed:
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
-        return super().update(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        updated = self.get_service(request).update_settings(self.kwargs['pk'], dto=ClubUpdateSettingsDTO.from_validated_data(serializer.validated_data))
+
+        detail_serializer = self.get_serializer(updated, context={"request": request})
+        return Response(detail_serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         policy = self.get_policy(request, self.get_object())
@@ -153,3 +177,160 @@ class ClubRetrieveUpdateDestroyAPIView(
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
+
+
+class ClubPrivacyJoinModeUpdateView(
+    ServiceMixin[ClubService],
+    PolicyMixin[ClubPolicy, Club],
+    generics.UpdateAPIView[Club]
+):
+    """
+        Update club privacy and join settings.
+        """
+    serializer_class = ClubPrivacyJoinModeUpdateSerializer
+    service_class = ClubService
+    policy_class = ClubPolicy
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self) -> QuerySet[Club]:
+        return self.get_service(self.request).list_clubs(viewer=current_user(self.request))
+
+
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        policy = self.get_policy(request, self.get_object())
+        if not policy:
+            ...
+
+        decision = policy.can_edit()
+
+        if not decision.allowed:
+            return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
+
+        self.get_service(request).update_privacy_join_mode(
+            self.kwargs['pk'], 
+            dto={
+                "privacy": request.data.get("privacy"),
+                "join_mode": request.data.get("join_mode")
+            }
+        )   
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class ClubScopeUpdateView(
+    ServiceMixin[ClubService],
+    PolicyMixin[ClubPolicy, Club],
+    generics.UpdateAPIView[Club]
+):
+    """
+        Update club scope.
+        """
+    serializer_class = ClubScopeUpdateSerializer
+    service_class = ClubService
+    policy_class = ClubPolicy
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self) -> QuerySet[Club]:
+        return self.get_service(self.request).list_clubs(viewer=current_user(self.request))
+
+
+    def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        policy = self.get_policy(request, self.get_object())
+        if not policy:
+            ...
+
+        decision = policy.can_edit()
+
+        if not decision.allowed:
+            return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
+
+        self.get_service(request).update_scope(
+            self.get_object(), 
+            scope=request.data.get("scope")
+        )   
+
+        return Response(status=status.HTTP_200_OK)
+
+
+
+class ClubSettingsViewset(
+    ServiceMixin[ClubService],
+    PolicyMixin[ClubPolicy, Club],
+    GenericViewSet
+):
+    service_class = ClubService
+    policy_class = ClubPolicy
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self) -> QuerySet[Club]:
+        return self.get_service(self.request).list_clubs(viewer=current_user(self.request))
+
+    def _authorize_edit(self) -> Club | Response:
+        club = self.get_object()
+        policy = self.get_policy(self.request, club)
+
+        if not policy:
+            return Response(
+                {"detail": "Permission denied."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        decision = policy.can_edit()
+
+        if not decision.allowed:
+            return Response(
+                {"detail": decision.reason},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return club
+
+    @action(
+        detail=False,
+        methods=["patch"],
+        url_path="privacy-join-mode",
+        serializer_class=ClubPrivacyJoinModeUpdateSerializer,
+    )
+    def update_privacy_join_mode(self, request: Request, pk=None) -> Response:
+        club = self._authorize_edit()
+
+        if isinstance(club, Response):
+            return club
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        dto = ClubPrivacyJoinModeDTO(
+            privacy=serializer.validated_data['privacy'],
+            join_mode=serializer.validated_data['join_mode']
+        )
+
+        self.get_service(request).update_privacy_join_mode(
+            club,
+            dto=dto
+        )
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=["patch"],
+        url_path="scope",
+        serializer_class=ClubScopeUpdateSerializer,
+    )
+    def update_scope(self, request: Request, pk=None) -> Response:
+        club = self._authorize_edit()
+
+        if isinstance(club, Response):
+            return club
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        scope = serializer.validated_data['scope']
+
+        self.get_service(request).update_scope(
+            club,
+            scope=scope
+        )
+
+        return Response(status=status.HTTP_200_OK)

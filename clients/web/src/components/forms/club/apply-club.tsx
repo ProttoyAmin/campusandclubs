@@ -12,9 +12,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Textarea } from "design/components/ui/textarea";
 import { Input } from "design/components/ui/input";
 
-type QuestionType = "short_text" | "long_text" | "phone" | "email" | "file";
+export type QuestionType = "short_text" | "long_text" | "phone" | "email" | "file";
 
-type Question = {
+export type Question = {
   id: string;
   question: string;
   type: QuestionType;
@@ -46,27 +46,31 @@ const ClubApplicationForm = (props: ClubApplicationProps) => {
       {!props.questions || props.questions.length === 0 ? (
         <></>
       ) : (
-        props.questions.map((q: Question) => (
-          <Field key={q.id}>
-            <FieldLabel htmlFor={`question_${q.id}`}>
-              {q.question}
-            </FieldLabel>
-            <Input
-              id={`question_${q.id}`}
-              placeholder={q.question}
-              autoComplete="off"
-              onChange={(e) => {
-                props.setAnswers(prev => {
-                  const existingAnswer = prev.find(a => a.question_id === q.id);
-                  if (existingAnswer) {
-                    return prev.map(a => a.question_id === q.id ? { ...a, answer: e.target.value } : a);
-                  }
-                  return [...prev, { question_id: q.id, answer: e.target.value }];
-                });
-              }}
-            />
-          </Field>
-        ))
+        props.questions.map((q: Question) => {
+          return (
+            <>
+              <Field key={q.id}>
+                <FieldLabel htmlFor={`question_${q.id}`}>
+                  {q.question}
+                </FieldLabel>
+                <Input
+                  id={`question_${q.id}`}
+                  placeholder={q.question}
+                  autoComplete="off"
+                  onChange={(e) => {
+                    props.setAnswers(prev => {
+                      const existingAnswer = prev.find(a => a.question_id === q.id);
+                      if (existingAnswer) {
+                        return prev.map(a => a.question_id === q.id ? { ...a, answer: e.target.value } : a);
+                      }
+                      return [...prev, { question_id: q.id, answer: e.target.value }];
+                    });
+                  }}
+                />
+              </Field>
+            </>
+          )
+        })
       )}
       <FieldGroup>
         <div className="flex gap-2">

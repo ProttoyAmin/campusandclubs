@@ -22,9 +22,9 @@ export const SettingsMenu: () => MenuItemType[] = () => [
     iconActive: (
       <HugeiconsIcon icon={SquareLock01Icon} size={18} />
     ),
-    link: () => paths.private.settings.privacy,
+    link: () => paths.private.settings.privacy.base,
     isActive: (currentPath) =>
-      isRouteActive(routes.settings.privacy, currentPath),
+      isRouteActive(routes.settings.privacy.base, currentPath),
   },
   {
     id: 3,

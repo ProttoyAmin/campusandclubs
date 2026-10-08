@@ -17,7 +17,7 @@ class SocketService {
         this.ws = new WebSocket(this.url);
 
         this.ws.onopen = () => {
-            console.log("[socket] connected");
+            // console.log("[socket] connected");
             this.reconnectAttempts = 0;
         };
 
@@ -28,7 +28,7 @@ class SocketService {
         };
 
         this.ws.onclose = (e) => {
-            console.log("[socket] closed", e.code, e.reason);
+            // console.log("[socket] closed", e.code, e.reason);
             if (e.code !== 1000) this.scheduleReconnect(); // 1000 = normal/manual close, don't retry
         };
 

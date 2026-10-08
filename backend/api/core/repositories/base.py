@@ -44,9 +44,9 @@ class BaseRepository(Generic[T], ABC):
         return cast(T, self.model._default_manager.create(**kwargs))
 
     def update(self, instance: T, **kwargs: Any) -> T:
-        for field, value in kwargs.items():
-            setattr(instance, field, value)
-        instance.save(update_fields=list[str](kwargs.keys()))
+        # for field, value in kwargs.items():
+        #     setattr(instance, field, value)
+        instance.save(update_fields=(kwargs.keys()))
         return instance
 
     def delete(self, instance: T) -> None:

@@ -5,6 +5,9 @@ export {
   clubSettingsSchema,
   type ClubSettingsRequestInput,
   type ClubSettingsRequestOutput,
+  type ClubPrivacySecurityRequestInput,
+  type ClubPrivacySecurityRequestOutput,
+  clubPrivacySecuritySchema,
 } from "./club-settings-schema";
 export {
   clubCreateSchema,

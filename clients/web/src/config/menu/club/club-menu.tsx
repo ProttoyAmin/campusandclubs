@@ -8,7 +8,7 @@ export const clubProfileMenu: (slug: string) => MenuItemType[] = (
         {
             id: 1,
             label: "Posts",
-            icon: <></>,
+            icon: "",
             iconActive: <></>,
             link: () => paths.public.club.slug(slug),
             isActive: (currentPath) =>
@@ -17,7 +17,7 @@ export const clubProfileMenu: (slug: string) => MenuItemType[] = (
         {
             id: 2,
             label: "Media",
-            icon: <></>,
+            icon: "",
             iconActive: <></>,
             link: () => paths.private.club.media(slug),
             isActive: (currentPath) =>

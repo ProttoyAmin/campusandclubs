@@ -7,28 +7,31 @@ import { Button } from 'design/components/ui/button';
 import ResponsiveDialog from '@/shared/components/responsive-dialog';
 import React from 'react';
 import ApplicationFormCreateForm from '@/features/club/forms/club-form-create';
+import ApplicationFormsShowcase from '@/features/club/components/club/application-forms';
 
-
-const FormBuilder = () => {
-    return (
-        <div>
-            <h1>Form Builder</h1>
-        </div>
-    )
-}
 
 const SubmissionForm = () => {
     const [isFormBuilderOpen, setIsFormBuilderOpen] = React.useState(false);
     const { club } = useClubOutlet();
     if (!club) return null;
     const { applicationForms, createApplicationForm } = useApplication(club.id);
-    const clubForms = applicationForms.data
+    const clubForms = [];
+    if (applicationForms.data) {
+        clubForms.push(applicationForms.data);
+    }
     const createForm = createApplicationForm()
 
     if (applicationForms.isLoading) return <div>Loading...</div>;
 
     return (
         <div>
+            <div className='flex justify-end'>
+                <Button variant='outline' className={'rounded-full text-xs px-4'} onClick={() => {
+                    setIsFormBuilderOpen(true);
+                }}>
+                    Add forms
+                </Button>
+            </div>
             <ResponsiveDialog
                 open={isFormBuilderOpen}
                 onOpenChange={setIsFormBuilderOpen}
@@ -42,16 +45,14 @@ const SubmissionForm = () => {
                     }
                 />
             </ResponsiveDialog>
-            {clubForms?.data?.length === 0 ?
-                <EmptyState title="No Forms" description={clubForms?.message || "No application forms are created yet."} icon={<HugeiconsIcon icon={FormIcon} />}
-                    children={
-                        <Button variant='outline' className={'rounded-full text-xs px-4'} onClick={() => {
-                            setIsFormBuilderOpen(true);
-                        }}>
-                            Create Application Form
-                        </Button>
-                    }
-                /> : <pre>{JSON.stringify(applicationForms, null, 2)}</pre>
+            {clubForms?.length === 0 ?
+                <EmptyState title="No Forms" description={"No application forms are created yet."} icon={<HugeiconsIcon icon={FormIcon} />}
+                /> : (
+                    <>
+                        <pre>{JSON.stringify(clubForms, null, 2)}</pre>
+                        <ApplicationFormsShowcase forms={clubForms} />
+                    </>
+                )
             }
 
         </div>

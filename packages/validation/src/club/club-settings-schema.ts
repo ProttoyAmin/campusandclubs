@@ -20,6 +20,53 @@ export const clubSettingsSchema: z.ZodType<ClubSettingsRequest> = z
     scope: z.enum(ScopeOptions).optional(),
   })
   .superRefine((data, ctx) => {
+    console.log("data: ", data);
+    console.log("ctx: ", ctx);
+    // if (data.privacy === "secret" && data.join_mode !== "invite_only") {
+    //   ctx.addIssue({
+    //     code: "custom",
+    //     message: "Secret clubs must be invite-only.",
+    //     path: ["join_mode"],
+    //   });
+    // }
+    // if (
+    //   data.privacy === "private" &&
+    //   !["application", "invite_only"].includes(data.join_mode ?? "")
+    // ) {
+    //   ctx.addIssue({
+    //     code: "custom",
+    //     message: "Private clubs must use application or invite-only join mode.",
+    //     path: ["join_mode"],
+    //   });
+    // }
+
+    // if (data.privacy === "public" && data.join_mode === "invite_only") {
+    //   ctx.addIssue({
+    //     code: "custom",
+    //     message: "Public clubs cannot use invite only join mode.",
+    //     path: ["join_mode"],
+    //   });
+    // }
+
+    // if (data.scope !== "global") {
+    //   ctx.addIssue({
+    //     code: "custom",
+    //     message: "Scope must be global",
+    //     path: ["scope"],
+    //   });
+    // }
+  });
+
+
+
+export const clubPrivacySecuritySchema: z.ZodType<ClubSettingsRequest> = z
+  .object({
+    join_mode: z.enum(JoinModeOptions).optional(),
+    privacy: z.enum(PrivacyOptions).optional(),
+  })
+  .superRefine((data, ctx) => {
+    console.log("data: ", data);
+    console.log("ctx: ", ctx);
     if (data.privacy === "secret" && data.join_mode !== "invite_only") {
       ctx.addIssue({
         code: "custom",
@@ -46,14 +93,10 @@ export const clubSettingsSchema: z.ZodType<ClubSettingsRequest> = z
       });
     }
 
-    if (data.scope !== "global") {
-      ctx.addIssue({
-        code: "custom",
-        message: "Scope must be global",
-        path: ["scope"],
-      });
-    }
   });
 
 export type ClubSettingsRequestInput = z.input<typeof clubSettingsSchema>;
 export type ClubSettingsRequestOutput = z.output<typeof clubSettingsSchema>;
+
+export type ClubPrivacySecurityRequestInput = z.input<typeof clubPrivacySecuritySchema>;
+export type ClubPrivacySecurityRequestOutput = z.output<typeof clubPrivacySecuritySchema>;

@@ -1,11 +1,14 @@
 # apps/clubs/urls.py
+from django.urls import include
+from apps.clubs.viewss.club.generics.generic_views import ClubSettingsViewset
 from django.urls import path
 
 from . import views, views_clubs_post_views, views_members_views, views_event_views
 from apps.clubs.viewss.club.generics import (
     ClubListCreateView,
     ClubRetrieveUpdateDestroyAPIView,
-    DepartmentTemplateListView
+    DepartmentTemplateListView,
+    ClubPrivacyJoinModeUpdateView
 )
 
 from apps.clubs.viewss.club.common import (
@@ -32,11 +35,21 @@ from apps.clubs.viewss.membership.generics import (
     MA_BulkRejectAPIView,
     MA_ApplicationResponses
 )
-
+from rest_framework.routers import DefaultRouter
 
 app_name = 'clubs'
 
+
+router = DefaultRouter()
+
+router.register(r'', ClubSettingsViewset, basename='club-settings')
+
 urlpatterns = [
+
+    path(
+    '<uuid:pk>/settings/',
+    include(router.urls),
+    ),
     # ==================== CLUB MANAGEMENT ====================
     #     path('', views.list_clubs, name='list_clubs'),    # ---- checked
     path('', ClubListCreateView.as_view(), name='list_clubs'),    # ---- checked
@@ -46,6 +59,8 @@ urlpatterns = [
          name='club_info'),    #
     path('<str:slug>/', ClubRetrieveUpdateDestroyAPIView.as_view(lookup_field='slug'),
          name='club_info_slug'),    #
+    path('<uuid:pk>/privacy-join-mode/', ClubPrivacyJoinModeUpdateView.as_view(),
+         name='club_privacy_join_mode'),  # NEW
 
     #     path('create/', views.create_club, name='create_club'),    # ---- checked
 
