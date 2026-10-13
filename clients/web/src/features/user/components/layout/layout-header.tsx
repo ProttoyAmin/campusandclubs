@@ -55,7 +55,6 @@ const ProfileLayoutHeader = ({
 
   const uploadAvatar = async (avatar: File) => {
     const payload = {
-      media: avatar,
       file: avatar,
       role: "avatar",
       target_type: "user",

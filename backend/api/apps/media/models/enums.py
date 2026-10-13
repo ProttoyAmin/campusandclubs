@@ -10,3 +10,10 @@ class MediaRole(models.TextChoices):
     GALLERY = "gallery"
     ATTACHMENT = "attachment"
     OTHER = "other"
+
+
+class MediaStatus(models.TextChoices):
+    PENDING = "pending"
+    UPLOADING = "uploading"
+    READY = "ready"
+    FAILED = "failed"

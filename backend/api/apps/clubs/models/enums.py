@@ -24,9 +24,9 @@ class AffiliateStatus(models.TextChoices):
     BANNED = 'banned', 'Banned'
 
 class MembershipScope(models.TextChoices):
-    GLOBAL = 'global', 'Global'
+    OPEN = 'open', 'Open'
     EXCLUSIVE = 'exclusive', 'Exclusive'
-    CROSS_INSTITUTE = 'cross_institute', 'Cross Institute'
+    INTRA = 'intra', 'Intra'
 
 class ApplicationDecision(models.TextChoices):
     MANUAL = "manual", "Manual Review"

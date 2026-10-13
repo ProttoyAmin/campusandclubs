@@ -10,19 +10,19 @@ const AuthLayout: React.FC = () => {
     document.title = `Auth • ${APP_NAME}`;
   }, []);
   return (
-    // <Suspense fallback={<div>Loading...</div>}>
-    <Guard>
-      <div className="h-screen flex flex-col justify-center items-center w-full">
-        <h1 className="mb-10 text-primary text-xl font-bold">
-          campusandclubs
-        </h1>
-        <Card className="max-w-md w-full min-h-fit bg-background">
-          <Outlet />
-          <SocialLoginForms />
-        </Card>
-      </div>
-    </Guard>
-    // </Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Guard>
+        <div className="h-screen flex flex-col justify-center items-center w-full">
+          <h1 className="mb-10 text-primary text-xl font-bold">
+            {APP_NAME.toLocaleLowerCase().split(' ')}
+          </h1>
+          <Card className="max-w-md w-full min-h-fit bg-background">
+            <Outlet />
+            <SocialLoginForms />
+          </Card>
+        </div>
+      </Guard>
+    </Suspense>
   );
 };
 

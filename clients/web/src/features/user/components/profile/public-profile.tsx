@@ -115,7 +115,7 @@ export const PublicProfileHeader: React.FC<{
         {data?.id !== currentUser?.data?.user?.id && <div className="p-2">
           <div className="flex gap-2 mt-2">
             <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
-            <Button variant={"outline"} className="w-1/2 rounded-full" onClick={handleMessage}>Message</Button>
+            <Button variant={"outline"} className="w-1/2 rounded-full" size="lg" onClick={handleMessage}>Message</Button>
           </div>
         </div>}
         {/* <pre>

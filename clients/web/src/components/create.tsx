@@ -2,7 +2,7 @@ import { ChevronRightIcon, CircleEllipsisIcon, PlusIcon } from "lucide-react";
 import { Button } from "design/components/ui/button";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import { useMe, useProfile } from "@/features/user/hooks/user.hooks";
-import { DialogClose } from "design/components/ui/dialog";
+import { DialogClose, DialogFooter } from "design/components/ui/dialog";
 import {
   Combobox,
   ComboboxChip,
@@ -28,8 +28,8 @@ import { Spinner } from "design/components/ui/spinner";
 import { queryClient } from "@/config/query-client";
 
 type CreateProps = {
-  variant: "default" | "icon"
-}
+  variant: "default" | "icon";
+};
 
 const Create = () => {
   const { data: user } = useMe();
@@ -52,13 +52,15 @@ const Create = () => {
         });
         setDialogOpen(false);
         setValue([]);
-        queryClient.invalidateQueries({ queryKey: ["users", user.username, "posts"] });
+        queryClient.invalidateQueries({
+          queryKey: ["users", user.username, "posts"],
+        });
       },
       onError(error: any) {
         console.log(error.response.data);
         toast.add({
           title: "Failed for some reaason, Try again later.",
-          description: error.response.data.detail.message,
+          description: error.response.data.detail?.message,
           type: "error",
         });
       },
@@ -95,18 +97,27 @@ const Create = () => {
           </div>
         }
         footer={
+          // <DialogFooter className="w-full">
           <Button
             type="submit"
             form="post-create-form"
             variant={"outline"}
             size={"lg"}
             disabled={create.isPending}
-            className="shadow-2xl w-full mt-auto rounded-full"
+            className="shadow-2xl w-full rounded-full"
           >
-            {create.isPending ? <><Spinner /> Posting...</> : "Post"}
+            {create.isPending ? (
+              <>
+                <Spinner /> Posting...
+              </>
+            ) : (
+              "Post"
+            )}
           </Button>
+          // </DialogFooter>
         }
         showCloseButton={false}
+        contentClassName="flex flex-col justify-between"
       >
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 items-center">
@@ -152,13 +163,12 @@ const Create = () => {
               </ComboboxContent>
             </Combobox>
           </div>
-          <div className="flex flex-col gap-2 no-scrollbar overflow-y-auto">
+          <div className="flex flex-col gap-2 no-scrollbar overflow-y-auto h-full">
             <PostCreateForm
               user={{ username: user?.username, avatar: user?.avatar }}
               onSubmit={handleSubmit}
               isPending={create.isPending}
             />
-
           </div>
         </div>
       </ResponsiveDialog>

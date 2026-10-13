@@ -14,7 +14,6 @@ import { paths } from '@/settings/routes';
 
 const PostDetail = () => {
     const { username, postId } = useParams();
-    console.log(username);
     const commentFormRef = React.useRef<CommentBoxFormHandle>(null);
     const { retrieve, comments, postComments } = usePost(postId as string);
     const pageHeader = usePageHeader();
@@ -58,7 +57,7 @@ const PostDetail = () => {
             {retrieve.data ? (
                 <>
                     <div className="flex flex-col gap-6">
-                        <PostCard post={retrieve.data} enableNavigate={false} />
+                        <PostCard post={retrieve.data} enableNavigate={false} reduceContent={false} />
                         <div className="px-2 sticky bottom-10">
                             <CommentBoxForm ref={commentFormRef} user={currentUser} post={retrieve.data} onComment={onComment} />
                         </div>

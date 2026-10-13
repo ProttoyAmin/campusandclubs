@@ -33,9 +33,9 @@ _ALLOWED_JOIN_MODES: dict[str, tuple[str, ...]] = {
 }
 
 _ALLOWED_SCOPE: dict[str, MembershipScope] = {
-    MembershipScope.GLOBAL: (Visibility.PUBLIC, Visibility.PRIVATE),
+    MembershipScope.OPEN: (Visibility.PUBLIC, Visibility.PRIVATE),
     MembershipScope.EXCLUSIVE: (Visibility.PRIVATE, Visibility.SECRET),
-    MembershipScope.CROSS_INSTITUTE: (Visibility.PUBLIC, Visibility.PRIVATE, Visibility.SECRET),
+    MembershipScope.INTRA: (Visibility.PUBLIC, Visibility.PRIVATE, Visibility.SECRET),
 }
 
 
@@ -88,7 +88,7 @@ class Club(models.Model):
     )
 
     scope = models.CharField(
-        max_length=20, choices=MembershipScope.choices, default=MembershipScope.GLOBAL
+        max_length=20, choices=MembershipScope.choices, default=MembershipScope.OPEN
     )
 
     allow_public_posts = models.BooleanField(default=True)
@@ -147,12 +147,12 @@ class Club(models.Model):
                 }
             )
         
-        if not self.origin and self.scope != MembershipScope.GLOBAL:
+        if not self.origin and self.scope != MembershipScope.OPEN:
             raise ValidationError(
                 {
                     "scope": (
                         f"'{self.scope}' is not valid for a local club. "
-                        f"Allowed: {MembershipScope.GLOBAL}."
+                        f"Allowed: {MembershipScope.OPEN}."
                     )
                 }
             )

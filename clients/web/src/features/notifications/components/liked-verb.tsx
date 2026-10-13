@@ -45,9 +45,13 @@ const LikedVerb = ({ notification }: { notification: Notification }) => {
                 {notification.target_type === "Post" && (
                     <>
                         <div className="flex flex-col gap-2">
-                            <p>{(notification.target_preview as PostExtended).content}</p>
+                            <p>{(notification.target_preview as PostExtended).content?.split(/\s+/).slice(0, 25).join(" ")} {(notification.target_preview as PostExtended).content?.split(/\s+/).length > 25 ? "..." : ""}</p>
                             {(notification.target_preview as PostExtended).media.length > 0 && (
-                                <img src={(notification.target_preview as PostExtended).media[0]?.file?.url} alt="" className="h-30 w-30 object-cover" />
+                                (notification.target_preview as PostExtended).media?.[0]?.resource_type === "video" ? (
+                                    <video src={(notification.target_preview as PostExtended).media?.[0]?.secure_url} className="h-30 w-30 object-cover" />
+                                ) : (
+                                    <img src={(notification.target_preview as PostExtended).media?.[0]?.secure_url} alt="" className="h-30 w-30 object-cover" />
+                                )
                             )}
                         </div>
                     </>

@@ -12,6 +12,8 @@ const PasswordsPage = () => {
     const { passwordChange } = useAccount();
 
     const handleSubmit = React.useCallback((data: ChangePasswordSchemaType) => {
+        console.log(data);
+
         passwordChange.mutate(data, {
             onSuccess: () => {
                 // show success message
@@ -22,9 +24,10 @@ const PasswordsPage = () => {
             },
             onError: (error) => {
                 // show error message
+                console.log(error);
                 toast.add({
                     type: "error",
-                    description: error.response.data.errors[0].message,
+                    description: error.response?.data?.errors?.[0]?.message,
                 });
             },
         });
@@ -46,6 +49,8 @@ const PasswordsPage = () => {
             pageHeader.pop(id)
         };
     }, [pageHeader.push, pageHeader.pop]);
+
+
     return (
         <CardContent className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
@@ -54,7 +59,7 @@ const PasswordsPage = () => {
             </div>
             <ChangePassword
                 pending={passwordChange.isPending}
-                serverErrors={passwordChange.error?.response.data || null}
+                serverErrors={passwordChange.error?.response?.data || null}
                 onSubmit={handleSubmit}
             />
         </CardContent>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { type Club, type MediaList, type Post, type UserProfile } from "@campus/api";
+import type { Club, MediaList, Post, UserProfile } from "@campus/api";
 import {
     Card,
     CardContent,
@@ -16,12 +16,8 @@ import {
 import { Button } from "design/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Refresh03Icon,
-    SendIcon,
     MessageCircleIcon,
-    FavouriteIcon,
     MenuTwoLineIcon,
-    RefreshCcwDotIcon
 } from "@hugeicons/core-free-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { getTimeAgo } from "@/utils/format-date";
@@ -31,28 +27,31 @@ import {
     DropdownMenuItem,
 } from "design/components/ui/dropdown-menu";
 import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu";
-import { queryClient } from "@/config/query-client";
-import { usePost } from "../hooks/posts.hooks";
 import { Skeleton } from "design/components/ui/skeleton";
 import { useSession } from "@/features/auth/hooks";
 import Like from "@/features/interactions/components/like";
 import Repost from "@/features/interactions/components/repost";
+import SendDirectPost from "@/features/interactions/components/send";
+import AppAlertDialog from "@/shared/components/alert";
+import VideoPlayer from "./video-player";
 
 export type MediaListExtended = MediaList & {
-    id: string | number;
-    file: {
-        url: string,
-        secure_url: string,
-        public_id: string,
-        resource_type: string,
-        type: string,
-        format: string,
-        width: number,
-        height: number,
-        bytes: number,
+    id: string
+    target: {
+        id: string
+        model: string
     }
-    position: number,
+    original_file_name: string
+    bytes: number
+    mime_type: string
+    format: string
+    secure_url: string
+    playback_url: string
     role: string
+    position: number
+    public_id: string
+    resource_type: string
+    version: number
 }
 
 export const PostCardSkeleton = () => {
@@ -81,23 +80,26 @@ export const PostCardSkeleton = () => {
     )
 }
 
-
 export type PostExtended = Post & {
     readonly author: Pick<UserProfile, "id" | "username" | "avatar">,
     readonly media: MediaListExtended[]
     readonly club: Pick<Club, "id" | "name" | "slug">
 }
 
-const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableNavigate?: boolean }) => {
+type PostCardProps = {
+    post: PostExtended
+    enableNavigate?: boolean
+    reduceContent?: boolean
+}
+
+const PostCard = ({ post, enableNavigate = true, reduceContent = true }: PostCardProps) => {
 
     const navigate = useNavigate();
-    const { data: session } = useSession()
-    const [liked, setLiked] = useState(!!post.is_liked)
-    const [isReposted, setIsReposted] = useState(false);
-    const [open, setOpen] = useState<boolean>(false)
+    const { data: session } = useSession();
+    const [open, setOpen] = useState<boolean>(false);
+    const [attemptRemove, setAttemptRemove] = useState<boolean>(false);
 
-    const { toggleLike } = usePost(post.id);
-    const media: MediaListExtended[] = post.media.sort((a, b) => a.position - b.position)
+    const media: MediaListExtended[] = post.media.sort((a, b) => a.position - b.position);
     return (
         <>
             <Card className="bg-background rounded-none h-fit flex flex-row gap-2 px-1 py-1 md:px-2 md:py-2">
@@ -145,8 +147,8 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                 <DropdownMenuItem className={'p-4 cursor-pointer'}>Copy link</DropdownMenuItem>
                                 <DropdownMenuItem className={'p-4 cursor-pointer'}>Save</DropdownMenuItem>
                                 <DropdownMenuItem className={'p-4 cursor-pointer'}>Not interested</DropdownMenuItem>
-                                {session.meta?.is_authenticated && post.author.id === session?.data.user.id && (
-                                    <DropdownMenuItem variant="destructive" className={'p-4 cursor-pointer'}>Remove</DropdownMenuItem>
+                                {session?.meta?.is_authenticated && post.author.id === session?.data.user.id && (
+                                    <DropdownMenuItem variant="destructive" className={'p-4 cursor-pointer'} onClick={() => setAttemptRemove(true)}>Remove</DropdownMenuItem>
                                 )}
                             </DropdownMenuGroup>
                         </ResponsiveDropDownMenu>
@@ -157,17 +159,25 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                             navigate(paths.private.user.posts.detail(post.author?.username, post.id))
                         }
                     }}>
-                        <div className="mb-4">
-                            <p>{post.content}</p>
-                        </div>
+                        {post.content && (
+                            <div className="whitespace-pre-wrap mb-4">
+                                {
+                                    reduceContent ? (post.content?.split(/\s+/).slice(0, 25).join(" ") + (post.content?.split(/\s+/).length > 25 ? "..." : "")) : post.content
+                                }
+                            </div>
+                        )}
                         {media?.length ? (
                             <div className="flex flex-row gap-4 p-0 min-h-fit overflow-x-scroll scrollbar-none">
                                 {media?.map((media) => {
-                                    switch (media.file?.resource_type) {
+                                    switch (media.resource_type) {
                                         case "image":
-                                            return <img key={media.id} className="h-90 w-90 object-cover" src={media.file?.url} alt={`${post.author?.username}-${media.role}-${media.file?.resource_type}`} />;
+                                            return <img key={media.id} className="h-90 w-90 object-cover" src={media.secure_url} alt={`${post.author?.username}-${media.role}-${media.resource_type}`} />;
                                         case "video":
-                                            return <video key={media.id} className="h-90 w-90 object-cover" src={media.file?.url} />;
+                                            return <VideoPlayer
+                                                key={media.id}
+                                                src={media.public_id}
+                                                className="h-90 w-90 object-cover"
+                                            />
                                         default:
                                             return null;
                                     }
@@ -196,17 +206,22 @@ const PostCard = ({ post, enableNavigate = true }: { post: PostExtended, enableN
                                 <Repost post={post} />
                             </CardAction>
                             <CardAction>
-                                <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
-                                    <HugeiconsIcon icon={SendIcon} className="size-5" />
-                                    <span className="text-xs text-muted-foreground">
-                                        {post.share_count}
-                                    </span>
-                                </Button>
+                                <SendDirectPost post={post} />
                             </CardAction>
                         </div>
                     </CardFooter>
                 </div>
             </Card>
+            <AppAlertDialog
+                open={attemptRemove}
+                onOpenChange={setAttemptRemove}
+                title="Are you sure?"
+                description="This action cannot be undone."
+                onConfirm={() => {
+                    setAttemptRemove(false);
+                }}
+                variant={"destructive"}
+            />
         </>
     );
 };

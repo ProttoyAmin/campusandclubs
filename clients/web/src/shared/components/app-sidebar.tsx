@@ -8,7 +8,8 @@ import {
     SidebarHeader,
     SidebarMenuButton,
     SidebarTrigger,
-    SidebarSeparator
+    SidebarSeparator,
+    SidebarMenuItem
 } from "design/components/ui/sidebar";
 import ResponsiveDialog from "./responsive-dialog";
 import ClubCreateForm from "@/features/club/forms/create-club-form";
@@ -23,9 +24,10 @@ import { clubMenu } from "@/config/menu/club-menu";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { LayoutAlignLeftIcon, LayoutAlignRightIcon, MenuTwoLineIcon } from "@hugeicons/core-free-icons";
+import { LayoutAlignLeftIcon, LayoutAlignRightIcon, MenuTwoLineIcon, PlusIcon } from "@hugeicons/core-free-icons";
 import { Button } from "design/components/ui/button";
 import { useSidebar } from "design/components/ui/sidebar";
+import type { JoinMode, Privacy, Scope } from "validation/club";
 
 // interface AppSideBarProps {
 //     main?: boolean;
@@ -33,6 +35,10 @@ import { useSidebar } from "design/components/ui/sidebar";
 //     menu?: (param: any) => MenuItemType[];
 //     menuParam?: any;
 // }
+
+type ClubCreateRequestWritableExtended = ClubCreateRequestWritable & {
+    scope: Scope;
+}
 
 
 export function AppSidebar() {
@@ -49,8 +55,7 @@ export function AppSidebar() {
         // TODO: Fix the type later (priority:low)
         currentUser?.clubs || [];
 
-    const handleClubCreate = async (data: ClubCreateRequestWritable) => {
-        console.log(data)
+    const handleClubCreate = async (data: ClubCreateRequestWritableExtended) => {
         await create.mutateAsync(data, {
             onSuccess: () => {
                 toast.add({
@@ -70,7 +75,7 @@ export function AppSidebar() {
     };
 
     return (
-        <Sidebar collapsible="icon" className="bg-background">
+        <Sidebar variant="sidebar" collapsible="icon" className="bg-background border-none">
             <SidebarHeader children={<>
                 <div className="flex items-center justify-end gap-2">
                     <SidebarTrigger />
@@ -96,7 +101,12 @@ export function AppSidebar() {
                             onOpenChange={setIsCreating}
                             trigger={
                                 <SidebarMenuButton tooltip={"Start a club"}>
-                                    <Plus /> Start a club
+                                    <HugeiconsIcon icon={PlusIcon} />
+                                    <SidebarGroupLabel children={
+                                        <span className="flex items-center gap-2">
+                                            Start a club
+                                        </span>
+                                    } />
                                 </SidebarMenuButton>
                             }
                         >
@@ -127,7 +137,6 @@ export function AppSidebar() {
                         </div>
                     </>
                 } />
-                <SidebarGroup />
             </SidebarContent>
             <SidebarFooter className="bg-background" children={
                 <>

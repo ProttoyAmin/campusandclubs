@@ -1,6 +1,6 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import type { MenuItemType } from "@/config/menu/main-menu";
-import { Key01Icon, Mail01Icon } from "@hugeicons/core-free-icons";
+import { Key01Icon, Mail01Icon, MessagesSquare, SquareLock01Icon, UserRemove01FreeIcons } from "@hugeicons/core-free-icons";
 import { isRouteActive } from "@/utils/route";
 import { routes } from "@/settings/routes";
 
@@ -8,8 +8,8 @@ export const AccountPrivacyMenu: () => MenuItemType[] = () => [
     {
         id: 1,
         label: "Private Profile",
-        icon: <HugeiconsIcon icon={Mail01Icon} />,
-        iconActive: <HugeiconsIcon icon={Mail01Icon} />,
+        icon: <HugeiconsIcon icon={SquareLock01Icon} size={18} />,
+        iconActive: <HugeiconsIcon icon={SquareLock01Icon} size={18} />,
         link: () => routes.settings.privacy.account,
         isActive: (currentPath: string) =>
             isRouteActive(routes.settings.privacy.account, currentPath),
@@ -26,8 +26,8 @@ export const AccountPrivacyMenu: () => MenuItemType[] = () => [
     {
         id: 3,
         label: "Messages",
-        icon: <HugeiconsIcon icon={Key01Icon} />,
-        iconActive: <HugeiconsIcon icon={Key01Icon} />,
+        icon: <HugeiconsIcon icon={MessagesSquare} size={18} />,
+        iconActive: <HugeiconsIcon icon={MessagesSquare} size={18} />,
         link: () => routes.settings.privacy.messages,
         isActive: (currentPath: string) =>
             isRouteActive(routes.settings.privacy.messages, currentPath),
@@ -35,8 +35,8 @@ export const AccountPrivacyMenu: () => MenuItemType[] = () => [
     {
         id: 4,
         label: "Blocked profiles",
-        icon: <HugeiconsIcon icon={Key01Icon} />,
-        iconActive: <HugeiconsIcon icon={Key01Icon} />,
+        icon: <HugeiconsIcon icon={UserRemove01FreeIcons} size={18} />,
+        iconActive: <HugeiconsIcon icon={UserRemove01FreeIcons} size={18} />,
         link: () => routes.settings.privacy.blockedUsers,
         isActive: (currentPath: string) =>
             isRouteActive(routes.settings.privacy.blockedUsers, currentPath),

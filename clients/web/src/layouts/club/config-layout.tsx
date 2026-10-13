@@ -73,7 +73,7 @@ const ClubConfigLayout = () => {
             </div>
           </>
         )}
-        <main className="w-full bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-7rem)] max-h-[calc(100vh-7rem)] scrollbar-none p-0">
+        <main className="w-full bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-10rem)] scrollbar-none p-0">
           <Outlet context={{ club }} />
         </main>
       </section>

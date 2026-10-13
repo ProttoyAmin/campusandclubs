@@ -130,7 +130,7 @@ class ClubCreateSerializer(serializers.ModelSerializer):
         user_affiliation = user.affiliations.filter(
             user=user, institute=origin).first()
 
-        if scope != MembershipScope.GLOBAL:
+        if scope != MembershipScope.OPEN:
             if not origin:
                 raise serializers.ValidationError({
                     'origin': 'Origin institute is required for a non-global club.'

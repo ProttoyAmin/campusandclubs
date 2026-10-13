@@ -4,14 +4,14 @@ export const PostCreateSchema = z
   .object({
     content: z
       .string()
-      .max(300, "Post content cannot exceed 300 characters")
+      .max(3000, "Post content cannot exceed 3000 characters")
       .optional(),
-    media: z
-      .custom<File | undefined>((file) => {
+    media:
+      z.custom<File | undefined>((file) => {
         if (!file) return true;
         return file instanceof File;
       })
-      .optional(),
+        .optional(),
   })
   .superRefine((data, ctx) => {
     if (!data.content && !data.media) {

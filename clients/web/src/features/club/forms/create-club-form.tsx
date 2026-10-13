@@ -53,7 +53,7 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
       name: "",
       privacy: Privacy.Public,
       about: "",
-      scope: Scope.Global,
+      scope: Scope.OPEN,
       join_mode: JoinMode.Instant,
       avatar: null,
       banner: null,

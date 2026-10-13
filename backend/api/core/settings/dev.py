@@ -50,8 +50,9 @@ DATABASES = {
 }
 
 HEADLESS_FRONTEND_URLS = {
-    "account_reset_password_from_key": "http://localhost:3000/@/auth/account/reset-password/{key}",
     "account_confirm_email": "http://localhost:3000/@/auth/account/verify-email/{key}",
+    "account_reset_password": "http://localhost:3000/@/auth/account/reset-password",
+    "account_reset_password_from_key": "http://localhost:3000/@/auth/account/reset-password/{key}",
     "account_signup": "http://localhost:3000/@/auth/sign-up",
     "socialaccount_login_error": "http://localhost:3000/@/auth/callback",
 }
@@ -63,3 +64,12 @@ HEADLESS_FRONTEND_URLS = {
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "apps.accounts.config.authentication.CookieJWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}

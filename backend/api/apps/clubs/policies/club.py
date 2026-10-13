@@ -20,7 +20,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return Membership.objects.filter(user=self.actor, club=self.record, left_at__isnull=True).exists()
 
     def _check_scope(self, actor: User, club: Club) -> tuple[bool, str]:
-        if club.scope == MembershipScope.GLOBAL:
+        if club.scope == MembershipScope.OPEN:
             return True, ""
 
         if club.scope == MembershipScope.EXCLUSIVE:
@@ -28,7 +28,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
                 return True, ""
             return False, "This club is exclusive to members of a specific institute."
 
-        if club.scope == MembershipScope.CROSS_INSTITUTE:
+        if club.scope == MembershipScope.INTRA:
             if actor.affiliations.count() > 0:
                 return True, ""
             return False, "This club requires a verified institute affiliation."

@@ -40,7 +40,7 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
 
     const form = useForm<Pick<ClubSettingsRequest, "privacy" | "join_mode">>({
         resolver: zodResolver(clubPrivacySecuritySchema),
-        mode: "onChange",
+        mode: "all",
         values: {
             join_mode: club.join_mode,
             privacy: club.privacy,
@@ -63,6 +63,28 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
         reset: () => reset(),
     }), [handleSubmit, props.onSubmit, reset]);
 
+    const getJoinDescriptions = (join_mode: string) => {
+        switch (join_mode) {
+            case "instant":
+                return "Anyone can join this club.";
+            case "application":
+                return "Anyone can apply to join this club.";
+            case "invite_only":
+                return "Only invited members can join this club.";
+        }
+    };
+
+    const getPrivacyDescriptions = (privacy: string) => {
+        switch (privacy) {
+            case "public":
+                return "Anyone can see this club and join this club.";
+            case "private":
+                return "Anyone can see this club, but cannot join directly without a membership application";
+            case "secret":
+                return "Secret clubs cannot be found by searching.";
+        }
+    };
+
     return (
         <form id={formId} onSubmit={handleSubmit(props.onSubmit)}>
             <FieldGroup>
@@ -72,7 +94,7 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
                     render={({ field }) => (
                         <>
                             <FieldLabel>Privacy</FieldLabel>
-                            <FieldDescription className="text-orange-400">
+                            <FieldDescription>
                                 Your club privacy is how we manage the visibility of your club.
                             </FieldDescription>
                             <RadioGroup value={field.value} onValueChange={field.onChange} aria-labelledby={field.name}>
@@ -82,9 +104,9 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
                                             <Field key={privacy} orientation="horizontal" className={'rounded-xl'} >
                                                 <FieldContent>
                                                     <FieldTitle>{formatLabel(privacy)}</FieldTitle>
-                                                    {/* <FieldDescription>
-                                                        For individuals and small teams.
-                                                    </FieldDescription> */}
+                                                    <FieldDescription>
+                                                        {getPrivacyDescriptions(privacy)}
+                                                    </FieldDescription>
                                                 </FieldContent>
                                                 <RadioGroupItem value={privacy} id={privacy} />
                                             </Field></FieldLabel>
@@ -105,8 +127,8 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
                     render={({ field }) => (
                         <>
                             <FieldLabel>Join Mode</FieldLabel>
-                            <FieldDescription className="text-orange-400">
-                                Join mode depends on how your privacy settings are. For example, if your club is private, then you can only join the club through application or invitation. Secret clubs should always be invite only.
+                            <FieldDescription>
+                                Join mode depends on how your privacy settings are. For example, if your club is private, then people join the club through application or invitation. Secret clubs should always be invite only.
                             </FieldDescription>
                             <RadioGroup value={field.value} onValueChange={field.onChange} aria-labelledby={field.name}>
                                 {JoinModeOptions.map((join_mode) => (
@@ -115,9 +137,9 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
                                             <Field key={join_mode} orientation="horizontal" className={'rounded-xl'}>
                                                 <FieldContent>
                                                     <FieldTitle>{formatLabel(join_mode)}</FieldTitle>
-                                                    {/* <FieldDescription>
-                                                        For individuals and small teams.
-                                                    </FieldDescription> */}
+                                                    <FieldDescription>
+                                                        {getJoinDescriptions(join_mode)}
+                                                    </FieldDescription>
                                                 </FieldContent>
                                                 <RadioGroupItem value={join_mode} id={join_mode} />
                                             </Field></FieldLabel>

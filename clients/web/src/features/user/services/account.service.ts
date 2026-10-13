@@ -3,9 +3,11 @@ import type {
   SetPasswordRequest,
 } from "@campus/api";
 import { userClient } from "../api/user.client";
+import { useSession } from "@/features/auth/hooks";
 import { UserService } from "./user.service";
-import { authentication } from "@/features/auth/services/authentication";
+import { authentication, type AuthSession } from "@/features/auth/services/authentication";
 import type { ChangePasswordSchemaType } from "validation/auth";
+import { queryClient } from "@/config/query-client";
 
 class AccountService {
   private userClient = userClient;
@@ -45,12 +47,22 @@ class AccountService {
   }
 
   async password_change(data: ChangePasswordSchemaType) {
-    const payload = {
-      current_password: data.old_password,
-      new_password: data.new_password1,
-    };
+    const session: AuthSession = queryClient.getQueryData(["auth", "session"])
 
-    const response = await this.userClient.passwordChange(payload);
+    let payload: Partial<SetPasswordRequest>;
+
+    if (!session?.data?.user?.has_usable_password) {
+      payload = {
+        new_password: data.new_password,
+      };
+    } else {
+      payload = {
+        current_password: data.current_password,
+        new_password: data.new_password,
+      };
+    }
+
+    const response = await this.userClient.passwordChange(payload as SetPasswordRequest);
     return response.data;
   }
 

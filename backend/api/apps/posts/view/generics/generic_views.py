@@ -56,19 +56,33 @@ class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[P
         from django.contrib.contenttypes.models import ContentType
         import cloudinary
         from apps.clubs.models import Club
+        from apps.media.services import MediaService
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        
 
         media: UploadedFile | None = serializer.validated_data.pop('media')
         clubs: list[Club] = serializer.validated_data.pop('clubs') or []
         content = serializer.validated_data.pop('content')
 
+
         upload = None
+        media_svc = MediaService(request)
+        
         if media:
-            upload = cloudinary.uploader.upload(
-                media, folder=f"posts/{request.user.id}", file_name=media.name
-            )
+            if media.content_type.startswith("video"):
+                upload = media_svc.upload_video_to_cloudinary(
+                    file=media, 
+                    folder=f"posts/{request.user.username}", 
+                    file_name=media.name
+                )
+            elif media.content_type.startswith("image"):
+                upload = media_svc.upload_to_cloudinary(
+                    file=media, 
+                    folder=f"posts/{request.user.username}", 
+                    file_name=media.name
+                )
 
         targets = clubs if clubs else [None]
         posts = []
@@ -80,11 +94,12 @@ class PostListCreateView(ServiceMixin[PostService], generics.ListCreateAPIView[P
                     content=content,
                 )
                 if upload:
-                    Media.objects.create(
-                        content_type=ContentType.objects.get_for_model(post),
-                        object_id=post.id,
-                        file=upload['public_id'],
-                        role=MediaRole.POST,
+                    media_svc.upload(
+                        upload=upload, 
+                        role=MediaRole.POST, 
+                        content_type=ContentType.objects.get_for_model(post), 
+                        object_id=post.id, 
+                        original_file_name=media.name
                     )
                 posts.append(post)
 

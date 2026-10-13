@@ -21,10 +21,10 @@ function App() {
   const { feed } = useFeed();
 
   return (
-    <Card className="max-w-3xl h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
-      <div className="md:hidden">
+    <Card className="max-w-3xl min-h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
+      {/* <div className="md:hidden">
         <Header />
-      </div>
+      </div> */}
       {feed.isLoading ? <>
         {Array.from({ length: 6 }).map((_, index) => (
           <PostCardSkeleton key={index} />

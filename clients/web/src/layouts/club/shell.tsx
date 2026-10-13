@@ -81,7 +81,7 @@ const ClubShellLayout: React.FC = () => {
             id={useSectionId()}
             className="flex w-full flex-col gap-4 md:max-w-3xl mx-auto"
         >
-            <div className="flex w-full justify-between items-center px-2 md:px-0">
+            <div className="flex w-full justify-between items-center p-2 md:px-0 sticky top-0 z-50 bg-background">
                 {pageHeader.actions ?? (
                     <>
                         <ClubLayoutHeader
@@ -112,9 +112,11 @@ const ClubShellLayout: React.FC = () => {
 
             <Card
                 ref={scrollRef}
-                className="w-fit border-none rounded-none md:border md:rounded-xl shadow-lg bg-background overflow-x-hidden overflow-y-auto min-h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] md:min-h-[calc(100vh-7rem)] md:max-h-[calc(100vh-7rem)] scrollbar-none p-0"
+                className="min-w-full md:min-w-3xl border-none rounded-none md:border md:rounded-xl shadow-lg bg-background scrollbar-none p-0"
             >
-                <Outlet context={{ club }} />
+                <div className="min-h-[calc(100vh-8rem)]">
+                    <Outlet context={{ club }} />
+                </div>
                 <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
                     <BottomBar />
                 </div>

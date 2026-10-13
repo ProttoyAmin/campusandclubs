@@ -12,6 +12,7 @@ import {
 import type { ChangePasswordSchemaType } from 'validation/auth';
 import { changePasswordSchema } from 'validation/auth';
 import type { AllauthError } from '../../api/auth.client';
+import { useSession } from '../../hooks';
 
 type ChangePasswordProps = {
     onSubmit: (data: ChangePasswordSchemaType) => void;
@@ -20,38 +21,47 @@ type ChangePasswordProps = {
 }
 
 const ChangePassword = (props: ChangePasswordProps) => {
+    const { data: session } = useSession()
     const form = useForm<ChangePasswordSchemaType>({
         resolver: zodResolver(changePasswordSchema),
+        mode: "onChange",
         defaultValues: {
-            old_password: "",
-            new_password1: "",
-            new_password2: "",
+            current_password: "",
+            new_password: "",
+            repeat_password: "",
         },
     });
+
+    const handleOnSubmit = React.useCallback((data: ChangePasswordSchemaType) => {
+        props.onSubmit(data);
+        form.reset();
+    }, [props.onSubmit])
+
     return (
-        <form onSubmit={form.handleSubmit(props.onSubmit)}>
+        <form onSubmit={form.handleSubmit(handleOnSubmit)}>
             <FieldGroup>
                 <Controller
-                    name="old_password"
+                    name="current_password"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
                                 type="password"
-                                id="change-password-form-old_password"
+                                id="change-password-form-current_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Current password"
                                 autoComplete="off"
+                                disabled={!session.data?.user.has_usable_password}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}
-                            {props.serverErrors && (
+                            {props.serverErrors?.errors && (
                                 <FieldError
                                     errors={[
                                         ...(props.serverErrors.errors || [])
-                                            .filter((item) => item.param === "old_password")
+                                            .filter((item) => item.param === "current_password")
                                             .map((item) => new Error(item.message || "")),
                                     ]}
                                 />
@@ -60,14 +70,14 @@ const ChangePassword = (props: ChangePasswordProps) => {
                     )}
                 />
                 <Controller
-                    name="new_password1"
+                    name="new_password"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
                                 type="password"
-                                id="change-password-form-new_password1"
+                                id="change-password-form-new_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="New password"
                                 autoComplete="off"
@@ -79,7 +89,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                                 <FieldError
                                     errors={[
                                         ...(props.serverErrors.errors || [])
-                                            .filter((item) => item.param === "new_password1")
+                                            .filter((item) => item.param === "new_password")
                                             .map((item) => new Error(item.message || "")),
                                     ]}
                                 />
@@ -88,14 +98,14 @@ const ChangePassword = (props: ChangePasswordProps) => {
                     )}
                 />
                 <Controller
-                    name="new_password2"
+                    name="repeat_password"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
                                 type="password"
-                                id="change-password-form-new_password2"
+                                id="change-password-form-repeat_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Confirm new password"
                                 autoComplete="off"
@@ -107,7 +117,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                                 <FieldError
                                     errors={[
                                         ...(props.serverErrors.errors || [])
-                                            .filter((item) => item.param === "new_password2")
+                                            .filter((item) => item.param === "repeat_password")
                                             .map((item) => new Error(item.message || "")),
                                     ]}
                                 />

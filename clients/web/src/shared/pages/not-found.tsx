@@ -8,7 +8,7 @@ const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center w-full">
       <div className="text-center max-w-md space-y-6">
         <div className="space-y-2">
           {/* <h1 className="text-6xl font-extrabold ">404</h1> */}

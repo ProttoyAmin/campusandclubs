@@ -20,23 +20,26 @@ class UserMinimalSerializer(serializers.ModelSerializer):
     is_following = serializers.SerializerMethodField()
     is_followed_by = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = models.User
         fields = ['id', 'username', 'email', 'avatar', 'status', 'is_following', 'is_followed_by', 'follow_status']
 
+    def get_email(self, obj: models.User):
+        from apps.accounts.services.user_service import AccountService
+        account = AccountService()
+        email_address = account.emails(obj).filter(primary=True).first()
+        return email_address.email
+
     def get_avatar(self, obj: models.User):
-
-        if  obj.avatar: return obj.avatar
-
-        from apps.media.serializers import MediaListSerializer
+        # from apps.media.serializers import MediaListSerializer
         media = obj.media.filter(role="avatar").first()
 
-        if not media:
-            return obj.avatar
+        if not media: return obj.avatar
 
-        serializer = MediaListSerializer(media, context=self.context)
-        return serializer.data['file']['url']
+        # serializer = MediaListSerializer(media, context=self.context)
+        return media.secure_url
 
     def get_is_following(self, obj: models.User) -> bool | None:
         """Is current user following this user?"""
@@ -225,16 +228,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return emails
 
     def get_avatar(self, obj: models.User):
+        # from apps.media.serializers import MediaListSerializer
+        media = obj.media.filter(role="avatar").first()
 
-        if obj.avatar: return obj.avatar
-        # from apps.media.models import MediaRole
-        # from allauth.socialaccount.models import SocialAccount
+        if not media: return obj.avatar
 
-        # social_account = SocialAccount.objects.filter(user=obj).first()
-        # if social_account and social_account.extra_data:
-        #     return social_account.get_avatar_url()
-            
-        # return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
+        # serializer = MediaListSerializer(media, context=self.context)
+        return media.secure_url
 
     def get_media(self, obj: models.User):
         from apps.media.serializers import MediaListSerializer

@@ -152,7 +152,7 @@ export class UserClient extends BaseClient<
 
   async passwordChange(data: SetPasswordRequest): Promise<AxiosResponse<void>> {
     const response = await this.client.post<void>(
-      `${this.allauthBrowser}account/password/change/`,
+      `${this.allauthBrowser}account/password/change`,
       data,
     );
     return response;

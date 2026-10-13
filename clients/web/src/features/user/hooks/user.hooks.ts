@@ -101,7 +101,7 @@ export const useAccount = () => {
       return accounts.password_change(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["emails"] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
     },
   });
 

@@ -1,10 +1,7 @@
-import React, { Suspense, useRef } from "react";
+import React, { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import SideBar from "@/components/sidebar";
-import Create from "@/components/create";
 import Guard from "@/guards/guard";
 import { Toaster } from "design/components/ui/toast";
-import BottomBar from "@/components/bottom-bar";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
 import { SocketProvider } from "@/providers/socket-provider";
 import { AppSidebar } from "@/shared/components/app-sidebar";
@@ -52,15 +49,11 @@ const MainLayout: React.FC = () => {
               lg:grid-cols-[1fr_content-fit_auto]
             "
         >
-          <div className="hidden md:block justify-self-end">
+          <div className="hidden md:block">
             <AppSidebar />
           </div>
-          <main ref={scrollRef} className="grid-2 pt-2 w-full h-screen scrollbar-none overflow-hidden">
-            {/* <Suspense fallback={<div className="absolute h-screen w-screen bg-black text-white flex items-center justify-center">
-              loadingl...
-            </div>}> */}
+          <main ref={scrollRef} className="grid-2 w-full">
             <Outlet />
-            {/* </Suspense> */}
           </main>
           <aside className="grid-3 hidden md:block justify-self-start">
 

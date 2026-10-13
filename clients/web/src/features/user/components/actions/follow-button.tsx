@@ -50,7 +50,7 @@ const ToggleFollowButton = ({ userId, username, followStatus }: Props) => {
             <Button
                 variant={
                     followStatus === "accepted"
-                        ? "ghost"
+                        ? "outline"
                         : followStatus === "pending"
                             ? "secondary"
                             : "default"

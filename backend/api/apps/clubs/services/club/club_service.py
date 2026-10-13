@@ -96,12 +96,12 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
                 }
             )
 
-        if not club.origin and dto.scope != MembershipScope.GLOBAL:
+        if not club.origin and dto.scope != MembershipScope.OPEN:
             raise ValidationError(
                 {
                     "detail": (
                         f"'{dto.scope}' is not valid for a local club. "
-                        f"Allowed: {MembershipScope.GLOBAL}."
+                        f"Allowed: {MembershipScope.OPEN}."
                     )
                 }
             )
@@ -124,12 +124,12 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         return self.repository.update_club_privacy_join_mode(club, dto)
 
     def update_scope(self, club: Club, scope: MembershipScope) -> Club:
-        if not club.origin and scope != MembershipScope.GLOBAL:
+        if not club.origin and scope != MembershipScope.OPEN:
             raise ValidationError(
                 {
                     "detail": (
                         f"'{scope}' is not valid for a local club. "
-                        f"Allowed: {MembershipScope.GLOBAL}."
+                        f"Allowed: {MembershipScope.OPEN}."
                     )
                 }
             )

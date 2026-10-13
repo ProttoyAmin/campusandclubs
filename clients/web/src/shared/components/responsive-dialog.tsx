@@ -28,6 +28,9 @@ export type DialogProps = {
     footer?: string | React.ReactElement;
     open?: boolean;
     showCloseButton?: boolean;
+    contentClassName?: string;
+    headerClassName?: string;
+    footerClassName?: string;
     onOpenChange?: (open: boolean) => void;
     children: React.ReactNode;
     size?: "sm" | "md" | "lg" | "xl" | "full";
@@ -56,16 +59,16 @@ const ResponsiveDialog = (props: DialogProps) => {
         return (
             <Dialog open={props.open} onOpenChange={props.onOpenChange}>
                 {props.trigger && <DialogTrigger render={props.trigger}></DialogTrigger>}
-                <DialogContent className={cn("bg-background", dialogSizeMap[props.size || ''])} showCloseButton={props.showCloseButton}>
+                <DialogContent className={cn("bg-background", dialogSizeMap[props.size || ''], props.contentClassName)} showCloseButton={props.showCloseButton}>
                     {props.title || props.description ? (
-                        <DialogHeader>
+                        <DialogHeader className={cn("h-fit", props.headerClassName)}>
                             {props.title && <DialogTitle>{props.title}</DialogTitle>}
                             {props.description && <DialogDescription>{props.description}</DialogDescription>}
                         </DialogHeader>
                     ) : null}
                     {props.children}
                     {props.footer && (
-                        <DialogFooter>
+                        <DialogFooter className={cn(" h-fit", props.footerClassName)}>
                             {props.footer}
                         </DialogFooter>
                     )}

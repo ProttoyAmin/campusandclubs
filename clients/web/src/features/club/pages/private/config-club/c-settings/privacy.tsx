@@ -45,7 +45,7 @@ const ClubPrivacySettings = () => {
         });
     };
     return (
-        <div className='relative min-h-full min-w-2xl'>
+        <div className='relative min-h-full'>
             <PrivacySecurityForm
                 onSubmit={handleSubmit}
                 pending={updatePrivacyJoinModeSettings.isPending}

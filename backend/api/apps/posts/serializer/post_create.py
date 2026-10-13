@@ -1,3 +1,5 @@
+from apps.media.constants import MAX_MEDIA_SIZE
+from django.core.files.uploadedfile import UploadedFile
 from apps.clubs.dtos import ClubListFilters
 from core.policies.utils import current_user
 from requests import Request
@@ -50,6 +52,10 @@ class PostCreateSerializer(serializers.Serializer):
     def validate(self, attrs: PostCreateAttrs) -> PostCreateAttrs:
         if not attrs.get('content') and not attrs.get('media'):
             raise serializers.ValidationError("Content or Media is required")
+
+        media: UploadedFile | None = attrs.get('media')
+        if media and media.size > MAX_MEDIA_SIZE:
+            raise serializers.ValidationError({"media": [f"Media size exceeds the limit. Maximum size is {MAX_MEDIA_SIZE / (1024 * 1024)}MB"]})
 
         return PostCreateAttrs(
             content=attrs.get('content'),
