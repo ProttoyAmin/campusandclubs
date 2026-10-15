@@ -31,3 +31,33 @@ class MembershipScope(models.TextChoices):
 class ApplicationDecision(models.TextChoices):
     MANUAL = "manual", "Manual Review"
     AUTO_ACCEPT = "auto_accept", "Auto Accept"
+
+
+class EventStatus(models.TextChoices):
+    UPCOMING = "upcoming", "Upcoming"
+    ONGOING = "ongoing", "Ongoing"
+    COMPLETED = "completed", "Completed"
+    CANCELLED = "cancelled", "Cancelled"
+
+class InviteType(models.TextChoices):
+    CLUB = "club", "Club"
+    EVENT = "event", "Event"
+
+class InviteStatus(models.TextChoices):
+    ONGOING = 'ongoing', 'Ongoing'
+    EXPIRED = 'expired', 'Expired'
+    CANCELLED = 'cancelled', 'Cancelled'
+    PAUSED = 'paused', 'Paused'
+
+class EventAttendanceStatus(models.TextChoices):
+    ATTENDING = 'attending', 'Attending'
+    NOT_ATTENDING = 'not_attending', 'Not Attending'
+    MAYBE = 'maybe', 'Maybe'
+    NO_RESPONSE = 'no_response', 'No Response'
+
+class JoinMethod(models.TextChoices):
+    INVITE = 'invite', 'Invite'
+    SELF = 'self', 'Self'
+    APPLICATION = 'application', 'Application'
+    UNKNOWN = 'unknown', 'Unknown'
+    

@@ -15,8 +15,70 @@ import type {
 } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
-import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse } from "../http/club.http";
+import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse, type InvitationResponse } from "../http/club.http";
 import type { JoinMode, Privacy, Scope } from "validation/club";
+
+export const useInvite = (code: string) => {
+  const getInvite = useQuery<InvitationResponse, AppError<{}>>({
+    queryKey: ["invite", code],
+    queryFn: () => club.getInvite(code),
+  });
+
+  const acceptInvite = (clubId: string) => useMutation({
+    mutationFn: (invite_code: string) => club.acceptInvite(clubId, invite_code),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", clubId, "invites"] });
+
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error accepting invite:", error.response.data.detail);
+    },
+  });
+
+  return {
+    acceptInvite,
+    getInvite
+  }
+}
+
+export const useClubInvites = (id: string) => {
+  const invites = useQuery({
+    queryKey: ["club", id, "invites"],
+    queryFn: () => club.getInvites(id),
+  });
+
+  const createInvite = useMutation({
+    mutationFn: () => club.createInvite(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", id, "invites"] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error creating invite:", error.response.data.detail);
+    },
+  });
+
+  const acceptInvite = useMutation({
+    mutationFn: (invite_code: string) => club.acceptInvite(id, invite_code),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", id, "invites"] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error accepting invite:", error.response.data.detail);
+    },
+  });
+
+  const removeInvite = useMutation({
+    mutationFn: (invite_code: string) => club.removeInvite(id, invite_code),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", id, "invites"] });
+    },
+    onError: (error: AppError<APIError>) => {
+      console.log("Error removing invite:", error.response.data.detail);
+    },
+  });
+
+  return { invites, createInvite, acceptInvite, removeInvite };
+};
 
 export const useGetClubs = () => {
   return useQuery<PaginatedClubList, AppError<{}>>({

@@ -148,10 +148,10 @@ const Create = () => {
                 </ComboboxValue>
                 <ComboboxChipsInput
                   placeholder={value.length === 0 ? "Club" : ""}
-                  className="border-none focus:outline-none focus-visible:ring-transparent"
+                  className="border-none focus:outline-none focus-visible:ring-transparent w-full"
                 />
               </ComboboxChips>
-              <ComboboxContent>
+              <ComboboxContent className={''}>
                 <ComboboxEmpty>No items found.</ComboboxEmpty>
                 <ComboboxList>
                   {(item) => (

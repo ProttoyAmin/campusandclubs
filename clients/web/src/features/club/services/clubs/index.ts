@@ -93,6 +93,35 @@ class ClubService {
     const res = await this.clubClient.withdrawFromClub(clubId, applicationId);
     return res.data;
   }
+
+  async getInvites(clubId: string) {
+    const res = await this.clubClient.getInvites(clubId);
+    return res.data;
+  }
+
+  async getInvite(code: string) {
+    const res = await this.clubClient.getInvite(code);
+    return res.data;
+  }
+
+  async createInvite(clubId: string) {
+    const payload = {
+      invite_type: 'club',
+      club_id: clubId
+    }
+    const res = await this.clubClient.createInvite(clubId, payload);
+    return res.data;
+  }
+
+  async removeInvite(clubId: string, invite_code: string) {
+    const res = await this.clubClient.removeInvite(clubId, invite_code);
+    return res.data;
+  }
+
+  async acceptInvite(clubId: string, invite_code: string) {
+    const res = await this.clubClient.acceptInvite(clubId, invite_code);
+    return res.data;
+  }
 }
 
 export const club = new ClubService();

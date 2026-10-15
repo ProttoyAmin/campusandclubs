@@ -1,3 +1,4 @@
+from apps.clubs.models.enums import JoinMethod
 from typing import TYPE_CHECKING
 from django.db import models
 from django.conf import settings
@@ -44,6 +45,13 @@ class Membership(models.Model):
         null=True,
         blank=True,
         related_name="membership",
+    )
+
+    joined_method = models.CharField(
+        max_length=20,
+        choices=JoinMethod.choices,
+        default=JoinMethod.UNKNOWN,
+        help_text="Method by which the user joined the club"
     )
 
     joined_at = models.DateTimeField(auto_now_add=True)

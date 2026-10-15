@@ -39,7 +39,7 @@ const ClubPage: React.FC = () => {
   }
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative max-w-3xl mx-auto">
       <div className="bg-background/90 backdrop-blur p-0">
 
         <div className="relative h-48 md:h-64">
@@ -50,12 +50,12 @@ const ClubPage: React.FC = () => {
           )}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-background to-transparent" />
         </div>
-        <NavTabs
+        {/* <NavTabs
           menu={clubProfileMenu(slug)}
           className="flex justify-start w-full"
           itemsClassName="justify-center flex-1"
           variant="tab"
-        />
+        /> */}
       </div>
       <div className="p-0">
         <Outlet context={{ club }} />

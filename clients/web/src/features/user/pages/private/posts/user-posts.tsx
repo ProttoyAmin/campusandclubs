@@ -10,6 +10,7 @@ const UserPosts = () => {
     const { user } = useProfileOutlet();
     const { posts } = useUser(user?.username)
     const { data, isLoading } = posts(user?.id)
+    const dummyLoading = true
 
     return (
         <>

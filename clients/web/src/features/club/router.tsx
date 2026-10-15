@@ -3,6 +3,7 @@ import { routes } from "@/settings/routes";
 import React from "react";
 import ClubMedia from "./pages/private/c-media";
 import ClubPosts from "./pages/private/c-posts";
+import Invites from "./pages/private/config-club/invite";
 
 
 // Layouts
@@ -84,6 +85,11 @@ export const clubRoutes = [
         id: "club-permissions",
         path: routes.club.private.config.permissions,
         element: <Permissions />,
+      },
+      {
+        id: "club-invites",
+        path: routes.club.private.config.invites.base,
+        element: <Invites />,
       },
       {
         id: "club-members",

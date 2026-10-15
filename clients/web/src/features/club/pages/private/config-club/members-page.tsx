@@ -66,7 +66,7 @@ const ClubMembersPage = () => {
                   </TableCell>
                   <TableCell className="text-muted-foreground text-sm">{getTimeAgo(member.joined_at)}</TableCell>
                   <TableCell>{member.email}</TableCell>
-                  <TableCell className="text-muted-foreground">Unknown</TableCell>
+                  <TableCell className="text-muted-foreground">{member.joined_method}</TableCell>
                   <TableCell className="text-right">{member.primary_role_details?.name}</TableCell>
                   <TableCell className="text-right p-0">
                     <Button size="icon-lg" className={'p-0 m-0'} variant="ghost">

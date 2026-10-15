@@ -52,7 +52,7 @@ const ToggleFollowButton = ({ userId, username, followStatus }: Props) => {
                     followStatus === "accepted"
                         ? "outline"
                         : followStatus === "pending"
-                            ? "secondary"
+                            ? "ghost"
                             : "default"
                 }
                 className="w-1/2 rounded-full"

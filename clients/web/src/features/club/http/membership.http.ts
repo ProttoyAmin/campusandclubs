@@ -32,6 +32,7 @@ export interface Member {
   role_names: string[];
   primary_role: string;
   primary_role_details: RoleDetails;
+  joined_method: string;
   joined_at: string; // ISO 8601 date string (e.g., "2026-07-30T03:14:01.756818Z")
 }
 

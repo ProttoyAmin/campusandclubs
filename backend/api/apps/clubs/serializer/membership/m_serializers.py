@@ -1,3 +1,4 @@
+from apps.clubs.models.enums import JoinMethod
 from apps.clubs.serializer.membership.form.application import FormSubmissionOutSerializer
 from apps.accounts.serialize.user.profile import UserMinimalSerializer
 from rest_framework.request import Request
@@ -58,16 +59,30 @@ class MembershipSerializer(serializers.ModelSerializer):
     primary_role_details = RoleSerializer(
         source='primary_role', read_only=True)
 
+    joined_method = serializers.SerializerMethodField()
+
     class Meta:
         model = Membership
         fields = [
             'id', 'user_id', 'username', 'email', 'avatar',
-            'roles', 'role_details', 'role_names',
+            'roles', 'role_details', 'role_names', 'joined_method',
             'primary_role', 'primary_role_details', 'joined_at'
         ]
 
     def _get_request(self)-> Request | None:
         return self.context.get('request')
+
+    def get_joined_method(self, obj: Membership):
+        if obj.joined_method == JoinMethod.INVITE:
+            from apps.clubs.models import Invite, InviteUsage
+
+            invite = Invite.objects.filter(club=obj.club).first()
+            invite_usage = InviteUsage.objects.filter(invite=invite, user=obj.user).first()
+            
+            if invite_usage:
+                return invite_usage.invite.code
+        
+        return None
 
     def get_avatar(self, obj: Membership):
         if obj.user.avatar:

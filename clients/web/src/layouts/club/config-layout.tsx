@@ -36,7 +36,7 @@ const ClubConfigLayout = () => {
   if (isMobile) {
     return (
       <>
-        <section className={`flex flex-col md:flex-row gap-4 justify-around mx-auto p-4 min-w-3xl`}>
+        <section className={`flex flex-col md:flex-row gap-4 justify-around mx-auto p-4`}>
           {isRootPath ? (
             <div className="min-w-full">
               <NavTabs
@@ -59,10 +59,10 @@ const ClubConfigLayout = () => {
     <>
       <section className={`flex flex-col md:flex-row gap-4 justify-around mx-auto p-4`}>
         {isRootPath ? (
-          <div className="min-w-full">
+          <div className="min-w-full flex justify-center">
             <NavTabs
               menu={clubConfigureMenu(slug)}
-              className="w-full"
+              className="w-1/2"
               variant="tab"
             />
           </div>

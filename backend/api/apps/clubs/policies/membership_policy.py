@@ -7,11 +7,11 @@ from core.policies.base import ActorT, Policy, RecordT
 class MembershipAwarePolicy(Policy[ActorT, RecordT]):
     """Mixin for policies whose authorization depends on the actor's
     club membership. Subclasses must implement `get_club()` to say
-    which Club the membership check applies to.
+    which Club the membership check applies to. 
     """
 
     def get_club(self) -> Club:
-        raise NotImplementedError("Subclasses must implement `get_club()` to say which Club the membership check applies to.")
+        assert self.get_club is not None, f"{type(self).__name__} has no get_club() method"
 
     @cached_property
     def membership(self) -> Membership | None:

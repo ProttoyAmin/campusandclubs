@@ -1,4 +1,8 @@
 # apps/clubs/urls.py
+from apps.clubs.viewss.invite.invite_views import RemoveInviteAPIView
+from apps.clubs.viewss.invite.invite_views import RetreiveInviteByCodeAPIView
+from apps.clubs.viewss.invite.invite_views import UpdateInviteStatusAPIView
+from apps.clubs.viewss.invite.invite_views import AcceptInviteAPIView
 from django.urls import include
 from apps.clubs.viewss.club.generics.generic_views import ClubSettingsViewset
 from django.urls import path
@@ -35,6 +39,8 @@ from apps.clubs.viewss.membership.generics import (
     MA_BulkRejectAPIView,
     MA_ApplicationResponses
 )
+from apps.clubs.viewss.invite.invite_views import ListInvitesAPIView
+
 from rest_framework.routers import DefaultRouter
 
 app_name = 'clubs'
@@ -159,8 +165,8 @@ urlpatterns = [
     #          name='public_club_events'),  # NEW
     #     path('<int:pk>/events/my/', views_event_views.user_events,
     #          name='user_events'),  # NEW
-    #     path('<int:pk>/events/create/',
-    #          views_event_views.create_event, name='create_event'),
+        path('<uuid:pk>/events/create/',
+             views_event_views.create_event, name='create_event'),
     #     path('<int:pk>/events/<int:event_id>/',
     #          views_event_views.event_detail, name='event_detail'),
     #     path('<int:pk>/events/<int:event_id>/join/',
@@ -203,7 +209,11 @@ urlpatterns = [
          name='clubs_by_origin'),  # NEW
 
     # ==================== CLUB INVITES ====================
-    #     path('<int:pk>/invites/', views.club_invites, name='club_invites'),  # NEW
+    path('<uuid:pk>/invites/', ListInvitesAPIView.as_view(), name='club_invites'),  # NEW
+    path('invites/<str:invite_code>/', RetreiveInviteByCodeAPIView.as_view(), name='club_invites'),  # NEW
+    path('<uuid:pk>/invites/<str:invite_code>/accept/', AcceptInviteAPIView.as_view(), name='invite_accept'),  # NEW
+    path('<uuid:pk>/invites/<str:invite_code>/pause/', UpdateInviteStatusAPIView.as_view(), name='pause_invite'),  # NEW
+    path('<uuid:pk>/invites/<str:invite_code>/remove/', RemoveInviteAPIView.as_view(), name='remove_invite'),  # NEW
     #     path('<int:pk>/invites/create/', views.create_invite,
     #          name='create_invite'),  # NEW
     #     path('invites/<str:invite_code>/', views.use_invite,

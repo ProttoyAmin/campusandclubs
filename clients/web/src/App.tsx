@@ -21,7 +21,7 @@ function App() {
   const { feed } = useFeed();
 
   return (
-    <Card className="max-w-3xl min-h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
+    <div className="max-w-3xl min-h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
       {/* <div className="md:hidden">
         <Header />
       </div> */}
@@ -41,7 +41,7 @@ function App() {
       <div className="absolute bottom-14 right-5 md:right-20">
         <Create />
       </div>
-    </Card>
+    </div>
   );
 }
 

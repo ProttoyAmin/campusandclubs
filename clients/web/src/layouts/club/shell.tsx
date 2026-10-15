@@ -27,6 +27,8 @@ import React, { useRef } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import type { ClubDetailExtended } from "@/features/club/http/club.http";
 import BottomBar from "@/components/bottom-bar";
+import NavTabs from "@/components/nav-tabs";
+import { clubProfileMenu } from "@/config/menu/club/club-menu";
 
 const ClubShellLayout: React.FC = () => {
     const { slug } = useParams();
@@ -79,9 +81,9 @@ const ClubShellLayout: React.FC = () => {
     return (
         <section
             id={useSectionId()}
-            className="flex w-full flex-col gap-4 md:max-w-3xl mx-auto"
+            className="flex flex-col gap-4"
         >
-            <div className="flex w-full justify-between items-center p-2 md:px-0 sticky top-0 z-50 bg-background">
+            <div className="flex max-w-5xl self-center w-full xl:w-5xl justify-between items-center sticky top-0 z-50">
                 {pageHeader.actions ?? (
                     <>
                         <ClubLayoutHeader
@@ -110,17 +112,24 @@ const ClubShellLayout: React.FC = () => {
                 )}
             </div>
 
-            <Card
+            <div
                 ref={scrollRef}
                 className="min-w-full md:min-w-3xl border-none rounded-none md:border md:rounded-xl shadow-lg bg-background scrollbar-none p-0"
+            // className="mx-auto min-w-full md:min-w-3xl grid grid-cols-[200px_1fr] gap-2.5"
             >
+                {/* <div className='h-full'>
+                    <NavTabs
+                        menu={clubProfileMenu(slug)}
+                        className="flex flex-row md:flex-col gap-2"
+                    />
+                </div> */}
                 <div className="min-h-[calc(100vh-8rem)]">
                     <Outlet context={{ club }} />
                 </div>
-                <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
+                {/* <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
                     <BottomBar />
-                </div>
-            </Card>
+                </div> */}
+            </div>
         </section>
     );
 };

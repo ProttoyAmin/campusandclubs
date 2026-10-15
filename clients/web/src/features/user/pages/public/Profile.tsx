@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
     <div className="p-2">
       <NavTabs
         menu={profileMenu(user?.username as string)}
-        className="flex justify-start w-full"
+        className="flex justify-start w-full rounded-full p-1"
         itemsClassName="justify-start flex-1"
         variant="tab"
       />

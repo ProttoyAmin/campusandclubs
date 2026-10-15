@@ -88,6 +88,16 @@ export const paths = {
     club: {
       list: routes.club.private.list,
       create: routes.club.private.create,
+      invites: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.invites.base, {
+            slug,
+          }),
+        accept: (inviteCode: string) =>
+          generateRouteFromPath(routes.club.private.config.invites.accept, {
+            invite_code: inviteCode,
+          }),
+      },
       posts: (slug: string) =>
         generateRouteFromPath(routes.club.private.posts, {
           slug,

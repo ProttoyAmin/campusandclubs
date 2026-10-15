@@ -11,9 +11,11 @@ import NotFound from "./shared/pages/not-found";
 import App from "./App";
 import { chatRoutes } from "./features/chat/router";
 import ChatsLayout from "./layouts/chat/chats-layout";
+import { routes as AppRoute } from "./settings/routes";
 
 import NotificationLayout from "./layouts/notification/notification-layout";
 import { notificationRoutes } from "./features/notifications/router";
+import AcceptInvitationPage from "./features/club/pages/public/invitation-page";
 
 
 export const routes: RouteObject[] = [
@@ -52,6 +54,11 @@ export const routes: RouteObject[] = [
         children: [...notificationRoutes],
       }
     ]
+  },
+  {
+    id: "club-invite",
+    path: AppRoute.club.private.config.invites.accept,
+    element: <AcceptInvitationPage />,
   },
   {
     id: "auth",

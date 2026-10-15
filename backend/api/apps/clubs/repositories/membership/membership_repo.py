@@ -1,3 +1,4 @@
+from apps.clubs.models.enums import JoinMethod
 from django.utils import timezone
 from apps.clubs.models.membership.membership import Membership
 
@@ -36,6 +37,20 @@ class MembershipRepository(BaseRepository[Membership]):
         self.create(
             club=club,
             user=user,
+            joined_method=JoinMethod.SELF
+        )
+        return self.get_queryset().get(club=club, user=user)
+    
+    def create_membership_from_invite(
+        self,
+        club: Club,
+        user: User,
+        join_method: JoinMethod
+    ) -> Membership:
+        self.create(
+            club=club,
+            user=user,
+            joined_method=join_method
         )
         return self.get_queryset().get(club=club, user=user)
     

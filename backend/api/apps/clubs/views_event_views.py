@@ -18,7 +18,7 @@ def list_events(request, pk):
     Query params:
     - status: upcoming|ongoing|completed|cancelled
     """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
+    club = get_object_or_404(models.Club, pk=pk, deleted_at__isnull=True)
 
     # Check if user is a member (for non-public clubs)
     is_member = models.Membership.objects.filter(
@@ -73,7 +73,7 @@ def create_event(request, pk):
     """
     Create a new event in a club
     """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
+    club = get_object_or_404(models.Club, pk=pk, deleted_at__isnull=True)
 
     # Check if user is a member
     membership = models.Membership.objects.filter(

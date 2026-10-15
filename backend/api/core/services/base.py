@@ -1,3 +1,4 @@
+from apps.accounts.models import User
 from abc import ABC
 from typing import ClassVar, Generic, TypeVar, Optional, cast
 
@@ -16,7 +17,7 @@ class BaseService(Generic[T, RepoT], ABC):
 
     def __init__(
         self,
-        actor: Optional[AbstractBaseUser] = None,
+        actor: Optional[User] = None,
         repository: Optional[RepoT] = None
     ) -> None:
         self.actor = actor

@@ -15,7 +15,7 @@ export function AppProviders({
     return (
         <QueryClientProvider client={queryClient}>
             <ErrorBundary>
-                <SidebarProvider>
+                <SidebarProvider defaultOpen={false}>
                     <TooltipProvider>
                         <FormDialogProvider>
                             <PageHeaderProvider>

@@ -4,14 +4,9 @@ import uuid
 from django.conf import settings
 
 from apps.clubs.models import Club
+from apps.clubs.models.enums import EventStatus
 
 class Event(models.Model):
-    STATUS_CHOICES = [
-        ('upcoming', 'Upcoming'),
-        ('ongoing', 'Ongoing'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ]
 
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
@@ -25,7 +20,7 @@ class Event(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default='upcoming')
+        max_length=20, choices=EventStatus, default=EventStatus.UPCOMING)
     max_participants = models.PositiveIntegerField(blank=True, null=True)
     participants = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name='club_events', blank=True)

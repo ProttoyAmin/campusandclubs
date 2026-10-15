@@ -13,10 +13,29 @@ import {
 } from "design/components/ui/avatar";
 import { Button } from "design/components/ui/button";
 import ToggleFollowButton from "../actions/follow-button";
+import type { UserMinimal } from "@campus/api";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/settings/routes";
+
 
 export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
+  const navigate = useNavigate()
+
+  const handleMessage = () => {
+    navigate(paths.private.chat.chats, {
+      state: {
+        initialUser: {
+          id: data.id,
+          username: data.username,
+          avatar: data.avatar,
+          email: ""
+        } as Pick<UserMinimal, "id" | "username" | "avatar" | "email">
+      }
+    })
+  }
+
   return (
-    <div className="bg-background overflow-y-auto max-h-[calc(100vh-64px)]">
+    <>
       <CardHeader className="block md:flex md:flex-row-reverse justify-between">
         <CardTitle className="place-items-center">
           <Avatar size="3xl">
@@ -47,7 +66,7 @@ export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ 
       <CardContent>
         <div className="flex gap-2 mt-16">
           <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
-          <Button variant={"ghost"} className="w-1/2 rounded-full">Message</Button>
+          <Button variant={"outline"} className="w-1/2 rounded-full" size="lg" onClick={handleMessage}>Message</Button>
         </div>
         <div className="text-center py-10">
           <h2 className="text-2xl font-bold">This Account is Private</h2>
@@ -56,6 +75,6 @@ export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ 
           </p>
         </div>
       </CardContent>
-    </div>
+    </>
   );
 };

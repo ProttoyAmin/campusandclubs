@@ -10,6 +10,7 @@ import type {
   DepartmentTemplate,
   Post,
   Institute,
+  UserMinimal,
 } from "@campus/api";
 import type { AxiosResponse } from "axios";
 import { config } from "@/settings/app/config";
@@ -36,6 +37,37 @@ export type ApplicationCreateRequest = {
 export interface ClubDetailExtended extends Omit<ClubDetail, 'origin'> {
   origin: Institute;
 }
+
+
+export type InviteResponse = {
+  id: string
+  invite_type: string
+  link: string
+  club: {
+    id: string
+    name: string
+    origin: any
+    avatar: any
+    banner: any
+    url: string
+    slug: string
+  }
+  created_by: UserMinimal
+}
+
+export type InvitationResponse = {
+  detail: string
+  action: string
+  data: InviteResponse
+}
+
+export type PaginaatedInvitesResponse = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: InviteResponse[];
+};
+
 
 export class ClubClient extends BaseClient<
   ClubDetailExtended,
@@ -141,6 +173,41 @@ export class ClubClient extends BaseClient<
   ): Promise<AxiosResponse> {
     const response = await this.client.post<MembershipApplicationCreateRequest>(
       `${this.endpoint}${clubId}/applications/${applicationId}/withdraw/`,
+    );
+    return response;
+  }
+
+  async getInvites(clubId: string): Promise<AxiosResponse<PaginaatedInvitesResponse>> {
+    const response = await this.client.get<PaginaatedInvitesResponse>(
+      `${this.endpoint}${clubId}/invites/`,
+    );
+    return response;
+  }
+
+  async getInvite(code: string): Promise<AxiosResponse<InvitationResponse>> {
+    const response = await this.client.get<InvitationResponse>(
+      `${this.endpoint}invites/${code}/`,
+    );
+    return response;
+  }
+
+  async createInvite(clubId: string, payload: { invite_type: string, club_id: string }): Promise<AxiosResponse<InviteResponse>> {
+    const response = await this.client.post<InviteResponse>(
+      `${this.endpoint}${clubId}/invites/`, payload
+    );
+    return response;
+  }
+
+  async acceptInvite(clubId: string, invite_code: string) {
+    const response = await this.client.patch<unknown>(
+      `${this.endpoint}${clubId}/invites/${invite_code}/accept/`, { code: invite_code }
+    );
+    return response;
+  }
+
+  async removeInvite(clubId: string, invite_code: string) {
+    const response = await this.client.delete<unknown>(
+      `${this.endpoint}${clubId}/invites/${invite_code}/remove/`
     );
     return response;
   }

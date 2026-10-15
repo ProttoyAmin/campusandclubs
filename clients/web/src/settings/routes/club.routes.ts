@@ -24,6 +24,10 @@ export const clubRoutes = {
         privacy: "/@/clubs/:slug/config/settings/privacy/",
         scope: "/@/clubs/:slug/config/settings/scope/",
       },
+      invites: {
+        base: "/@/clubs/:slug/config/invites/",
+        accept: "/invitation/:invite_code/",
+      }
     },
   },
   public: {

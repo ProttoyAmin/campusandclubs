@@ -32,7 +32,7 @@ export const ProfileLayoutHeaderSkeleton = () => {
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        <Skeleton className="h-8 w-18 rounded-md" />
+        {/* {!forCurrentUser && <Skeleton className="h-8 w-18 rounded-md" />} */}
         <Skeleton className="h-8 w-8 rounded-full" />
         <Skeleton className="h-8 w-8 rounded-full" />
       </div>
@@ -72,8 +72,8 @@ const ProfileLayoutHeader = ({
   return (
     <>
       {user && (
-        <>
-          <header className="flex items-center justify-between w-full md:p-2 p-1">
+        <div className="w-full flex items-center gap-2">
+          <header className="flex items-center justify-between w-full md:p-2 p-1 rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
             <div className="flex gap-2 items-center">
               <div>
                 {currentUser?.data.user.id !== user.id && (
@@ -94,13 +94,21 @@ const ProfileLayoutHeader = ({
                     alt={user.username}
                   />
                   <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
-                  {user.status === "online" && <AvatarBadge className="bg-green-600" />}
+                  {user.status === "online" && <AvatarBadge className="bg-green-600 ring-0" />}
                 </Avatar>
                 <div className="flex flex-col">
-                  <p className="text-lg flex items-center gap-2">{`${getNameLabel()}`} <span className="">
+                  <p className="text-lg flex items-center gap-2">
+                    <span className="mix-blend-color-dodge">
+                      {getNameLabel()}
+                    </span>
+
                     {user.is_private && (
-                      <HugeiconsIcon icon={SquareLockIcon} className="size-4 text-muted-foreground" />
-                    )}</span></p>
+                      <HugeiconsIcon
+                        icon={SquareLockIcon}
+                        className="size-4 text-muted-foreground"
+                      />
+                    )}
+                  </p>
                   <p className="text-xs text-muted-foreground">{`${user.user_post_count || 0} posts`}</p>
                 </div>
               </div>
@@ -151,7 +159,7 @@ const ProfileLayoutHeader = ({
               )}
             </div>
           </header>
-        </>
+        </div>
       )}
     </>
   );

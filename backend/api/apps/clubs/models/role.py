@@ -81,9 +81,9 @@ class Role(models.Model):
     @property
     def is_admin(self):
         """Check if role has admin-level permissions"""
-        return self.permissions.get('can_manage_settings', False) or (
-            self.permissions.get('can_manage_members', False) and
-            self.permissions.get('can_manage_posts', False)
+        return self.permissions.get('manage:settings', False) or (
+            self.permissions.get('manage:members', False) and
+            self.permissions.get('manage:posts', False)
         )
 
     def has_permission(self, permission_name: str) -> bool:

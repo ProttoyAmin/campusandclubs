@@ -39,17 +39,17 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.submissions.base, currentPath),
     },
-    // {
-    //   id: 4,
-    //   label: "Requests",
-    //   icon: <FilesIcon size={18} />,
-    //   iconActive: (
-    //     <FilesIcon size={18} fill="currentColor" stroke="currentColor" />
-    //   ),
-    //   link: () => paths.private.club.requests.base(slug),
-    //   isActive: (currentPath) =>
-    //     isRouteActive(routes.club.private.config.requests.base, currentPath),
-    // },
+    {
+      id: 4,
+      label: "Invites",
+      icon: <FilesIcon size={18} />,
+      iconActive: (
+        <FilesIcon size={18} fill="currentColor" stroke="currentColor" />
+      ),
+      link: () => paths.private.club.invites.base(slug),
+      isActive: (currentPath) =>
+        isRouteActive(routes.club.private.config.invites.base, currentPath),
+    },
     {
       id: 5,
       label: "Members",

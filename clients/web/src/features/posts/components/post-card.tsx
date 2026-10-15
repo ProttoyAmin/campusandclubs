@@ -102,7 +102,7 @@ const PostCard = ({ post, enableNavigate = true, reduceContent = true }: PostCar
     const media: MediaListExtended[] = post.media.sort((a, b) => a.position - b.position);
     return (
         <>
-            <Card className="bg-background rounded-none h-fit flex flex-row gap-2 px-1 py-1 md:px-2 md:py-2">
+            <Card className="bg-background rounded-none h-fit flex flex-row gap-2 px-1 py-1 md:px-2 md:py-2 ring-0">
                 <CardHeader className="flex flex-col items-center py-2">
                     <Link to={`${paths.private.user.profile(post.author?.username)}`}>
                         <Avatar>

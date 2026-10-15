@@ -1,7 +1,7 @@
 from .club import Club, Category, ClubDepartment, DepartmentTemplate, ClubPreference
 from .membership import Membership, MembershipDepartment
 from .role import Role
-from .invite import Invite
+from .invite import Invite, InviteUsage
 from .event import Event
 
 from .membership.form import (
@@ -33,6 +33,7 @@ __all__ = [
     'DepartmentTemplate',
     'Role',
     'Invite',
+    'InviteUsage',
     'Event',
     'MembershipApplication',
     'Form',

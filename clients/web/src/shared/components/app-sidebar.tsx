@@ -77,11 +77,11 @@ export function AppSidebar() {
     return (
         <Sidebar variant="sidebar" collapsible="icon" className="bg-background border-none">
             <SidebarHeader children={<>
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex justify-end gap-2 text-muted-foreground">
                     <SidebarTrigger />
                 </div>
             </>} className="bg-background" />
-            <SidebarContent className="bg-background">
+            <SidebarContent className="bg-background flex flex-col justify-center">
                 <SidebarGroup children={
                     <>
                         <div className="flex flex-col gap-2 truncate">

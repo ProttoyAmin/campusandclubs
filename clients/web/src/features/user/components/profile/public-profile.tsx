@@ -6,6 +6,7 @@ import {
 } from "design/components/ui/card";
 import {
   Avatar,
+  AvatarBadge,
   AvatarFallback,
   AvatarImage,
 } from "design/components/ui/avatar";
@@ -38,7 +39,7 @@ export const PublicProfileSkeleton = () => {
           <Skeleton className="h-4 w-full" />
         </div>
       </div>
-      <div className="px-8">
+      <div className="px-8 pt-10">
         <div className="flex gap-2">
           <Skeleton className="h-8 w-1/2 rounded-full" />
           <Skeleton className="h-8 w-1/2 rounded-full" />
@@ -68,9 +69,9 @@ export const PublicProfileHeader: React.FC<{
     })
   }
 
-  if (isLoading) {
-    return <PublicProfileSkeleton />
-  }
+  // if (isLoading) {
+  //   return <PublicProfileSkeleton currentUser={true} />
+  // }
 
   return (
     <>
@@ -79,6 +80,7 @@ export const PublicProfileHeader: React.FC<{
           <Avatar size="3xl">
             <AvatarImage src={data?.avatar} alt={data?.username} />
             <AvatarFallback>{data.username[0]}</AvatarFallback>
+            {/* {data.status === "online" && <AvatarBadge className="bg-green-600 ring-0 right-2" />} */}
           </Avatar>
         </CardTitle>
         <CardDescription className="space-y-4">
