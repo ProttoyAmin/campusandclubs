@@ -1,9 +1,11 @@
 # Specific files
-services/api/.env.local
-services/api/db.sqlite3
-services/api/requirements.txt
-services/api/FEED_ALGORITHM.md
-services/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
+backend/api/.env.local
+backend/api/storage
+backend/api/db.sqlite3
+backend/api/requirements.txt
+backend/api/FEED_ALGORITHM.md
+backend/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
+clients/v1/*
 
 # Python
 __pycache__/
