@@ -9,6 +9,8 @@ class WSEvent:
     CHAT_JOIN = "chat:join"
     CHAT_LEAVE = "chat:leave"
     CHAT_MESSAGE = "chat:message"
+    CHAT_START = "chat:start"
+    CHAT_MESSAGE_NEW = "chat:message:new"
     CHAT_MESSAGE_EDIT = "chat:message:edit"
     CHAT_MESSAGE_DELETE = "chat:message:delete"
     CHAT_MESSAGE_SEEN = "chat:message:seen"
@@ -43,8 +45,11 @@ class ChannelsHandler:
     Never sent to the frontend directly; the matching consumer method
     translates each one into its WSEvent counterpart in send_json."""
 
+    CHAT_START = "chat.start"
+    CHAT_MESSAGE_NEW = "chat.message.new"
     CHAT_MESSAGE = "chat.message"
     CHAT_TYPING = "chat.typing"
+    CHAT_MESSAGE_SEEN = "chat.message.seen"
     
     NOTIFICATION_CREATED = "notification.created"
 

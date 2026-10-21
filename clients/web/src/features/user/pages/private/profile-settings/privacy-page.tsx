@@ -35,9 +35,8 @@ const UserPrivacyPage = () => {
     // </CardContent>
     <NavTabs
       menu={AccountPrivacyMenu()}
-      className="w-full"
-      itemsClassName="justify-center flex-1"
-      variant="tab"
+      className="w-full flex flex-col justify-center gap-2"
+      itemsClassName=""
     />
   )
 }

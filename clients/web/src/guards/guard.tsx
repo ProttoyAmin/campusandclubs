@@ -60,7 +60,7 @@ const Guard = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (session && isAuthRoute) {
-    return <Navigate to={"/"} replace />;
+    return <Navigate to={paths.public.home} replace />;
   }
 
   return <>{children}</>;

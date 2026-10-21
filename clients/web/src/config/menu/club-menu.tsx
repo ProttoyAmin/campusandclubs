@@ -1,13 +1,12 @@
 import { paths } from "@/settings/routes";
 import { type MenuItemType } from "./main-menu";
 import { isRouteActive } from "@/utils/route";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { UserGroup02FreeIcons } from "@hugeicons/core-free-icons";
 import {
   Avatar,
   AvatarImage,
   AvatarFallback,
-} from "design/components/ui/avatar"
+} from "design/components/ui/avatar";
+import dummyImage from "@/assets/Manga.jpeg";
 
 export const clubMenu: (
   id: string,
@@ -22,7 +21,7 @@ export const clubMenu: (
       label: name,
       icon: (
         <Avatar size="sm" className="shrink-0 rounded-md">
-          <AvatarImage src={icon} alt={name} />
+          <AvatarImage src={icon || dummyImage} alt={name} />
           <AvatarFallback className="rounded-md text-[8px]">
             {name.charAt(0)}
           </AvatarFallback>

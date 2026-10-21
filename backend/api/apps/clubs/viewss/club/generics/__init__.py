@@ -1,13 +1,11 @@
 from .generic_views import (
     ClubListCreateView,
     ClubRetrieveUpdateDestroyAPIView,
-    DepartmentTemplateListView,
-    ClubPrivacyJoinModeUpdateView
+    DepartmentTemplateListView
 )
 
 all = [
     ClubListCreateView,
     ClubRetrieveUpdateDestroyAPIView,
     DepartmentTemplateListView,
-    ClubPrivacyJoinModeUpdateView
 ]

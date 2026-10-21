@@ -304,7 +304,7 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
                 'name': obj.origin.name,
                 'code': obj.origin.code
             }
-        return "Local"
+        return None
 
     def get_owner_details(self, obj: Club):
         from apps.accounts.models import User

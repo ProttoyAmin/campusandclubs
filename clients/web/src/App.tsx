@@ -22,9 +22,9 @@ function App() {
 
   return (
     <div className="max-w-3xl min-h-screen mx-auto gap-0 overflow-y-auto bg-background scrollbar-none p-0">
-      {/* <div className="md:hidden">
+      <div className="md:hidden">
         <Header />
-      </div> */}
+      </div>
       {feed.isLoading ? <>
         {Array.from({ length: 6 }).map((_, index) => (
           <PostCardSkeleton key={index} />
@@ -35,7 +35,7 @@ function App() {
             <PostCard post={post} />
           </div>
         ))}</>}
-      <div className="md:hidden sticky bottom-0 w-full z-50 bg-background">
+      <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
         <BottomBar />
       </div>
       <div className="absolute bottom-14 right-5 md:right-20">

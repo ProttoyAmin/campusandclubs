@@ -20,6 +20,9 @@ const PostDetail = () => {
     const { data: currentUser } = useMe();
     const location = useLocation();
     const navigate = useNavigate();
+    const state = location.state as {
+        focusReply?: boolean;
+    }
 
     if (retrieve.data && retrieve.data?.author?.username !== username) {
         navigate(paths.private.user.posts.detail(retrieve.data?.author?.username, retrieve.data?.id), { replace: true });
@@ -29,7 +32,7 @@ const PostDetail = () => {
         if (retrieve.data) {
             const id = pageHeader.push(
                 <>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 bg-background w-full p-2">
                         <NavigateButtons hideForward />
                         <h1 className="text-lg font-semibold">Post</h1>
                     </div>
@@ -55,30 +58,28 @@ const PostDetail = () => {
     return (
         <>
             {retrieve.data ? (
-                <>
-                    <div className="flex flex-col gap-6">
-                        <PostCard post={retrieve.data} enableNavigate={false} reduceContent={false} />
-                        <div className="px-2 sticky bottom-10">
-                            <CommentBoxForm ref={commentFormRef} user={currentUser} post={retrieve.data} onComment={onComment} />
-                        </div>
-                        <div className="px-4 space-y-4">
-                            {comments?.data?.results?.length ? (
-                                <>
-                                    {
-                                        comments.data?.results?.map((comment: Comment) => (
-                                            <CommentCard key={comment.id} comment={comment} onReply={onReply} />
-                                        ))
-                                    }
-                                </>
-                            ) : (
-                                <EmptyState
-                                    title='No comments'
-                                    description='Be the first one to comment'
-                                />
-                            )}
-                        </div>
+                <div className="flex flex-col gap-6">
+                    <PostCard post={retrieve.data} enableNavigate={false} reduceContent={false} />
+                    <div className="px-2 sticky bottom-10">
+                        <CommentBoxForm ref={commentFormRef} user={currentUser} post={retrieve.data} onComment={onComment} autoFocusReply={state?.focusReply || false} />
                     </div>
-                </>
+                    <div className="px-4 space-y-4">
+                        {comments?.data?.results?.length ? (
+                            <>
+                                {
+                                    comments.data?.results?.map((comment: Comment) => (
+                                        <CommentCard key={comment.id} comment={comment} onReply={onReply} />
+                                    ))
+                                }
+                            </>
+                        ) : (
+                            <EmptyState
+                                title='No comments'
+                                description='Be the first one to comment'
+                            />
+                        )}
+                    </div>
+                </div>
             ) : null}
         </>
     )

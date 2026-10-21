@@ -1,3 +1,13 @@
+from apps.accounts.view.auth.allauth_proxy import ChangePasswordView
+from apps.accounts.view.auth.allauth_proxy import (
+    login_view,
+    logout as allauth_logout,
+    signup_view,
+    session_view,
+    change_password_view,
+    reset_password_view,
+)
+from apps.accounts.view.user.common.class_views import MeRetreiveUpdateView
 from django.urls import path, re_path, include
 from rest_framework.routers import DefaultRouter
 from . import views
@@ -43,15 +53,31 @@ urlpatterns = [
 
 
     # Authentication endpoints
-    path("auth/logout/", LogoutView.as_view(), name="jwt_logout"),
-    path("auth/login/", LoginView.as_view(),
-         name="jwt_obtain_token"),      # ---- DONE
+    path("auth/logout/", allauth_logout,
+         name="logout"),      # ---- DONE
+#     path("auth/login/", LoginView.as_view(),
+#          name="jwt_obtain_token"),      # ---- DONE
+    path("auth/login/", login_view,
+         name="login"),      # ---- DONE
+
+    path("auth/signup/", signup_view,
+         name="signup"),      # ---- DONE
+
+    path("auth/session/", session_view,
+         name="session"),      # ---- DONE
+
+    path("auth/change-password/", ChangePasswordView.as_view(),
+         name="change_password"),      # ---- DONE
+    path("auth/reset-password/", reset_password_view,
+         name="reset_password"),      # ---- DONE
     # path("auth/register/", RegisterView.as_view(), name="register"),        # ---- HANDLED BY DJOSER
     # path("auth/validate/", ValidateUserTypeView.as_view(), name="validate_type"),
 
     # # User lookup
-    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(),
+    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(lookup_field='username'),
          name="user_details_by_username"),  # DONE
+#     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
+#          name="update_user_details"),  # DONE
     path('auth/all/', UserListCreateView.as_view(),
          name="all_users"),  # ---- DONE
     path('auth/<uuid:user_id>/all/',

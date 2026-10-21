@@ -32,7 +32,6 @@ export const ProfileLayoutHeaderSkeleton = () => {
         </div>
       </div>
       <div className="flex gap-2 items-center">
-        {/* {!forCurrentUser && <Skeleton className="h-8 w-18 rounded-md" />} */}
         <Skeleton className="h-8 w-8 rounded-full" />
         <Skeleton className="h-8 w-8 rounded-full" />
       </div>
@@ -73,8 +72,8 @@ const ProfileLayoutHeader = ({
     <>
       {user && (
         <div className="w-full flex items-center gap-2">
-          <header className="flex items-center justify-between w-full md:p-2 p-1 rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
-            <div className="flex gap-2 items-center">
+          <header className="flex items-center justify-between w-full md:p-2 p-1 md:rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
+            <div className="flex gap-2 items-center p-2">
               <div>
                 {currentUser?.data.user.id !== user.id && (
                   <NavigateButtons hideForward />
@@ -117,7 +116,7 @@ const ProfileLayoutHeader = ({
               {user?.id === currentUser?.data.user.id ? (
                 <>
                   <EditProfileDialog
-                    trigger={<Button variant={"glass"}>Edit</Button>}
+                    trigger={<Button variant={"outline"}>Edit</Button>}
                     title="Edit Profile"
                     data={user as UserProfile}
                     uploadAvatar={uploadAvatar}

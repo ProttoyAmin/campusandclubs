@@ -14,7 +14,7 @@ from apps.clubs.models.enums import (
     JoinMode
 )
 
-from apps.clubs.models.club.club_category import Category
+from .club_category import Category
 
 
 if TYPE_CHECKING:

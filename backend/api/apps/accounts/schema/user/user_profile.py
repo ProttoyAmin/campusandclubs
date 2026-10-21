@@ -1,3 +1,4 @@
+from apps.accounts.serialize.user.profile import UserUpdateSerializer
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
@@ -120,6 +121,14 @@ update_user_by_username_schema = extend_schema(
     tags=["Users"],
     parameters=[_username_param],
     request=UserProfileSerializer,
+    responses=_user_write_responses,
+)
+
+update_minimal_user_schema = extend_schema(
+    operation_id="update_minimal_user",
+    summary="Update user by username",
+    tags=["Users"],
+    request=UserUpdateSerializer,
     responses=_user_write_responses,
 )
 

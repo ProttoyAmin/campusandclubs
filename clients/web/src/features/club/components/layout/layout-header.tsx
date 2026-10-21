@@ -90,7 +90,7 @@ const ClubLayoutHeader = ({
               </>
             )}
           </div>
-          <div className="flex items-center w-full justify-between md:border rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
+          <div className="flex items-center w-full justify-between md:border md:rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
             <div className="flex gap-2 items-center p-2">
 
               <Avatar
@@ -144,7 +144,7 @@ const ClubLayoutHeader = ({
               <Button variant={"ghost"} className={"rounded-full"} size="icon">
                 <HugeiconsIcon icon={Search01Icon} className="size-5" />
               </Button>
-              {club?.is_owner ? (
+              {club.is_owner && (
                 <Button
                   variant={"ghost"}
                   className={"rounded-full group"}
@@ -155,23 +155,23 @@ const ClubLayoutHeader = ({
                 >
                   <HugeiconsIcon icon={Settings01Icon} className="size-5 transition-transform duration-200 group-hover:rotate-45" />
                 </Button>
-              ) : (
-                <ClubDropdown
-                  club={club}
-                  trigger={
-                    <Button
-                      variant={"ghost"}
-                      className={"rounded-full"}
-                      size="icon"
-                    >
-                      <CircleEllipsis className="size-5 transition-transform duration-200" />
-                    </Button>
-                  }
-                  onLeave={handleLeave}
-                  isMember={club?.is_member}
-                />
               )}
+              <ClubDropdown
+                club={club}
+                trigger={
+                  <Button
+                    variant={"ghost"}
+                    className={"rounded-full"}
+                    size="icon"
+                  >
+                    <CircleEllipsis className="size-5 transition-transform duration-200" />
+                  </Button>
+                }
+                onLeave={handleLeave}
+                isMember={club.is_member}
+              />
             </div>
+            {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
           </div>
         </>
       )}

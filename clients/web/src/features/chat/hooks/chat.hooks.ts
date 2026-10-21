@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useInfiniteQuery } from "@tanstack/react-query";
 import { chat } from "../services/chat.service";
-import type { ChatStartDTO, Message } from "../http/chat.http";
+import type { ChatStartDTO, Message, MessageSendDTO } from "../http/chat.http";
 import { queryClient } from "@/config/query-client";
 import type { AppError } from "@/settings/app/error";
 
@@ -45,7 +45,7 @@ export const useChat = (chat_id: string) => {
     })
 
     const messageSend = useMutation({
-        mutationFn: (data: { content: string }) => chat.message(chat_id, data),
+        mutationFn: (data: MessageSendDTO) => chat.message(chat_id, data),
     })
 
     const acceptPendingChat = useMutation({

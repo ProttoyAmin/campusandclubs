@@ -56,7 +56,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         self.form_repository = FormRepository()
         self.form_submission_repository = FormSubmissionRepository()
 
-    def _get_object(self, pk: int) -> Club:
+    def _get_object(self, pk: UUID) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
 
     def exclude_secret_clubs(self) -> QuerySet[Club]:
@@ -162,8 +162,11 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
                     name=department_template.name,
                 )
 
-            self.upload_media(club, dto.avatar, "avatar")
-            self.upload_media(club, dto.banner, "banner")
+            if dto.avatar:
+                self.upload_media(club, dto.avatar, "avatar")
+            
+            if dto.banner:
+                self.upload_media(club, dto.banner, "banner")
 
             ClubPreference.objects.create(
                 club=club

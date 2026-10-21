@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from .user_preference import UserPreference
     from apps.clubs.models import Membership
     from apps.realtime.models import Chat
+    from apps.connections.models import Follow
 
 
 class User(AbstractUser):
@@ -109,6 +110,8 @@ class User(AbstractUser):
         emailaddress_set: RelatedManager["EmailAddress"]
         preferences: RelatedManager["UserPreference"]
         chats: RelatedManager["Chat"]
+        followers: RelatedManager["Follow"]
+        following: RelatedManager["Follow"]
 
     def __str__(self):
         return f'{self.username} - {self.id}'

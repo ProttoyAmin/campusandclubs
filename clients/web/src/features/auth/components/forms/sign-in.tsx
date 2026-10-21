@@ -68,7 +68,7 @@ const SignInForm = (props: SignInFormProps) => {
                 <Input
                   {...field}
                   id="password"
-                  type="password"
+                  type="text"
                   aria-invalid={fieldState.invalid}
                   placeholder="Password"
                   autoComplete="off"

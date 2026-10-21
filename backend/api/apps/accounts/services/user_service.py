@@ -1,3 +1,7 @@
+from apps.accounts.dtos.profile_update_dto import UpdateUserDTO_minimal
+from apps.accounts.dtos.profile_update_dto import UpdateAttrs
+from django.core.exceptions import ValidationError
+from xml.dom import ValidationErr
 from allauth.account.models import EmailAddress
 import uuid
 from django.db.models.query import QuerySet
@@ -47,3 +51,31 @@ class AccountService(BaseService[User, UserRepository]):
 
     def emails(self, user: User) -> QuerySet[EmailAddress]:
         return self.repository.emails(user)
+
+    def update_user(self, data: UpdateAttrs) -> User:
+        # Map UpdateAttrs to UpdateUserDTO_minimal
+        dto_data = {}
+        
+        if 'first_name' in data:
+            dto_data['first_name'] = data['first_name']
+        else:
+            dto_data['first_name'] = self.actor.first_name
+        
+        if 'last_name' in data:
+            dto_data['last_name'] = data['last_name']
+        else:
+            dto_data['last_name'] = self.actor.last_name
+        
+        if 'bio' in data:
+            dto_data['bio'] = data['bio']
+        else:
+            dto_data['bio'] = self.actor.bio
+        
+        if 'gender' in data:
+            dto_data['gender'] = data['gender']
+        else:
+            dto_data['gender'] = self.actor.gender
+        
+        dto = UpdateUserDTO_minimal(**dto_data)
+        
+        return self.get_repository().update(self.user, dto)

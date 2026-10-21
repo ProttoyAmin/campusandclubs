@@ -7,28 +7,28 @@ mocks, just instantiate a dataclass).
 """
 from .chat import (
     ChatCreateDTO,
-    # ChatStartDTO,
-    # GroupChatCreateDTO,
-    # ChatActionDTO,
+    ChatStartDTO,
+    GroupChatCreateDTO,
+    ChatActionDTO,
 )
-# from .message import (
-#     MessageSendDTO,
-#     MessageEditDTO,
-#     MessageAttachmentDTO,
-#     ReactionDTO,
-#     MessageListQueryDTO,
-#     ReceiptDTO,
-# )
+from .message import (
+    MessageSendDTO,
+    MessageEditDTO,
+    MessageAttachmentDTO,
+    ReactionDTO,
+    MessageListQueryDTO,
+    ReceiptDTO,
+)
 
 __all__ = [
-    # "ChatActionDTO",
+    "ChatActionDTO",
     "ChatCreateDTO",
-    # "ChatStartDTO",
-    # "GroupChatCreateDTO",
-    # "MessageAttachmentDTO",
-    # "MessageEditDTO",
-    # "MessageListQueryDTO",
-    # "MessageSendDTO",
-    # "ReactionDTO",
-    # "ReceiptDTO",
+    "ChatStartDTO",
+    "GroupChatCreateDTO",
+    "MessageAttachmentDTO",
+    "MessageEditDTO",
+    "MessageListQueryDTO",
+    "MessageSendDTO",
+    "ReactionDTO",
+    "ReceiptDTO",
 ]

@@ -1,38 +1,49 @@
 import { useSectionId } from '@/shared/hooks/id';
-import { Outlet, useLocation, useMatch, useNavigate, Navigate } from 'react-router-dom';
-import { usePageHeader } from '@/shared/hooks/use-page-header';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { MessageAdd02Icon } from '@hugeicons/core-free-icons';
-import { Button } from 'design/components/ui/button';
+import { Outlet, useLocation, useMatch, Navigate } from 'react-router-dom';
 import { paths, routes } from '@/settings/routes';
 import { useChats } from '@/features/chat/hooks/chat.hooks';
-import ChatList from '@/features/chat/components/chat-list';
-import EmptyState from '@/shared/components/empty-state';
-import { useMediaQuery } from '@/shared/hooks/use-media-query';
+import Chats from '@/features/chat/pages/chats';
+import ChatRequests from '@/features/chat/pages/chat-requests';
 import type { UserMinimal } from '@campus/api';
-import { useParams } from 'react-router-dom';
 import { Spinner } from 'design/components/ui/spinner';
 import BottomBar from '@/components/bottom-bar';
+import { useSocketEvent } from '@/shared/hooks/use-socket-event';
+import { queryClient } from '@/config/query-client';
 
 const ChatsLayout = () => {
+    // All hooks declared unconditionally at the very top
     const location = useLocation();
-    const initialUser = (location.state as { initialUser?: UserMinimal } | null)?.initialUser;
-    const { chats } = useChats();
-    const navigate = useNavigate();
-    const pageHeader = usePageHeader();
     const sectionId = useSectionId("section-layout", 20);
-    const isMobile = useMediaQuery("(max-width: 768px)");
+    const { chats } = useChats();
     const chatDetailMatch = useMatch(routes.chat.inbox);
-    const newChatMatch = useMatch(routes.chat.new);
-    const params = useParams()
+    const chatInfoMatch = useMatch(routes.chat.info);
 
+    const initialUser = (location.state as { initialUser?: UserMinimal } | null)?.initialUser;
 
-    if (initialUser && !newChatMatch && !chatDetailMatch) {
-        if (chats.isLoading) {
-            return <Spinner />;
+    const isRequests = location.pathname.startsWith('/@/chats/requests');
+    const isNewChat = location.pathname.startsWith('/@/chats/new');
+    const isConversationActive = Boolean(chatDetailMatch || chatInfoMatch);
+    const isRightPaneActive = Boolean(isConversationActive || isNewChat);
+
+    const chatsData = chats.data?.data ?? [];
+    const isLoading = chats.isLoading;
+
+    useSocketEvent("chat:message", () => {
+        queryClient.invalidateQueries({
+            queryKey: ["chats"],
+        });
+    });
+
+    if (initialUser && !isNewChat && !isConversationActive) {
+        if (isLoading) {
+            return (
+                <div className="flex h-screen items-center justify-center">
+                    <Spinner />
+                </div>
+            );
         }
 
-        const existingChat = chats.data?.data.find((chat) =>
+        const existingChat = chatsData.find((chat) =>
             chat.participants.some((p) => p.user.id === initialUser.id) && chat.type === "DIRECT"
         );
 
@@ -43,86 +54,43 @@ const ChatsLayout = () => {
         return <Navigate to={paths.private.chat.new} replace state={{ initialUser }} />;
     }
 
-    const showMobileList = !chatDetailMatch && !newChatMatch;
-
-    const chatList = (
-        <>
-            <div className="flex items-center justify-between p-4">
-                <h2 className="text-lg font-semibold">
-                    Chats
-                </h2>
-
-                <Button
-                    size="icon-lg"
-                    variant="outline"
-                    className="rounded-full"
-                    onClick={() => navigate(routes.chat.new)}
-                >
-                    <HugeiconsIcon
-                        icon={MessageAdd02Icon}
-                        className="size-5"
-                    />
-                </Button>
-            </div>
-
-            <div className="mt-4 h-full">
-                {/* <pre>{JSON.stringify(chatsData.data, null, 2)}</pre> */}
-                {chats.data?.data?.length > 0 ? (
-                    <ChatList chats={chats.data?.data} />
-                ) : (
-                    <EmptyState
-                        title=""
-                        description="No messages yet"
-                    />
-                )}
-            </div>
-        </>
-    );
-
-    if (isMobile) {
-        return (
-            <section
-                id={sectionId}
-                className="min-h-[calc(100vh-1rem)] h-full overflow-hidden"
-            >
-                {showMobileList ? (
-                    <div className="min-h-[calc(100vh-4rem)]">
-                        {chatList}
-                    </div>
-                ) : (
-                    <div className="min-h-[calc(100vh-4rem)] h-full">
-                        <div className="flex flex-col h-[calc(100vh-1rem)]">
-                            {pageHeader.actions}
-                            <Outlet context={{ chats: chats.data?.data ?? [] }} />
-                        </div>
-                    </div>
-                )}
-                {!chatDetailMatch && (
-                    <div className="fixed bottom-0 w-full z-50 h-12 bg-background">
-                        <BottomBar />
-                    </div>
-                )}
-            </section>
-        );
-    }
-
     return (
         <section
             id={sectionId}
-            className="grid min-h-[calc(100vh-1rem)] grid-cols-12 overflow-hidden"
+            className="flex h-[calc(100vh-1rem)] w-full overflow-hidden bg-background"
         >
-            <div className="col-span-3 max-h-[calc(100vh-1rem)] border-r border-l overflow-y-auto scrollbar-none">
-                {chatList}
+            {/* Left Column (Chat list on root/new/inbox, or Message Requests when on /requests) */}
+            <div
+                className={`
+                    w-full md:w-90 lg:w-100 xl:w-105 shrink-0 md:border-r border-border h-full flex flex-col overflow-hidden
+                    ${isRightPaneActive ? 'hidden md:flex' : 'flex'}
+                `}
+            >
+                {isRequests ? (
+                    <ChatRequests />
+                ) : (
+                    <Chats chats={chatsData} isLoading={isLoading} />
+                )}
             </div>
 
-            <div className="col-span-9 overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-1rem)] max-h-[calc(100vh-1rem)]">
-                <div className="flex flex-col h-full overflow-hidden">
-                    {pageHeader.actions}
-                    <Outlet context={{ chats: chats.data?.data ?? [] }} />
-                </div>
+            {/* Right Column (New chat / Conversation inbox / Empty placeholder) */}
+            <div
+                className={`
+                    flex-1 h-full flex flex-col min-w-0 overflow-hidden bg-background
+                    ${isRightPaneActive ? 'flex' : 'hidden md:flex'}
+                `}
+            >
+                <Outlet context={{ chats: chatsData, isLoading }} />
             </div>
+
+            {/* Mobile Bottom Bar (only shown on root list when no conversation or new chat is open) */}
+            {!isRightPaneActive && !isRequests && (
+                <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
+                    <BottomBar />
+                </div>
+            )}
         </section>
     );
 };
 
-export default ChatsLayout
+export default ChatsLayout;

@@ -13,6 +13,7 @@ import {
   AvatarImage,
   AvatarFallback
 } from "design/components/ui/avatar"
+import { SidebarProvider } from "design/components/ui/sidebar";
 
 const MainLayout: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -38,29 +39,37 @@ const MainLayout: React.FC = () => {
     })
   })
 
+  useSocketEvent("chat:start", () => {
+    queryClient.invalidateQueries({
+      queryKey: ["chats"],
+    });
+  });
+
   return (
     <Guard>
-      <SocketProvider>
-        <div
-          className="
+      <SidebarProvider defaultOpen={false}>
+        <SocketProvider>
+          <div
+            className="
               grid min-h-screen w-full
               grid-cols-1
               md:grid-cols-[auto_minmax(0,1fr)_auto]
               lg:grid-cols-[1fr_content-fit_auto]
             "
-        >
-          <div className="hidden md:block">
-            <AppSidebar />
-          </div>
-          <main ref={scrollRef} className="grid-2 w-full">
-            <Outlet />
-          </main>
-          <aside className="grid-3 hidden md:block justify-self-start">
+          >
+            <div className="hidden md:block">
+              <AppSidebar />
+            </div>
+            <main ref={scrollRef} className="grid-2 w-full">
+              <Outlet />
+            </main>
+            <aside className="grid-3 hidden md:block justify-self-start">
 
-          </aside>
-        </div>
-        <Toaster />
-      </SocketProvider>
+            </aside>
+          </div>
+          <Toaster />
+        </SocketProvider>
+      </SidebarProvider>
     </Guard>
   );
 };

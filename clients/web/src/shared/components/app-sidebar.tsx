@@ -7,9 +7,7 @@ import {
     SidebarGroupLabel,
     SidebarHeader,
     SidebarMenuButton,
-    SidebarTrigger,
-    SidebarSeparator,
-    SidebarMenuItem
+    SidebarTrigger
 } from "design/components/ui/sidebar";
 import ResponsiveDialog from "./responsive-dialog";
 import ClubCreateForm from "@/features/club/forms/create-club-form";
@@ -19,15 +17,14 @@ import { useClubs, useDepartmentTemplates } from "@/features/club/hooks/club.hoo
 import { useAffiliations, useMe } from "@/features/user/hooks/user.hooks";
 import React from "react";
 import { toast } from "design/components/ui/toast";
-import { Plus } from "lucide-react";
 import { clubMenu } from "@/config/menu/club-menu";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { LayoutAlignLeftIcon, LayoutAlignRightIcon, MenuTwoLineIcon, PlusIcon } from "@hugeicons/core-free-icons";
+import { MenuTwoLineIcon, PlusIcon } from "@hugeicons/core-free-icons";
 import { Button } from "design/components/ui/button";
 import { useSidebar } from "design/components/ui/sidebar";
-import type { JoinMode, Privacy, Scope } from "validation/club";
+import type { Scope } from "validation/club";
 
 // interface AppSideBarProps {
 //     main?: boolean;
@@ -36,7 +33,7 @@ import type { JoinMode, Privacy, Scope } from "validation/club";
 //     menuParam?: any;
 // }
 
-type ClubCreateRequestWritableExtended = ClubCreateRequestWritable & {
+export type ClubCreateRequestWritableExtended = ClubCreateRequestWritable & {
     scope: Scope;
 }
 
@@ -75,13 +72,13 @@ export function AppSidebar() {
     };
 
     return (
-        <Sidebar variant="sidebar" collapsible="icon" className="bg-background border-none">
+        <Sidebar variant="sidebar" collapsible="icon" className="bg-background">
             <SidebarHeader children={<>
                 <div className="flex justify-end gap-2 text-muted-foreground">
                     <SidebarTrigger />
                 </div>
             </>} className="bg-background" />
-            <SidebarContent className="bg-background flex flex-col justify-center">
+            <SidebarContent className="bg-background">
                 <SidebarGroup children={
                     <>
                         <div className="flex flex-col gap-2 truncate">
@@ -139,18 +136,16 @@ export function AppSidebar() {
                 } />
             </SidebarContent>
             <SidebarFooter className="bg-background" children={
-                <>
-                    <div className="">
-                        <SidebarDropDown
-                            menu={SettingsDropdownMenu}
-                            trigger={
-                                <Button variant="ghost" className={`${state === "collapsed" ? "px-0" : ""}`}>
-                                    <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
-                                </Button>
-                            }
-                        />
-                    </div>
-                </>
+                <div className="">
+                    <SidebarDropDown
+                        menu={SettingsDropdownMenu}
+                        trigger={
+                            <Button variant="ghost" className={`${state === "collapsed" ? "px-0" : ""} rounded-full`} size="icon-lg">
+                                <HugeiconsIcon icon={MenuTwoLineIcon} className="size-6" />
+                            </Button>
+                        }
+                    />
+                </div>
             } />
         </Sidebar>
     )

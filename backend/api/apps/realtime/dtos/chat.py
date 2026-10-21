@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 import uuid
 from dataclasses import dataclass
 
@@ -18,3 +19,25 @@ class ChatActionDTO:
     """Generic accept/decline/mark-read action against a chat."""
 
     chat_id: uuid.UUID
+
+
+@dataclass
+class ChatStartDTO:
+    """Get-or-create a DM or small group and immediately send a first message.
+
+    Mirrors the existing ``ChatStartSerializer`` shape so the React/Angular
+    clients can keep calling the same endpoint.
+    """
+
+    participant_ids: list[uuid.UUID]
+    content: str
+    name: Optional[str] = None
+
+
+@dataclass
+class GroupChatCreateDTO:
+    """Create a named group chat. The actor is always an owner/admin."""
+
+    name: str
+    participant_ids: list[uuid.UUID]
+    description: Optional[str] = None

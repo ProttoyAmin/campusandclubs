@@ -23,10 +23,11 @@ export type CommentBoxFormHandle = {
 type CommentBoxFormProps = {
     user: Pick<UserProfile, "id" | "avatar" | "username">;
     post: PostExtended;
+    autoFocusReply?: boolean;
     onComment: (data: { content: string, parent: string | null }) => void;
 };
 
-const CommentBoxForm = forwardRef<CommentBoxFormHandle, CommentBoxFormProps>(({ user, post, onComment }, ref) => {
+const CommentBoxForm = forwardRef<CommentBoxFormHandle, CommentBoxFormProps>(({ user, post, onComment, autoFocusReply = false }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -84,7 +85,7 @@ const CommentBoxForm = forwardRef<CommentBoxFormHandle, CommentBoxFormProps>(({ 
                         <Input
                             {...field}
                             ref={inputRef}
-                            autoFocus
+                            autoFocus={autoFocusReply}
                             autoComplete="off"
                             placeholder={`Reply to @${post.author.username}...`}
                             className="

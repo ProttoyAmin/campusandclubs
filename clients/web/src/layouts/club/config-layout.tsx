@@ -62,8 +62,7 @@ const ClubConfigLayout = () => {
           <div className="min-w-full flex justify-center">
             <NavTabs
               menu={clubConfigureMenu(slug)}
-              className="w-1/2"
-              variant="tab"
+              className="w-1/2 flex flex-col gap-2.5"
             />
           </div>
         ) : (

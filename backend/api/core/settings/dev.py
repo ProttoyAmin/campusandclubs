@@ -24,6 +24,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
+    "http://*"
 ]
 # Fine for local dev only — never enable this in prod.
 CORS_ALLOW_ALL_ORIGINS = True

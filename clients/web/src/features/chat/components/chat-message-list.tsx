@@ -1,6 +1,7 @@
 import ChatMessageBubble from "./chat-message-bubble";
 import type { Message as MessageT } from "../http/chat.http";
 import type { ReactNode } from "react";
+import { getTimeAgo } from "@/utils/format-date";
 
 interface ChatMessageListProps {
     messages: MessageT[];
@@ -27,10 +28,13 @@ const ChatMessageList = ({ messages, currentUserId, header, className }: ChatMes
     // bottom of the screen. Reversing the array puts the newest message
     // first in the DOM → bottom of screen, oldest last → top, right under `header`.
     // Assumes `messages` comes oldest-first from the API — flip this reverse if not.
-    const groups = groupBySender(messages).reverse();
-
+    const groups = groupBySender(messages);
+    const lastMessage = messages[0];
     return (
-        <div className={`flex-1 min-h-0 overflow-y-auto flex flex-col-reverse gap-2.5 scrollbar-none ${className}`}>
+        <div className={`flex-1 min-h-0 overflow-y-auto flex flex-col-reverse scrollbar-none ${className}`}>
+            <div className={`${lastMessage?.sender?.id === currentUserId ? "text-right mr-4" : "text-left ml-12"}`}>
+                <span className="font-normal text-xs text-muted-foreground">{getTimeAgo(lastMessage?.created_at)} ago</span>
+            </div>
             {groups.map((group) => (
                 <ChatMessageBubble key={group[0].id} messages={group} isOwn={group[0].sender.id === currentUserId} />
             ))}

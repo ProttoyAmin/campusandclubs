@@ -1,3 +1,7 @@
+from apps.accounts.dtos.profile_update_dto import UpdateAttrs
+from typing import TypedDict
+from apps.accounts.schema.user.user_profile import update_minimal_user_schema
+from apps.accounts.serialize.user.profile import UserUpdateSerializer
 from typing import Any
 from django.db.models import QuerySet
 from rest_framework.response import Response
@@ -36,7 +40,7 @@ class UserRetrieveUpdateDestroyView(
     PolicyMixin[UserPolicy, User],
     ServiceMixin[AccountService],
     PrivateResponseMixin[User],
-    generics.RetrieveUpdateDestroyAPIView
+    generics.RetrieveAPIView
 ):
     """
     User Detail View
@@ -53,7 +57,9 @@ class UserRetrieveUpdateDestroyView(
     lookup_url_kwarg = 'username'
 
     def get_queryset(self) -> QuerySet[User]:
-        return self.get_service(self.request).get_by_username(username=self.kwargs['username'])
+        return self.get_service(self.request).repository.get_queryset().filter(
+            username=self.kwargs.get('username')
+        )
 
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         user: User = self.get_object()
@@ -65,6 +71,65 @@ class UserRetrieveUpdateDestroyView(
         serializer = self.get_serializer(user, context={"request": request})
         return Response(serializer.data)
 
+
+@extend_schema_view(
+    list=list_users_schema,
+    retrieve=retrieve_user_by_username_schema,
+    update=update_minimal_user_schema,
+)
+class MeRetreiveUpdateView(
+    PolicyMixin[UserPolicy, User],
+    ServiceMixin[AccountService],
+    PrivateResponseMixin[User],
+    generics.GenericAPIView
+):
+    """
+    User Detail View
+    """
+    policy_class = UserPolicy
+    service_class = AccountService
+    private_serializer_class = PrivateUserSerializer
+    private_detail_message = "This profile is private"
+    permission_classes = [permissions.IsAuthenticated]
+
+    # DRF class attributes
+    serializer_class = UserUpdateSerializer
+
+    def get_queryset(self) -> QuerySet[User]:
+        return self.get_service(self.request).repository.get_queryset().filter(
+            username=self.request.user.username
+        )
+
+    def get(self, request: Request) -> Response:
+        user: User = self.request.user
+        policy = self.get_policy(request, user)
+
+        if not policy.can_view_profile(viewer=user):
+            return self.get_private_payload(user, request)
+
+        serializer = self.get_serializer(user, context={"request": request})
+        return Response(serializer.data)
+
+    def patch(self, request: Request) -> Response:
+        user: User = self.request.user
+        policy = self.get_policy(request, user)
+
+        if not policy.can_edit_profile(viewer=user):
+            return self.get_private_payload(user, request)
+
+        serializer = self.get_serializer(user, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+
+        data = UpdateAttrs(
+            first_name=serializer.validated_data.get('first_name'),
+            last_name=serializer.validated_data.get('last_name'),
+            bio=serializer.validated_data.get('bio'),
+            gender=serializer.validated_data.get('gender'),
+        )
+
+        self.get_service(request).update_user(data)
+        
+        return Response(serializer.data)
 
 @list_users_schema
 class UserListCreateView(

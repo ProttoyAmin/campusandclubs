@@ -3,6 +3,7 @@ Base settings shared by dev.py and prod.py.
 Nothing environment-specific (DEBUG, DB, CORS, email backend, etc.) lives here.
 """
 
+from allauth.core.internal.cryptokit import UserCodeFormat
 import datetime
 from os import getenv
 from pathlib import Path
@@ -160,10 +161,13 @@ SITE_ID = 1
 DOMAIN = getenv("DOMAIN", "127.0.0.1")
 SITE_NAME = getenv("SITE_NAME")
 
-HEADLESS_ONLY = True
+ALLAUTH_USER_CODE_FORMAT = UserCodeFormat(numeric=True, dashed=False, length=6)
+
+ALLAUTH_HEADLESS_ONLY = True
 HEADLESS_CLIENTS = ('app', 'browser')
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
+SOCIALACCOUNT_ONLY = False
 
 # HEADLESS_TOKEN_STRATEGY = (
 #     "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
@@ -182,6 +186,10 @@ ACCOUNT_SIGNUP_FIELDS = [
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
+
+ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
+
+
 # SOCIALACCOUNT_ADAPTER = "apps.accounts.adapters.CustomSocialAccountAdapter"
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
@@ -190,6 +198,8 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
+ACCOUNT_EMAIL_NOTIFICATIONS  = True
 
 # Cookie and Session configuration
 SESSION_COOKIE_HTTPONLY = True

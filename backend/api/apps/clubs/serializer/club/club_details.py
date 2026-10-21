@@ -50,8 +50,7 @@ class ClubScopeUpdateSerializer(serializers.Serializer):
 
 class ClubDetailSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
-    origin = serializers.CharField(required=False, allow_blank=True, allow_null=True,
-                                   default=None)
+    origin = serializers.SerializerMethodField()
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     owner_details = serializers.SerializerMethodField()
     total_members = serializers.SerializerMethodField()
@@ -97,6 +96,15 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             'username': owner.username,
             'profile_picture': profile_picture_url,
         }
+
+    def get_origin(self, obj: Club):
+        if obj.origin:
+            return {
+                'id': obj.origin.id,
+                'name': obj.origin.name,
+                'code': obj.origin.code
+            }
+        return None
 
     def get_is_owner(self, obj: Club) -> bool:
         request = self._get_request()

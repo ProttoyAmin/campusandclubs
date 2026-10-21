@@ -2,20 +2,25 @@ import { useOutletContext } from 'react-router-dom';
 import type { ChatResponse } from '../http/chat.http';
 import type { AppError } from "@/settings/app/error";
 
-type ChatOutletContext = {
+export type ChatOutletContext = {
     chats: ChatResponse[] | undefined;
-    chatError: AppError<unknown>;
+    chatError?: AppError<unknown>;
+    isLoading: boolean;
 };
 
-type ChatDetailOutletContext = {
+export type ChatDetailOutletContext = {
     chat: ChatResponse | undefined;
-    chatError: AppError<unknown>;
-}
+    chatError?: AppError<unknown>;
+    isLoading: boolean;
+    replying: boolean;
+    setReplying: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export const useDMOutlet = () => {
     return useOutletContext<ChatDetailOutletContext>();
-}
+};
 
 export const useChatOutlet = () => {
-    return useOutletContext<ChatOutletContext>();
-}
+    const context = useOutletContext<ChatOutletContext>();
+    return context ?? { chats: [], isLoading: false };
+};

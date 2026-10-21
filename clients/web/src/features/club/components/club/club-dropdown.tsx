@@ -5,15 +5,15 @@ import {
   DropdownMenuItem,
 } from "design/components/ui/dropdown-menu";
 import { toast } from "design/components/ui/toast";
-import { InfoIcon, LinkIcon, CircleAlertIcon, LogOutIcon } from "lucide-react";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import AboutClub from "./about-club";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import AppAlertDialog from "@/shared/components/alert";
-import type { ClubDetail } from "@campus/api";
 import ResponsiveDropDownMenu from "@/shared/components/responsive-dropdown-menu";
 import type { ClubDetailExtended } from "../../http/club.http";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon, CopyLinkIcon, InfoIcon, LogOutIcon } from "@hugeicons/core-free-icons";
 
 type DropDownProps = {
   trigger: React.ReactElement;
@@ -45,7 +45,7 @@ const ClubDropdown = (props: DropDownProps) => {
         open={open}
         onOpenChange={setOpen}
       >
-        <DropdownMenuGroup className={"w-full md:w-40 flex flex-col gap-2"}>
+        <DropdownMenuGroup className={"w-full flex flex-col gap-2"}>
           {props.menu &&
             props.menu().map((item: MenuItemType) => (
               <DropdownMenuItem
@@ -61,34 +61,34 @@ const ClubDropdown = (props: DropDownProps) => {
           <DropdownMenuItem
             onClick={() => onCopy()}
             variant="default"
-            className={"cursor-pointer p-2"}
+            className={"cursor-pointer p-4"}
           >
-            <LinkIcon className="size-4" />
+            <HugeiconsIcon icon={CopyLinkIcon} className="size-5" />
             Copy link
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setAboutDialog(true)}
             variant="default"
-            className={"cursor-pointer p-2"}
+            className={"cursor-pointer p-4"}
           >
-            <InfoIcon className="size-4" />
+            <HugeiconsIcon icon={InfoIcon} className="size-5" />
             About this club
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => { }}
             variant="destructive"
-            className={"cursor-pointer p-2"}
+            className={"cursor-pointer p-4"}
           >
-            <CircleAlertIcon className="size-4" />
+            <HugeiconsIcon icon={AlertCircleIcon} className="size-5" />
             Report club
           </DropdownMenuItem>
           {props.club?.is_member && (
             <DropdownMenuItem
               onClick={() => setIsLeaving(true)}
               variant="destructive"
-              className={"cursor-pointer p-2"}
+              className={"cursor-pointer p-4"}
             >
-              <LogOutIcon className="size-4" />
+              <HugeiconsIcon icon={LogOutIcon} className="size-5" />
               Leave
             </DropdownMenuItem>
           )}
@@ -113,8 +113,6 @@ const ClubDropdown = (props: DropDownProps) => {
         onOpenChange={setAboutDialog}
         trigger={null}
         showCloseButton={false}
-      // title={`About ${props.club.name}`}
-      // description={`Details about ${props.club.name}`}
       >
         <AboutClub club={props.club} />
       </ResponsiveDialog>

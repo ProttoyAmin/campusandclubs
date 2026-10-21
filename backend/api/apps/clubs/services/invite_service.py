@@ -61,7 +61,7 @@ class InviteService(BaseService[Invite, InviteRepository], PolicyMixin[ClubPolic
             message=attrs.get('message'),
             created_by=self.actor,
             status=InviteStatus.ONGOING,
-            expires_at=default_invite_expires_at(),
+            expires_at=default_invite_expires_at(30),
             code=Invite.generate_code()
         )
         try:
@@ -132,11 +132,11 @@ class InviteService(BaseService[Invite, InviteRepository], PolicyMixin[ClubPolic
         if not invite:
             raise ValidationError({'detail': 'Invite not found'})
 
-        if invite.is_expired:
-            raise ValidationError({'detail': 'This invitation is expired'})
+        # if invite.is_expired:
+        #     raise ValidationError({'detail': 'This invitation is expired'})
 
-        if invite.status == InviteStatus.PAUSED:
-            raise ValidationError({'detail': 'This invitation is paused'})
+        # if invite.status == InviteStatus.PAUSED:
+        #     raise ValidationError({'detail': 'This invitation is paused'})
 
         return invite
 

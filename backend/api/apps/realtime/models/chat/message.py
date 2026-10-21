@@ -59,7 +59,13 @@ class MessageStatus(models.Model):
     message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="statuses")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.SENT)
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    seen_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ("message", "user")
+        indexes = [
+            models.Index(fields=["user", "status"]),
+            models.Index(fields=["message", "status"]),
+        ]

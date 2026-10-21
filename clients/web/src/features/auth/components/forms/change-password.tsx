@@ -47,7 +47,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
-                                type="password"
+                                type="text"
                                 id="change-password-form-current_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Current password"
@@ -76,7 +76,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
-                                type="password"
+                                type="text"
                                 id="change-password-form-new_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="New password"
@@ -104,7 +104,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                         <Field data-invalid={fieldState.invalid}>
                             <Input
                                 {...field}
-                                type="password"
+                                type="text"
                                 id="change-password-form-repeat_password"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Confirm new password"
@@ -125,7 +125,7 @@ const ChangePassword = (props: ChangePasswordProps) => {
                         </Field>
                     )}
                 />
-                <Button type="submit" disabled={props.pending} variant="glass" className={'rounded-full'}>
+                <Button type="submit" disabled={props.pending || !form.formState.isValid} variant="glass" className={'rounded-full'} size='lg'>
                     {props.pending && (
                         <Spinner className="size-4" data-icon="inline-start" />
                     )}

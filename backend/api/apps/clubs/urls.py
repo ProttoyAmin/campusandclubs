@@ -11,8 +11,7 @@ from . import views, views_clubs_post_views, views_members_views, views_event_vi
 from apps.clubs.viewss.club.generics import (
     ClubListCreateView,
     ClubRetrieveUpdateDestroyAPIView,
-    DepartmentTemplateListView,
-    ClubPrivacyJoinModeUpdateView
+    DepartmentTemplateListView
 )
 
 from apps.clubs.viewss.club.common import (
@@ -65,8 +64,6 @@ urlpatterns = [
          name='club_info'),    #
     path('<str:slug>/', ClubRetrieveUpdateDestroyAPIView.as_view(lookup_field='slug'),
          name='club_info_slug'),    #
-    path('<uuid:pk>/privacy-join-mode/', ClubPrivacyJoinModeUpdateView.as_view(),
-         name='club_privacy_join_mode'),  # NEW
 
     #     path('create/', views.create_club, name='create_club'),    # ---- checked
 

@@ -16,7 +16,7 @@ from typing import Any
 from uuid import UUID
 
 from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
+from channels.layers import get_channel_layer, BaseChannelLayer
 from django.db import transaction
 
 from .events import (
@@ -32,8 +32,10 @@ def _serialize_payload(data: Any) -> Any:
     return json.loads(json.dumps(data, default=str))
 
 
-def _get_layer():
-    return get_channel_layer()
+def _get_layer() -> BaseChannelLayer:
+    layer = get_channel_layer()
+    logger.info("layer: %s", layer)
+    return layer
 
 
 # ---------------------------------------------------------------------- #
@@ -45,7 +47,9 @@ def broadcast_sync(chat_id: UUID, event_type: str, data: dict) -> None:
     Safe to call from sync views. If called inside an atomic block the
     actual send is deferred until the transaction commits.
     """
+    logger.info("attempting to broadcast")
     payload = _serialize_payload(data)
+    logger.info("attempting to broadcast payload: %s", payload)
 
     def _send():
         try:

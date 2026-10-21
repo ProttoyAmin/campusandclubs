@@ -1,3 +1,4 @@
+from apps.realtime.models.chat.enums import ChatType
 from typing import Optional
 from django.db.models import QuerySet
 import uuid
@@ -17,6 +18,20 @@ class ChatRepository(BaseRepository[Chat]):
         return self.model.objects.get_or_create(
             participants__id__in=user_ids,
             club__isnull=True,
+        )
+    
+    def get_or_create_direct_chat(self, user_ids: list[uuid.UUID]) -> Chat:
+        return self.model.objects.get_or_create(
+            participants__id__in=user_ids,
+            club__isnull=True,
+            type=ChatType.DIRECT,
+        )
+
+    def get_or_create_group_chat(self, user_ids: list[uuid.UUID]) -> Chat:
+        return self.model.objects.get_or_create(
+            participants__id__in=user_ids,
+            club__isnull=True,
+            type=ChatType.GROUP,
         )
     
     def get_with_participants(self, chat_id: uuid.UUID) -> Optional[Chat]:

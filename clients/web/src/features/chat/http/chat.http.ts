@@ -23,15 +23,26 @@ export type Message = {
     chat: string
     sender: UserMinimal;
     content: string
-    reply_to: string | null;
+    reply_to: Message | null;
     created_at: string
     edited_at: string | null
     has_user_seen: boolean
 }
 
+export type MessageListResponse = {
+    data: Message[];
+    message: string
+    status: string
+}
+
 export type ChatStartDTO = {
     participant_ids: string[];
     content: string
+}
+
+export type MessageSendDTO = {
+    reply_to: string | null;
+    content: string;
 }
 
 class ChatHttp extends BaseClient<ChatResponse, any, any> {
@@ -54,13 +65,13 @@ class ChatHttp extends BaseClient<ChatResponse, any, any> {
         return response;
     }
 
-    async sendMessage(chatId: string, data: { content: string }) {
+    async sendMessage(chatId: string, data: MessageSendDTO) {
         const response = await this.client.post(`${this.endpoint}chats/${chatId}/messages/send/`, data);
         return response;
     }
 
     async getChatInbox(chatId: string) {
-        const response = await this.client.get<Message[]>(`${this.endpoint}chats/${chatId}/messages/`);
+        const response = await this.client.get<MessageListResponse>(`${this.endpoint}chats/${chatId}/messages/`);
         return response;
     }
 

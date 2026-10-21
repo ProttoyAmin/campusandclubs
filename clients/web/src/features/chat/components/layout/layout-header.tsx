@@ -50,7 +50,7 @@ const ChatLayoutHeader = ({ chat, currentUserId }: ChatLayoutHeaderProps) => {
 
     return (
         <div className='flex items-center gap-2 w-full py-2'>
-            <NavigateButtons hideForward />
+            <NavigateButtons hideForward className="" />
             {chat?.type === "GROUP" ? (
                 <>
                     <AvatarGroup>
@@ -79,9 +79,12 @@ const ChatLayoutHeader = ({ chat, currentUserId }: ChatLayoutHeaderProps) => {
             )}
             <p className="text-sm font-semibold">{getChatLabel()}</p>
             <Button
-                variant={"glass"}
+                variant={"outline"}
                 size={"icon-lg"}
                 className={"absolute right-2 rounded-full"}
+                onClick={() => {
+                    navigate(paths.private.chat.info(chat.id))
+                }}
             >
                 <HugeiconsIcon icon={EllipsisIcon} className='size-6' />
             </Button>

@@ -42,6 +42,8 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
     }
   }
 
+
+
   return (
     <nav className={`${className}`}>
       {menu.map((item) => {
@@ -49,32 +51,57 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
           typeof item.link === "function" ? item.link(id || "") : item.link;
         const active = item.isActive(pathname);
 
-        return (
-          <>
+        if (variant === "tab") {
+          const showLabel = !onlyIcon;
+          return (
             <NavLink
               key={item.id}
               id={`sidebar-nav-${item.id}`}
               to={link}
               end
+              aria-label={item.label}
+              className={`flex items-center rounded-full p-2 transition-all duration-300 ${active ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-secondary active:not-aria-[haspopup]:scale-95"
+                } ${itemsClassName ?? ""}`}
             >
-              <SidebarMenu>
-                <SidebarMenuItem key={unLink(item.link)}
-                  className={`${classes(variant)} ${active && !onlyIcon
-                    ? `text-secondary-foreground ${variant === "tab" ? "bg-secondary" : "bg-secondary"}`
-                    : "text-muted-foreground"
-                    } ${itemsClassName}`}>
-                  <SidebarMenuButton tooltip={showToolTip ? item.label : undefined} className="gap-3">
-                    {item.icon && <span className="flex size-4 shrink-0 items-center justify-center">
-                      {getIcon(item, active)}
-                    </span>}
-                    <span className="truncate">
-                      {renderLabel(item)}
-                    </span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
+              {item.icon && <span className="flex size-5 shrink-0 items-center justify-center">
+                {getIcon(item, active)}
+              </span>}
+              <span
+                className={`grid transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${showLabel ? "grid-cols-[1fr] opacity-100" : "ml-0 grid-cols-[0fr] opacity-0"
+                  }`}
+              >
+                <span className="overflow-hidden whitespace-nowrap text-sm font-semibold">
+                  {renderLabel(item)}
+                </span>
+              </span>
             </NavLink>
-          </>
+          );
+        }
+
+        return (
+          <NavLink
+            key={item.id}
+            id={`sidebar-nav-${item.id}`}
+            to={link}
+            end
+          >
+            <SidebarMenu>
+              <SidebarMenuItem key={unLink(item.link)}
+                className={`${classes(variant)} ${active && !onlyIcon
+                  ? `text-secondary-foreground bg-secondary`
+                  : "text-muted-foreground"
+                  } ${itemsClassName}`}>
+                <SidebarMenuButton tooltip={showToolTip ? item.label : undefined} className="gap-3">
+                  {item.icon && <span className="flex size-4 shrink-0 items-center justify-center">
+                    {getIcon(item, active)}
+                  </span>}
+                  <span className="truncate">
+                    {renderLabel(item)}
+                  </span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </NavLink>
         );
       })}
     </nav>

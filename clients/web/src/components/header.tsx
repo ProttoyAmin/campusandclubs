@@ -1,19 +1,17 @@
-import { Search01Icon, Menu09Icon, MenuTwoLineIcon, Settings01Icon } from '@hugeicons/core-free-icons';
+import { Search01Icon, Menu09Icon, Settings01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Button } from 'design/components/ui/button';
 import React from 'react';
 import ClubCreateForm from "@/features/club/forms/create-club-form";
-import { SettingsDropdownMenu } from '@/config/menu/settings-menu';
 import AppDrawer from '@/shared/components/app-drawer';
-import Menu from '@/shared/components/menu';
 import ResponsiveDialog from '@/shared/components/responsive-dialog';
-import type { ClubCreateRequestWritable } from '@campus/api';
 import { useClubs, useDepartmentTemplates } from '@/features/club/hooks/club.hooks';
 import { Plus } from 'lucide-react';
 import { useAffiliations } from '@/features/user/hooks/user.hooks';
 import { ModeToggle } from '@/shared/components/mode-toggle';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '@/settings/routes';
+import type { ClubCreateRequestWritableExtended } from '@/shared/components/app-sidebar';
 
 const Header = () => {
     const navigate = useNavigate()
@@ -23,7 +21,7 @@ const Header = () => {
     const { create } = useClubs();
     const { data: templates, isPending: templatesIsPending } = useDepartmentTemplates();
 
-    const handleClubCreate = async (data: ClubCreateRequestWritable) => {
+    const handleClubCreate = async (data: ClubCreateRequestWritableExtended) => {
         console.log(data)
         // await create.mutateAsync(data, {
         //   onSuccess: () => {

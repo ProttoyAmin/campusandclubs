@@ -39,8 +39,10 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code: int | None):
         for chat_id in list(self.joined_chats):
             await self.channel_layer.group_discard(chat_group(chat_id), self.channel_name)
+        if hasattr(self, "user_notification_group"):
+            await self.channel_layer.group_discard(self.user_notification_group, self.channel_name)
         await self.mark_offline()
-        await self.close(code=1000)
+        await self.close(code=close_code)
 
     async def receive_json(self, content: dict[str, Any]):
         import uuid
@@ -113,8 +115,33 @@ class AppSocketConsumer(AsyncJsonWebsocketConsumer):
     #     )
         
     # Group event handler — pushes to this specific client -> type: "chat_message"
-    async def chat_message(self, event):
+    async def chat_message(self, event: dict) -> None:
+        chat = event['data']['chat']
+        if chat not in self.joined_chats:
+            await self.channel_layer.group_add(chat_group(chat), self.channel_name)
+            self.joined_chats.add(chat)
         await self.send_json({"type": WSEvent.CHAT_MESSAGE, "data": event["data"]})
+    
+    async def chat_start(self, event: dict) -> None:
+        chat_data = event["data"].get("chat") if isinstance(event["data"], dict) else None
+        if isinstance(chat_data, dict):
+            chat_id = str(chat_data.get("id"))
+        else:
+            chat_id = str(event["data"].get("chat_id") or chat_data or "")
+
+        if chat_id and chat_id not in self.joined_chats:
+            await self.channel_layer.group_add(chat_group(chat_id), self.channel_name)
+            self.joined_chats.add(chat_id)
+        await self.send_json({"type": WSEvent.CHAT_START, "data": event["data"]})
+
+    async def chat_message_new(self, event: dict) -> None:
+        await self.chat_start(event)
+
+    async def chat_message_seen(self, event: dict) -> None:
+        await self.send_json({
+            "type": WSEvent.CHAT_MESSAGE_SEEN,
+            "data": event["data"],
+        })
 
     async def chat_typing(self, event):
         # Don't echo the typing event back to the sender

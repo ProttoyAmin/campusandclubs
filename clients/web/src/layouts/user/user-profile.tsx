@@ -46,7 +46,7 @@ export const UserProfileLayout: React.FC = () => {
       </div>
       <div
         ref={scrollRef}
-        className="w-full rounded-none md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto scrollbar-none p-0 px-2"
+        className="w-full rounded-none md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto scrollbar-none p-0 md:px-2"
       >
         <Outlet
           context={{ user: user.data, currentUser, isLoading: user.isLoading }}

@@ -7,6 +7,13 @@ from core.policies.utils import current_user
 from .club_membership import UserClubMembershipSerializer
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.User
+        fields = ['first_name', 'last_name', 'gender', 'bio']
+        read_only_fields = fields
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:

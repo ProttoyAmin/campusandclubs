@@ -106,7 +106,7 @@ const PostCard = ({ post, enableNavigate = true, reduceContent = true }: PostCar
                 <CardHeader className="flex flex-col items-center py-2">
                     <Link to={`${paths.private.user.profile(post.author?.username)}`}>
                         <Avatar>
-                            <AvatarImage src={post.author.avatar} />
+                            <AvatarImage src={post.author.avatar || undefined} />
                             <AvatarFallback>
                                 {post.author.username?.[0]?.toUpperCase()}
                             </AvatarFallback>
@@ -193,7 +193,9 @@ const PostCard = ({ post, enableNavigate = true, reduceContent = true }: PostCar
                                 <Like post={post} />
                             </CardAction>
                             <CardAction>
-                                <Link to={paths.private.user.posts.detail(post.author?.username, post.id)}>
+                                <Link to={paths.private.user.posts.detail(post.author?.username, post.id)} state={{
+                                    focusReply: true
+                                }}>
                                     <Button variant={"ghost"} size={"lg"} className="flex flex-row items-center gap-1 rounded-full hover:bg-accent/50">
                                         <HugeiconsIcon icon={MessageCircleIcon} className="size-5" />
                                         <span className="text-xs text-muted-foreground">

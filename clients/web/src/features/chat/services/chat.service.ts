@@ -1,4 +1,4 @@
-import { chatHttp, type ChatStartDTO } from "../http/chat.http";
+import { chatHttp, type ChatStartDTO, type MessageSendDTO } from "../http/chat.http";
 
 
 class ChatService {
@@ -16,7 +16,7 @@ class ChatService {
         return this.chatClient.getChatStart(data);
     }
 
-    message(chatId: string, data: { content: string }) {
+    message(chatId: string, data: MessageSendDTO) {
         return this.chatClient.sendMessage(chatId, data);
     }
 

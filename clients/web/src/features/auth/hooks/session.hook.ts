@@ -8,7 +8,7 @@ import type {
   AccountsAuthJwtRefreshCreateResponse,
   RegisterRequestWritable,
 } from "@campus/api";
-import type { AxiosResponse } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import type { AllauthError, SignUpError } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
@@ -82,9 +82,12 @@ export const useAuth = () => {
     },
   });
 
-  const forgotPassword = useMutation({
+  const forgotPassword = useMutation<void, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
       return authentication.request_password_reset(email);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.session });
     },
   });
 

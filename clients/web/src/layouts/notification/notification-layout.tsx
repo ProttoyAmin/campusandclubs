@@ -2,18 +2,16 @@ import { Outlet } from "react-router-dom";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import { Card } from "design/components/ui/card";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDown, SettingsIcon } from "@hugeicons/core-free-icons";
+import { ArrowDown } from "@hugeicons/core-free-icons";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "design/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-import { paths, routes } from "@/settings/routes";
+import { paths } from "@/settings/routes";
 import BottomBar from "@/components/bottom-bar";
 import Create from "@/components/create";
 
@@ -55,7 +53,7 @@ const NotificationLayout = () => {
                 <Card className="w-full border-none rounded-none md:border md:rounded-xl bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] scrollbar-none p-0 shadow-2xl shadow-muted">
                     <Outlet />
                 </Card>
-                <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
+                <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
                     <BottomBar />
                 </div>
                 <div className="absolute bottom-14 right-5 md:right-20">

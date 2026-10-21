@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from apps.clubs.models import (
     FormAnswer,
-    FormSubmission,
     Membership,
     MembershipApplication,
     MembershipDepartment,
@@ -16,32 +15,32 @@ class MembershipInline(admin.TabularInline):
     raw_id_fields = ("user", "primary_role", "application")
 
 
-class FormAnswerInline(admin.TabularInline):
-    model = FormAnswer
-    extra = 0
-    fields = ("question", "answer")
-    raw_id_fields = ("question",)
+# class FormAnswerInline(admin.TabularInline):
+#     model = FormAnswer
+#     extra = 0
+#     fields = ("question", "answer")
+#     raw_id_fields = ("question",)
 
 
-@admin.register(FormSubmission)
-class FormSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("id", "form", "respondent", "submitted_at")
-    list_filter = ("form",)
-    search_fields = ("respondent__username", "form__title")
-    raw_id_fields = ("form", "respondent")
-    readonly_fields = ("submitted_at", "updated_at")
-    inlines = [FormAnswerInline]
+# @admin.register(FormSubmission)
+# class FormSubmissionAdmin(admin.ModelAdmin):
+#     list_display = ("id", "form", "respondent", "submitted_at")
+#     list_filter = ("form",)
+#     search_fields = ("respondent__username", "form__title")
+#     raw_id_fields = ("form", "respondent")
+#     readonly_fields = ("submitted_at", "updated_at")
+#     inlines = [FormAnswerInline]
 
 
-class FormSubmissionInline(admin.StackedInline):
-    """Show the filled-in answers inline on the application admin page."""
+# class FormSubmissionInline(admin.StackedInline):
+#     """Show the filled-in answers inline on the application admin page."""
 
-    model = FormSubmission
-    extra = 0
-    max_num = 1
-    fields = ("form", "respondent", "submitted_at")
-    readonly_fields = ("form", "respondent", "submitted_at")
-    show_change_link = True
+#     model = FormSubmission
+#     extra = 0
+#     max_num = 1
+#     fields = ("form", "respondent", "submitted_at")
+#     readonly_fields = ("form", "respondent", "submitted_at")
+#     show_change_link = True
 
 
 admin.site.register(MembershipDepartment)

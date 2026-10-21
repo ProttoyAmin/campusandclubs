@@ -25,11 +25,12 @@ const ForgotPasswordPage = () => {
         });
       },
       onError: (error) => {
-        toast.add({
-          title: error.message,
-          type: "error",
-          timeout: 5000,
-        });
+        console.log(error.response.data);
+        // toast.add({
+        //   title: error.response.,
+        //   type: "error",
+        //   timeout: 5000,
+        // });
       },
     });
   };
@@ -43,6 +44,7 @@ const ForgotPasswordPage = () => {
           password.
         </CardDescription>
       </CardHeader>
+      {JSON.stringify(forgotPassword.error?.response?.data)}
       <CardContent className="">
         <form>
           <Field>

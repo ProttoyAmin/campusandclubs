@@ -284,10 +284,10 @@ const ClubCreateForm = (props: ClubCreateFormProps) => {
                     placeholder="Name"
                     autoComplete="off"
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   <FieldLabel className="text-xs text-orange-400">
-                    slug will be {`${getOriginCode(form.watch("origin")).toLowerCase()}-${form.watch("name").toLowerCase().replace(/\s+/g, "-")}`}
+                    slug will be {`${form.watch("origin") ? getOriginCode(form.watch("origin")).toLowerCase() : "local"}-${form.watch("name") ? form.watch("name").toLowerCase().replace(/\s+/g, "-") : ""}`}
                   </FieldLabel>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />

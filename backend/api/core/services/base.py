@@ -28,3 +28,10 @@ class BaseService(Generic[T, RepoT], ABC):
             f"{self.__class__.__name__} must set repository_class or receive a repository instance"
         )
         return cast(RepoT, self.repository_class())
+
+    def get_repository(self) -> RepoT:
+        return self.repository
+
+    @property
+    def user(self) -> User:
+        return self.actor

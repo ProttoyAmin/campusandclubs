@@ -272,9 +272,3 @@ class MA_ApplicationResponses(generics.ListCreateAPIView):
         responses = self.get_queryset()
         serializer = self.get_serializer(responses, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # def create(self, request: Request, *args, **kwargs) -> Response:
-    #     serializer = self.get_serializer(data=request.data, many=True)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)

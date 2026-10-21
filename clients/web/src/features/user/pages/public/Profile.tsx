@@ -49,13 +49,13 @@ const Profile: React.FC = () => {
     <div className="p-2">
       <NavTabs
         menu={profileMenu(user?.username as string)}
-        className="flex justify-start w-full rounded-full p-1"
-        itemsClassName="justify-start flex-1"
+        className="flex w-full"
+        itemsClassName="flex-1 justify-around"
         variant="tab"
       />
     </div>
     <Outlet context={{ user: user, currentUser: currentUser, isLoading: isLoading }} />
-    <div className="md:hidden fixed bottom-0 w-full z-50 h-12 bg-background">
+    <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
       <BottomBar />
     </div>
   </div>;

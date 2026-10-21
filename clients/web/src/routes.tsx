@@ -10,12 +10,12 @@ import { authRoutes } from "./features/auth/router";
 import NotFound from "./shared/pages/not-found";
 import App from "./App";
 import { chatRoutes } from "./features/chat/router";
-import ChatsLayout from "./layouts/chat/chats-layout";
 import { routes as AppRoute } from "./settings/routes";
 
 import NotificationLayout from "./layouts/notification/notification-layout";
 import { notificationRoutes } from "./features/notifications/router";
 import AcceptInvitationPage from "./features/club/pages/public/invitation-page";
+import ChatsShell from "./layouts/chat/shell";
 
 
 export const routes: RouteObject[] = [
@@ -45,7 +45,7 @@ export const routes: RouteObject[] = [
       },
       {
         id: "chats",
-        element: <ChatsLayout />,
+        element: <ChatsShell />,
         children: [...chatRoutes],
       },
       {

@@ -23,7 +23,8 @@ class MessageStatusSerializer(serializers.ModelSerializer):
         fields = ["id", "message", "user", "status"]
         read_only_fields = ["id", "message", "user", "status"]
 
-
+class ReceiptSerializer(serializers.Serializer):
+    message_id = serializers.UUIDField()
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
@@ -33,8 +34,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ["id", "chat", "sender", "content", "reply_to", "created_at", "edited_at", "statuses", "has_user_seen"]
-        read_only_fields = ["id", "sender", "created_at", "edited_at"]
+        fields = ["id", "chat", "client_msg_id", "sender", "content", "reply_to", "created_at", "edited_at", "statuses", "has_user_seen"]
+        read_only_fields = ["id", "client_msg_id", "sender", "created_at", "edited_at"]
     
     def get_sender(self, obj: Message):
         from apps.accounts.serialize.user.profile import UserMinimalSerializer
@@ -58,6 +59,7 @@ class MessageSerializer(serializers.ModelSerializer):
 class MessageSendSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=5000)
     reply_to = serializers.UUIDField(required=False, allow_null=True)
+    client_msg_id = serializers.UUIDField(required=False, allow_null=True)
 
 class MessageEditSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=5000)
@@ -71,9 +73,9 @@ class ChatSerializer(serializers.ModelSerializer):
         fields = ["id", "type", "name", "participants", "created_at", "last_message"]
         read_only_fields = ["id", "created_at"]
 
-    def get_last_message(self, obj):
+    def get_last_message(self, obj: Chat):
         msg = obj.messages.order_by("-created_at").first()
-        return MessageSerializer(msg).data if msg else None
+        return MessageSerializer(msg, context=self.context).data if msg else None
 
     # def get_participants(self, obj: Chat):
     #     request = self.context.get("request")

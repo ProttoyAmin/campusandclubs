@@ -1,7 +1,6 @@
 import { useMe } from "@/features/user/hooks/user.hooks";
 import NavTabs from "./nav-tabs";
-import { MainMobileMenu, type MenuItemType } from "@/config/menu/main-mobile-menu";
-
+import { MainMobileMenu } from "@/config/menu/main-mobile-menu";
 interface BottomBarProps {
   className?: string;
 }
@@ -13,7 +12,10 @@ const BottomBar: React.FC<BottomBarProps> = (props) => {
     <header className={`${props.className}`}>
       <NavTabs
         menu={MainMobileMenu(currentUser?.username || '')}
-        className="flex"
+        className="flex w-full justify-center"
+        itemsClassName="justify-center flex-1"
+        variant="tab"
+        onlyIcon
       />
     </header>
   );
