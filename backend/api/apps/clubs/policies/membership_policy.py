@@ -1,0 +1,33 @@
+from functools import cached_property
+
+from apps.clubs.models import Club, Membership
+from core.policies.base import ActorT, Policy, RecordT
+
+
+class MembershipAwarePolicy(Policy[ActorT, RecordT]):
+    """Mixin for policies whose authorization depends on the actor's
+    club membership. Subclasses must implement `get_club()` to say
+    which Club the membership check applies to. 
+    """
+
+    def get_club(self) -> Club:
+        assert self.get_club is not None, f"{type(self).__name__} has no get_club() method"
+
+    @cached_property
+    def membership(self) -> Membership | None:
+        return (
+            Membership.objects
+            .filter(user=self.actor, club=self.get_club())
+            .select_related("primary_role")
+            .prefetch_related("roles")
+            .first()
+        )
+
+    def has_permission(self, permission_name: str) -> bool:
+        return bool(self.membership and self.membership.has_permission(permission_name))
+
+    def has_active_permissions(self) -> bool:
+        if not self.membership:
+            return False
+
+        return bool(self.membership.user_permissions())

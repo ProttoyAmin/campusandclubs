@@ -1,0 +1,129 @@
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "design/components/ui/card";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "design/components/ui/avatar";
+import type { UserMinimal, UserProfile } from "@campus/api";
+import { Button } from "design/components/ui/button";
+import type { AuthSession } from "@/features/auth/services/authentication";
+import ToggleFollowButton from "@/features/user/components/actions/follow-button";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/settings/routes";
+import { Skeleton } from "design/components/ui/skeleton";
+
+
+export const PublicProfileSkeleton = () => {
+  return (
+    <>
+      <div className="block md:flex md:flex-row-reverse justify-between p-4">
+        <div className="place-items-center">
+          <Skeleton className="h-40 w-40 rounded-full" />
+        </div>
+        <div className="space-y-4">
+          <div className="flex md:flex-col gap-2 text-center justify-center md:justify-start md:text-start mt-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <div className="flex gap-2 items-center mt-2 justify-center">
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-5 w-20" />
+          </div>
+          <Skeleton className="h-4 w-full" />
+        </div>
+      </div>
+      <div className="px-8 pt-10">
+        <div className="flex gap-2">
+          <Skeleton className="h-8 w-1/2 rounded-full" />
+          <Skeleton className="h-8 w-1/2 rounded-full" />
+        </div>
+      </div>
+    </>
+  )
+}
+
+export const PublicProfileHeader: React.FC<{
+  data: UserProfile;
+  currentUser: AuthSession;
+  isLoading: boolean;
+}> = ({ data, currentUser, isLoading }) => {
+  const navigate = useNavigate();
+
+  const handleMessage = () => {
+    navigate(paths.private.chat.chats, {
+      state: {
+        initialUser: {
+          id: data.id,
+          username: data.username,
+          avatar: data.avatar,
+          email: data.email
+        } as Pick<UserMinimal, "id" | "username" | "avatar" | "email">
+      }
+    })
+  }
+
+  // if (isLoading) {
+  //   return <PublicProfileSkeleton currentUser={true} />
+  // }
+
+  return (
+    <>
+      <CardHeader className="block md:flex md:flex-row-reverse justify-between">
+        <CardTitle className="place-items-center">
+          <Avatar size="3xl">
+            <AvatarImage src={data?.avatar} alt={data?.username} />
+            <AvatarFallback>{data.username[0]}</AvatarFallback>
+            {/* {data.status === "online" && <AvatarBadge className="bg-green-600 ring-0 right-2" />} */}
+          </Avatar>
+        </CardTitle>
+        <CardDescription className="space-y-4">
+          <div className="flex flex-col gap-2 text-center md:text-start mt-2">
+            {data.first_name && data.last_name && (
+              <h1 className="text-xl font-bold text-foreground">
+                {data.first_name} {data.last_name}
+              </h1>
+            )}
+            <p className="text-muted-foreground">@{data.username}</p>
+          </div>
+          <div className="flex gap-2 items-center mt-2 justify-center">
+            <span className="text-sm">
+              {data.follower_count}{" "}
+              {data.follower_count === 1 ? "follower" : "followers"}
+            </span>
+            <span className="text-sm">
+              {data.following_count} following
+            </span>
+            {data.club_count > 0 && (
+              <span className="text-sm">
+                {data.club_count} {data.club_count === 1 ? "club" : "clubs"}
+              </span>
+            )}
+          </div>
+          {data.bio && (
+            <p className="whitespace-pre-wrap mt-2 text-center md:text-start">
+              {data.bio}
+            </p>
+          )}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-2">
+        {data?.id !== currentUser?.data?.user?.id && <div className="p-2">
+          <div className="flex gap-2 mt-2">
+            <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
+            <Button variant={"outline"} className="w-1/2 rounded-full" size="lg" onClick={handleMessage}>Message</Button>
+          </div>
+        </div>}
+        {/* <pre>
+          {JSON.stringify(data, null, 2)}
+        </pre> */}
+      </CardContent>
+    </>
+  );
+};

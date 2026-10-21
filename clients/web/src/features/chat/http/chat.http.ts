@@ -1,0 +1,99 @@
+import { BaseClient } from "@/settings/api";
+import { config } from "@/settings/app/config";
+import type { UserMinimal } from "@campus/api";
+import type { AxiosResponse } from "axios";
+
+export type ChatResponse = {
+    id: string
+    type: string;
+    name: string
+    participants: Array<{
+        id: string
+        user: UserMinimal
+        status: string;
+        joined_at: string;
+        left_at: string
+    }>
+    created_at: string
+    last_message: Message
+}
+
+export type Message = {
+    id: string
+    chat: string
+    sender: UserMinimal;
+    content: string
+    reply_to: Message | null;
+    created_at: string
+    edited_at: string | null
+    has_user_seen: boolean
+}
+
+export type MessageListResponse = {
+    data: Message[];
+    message: string
+    status: string
+}
+
+export type ChatStartDTO = {
+    participant_ids: string[];
+    content: string
+}
+
+export type MessageSendDTO = {
+    reply_to: string | null;
+    content: string;
+}
+
+class ChatHttp extends BaseClient<ChatResponse, any, any> {
+    constructor() {
+        super(config.api.v1.realtime.base)
+    }
+
+    async getChatList(): Promise<AxiosResponse<ChatResponse[]>> {
+        const response = await this.client.get<ChatResponse[]>(`${this.endpoint}chats/`);
+        return response;
+    }
+
+    async getChatById(chatId: string): Promise<AxiosResponse<ChatResponse>> {
+        const response = await this.client.get<ChatResponse>(`${this.endpoint}chats/${chatId}/`);
+        return response;
+    }
+
+    async getChatStart(data: ChatStartDTO) {
+        const response = await this.client.post(`${this.endpoint}chats/start/`, data);
+        return response;
+    }
+
+    async sendMessage(chatId: string, data: MessageSendDTO) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/messages/send/`, data);
+        return response;
+    }
+
+    async getChatInbox(chatId: string) {
+        const response = await this.client.get<MessageListResponse>(`${this.endpoint}chats/${chatId}/messages/`);
+        return response;
+    }
+
+    async getPendingChat() {
+        const response = await this.client.get<ChatResponse[]>(`${this.endpoint}chats/requests/`);
+        return response.data;
+    }
+
+    async acceptPendingChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/accept/`);
+        return response;
+    }
+
+    async declinePendingChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/decline/`);
+        return response;
+    }
+
+    async leaveChat(chatId: string) {
+        const response = await this.client.post(`${this.endpoint}chats/${chatId}/leave/`);
+        return response;
+    }
+}
+
+export const chatHttp = new ChatHttp();

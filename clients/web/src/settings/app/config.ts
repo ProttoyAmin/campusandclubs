@@ -1,0 +1,76 @@
+import { PORT, VITE_PUBLIC_API_URL } from "./env";
+
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "./constants";
+
+export const config = {
+  app: {
+    origin:
+      typeof window !== "undefined"
+        ? window.location.origin
+        : (import.meta.env.VITE_APP_ORIGIN as string) ||
+        "http://localhost:3000",
+    name: "campusandclubs",
+    description: "campusandclubs",
+  },
+  port: PORT,
+  api: {
+    v1: {
+      name: "v1",
+      raw: import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL,
+      suffix: "/api/v1/",
+      baseUrl: (import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL) + "/api/v1/",
+      version: "1.0.0",
+      account: {
+        base: `accounts/auth/`,
+        login: `accounts/auth/login/`,
+        register: `accounts/auth/register/`,
+        logout: `accounts/auth/logout/`,
+      },
+      allauth: {
+        base: `_allauth/browser/v1/`,
+        signup: `auth/signup/`,
+      },
+      clubs: {
+        base: `clubs/`,
+        create: `clubs/create/`,
+        retrieve: `clubs/retrieve/`,
+      },
+      posts: {
+        base: "posts/",
+      },
+      events: {
+        base: `events/`,
+        create: `events/create/`,
+        retrieve: `events/retrieve/`,
+      },
+      institutes: {
+        base: `institutes/`,
+        affiliations: `institutes/affiliations/`,
+      },
+      connections: {
+        base: `connections/`,
+      },
+      interactions: {
+        base: `activities/`,
+      },
+      realtime: {
+        base: "realtime/",
+        chatList: "realtime/chats/",
+        chatStart: "realtime/chats/start/",
+      },
+      notification: {
+        base: "notifications/",
+      },
+    },
+  },
+  // Add more configuration options as needed
+  cookie: {
+    access: ACCESS_TOKEN,
+    refresh: REFRESH_TOKEN,
+  },
+  theme: {
+    default: "system",
+    options: ["dark", "light", "system"],
+    key: "theme",
+  },
+} as const;

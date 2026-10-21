@@ -1,0 +1,25 @@
+import { z } from "zod";
+
+export const PostCreateSchema = z
+  .object({
+    content: z
+      .string()
+      .max(3000, "Post content cannot exceed 3000 characters")
+      .optional(),
+    media:
+      z.custom<File | undefined>((file) => {
+        if (!file) return true;
+        return file instanceof File;
+      })
+        .optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.content && !data.media) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Please provide content or media",
+      });
+    }
+  });
+
+export type PostCreateInput = z.infer<typeof PostCreateSchema>;

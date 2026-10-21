@@ -1,0 +1,182 @@
+import { useNavigate, useLocation } from "react-router-dom";
+import { paths } from "@/settings/routes";
+
+import ClubDropdown from "../club/club-dropdown";
+import NavigateButtons from "@/shared/components/navigate-buttons";
+import { Button } from "design/components/ui/button";
+import { CircleEllipsis } from "lucide-react";
+import { Spinner } from "design/components/ui/spinner";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "design/components/ui/avatar";
+import { useUpdateClub } from "../../hooks/club.hooks";
+import { toast } from "design/components/ui/toast";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
+import GokuImage from "@/assets/570b6554a692c0e846848347ac0c3db6.jpg";
+import type { ClubDetailExtended } from "../../http/club.http";
+
+const ClubLayoutHeader = ({
+  club,
+  headerTitle,
+  slug,
+  handleJoin,
+  isJoinPending,
+}: {
+  club: ClubDetailExtended;
+  slug: string;
+  handleJoin: () => void;
+  isJoinPending: boolean;
+  headerTitle?: React.ReactNode;
+}) => {
+  const { leave } = useUpdateClub(club?.slug);
+  const leaveClub = leave(club?.id || '')
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLeave = () => {
+    if (club.preferences?.leave_application === true) {
+      toast.add({
+        title: "Leave application required",
+        description: "You cannot leave this club without a leave application",
+        type: "error",
+      });
+      return;
+    }
+
+    leaveClub.mutate(undefined, {
+      onSuccess: () => {
+        toast.add({
+          title: "Left",
+          // description: "Club left successfully",
+          type: "success",
+        });
+      },
+      onError: (error) => {
+        toast.add({
+          title: "Error leaving club",
+          // @ts-ignore
+          description: error?.response?.data?.detail?.message,
+          type: "error",
+        });
+      },
+    });
+  };
+
+  const getJoinLabel = () => {
+
+    if (isJoinPending) return "Joining"
+
+    if (club?.is_member) return "Joined"
+
+    //@ts-ignore
+    if (club?.application?.status === "pending") return "Pending"
+
+    if (!club.is_public) return "Ask to join"
+
+    return "Join"
+  }
+
+  return (
+    <>
+      {club && (
+        <>
+          <div>
+            {location.pathname.includes('config') && (
+              <>
+                <NavigateButtons hideForward />
+              </>
+            )}
+          </div>
+          <div className="flex items-center w-full justify-between md:border md:rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
+            <div className="flex gap-2 items-center p-2">
+
+              <Avatar
+                size="lg"
+                className={"cursor-pointer"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(paths.public.club.slug(slug));
+                }}
+              >
+                <AvatarImage src={club.avatar || GokuImage} alt={club.name} />
+                <AvatarFallback>{club?.name[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+              {headerTitle && headerTitle}
+              {!headerTitle && (
+                <div className="flex flex-col">
+                  <p className="text-lg">{club?.name}</p>
+                  <span className="text-sm text-muted-foreground">
+                    {club?.total_members} members
+                  </span>
+                </div>
+              )}
+              {/* <div>
+                {club.id}
+              </div> */}
+            </div>
+
+            <div className="flex gap-2 items-center pr-2">
+              {!club.is_member && (
+                <Button
+                  variant={
+                    club?.is_member
+                      ? "ghost"
+                      : club?.application &&
+                        //@ts-ignore
+                        club?.application?.status === "pending"
+                        ? "secondary"
+                        : "outline"
+                  }
+                  disabled={isJoinPending}
+                  onClick={() => handleJoin()}
+                >
+                  {isJoinPending && (
+                    <Spinner className="mr-2" data-icon="inline-start" />
+                  )}
+
+                  {getJoinLabel()}
+                </Button>
+              )}
+
+              <Button variant={"ghost"} className={"rounded-full"} size="icon">
+                <HugeiconsIcon icon={Search01Icon} className="size-5" />
+              </Button>
+              {club.is_owner && (
+                <Button
+                  variant={"ghost"}
+                  className={"rounded-full group"}
+                  size="icon"
+                  onClick={() => {
+                    navigate(paths.private.club.config(slug));
+                  }}
+                >
+                  <HugeiconsIcon icon={Settings01Icon} className="size-5 transition-transform duration-200 group-hover:rotate-45" />
+                </Button>
+              )}
+              <ClubDropdown
+                club={club}
+                trigger={
+                  <Button
+                    variant={"ghost"}
+                    className={"rounded-full"}
+                    size="icon"
+                  >
+                    <CircleEllipsis className="size-5 transition-transform duration-200" />
+                  </Button>
+                }
+                onLeave={handleLeave}
+                isMember={club.is_member}
+              />
+            </div>
+            {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+export default ClubLayoutHeader;

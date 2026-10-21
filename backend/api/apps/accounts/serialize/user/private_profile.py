@@ -1,0 +1,62 @@
+from core.policies.utils import current_user
+from typing import Any
+
+from rest_framework import serializers
+
+from apps.accounts import models
+from apps.connections.models import Follow
+
+
+class PrivateUserSerializer(serializers.ModelSerializer):
+    """Minimal, safe-to-expose fields for a private/restricted profile."""
+
+    avatar = serializers.SerializerMethodField()
+    is_following = serializers.SerializerMethodField()
+    follow_status = serializers.SerializerMethodField()
+    can_view_profile = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.User
+        fields = [
+            "id", "username", "first_name", "last_name", "avatar",
+            "following_count", "follower_count", "user_post_count", "status", "created_at",
+            "is_private", "is_following", "follow_status", 'can_view_profile',
+        ]
+
+    def get_avatar(self, obj: models.User):
+
+        if  obj.avatar: return obj.avatar
+
+        from apps.media.serializers import MediaListSerializer
+        media = obj.media.filter(role="avatar").first()
+
+        if not media:
+            return obj.avatar
+
+        serializer = MediaListSerializer(media, context=self.context)
+        return serializer.data['file']['url']
+
+    def get_is_following(self, obj: models.User) -> bool:
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.is_followed_by(request.user)
+        return False
+
+    def get_follow_status(self, obj: models.User) -> Any | None:
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return Follow.get_follow_status(request.user, obj)
+        return None
+    
+    def get_can_view_profile(self, obj: models.User) -> bool:
+        """Can current user view this profile?"""
+        from apps.accounts.policies.user import UserPolicy
+        request = self.context.get('request')
+        if request:
+            if request.user.is_authenticated:
+                policy = UserPolicy(current_user(request), obj)
+                return policy.can_view_profile(viewer=request.user)
+            else:
+                # Anonymous users - only public profiles
+                return not obj.is_private
+        return not obj.is_private

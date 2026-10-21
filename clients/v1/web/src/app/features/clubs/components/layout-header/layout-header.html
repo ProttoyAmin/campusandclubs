@@ -1,0 +1,47 @@
+@if (club()) {
+  <header class="flex items-center justify-between gap-2 mx-auto">
+    <div class="flex items-center gap-2">
+      @if (!rootPath()) {
+        <app-navigator [hideForward]="true" />
+      }
+      <a [routerLink]="[`/clubs/${slug}`]" class="flex items-center gap-2">
+        <hlm-avatar hlmAvatar>
+          <img
+            hlmAvatarImage
+            src="/assets/avatar.png"
+            alt="spartan logo. Resembling a spartanic shield"
+            class="grayscale"
+          />
+          <span hlmAvatarFallback class="text-center">{{ club().name[0].toUpperCase() }}</span>
+        </hlm-avatar>
+        <p hlmText>{{ club().name }}</p>
+      </a>
+    </div>
+    <div class="flex items-center gap-2">
+      <app-dialog
+        [title]="'Edit profile'"
+        [description]="'Make changes to your profile here.'"
+        [(open)]="isDialogOpen"
+      >
+        <button trigger hlmDialogTrigger hlmBtn variant="outline" (click)="toggleDialog()">
+          Join
+        </button>
+        <p>Your dialog body content goes here.</p>
+      </app-dialog>
+      <button
+        hlmBtn
+        type="button"
+        size="icon-sm"
+        variant="ghost"
+        class="group"
+        (click)="goToSettings()"
+      >
+        <ng-icon
+          name="LucideSettings"
+          size="20"
+          class="transition-transform duration-200 group-hover:rotate-50"
+        />
+      </button>
+    </div>
+  </header>
+}

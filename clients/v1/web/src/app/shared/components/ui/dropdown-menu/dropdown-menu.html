@@ -1,0 +1,25 @@
+<div [hlmDropdownMenuTrigger]="menu" [align]="align" class="inline-flex">
+  <ng-content></ng-content>
+</div>
+
+<ng-template #menu>
+  <hlm-dropdown-menu class="w-48">
+    @for (item of items; track item.id) {
+      <a hlmDropdownMenuItem [routerLink]="item.link" (click)="handleItemClick(item)">
+        <lucide-icon [img]="item.icon" [size]="17" />
+        <span>{{ item.label }}</span>
+      </a>
+    }
+    @if (showLogout) {
+      <button
+        hlmDropdownMenuItem
+        [variant]="'destructive'"
+        class="cursor-pointer"
+        (click)="logout.emit()"
+      >
+        <lucide-icon [img]="logoutIcon" [size]="17" />
+        Logout
+      </button>
+    }
+  </hlm-dropdown-menu>
+</ng-template>

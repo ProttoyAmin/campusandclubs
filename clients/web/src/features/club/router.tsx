@@ -1,0 +1,153 @@
+import ClubRequestsLayout from "@/layouts/club/club-config/requests-layout";
+import { routes } from "@/settings/routes";
+import React from "react";
+import ClubMedia from "./pages/private/c-media";
+import ClubPosts from "./pages/private/c-posts";
+import Invites from "./pages/private/config-club/invite";
+
+
+// Layouts
+const ClubConfigLayout = React.lazy(() => import("@/layouts/club/config-layout"));
+
+const Clubs = React.lazy(() => import("./pages/private/clubs"));
+const ClubPage = React.lazy(() => import("./pages/public/club-page"));
+const Settings = React.lazy(
+  () => import("./pages/private/config-club/settings-page"),
+);
+
+const ClubPrivacySettings = React.lazy(
+  () => import("./pages/private/config-club/c-settings/privacy"),
+);
+const ClubScopeSettings = React.lazy(
+  () => import("./pages/private/config-club/c-settings/scope"),
+);
+
+const Permissions = React.lazy(
+  () => import("./pages/private/config-club/permissions-page"),
+);
+const Members = React.lazy(
+  () => import("./pages/private/config-club/members-page"),
+);
+const Info = React.lazy(() => import("./pages/private/config-club/info-page"));
+const Requests = React.lazy(
+  () => import("./pages/private/config-club/requests-page"),
+);
+
+const Submissions = React.lazy(() => import("./pages/private/config-club/submissions/index"))
+const SubmissionForm = React.lazy(() => import("./pages/private/config-club/submissions/submission-form"))
+
+const Approved = React.lazy(
+  () => import("./pages/private/config-club/requests/approved"),
+);
+
+const Pending = React.lazy(
+  () => import("./pages/private/config-club/requests/pending"),
+);
+
+const Rejected = React.lazy(
+  () => import("./pages/private/config-club/requests/rejected"),
+);
+
+export const clubRoutes = [
+  // {
+  //   id: "clubs-page-layout",
+  //   path: routes.club.private.list,
+  //   element: <ClubsLayout />,
+  //   children: [{ id: "clubs-base", index: true, element: <Clubs /> }],
+  // },
+  { id: "clubs-base", index: true, element: <Clubs /> },
+  {
+    id: "club-main", path: routes.club.public.base, element: <ClubPage />,
+    children: [
+      {
+        id: "club-posts",
+        index: true,
+        element: <ClubPosts />,
+      },
+      {
+        id: "club-media",
+        path: routes.club.private.media,
+        element: <ClubMedia />,
+      },
+    ]
+  },
+  {
+    id: "club-config-layout",
+    path: routes.club.private.config.base,
+    element: <ClubConfigLayout />,
+    children: [
+      {
+        id: "club-config",
+        path: routes.club.private.config.info,
+        element: <Info />,
+      },
+      {
+        id: "club-permissions",
+        path: routes.club.private.config.permissions,
+        element: <Permissions />,
+      },
+      {
+        id: "club-invites",
+        path: routes.club.private.config.invites.base,
+        element: <Invites />,
+      },
+      {
+        id: "club-members",
+        path: routes.club.private.config.members,
+        element: <Members />,
+      },
+      {
+        id: "club-submissions",
+        path: routes.club.private.config.submissions.base,
+        element: <Submissions />,
+      },
+      {
+        id: "club-submissions-form",
+        path: routes.club.private.config.submissions.form,
+        element: <SubmissionForm />,
+      },
+      {
+        id: "club-requests-layout",
+        path: routes.club.private.config.requests.base,
+        element: <ClubRequestsLayout />,
+        children: [
+          {
+            id: "club-requests",
+            index: true,
+            element: <Requests />,
+          },
+          {
+            id: "club-requests-approved",
+            path: routes.club.private.config.requests.approved,
+            element: <Approved />,
+          },
+          {
+            id: "club-requests-pending",
+            path: routes.club.private.config.requests.pendings,
+            element: <Pending />,
+          },
+          {
+            id: "club-requests-rejected",
+            path: routes.club.private.config.requests.rejected,
+            element: <Rejected />,
+          },
+        ],
+      },
+      {
+        id: "club-settings",
+        path: routes.club.private.config.settings.base,
+        element: <Settings />,
+      },
+      {
+        id: "club-settings-privacy",
+        path: routes.club.private.config.settings.privacy,
+        element: <ClubPrivacySettings />,
+      },
+      {
+        id: "club-settings-scope",
+        path: routes.club.private.config.settings.scope,
+        element: <ClubScopeSettings />,
+      },
+    ],
+  },
+];

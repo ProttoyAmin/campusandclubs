@@ -1,0 +1,33 @@
+[project]
+name = "api"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.43.48",
+    "celery>=5.6.3",
+    "channels>=4.3.2",
+    "channels-redis>=4.3.0",
+    "cloudinary>=1.45.0",
+    "daphne>=4.2.2",
+    "django>=6.0.7",
+    "django-allauth[headless-spec]>=65.19.0",
+    "django-anymail[resend]>=15.1",
+    "django-cors-headers>=4.9.0",
+    "djangorestframework>=3.17.1",
+    "djangorestframework-simplejwt>=5.5.1",
+    "djoser>=2.3.3",
+    "drf-spectacular>=0.30.0",
+    "pillow>=12.3.0",
+    "psycopg[binary]>=3.3.4",
+    "python-dotenv>=1.2.2",
+    "redis>=8.0.1",
+    "social-auth-app-django>=5.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar>=7.0.0",
+    "django-stubs>=6.0.7",
+    "djangorestframework-stubs>=3.17.0",
+    "ruff>=0.15.21",
+]

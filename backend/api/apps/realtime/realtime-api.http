@@ -1,0 +1,14 @@
+@baseUrl = http://127.0.0.1:8000/api/v1/realtime/chats/
+@clubId = b4779dfd-22ed-4ed6-a19a-e623eb78bf31
+@postId = 7391907467086532608
+@eventId = 7392190347431907328
+@userId = 3
+
+POST {{baseUrl}}start/
+Cookie: csrftoken=GiSD5kVSzbI9nS8Yi8QfAt7uKtk5BYvi;sessionid=3l16s1qh0pnjwilggk179a62kj1r589b
+Content-Type: application/json
+X-CSRFToken: GiSD5kVSzbI9nS8Yi8QfAt7uKtk5BYvi
+
+{
+    "participant_id": "6a6171c1-ee42-4186-824e-214ab4e9a053"
+}

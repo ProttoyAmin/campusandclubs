@@ -1,0 +1,80 @@
+
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "design/components/ui/card";
+import type { PrivateUserResponse } from "../../api/user.client";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "design/components/ui/avatar";
+import { Button } from "design/components/ui/button";
+import ToggleFollowButton from "../actions/follow-button";
+import type { UserMinimal } from "@campus/api";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@/settings/routes";
+
+
+export const PrivateProfileHeader: React.FC<{ data: PrivateUserResponse }> = ({ data }) => {
+  const navigate = useNavigate()
+
+  const handleMessage = () => {
+    navigate(paths.private.chat.chats, {
+      state: {
+        initialUser: {
+          id: data.id,
+          username: data.username,
+          avatar: data.avatar,
+          email: ""
+        } as Pick<UserMinimal, "id" | "username" | "avatar" | "email">
+      }
+    })
+  }
+
+  return (
+    <>
+      <CardHeader className="block md:flex md:flex-row-reverse justify-between">
+        <CardTitle className="place-items-center">
+          <Avatar size="3xl">
+            <AvatarImage src={data?.avatar} alt={data?.username} />
+            <AvatarFallback>{data.username[0]}</AvatarFallback>
+          </Avatar>
+        </CardTitle>
+        <CardDescription className="space-y-4">
+          <div className="flex flex-col gap-2 text-center md:text-start mt-2">
+            {data.first_name && data.last_name && (
+              <h1 className="text-xl font-bold text-foreground">
+                {data.first_name} {data.last_name}
+              </h1>
+            )}
+            <p className="text-muted-foreground">@{data.username}</p>
+          </div>
+          <div className="flex gap-2 items-center mt-2 justify-center">
+            <span className="text-sm">
+              {data.follower_count}{" "}
+              {data.follower_count === 1 ? "follower" : "followers"}
+            </span>
+            <span className="text-sm">
+              {data.following_count} following
+            </span>
+          </div>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex gap-2 mt-16">
+          <ToggleFollowButton userId={data.id} username={data.username} followStatus={data.follow_status as string} />
+          <Button variant={"outline"} className="w-1/2 rounded-full" size="lg" onClick={handleMessage}>Message</Button>
+        </div>
+        <div className="text-center py-10">
+          <h2 className="text-2xl font-bold">This Account is Private</h2>
+          <p className="text-muted-foreground mt-2">
+            Follow to see their content.
+          </p>
+        </div>
+      </CardContent>
+    </>
+  );
+};

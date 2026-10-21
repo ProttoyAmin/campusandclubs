@@ -1,0 +1,127 @@
+import type {
+  ClubCreateRequestWritable,
+  ClubDetail,
+  DepartmentTemplate,
+  MembershipApplicationCreateRequest,
+  PaginatedClubList,
+  PatchedClubDetailRequest,
+} from "@campus/api";
+import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended } from "../../http/club.http";
+import { clubApplicationsService } from "./applications.service";
+import { membershipService } from "./membership.service";
+import type { ClubSettingsRequest, JoinMode, Privacy, Scope } from "validation/club";
+
+class ClubService {
+  private clubClient = clubClient;
+  public application = clubApplicationsService;
+  public members = membershipService;
+  constructor() { }
+
+  async create(data: ClubCreateRequestWritable) {
+    const res = await this.clubClient.createClub(data);
+    return res.data;
+  }
+
+  async clubs(): Promise<PaginatedClubList> {
+    const res = await this.clubClient.getClubs();
+    return res.data;
+  }
+
+  async posts(clubId: string, media?: "True" | "False") {
+    const res = await this.clubClient.fetchClubPosts(clubId, media);
+    return res.data;
+  }
+
+  async department_templates(): Promise<DepartmentTemplate[]> {
+    const res = await this.clubClient.getDepartmentTemplates();
+    return res.data;
+  }
+
+  async club(slug: string): Promise<ClubDetailExtended> {
+    const res = await this.clubClient.fetchClub(slug);
+    return res.data;
+  }
+
+  async update(
+    clubId: string,
+    data: PatchedClubDetailRequest,
+  ): Promise<ClubDetail> {
+
+    const settingsPayload: ClubSettingsRequest = {
+      privacy: data.privacy,
+      join_mode: data.join_mode,
+      scope: data.scope,
+      status: data.status,
+    };
+
+    const res = await this.clubClient.updateClub(clubId, settingsPayload);
+    return res.data;
+  }
+
+  async updatePrivacy(clubId: string, data: { privacy: Privacy, join_mode: JoinMode }) {
+    const res = await this.clubClient.updateClubPrivacy(clubId, data);
+    return res.data;
+  }
+
+  async updateScope(clubId: string, data: { scope: Scope }) {
+    const res = await this.clubClient.updateClubScope(clubId, data);
+    return res.data;
+  }
+
+  async join(clubId: string) {
+    const res = await this.clubClient.joinClub(clubId);
+    if (res.status < 200 || res.status >= 300) {
+      console.log("Error joining club:", res.data);
+    }
+    return res.data;
+  }
+
+  async leave(clubId: string) {
+    const res = await this.clubClient.leaveClub(clubId);
+    if (res.status < 200 || res.status >= 300) {
+      console.log("Error leaving club:", res.data);
+    }
+    return res.data;
+  }
+
+  async apply(clubId: string, data: ApplicationCreateRequest) {
+    const res = await this.clubClient.applyToClub(clubId, data);
+    return res.data;
+  }
+
+  async withdrawApplication(clubId: string, applicationId: string) {
+    const res = await this.clubClient.withdrawFromClub(clubId, applicationId);
+    return res.data;
+  }
+
+  async getInvites(clubId: string) {
+    const res = await this.clubClient.getInvites(clubId);
+    return res.data;
+  }
+
+  async getInvite(code: string) {
+    const res = await this.clubClient.getInvite(code);
+    return res.data;
+  }
+
+  async createInvite(clubId: string) {
+    const payload = {
+      invite_type: 'club',
+      club_id: clubId
+    }
+    const res = await this.clubClient.createInvite(clubId, payload);
+    return res.data;
+  }
+
+  async removeInvite(clubId: string, invite_code: string) {
+    const res = await this.clubClient.removeInvite(clubId, invite_code);
+    return res.data;
+  }
+
+  async acceptInvite(clubId: string, invite_code: string) {
+    const res = await this.clubClient.acceptInvite(clubId, invite_code);
+    return res.data;
+  }
+}
+
+export const club = new ClubService();

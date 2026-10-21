@@ -1,0 +1,25 @@
+@if (items()) {
+  <nav
+    [class]="className()"
+    class="flex flex-row md:flex-col gap-2 w-full"
+    [class.flex-col]="!horizontal()"
+  >
+    @for (item of items(); track $index) {
+      <a
+        [routerLink]="item.link"
+        routerLinkActive="bg-accent text-accent-foreground"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="rounded-md text-sm flex items-center justify-between"
+        [class]="itemClassName()"
+      >
+        <div class="flex items-center gap-2">
+          <lucide-icon [img]="item.icon" [size]="18" />
+          <span>{{ item.label }}</span>
+        </div>
+        @if (visibleArrow()) {
+          <lucide-icon [img]="this.chevronRight" [size]="18" />
+        }
+      </a>
+    }
+  </nav>
+}

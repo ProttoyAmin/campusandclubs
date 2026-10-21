@@ -1,0 +1,227 @@
+import { routes } from "./__main__";
+import { generateRouteFromPath } from "./utils";
+
+export const paths = {
+  private: {
+    user: {
+      me: routes.user.private.me,
+      profile: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.username, {
+          username,
+        }),
+      posts: {
+        list: (username: string) =>
+          generateRouteFromPath(routes.user.private.profile.posts.list, {
+            username,
+          }),
+        detail: (username: string, postId: string) =>
+          generateRouteFromPath(routes.user.private.profile.posts.detail, {
+            username,
+            postId,
+          }),
+      },
+      reels: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.reels, {
+          username,
+        }),
+      reposts: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.reposts, {
+          username,
+        }),
+
+      media: (username: string) =>
+        generateRouteFromPath(routes.user.private.profile.media, {
+          username,
+        }),
+
+      settings: {
+        base: (username: string) =>
+          generateRouteFromPath(routes.user.private.settings.base, {
+            username,
+          }),
+        account: (username: string) =>
+          generateRouteFromPath(routes.user.private.settings.account, {
+            username,
+          }),
+
+        affilications: (username: string) =>
+          generateRouteFromPath(routes.user.private.settings.affilications, {
+            username,
+          }),
+
+        privacy: (username: string) =>
+          generateRouteFromPath(routes.user.private.settings.privacy, {
+            username,
+          }),
+      },
+    },
+
+    settings: {
+      base: routes.settings.base,
+      account: routes.settings.account,
+      privacy: {
+        base: routes.settings.privacy.base,
+        account: routes.settings.privacy.account,
+        messages: routes.settings.privacy.messages,
+        onlineStatus: routes.settings.privacy.onlineStatus,
+        blockedUsers: routes.settings.privacy.blockedUsers,
+      },
+      affiliations: routes.settings.affiliations,
+    },
+
+    activity: {
+      base: routes.activity.base,
+      follows: routes.activity.follows,
+      likes: routes.activity.likes,
+      replies: routes.activity.comments,
+    },
+
+    notification: {
+      base: routes.notification.base,
+      unread: routes.notification.unread,
+      read: routes.notification.read,
+      requests: {
+        base: routes.notification.requests.base,
+      }
+    },
+
+    club: {
+      list: routes.club.private.list,
+      create: routes.club.private.create,
+      invites: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.invites.base, {
+            slug,
+          }),
+        accept: (inviteCode: string) =>
+          generateRouteFromPath(routes.club.private.config.invites.accept, {
+            invite_code: inviteCode,
+          }),
+      },
+      posts: (slug: string) =>
+        generateRouteFromPath(routes.club.private.posts, {
+          slug,
+        }),
+      media: (slug: string) =>
+        generateRouteFromPath(routes.club.private.media, {
+          slug,
+        }),
+      config: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.base, {
+          slug,
+        }),
+      info: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.info, {
+          slug,
+        }),
+      permissions: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.permissions, {
+          slug,
+        }),
+      members: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.members, {
+          slug,
+        }),
+
+      submissions: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.submissions.base, {
+            slug
+          }),
+        form: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.submissions.form, {
+            slug
+          }),
+      },
+
+      requests: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.base, {
+            slug,
+          }),
+        approved: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.approved, {
+            slug,
+          }),
+        pendings: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.pendings, {
+            slug,
+          }),
+        rejected: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.requests.rejected, {
+            slug,
+          }),
+      },
+      settings: {
+        base: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.base, {
+            slug,
+          }),
+        privacy: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.privacy, {
+            slug,
+          }),
+        scope: (slug: string) =>
+          generateRouteFromPath(routes.club.private.config.settings.scope, {
+            slug,
+          }),
+      },
+
+    },
+
+    chat: {
+      chats: routes.chat.chats,
+      requests: routes.chat.requests,
+      new: routes.chat.new,
+      inbox: (id: string) =>
+        generateRouteFromPath(routes.chat.inbox, {
+          id,
+        }),
+      info: (id: string) =>
+        generateRouteFromPath(routes.chat.info, {
+          id,
+        }),
+
+      media: (id: string) =>
+        generateRouteFromPath(routes.chat.media, {
+          id,
+        }),
+
+      settings: (id: string) =>
+        generateRouteFromPath(routes.chat.settings, {
+          id,
+        }),
+    },
+
+    auth: {
+      activation: routes.auth.private.activation,
+      forgot_password: routes.auth.private.forgot_password,
+      reset_password: (key: string) =>
+        generateRouteFromPath(routes.auth.private.reset_password, {
+          key,
+        }),
+
+      verify_email: (key: string) =>
+        generateRouteFromPath(routes.auth.private.verify_email, {
+          key,
+        }),
+
+      verify_email_otp: routes.auth.private.verify_email_otp,
+    },
+  },
+
+  public: {
+    home: routes.home,
+    auth: {
+      signIn: routes.auth.public.sign_in,
+      signUp: routes.auth.public.sign_up,
+    },
+
+    club: {
+      slug: (slug: string) =>
+        generateRouteFromPath(routes.club.public.base, {
+          slug,
+        }),
+    },
+  },
+} as const;

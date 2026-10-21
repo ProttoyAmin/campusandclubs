@@ -1,7 +1,23 @@
 scripts:
-  server: cd services/api && uv run python manage.py runserver
-  web: pnpm --filter web dev
-  migrations: cd services/api && uv run python manage.py makemigrations
-  migrate: cd services/api && uv run python manage.py migrate
-  build: pnpm -r build
-  start: pnpm --filter web start
+  superuser: cd backend/api && uv run python manage.py createsuperuser
+
+  backend:check: cd backend/api && uv run python manage.py check
+  backend:shell: cd backend/api && uv run python manage.py shell
+
+  backend:migrations: cd backend/api && uv run python manage.py makemigrations
+  backend:build:migrations: cd backend/api && $env:DEBUG="False"; uv run python manage.py makemigrations
+  backend:migrate: cd backend/api && uv run python manage.py migrate
+  backend:build:migrate: cd backend/api && $env:DEBUG="False"; uv run python manage.py migrate
+  backend:server: cd backend/api && uv run python manage.py runserver localhost:8000
+  backend:build:server: cd backend/api && $env:DEBUG="False"; uv run python manage.py runserver localhost:8000
+  backend:schema: cd backend/api && uv run python manage.py spectacular --file ../../packages/api/schema/openapi.yaml
+
+  web:dev: pnpm --filter web dev
+  web:generate: pnpm --filter @campus/api generate
+  web:build: pnpm -r build
+  web:start: pnpm --filter web start
+
+  web:v1:dev: pnpm --filter @campusandclubs/web-v1 dev
+  angular: cd clients/v1/web && pnpm exec ng
+  angular:serve: cd clients/v1/web && pnpm exec ng serve
+  angular:build: cd clients/v1/web && pnpm exec ng build

@@ -26,14 +26,13 @@ ENV/
 *.local
 
 # Django
-media/
+storage/
 staticfiles/
 
 # Node.js
 node_modules/
 dist/
 dist-ssr/
-public/
 .pnp
 .pnp.js
 

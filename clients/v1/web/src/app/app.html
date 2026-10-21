@@ -1,0 +1,5 @@
+<router-outlet />
+
+@for (user of users.data()?.results; track user.id) {
+<a [routerLink]="['/@', user.username]">{{ user.username }}</a>
+}

@@ -1,0 +1,22 @@
+<button
+      hlmBtn
+      variant="ghost"
+      size="icon-sm"
+      class="rounded-full animate-[slideInLeft_0.3s_ease-out] p-0"
+      (click)="location.back()"
+    >
+      <ng-icon name="lucideArrowLeft" class="size-3" />
+    </button>
+
+    @if (!hideForward()) {
+      <button
+        hlmBtn
+        variant="ghost"
+        size="icon"
+        [disabled]="disableForward()"
+        class="rounded-full animate-[slideInRight_0.3s_ease-out] p-0"
+        (click)="location.forward()"
+      >
+        <ng-icon name="lucideArrowRight" class="size-3" />
+      </button>
+    }
