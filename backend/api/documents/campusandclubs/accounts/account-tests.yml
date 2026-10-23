@@ -1,0 +1,19 @@
+info:
+  name: account-tests
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/accounts/auth/change-password/
+  headers:
+    - name: Cookie
+      value: csrftoken=fhzCSXX2h4G6mph1kV3y3fJ7yTsaJsLt;sessionid=abseddv39z9vwp1rdugubxfh3aml9t0m
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

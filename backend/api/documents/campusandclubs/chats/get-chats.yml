@@ -1,0 +1,19 @@
+info:
+  name: get-chats
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8000/api/v1/realtime/chats/
+  headers:
+    - name: Cookie
+      value: csrftoken=zhJhtQKKB3Xh7PKpTdbtAXbKTxV14TaW;sessionid=mrpw68psv49ud43ln1umvrr7z07cdh4v
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

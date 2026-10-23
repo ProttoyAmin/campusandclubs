@@ -1,0 +1,30 @@
+info:
+  name: ChatGroupCreate
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/realtime/chats/start/
+  headers:
+    - name: Cookie
+      value: csrftoken=GiSD5kVSzbI9nS8Yi8QfAt7uKtk5BYvi;sessionid=3l16s1qh0pnjwilggk179a62kj1r589b
+    - name: X-CSRFToken
+      value: GiSD5kVSzbI9nS8Yi8QfAt7uKtk5BYvi
+  body:
+    type: json
+    data: |-
+      {
+        "participant_ids": [
+          "3cd6e7ec-006b-47b1-b1fe-0627f4c80541"
+        ],
+        "content": "hey man"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

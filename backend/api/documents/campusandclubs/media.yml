@@ -1,0 +1,19 @@
+info:
+  name: media
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: localhost:8000/api/v1/media
+  headers:
+    - name: Cookie
+      value: csrftoken=xOe6UFxOiIkyhYuM2YvWN1H43DnKtNQb;sessionid=t86ze63mnpssl5e4d121ix6ijulwylgu
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

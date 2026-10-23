@@ -1,0 +1,26 @@
+info:
+  name: media post
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: localhost:8000/api/v1/media/
+  headers:
+    - name: Cookie
+      value: csrftoken=YKCgErAUw5PowHoqAu4XoWTUv9Q5kLKi;sessionid=sd1x1hp5njfcvfev9l9le12ujm6sxuqk
+  body:
+    type: json
+    data: |-
+      {
+        "file" : "byte",
+        ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

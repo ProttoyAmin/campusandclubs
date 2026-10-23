@@ -1,0 +1,19 @@
+info:
+  name: Club applications
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/clubs/1b0b5b9f-7d80-4e90-8dcf-f14a987d1aff/applications/
+  headers:
+    - name: Cookie
+      value: csrftoken=XPBwlkp3xZlYqUbC3uYLZ9CIXH9L7uVX;sessionid=3aks43siysq0ft9mycgu83s57vu7eq1l
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

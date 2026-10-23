@@ -1,0 +1,19 @@
+info:
+  name: posts
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:8000/api/v1/posts/
+  headers:
+    - name: Cookie
+      value: csrftoken=OslU45JFI20edLbe1ipu2eh9KXKjgasg;sessionid=qqbmbbbost4r9samzdrwjnqizvvvb0qn
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

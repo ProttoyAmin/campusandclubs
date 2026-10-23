@@ -1,0 +1,15 @@
+info:
+  name: websocket-for-notifications
+  type: websocket
+  seq: 1
+
+websocket:
+  url: localhost:8000/ws/socket/
+  headers:
+    - name: Cookie
+      value: csrftoken=OslU45JFI20edLbe1ipu2eh9KXKjgasg;sessionid=qqbmbbbost4r9samzdrwjnqizvvvb0qn
+  auth: inherit
+
+settings:
+  timeout: 0
+  keepAliveInterval: 0
