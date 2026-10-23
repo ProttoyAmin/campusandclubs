@@ -1,7 +1,10 @@
+from django.db.models.query import QuerySet
+from apps.clubs.models.permission import ClubPermission
 from typing import Any
 from django.db import models
 import uuid
 from apps.clubs.models.club import Club
+from apps.clubs.models.permission import ClubPermission
 from django.core.exceptions import ValidationError
 
 
@@ -9,7 +12,7 @@ class Role(models.Model):
     """Dynamic role model for clubs - allows custom roles with specific permissions"""
     DEFAULT_ROLE = 'Owner'
     DEFAULT_COLOR = "#8F2811"
-    
+
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     club = models.ForeignKey(
@@ -18,10 +21,10 @@ class Role(models.Model):
         max_length=50, help_text="Role name (e.g., Member, Moderator, Admin)")
 
     # Consolidated permissions field
-    permissions = models.JSONField(
-        default=dict,
+    permissions = models.ManyToManyField(
+        ClubPermission,
         blank=True,
-        help_text="Permission dictionary with keys like 'can_manage_members', 'can_manage_posts', etc."
+        null=True
     )
 
     is_default = models.BooleanField(
@@ -66,14 +69,14 @@ class Role(models.Model):
                     f'A role with name "{self.name}" already exists in this club.'
                 )
 
-    def save(self, *args, **kwargs):
-        if self.name:
-            self.name = self.name.strip()
-        # Ensure permissions is a dict
-        if not isinstance(self.permissions, dict):
-            self.permissions = {}
-        self.full_clean()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.name:
+    #         self.name = self.name.strip()
+    #     # Ensure permissions is a dict
+    #     if not isinstance(self.permissions, ClubPermission):
+    #         self.permissions = ClubPermission.objects.none()
+    #     self.full_clean()
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.club.name})"
@@ -88,18 +91,18 @@ class Role(models.Model):
 
     def has_permission(self, permission_name: str) -> bool:
         """Check if role has a specific permission"""
-        return self.permissions.get(permission_name, False)
+        return self.permissions.filter(name=permission_name).exists()  # type: ignore
 
-    def set_permission(self, permission_name: str, value: bool):
-        """Set a specific permission"""
-        if not isinstance(self.permissions, dict):
-            self.permissions = {}
-        self.permissions[permission_name] = value
-        self.save()
+    # def set_permission(self, permission_name: str, value: bool):
+    #     """Set a specific permission"""
+    #     if not isinstance(self.permissions, dict):
+    #         self.permissions = {}
+    #     self.permissions[permission_name] = value
+    #     self.save()
 
-    def get_all_permissions(self) -> dict:
+    def get_all_permissions(self) -> QuerySet[ClubPermission, Any]:
         """Get all permissions for this role"""
-        return self.permissions.copy() if isinstance(self.permissions, dict) else {}
+        return self.permissions.values_list('codename', flat=True)
 
     @property
     def users(self):
@@ -112,7 +115,7 @@ class Role(models.Model):
 
     def user_count(self):
         return self.users.count()
-    
+
     def create_default_owner_role(self, club):
         """Utility method to create default roles for a new club"""
         role = self.objects.create(
@@ -121,9 +124,9 @@ class Role(models.Model):
             is_default=True,
             color=self.DEFAULT_COLOR
         )
-        
-        # Add more later if needed 
-        
+
+        # Add more later if needed
+
         # moderator_role = Role.objects.create(
         #     club=club,
         #     name='Moderator',

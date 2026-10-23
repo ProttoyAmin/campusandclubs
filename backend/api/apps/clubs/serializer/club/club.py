@@ -311,7 +311,7 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
         from apps.accounts.serialize.user.profile import UserMinimalSerializer
         owner: User = obj.owner
 
-        return UserMinimalSerializer(owner).data 
+        return UserMinimalSerializer(owner).data
 
     def _get_request(self) -> Request | None:
         return self.context.get('request')

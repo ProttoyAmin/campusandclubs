@@ -5,10 +5,12 @@ from django.conf import settings
 
 from apps.clubs.models.club import Club
 from apps.clubs.models.role import Role
+from apps.clubs.models.permission import ClubPermission
 
 if TYPE_CHECKING:
     from apps.accounts.models import User
     from django.db.models.fields.related_descriptors import RelatedManager
+
 
 class Membership(models.Model):
     """
@@ -54,9 +56,17 @@ class Membership(models.Model):
         help_text="Method by which the user joined the club"
     )
 
+    permissions = models.ManyToManyField(
+        ClubPermission,
+        related_name="members",
+        blank=True,
+        null=True,
+        help_text="User's permissions in the club"
+    )
+
     joined_at = models.DateTimeField(auto_now_add=True)
     left_at = models.DateTimeField(null=True, blank=True)
-    
+
     # Add a primary field to mark which role is primary/display
     primary_role = models.ForeignKey(
         Role,
@@ -83,7 +93,15 @@ class Membership(models.Model):
     @property
     def role_names(self):
         """Get list of role names"""
-        return [role.name for role in self.roles.all()]
+        return [{
+            'name': role.name,
+            'color': role.color,
+        } for role in self.roles.all()]
+
+    @property
+    def role_colors(self):
+        """Get list of role names"""
+        return [role.color for role in self.roles.all()]
 
     @property
     def display_role(self):
@@ -94,18 +112,20 @@ class Membership(models.Model):
 
     def has_permission(self, permission_name: str) -> bool:
         """Check if user has any permission through any role"""
-        for role in self.roles.all():
-            if role.has_permission(permission_name):
-                return True
-        return False
+        # for role in self.roles.all():
+        #     if role.has_permission(permission_name):
+        #         return True
+        # return False
+
+        return self.permissions.filter(codename=permission_name).exists()
 
     def user_permissions(self):
         """Get a set of all permissions the user has through their roles"""
         permissions = set()
         for role in self.roles.all():
             # All permissions are stored in the permissions JSON field
-            for perm, has_perm in role.permissions.items():
-                if has_perm:
+            for perm in self.permissions.all():
+                if perm in permissions:
                     permissions.add(perm)
         return permissions
 
@@ -132,4 +152,3 @@ class Membership(models.Model):
             self.save()
             return True
         return False
-

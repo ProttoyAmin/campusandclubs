@@ -19,6 +19,7 @@ from core.policies.utils import current_user
 
 logger = logging.getLogger(__name__)
 
+
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def get_current_user(request) -> Response:
@@ -55,7 +56,6 @@ def get_user_activity(request: Request, username: str) -> Response:
     })
 
 
-
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def get_my_clubs(request: Request) -> Response:
@@ -64,19 +64,20 @@ def get_my_clubs(request: Request) -> Response:
     from apps.accounts.serialize.user import UserClubMembershipSerializer
     from apps.clubs.models import Membership
 
-    user: User = request.user
+    user: User = current_user(request)
     memberships = Membership.objects.filter(
         user=user,
         left_at__isnull=True
     ).select_related("club")
     # user.memberships.all()
-    
+
     serializer = UserClubMembershipSerializer(
         memberships,
         many=True,
         context={'request': request}
     )
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -106,18 +107,17 @@ def get_user_clubs(request, username) -> Response:
                 {'detail': 'This profile is private. You must follow this user to view their clubs.'},
                 status=status.HTTP_403_FORBIDDEN
             )
-            
+
         return Response(
             {'detail': 'This profile is private.',
              'username': user.username,
-             'avatar' : request.build_absolute_uri(user.avatar.url) if user.avatar else None,
+             'avatar': request.build_absolute_uri(user.avatar.url) if user.avatar else None,
              'is_private': user.is_private
              },
             status=status.HTTP_403_FORBIDDEN
         )
-        
+
     clubs = user.owned_clubs.all()
-    
 
     memberships = Membership.objects.filter(
         user=user
@@ -133,7 +133,7 @@ def get_user_clubs(request, username) -> Response:
         many=True,
         context={'request': request}
     )
-    
+
     serializer = ClubListSerializer(
         clubs,
         many=True,
@@ -154,15 +154,15 @@ def get_user_clubs(request, username) -> Response:
 def get_my_affiliations(request: Request) -> Response:
     """List the authenticated user's institute affiliations."""
     from apps.institutes.models import InstituteAffiliate
-    
+
     user: User = current_user(request)
     affiliations = InstituteAffiliate.objects.filter(
-        user=user, 
+        user=user,
         is_active=True
     ).select_related("institute")
 
     logger.info(f"Affiliations: {affiliations}")
-    
+
     serializer = InstituteAffiliateForUserSerializer(
         affiliations, many=True, context={'request': request}
     )

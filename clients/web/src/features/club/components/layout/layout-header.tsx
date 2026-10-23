@@ -32,7 +32,7 @@ const ClubLayoutHeader = ({
   headerTitle?: React.ReactNode;
 }) => {
   const { leave } = useUpdateClub(club?.slug);
-  const leaveClub = leave(club?.id || '')
+  const leaveClub = leave(club?.id || "");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,33 +66,30 @@ const ClubLayoutHeader = ({
   };
 
   const getJoinLabel = () => {
+    if (isJoinPending) return "Joining";
 
-    if (isJoinPending) return "Joining"
-
-    if (club?.is_member) return "Joined"
+    if (club?.is_member) return "Joined";
 
     //@ts-ignore
-    if (club?.application?.status === "pending") return "Pending"
+    if (club?.application?.status === "pending") return "Pending";
 
-    if (!club.is_public) return "Ask to join"
+    if (!club.is_public) return "Ask to join";
 
-    return "Join"
-  }
+    return "Join";
+  };
 
   return (
     <>
       {club && (
         <>
           <div>
-            {location.pathname.includes('config') && (
-              <>
-                <NavigateButtons hideForward />
-              </>
+            {location.pathname.includes("config") && (
+              <NavigateButtons hideForward />
             )}
           </div>
           <div className="flex items-center w-full justify-between md:border md:rounded-full bg-background/5 backdrop-blur-xl hover:bg-background transition-colors duration-300">
+            {/* <pre>{JSON.stringify(club, null, 3)}</pre> */}
             <div className="flex gap-2 items-center p-2">
-
               <Avatar
                 size="lg"
                 className={"cursor-pointer"}
@@ -125,8 +122,8 @@ const ClubLayoutHeader = ({
                     club?.is_member
                       ? "ghost"
                       : club?.application &&
-                        //@ts-ignore
-                        club?.application?.status === "pending"
+                          //@ts-ignore
+                          club?.application?.status === "pending"
                         ? "secondary"
                         : "outline"
                   }
@@ -153,7 +150,10 @@ const ClubLayoutHeader = ({
                     navigate(paths.private.club.config(slug));
                   }}
                 >
-                  <HugeiconsIcon icon={Settings01Icon} className="size-5 transition-transform duration-200 group-hover:rotate-45" />
+                  <HugeiconsIcon
+                    icon={Settings01Icon}
+                    className="size-5 transition-transform duration-200 group-hover:rotate-45"
+                  />
                 </Button>
               )}
               <ClubDropdown

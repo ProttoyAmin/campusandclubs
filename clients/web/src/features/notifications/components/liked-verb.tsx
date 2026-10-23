@@ -30,7 +30,7 @@ const LikedVerb = ({ notification }: { notification: Notification }) => {
             <div className={'flex flex-col h-full justify-start'}>
                 <Avatar size='lg' >
                     <AvatarImage src={notification.primary_actor.avatar} />
-                    <AvatarFallback>{notification.primary_actor.username}</AvatarFallback>
+                    <AvatarFallback>{notification.primary_actor.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
             </div>
 

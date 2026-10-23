@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
 from rest_framework.viewsets import GenericViewSet
 from apps.clubs.serializer.club.club_details import ClubScopeUpdateSerializer
@@ -10,7 +11,7 @@ from rest_framework import serializers
 from rest_framework.decorators import action
 from apps.clubs.serializer import ClubUpdateSerializer
 from django.core.exceptions import PermissionDenied
-from django.db.models import QuerySet
+from django.db.models import F, QuerySet
 from rest_framework import generics, permissions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -66,12 +67,12 @@ class ClubListCreateView(
     def get_queryset(self) -> QuerySet[Club]:
         return self.get_service(self.request).exclude_secret_clubs()
 
-    def get_permissions(self) -> list[permissions.BasePermission]:
+    def get_permissions(self) -> Sequence[permissions.BasePermission]:
         if self.request.method == "POST":
             self.permission_classes = [permissions.IsAuthenticated]
         else:
             self.permission_classes = [permissions.AllowAny]
-        return super().get_permissions()
+        return super().get_permissions()  # type: ignore
 
     @club_list_schema
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -85,6 +86,9 @@ class ClubListCreateView(
         # clubs = self.get_service(request).list_clubs(
         #     viewer=current_user(request), filters=filters)
         clubs = self.get_service(request).exclude_secret_clubs()
+
+        # from apps.clubs.models.permission import PERMISSIONS_LIST
+        # return Response({"message": "Hello, world!", 'codenames': PERMISSIONS_LIST})
 
         page = self.paginate_queryset(clubs)
         serializer = self.get_serializer(page, many=True)
@@ -125,7 +129,7 @@ class ClubRetrieveUpdateDestroyAPIView(
     def get_queryset(self) -> QuerySet[Club]:
         return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
-    def get_serializer_class(self) -> type[serializers]:
+    def get_serializer_class(self) -> type[serializers.BaseSerializer[Club]]:
         if self.request.method == "PUT" or self.request.method == "PATCH":
             return ClubUpdateSerializer
         else:
@@ -161,9 +165,11 @@ class ClubRetrieveUpdateDestroyAPIView(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        updated = self.get_service(request).update_settings(self.kwargs['pk'], dto=ClubUpdateSettingsDTO.from_validated_data(serializer.validated_data))
+        updated = self.get_service(request).update_settings(
+            self.kwargs['pk'], dto=ClubUpdateSettingsDTO.from_validated_data(serializer.validated_data))
 
-        detail_serializer = self.get_serializer(updated, context={"request": request})
+        detail_serializer = self.get_serializer(
+            updated, context={"request": request})
         return Response(detail_serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
@@ -177,6 +183,7 @@ class ClubRetrieveUpdateDestroyAPIView(
             return Response({"detail": decision.reason}, status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
+
 
 class ClubSettingsViewset(
     ServiceMixin[ClubService],

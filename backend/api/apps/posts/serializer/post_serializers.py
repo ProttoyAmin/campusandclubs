@@ -30,6 +30,7 @@ class PostSerializer(serializers.ModelSerializer):
     # Club info for club posts
     club = serializers.SerializerMethodField()
     club_url = serializers.SerializerMethodField()
+    club_roles = serializers.SerializerMethodField()
 
     # NEW: Multiple media support
     # images = serializers.SerializerMethodField()
@@ -65,7 +66,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'url',
             'author', 'author_url',
-            'club', 'club_url',
+            'club', 'club_url', 'club_roles',
             'title', 'is_pinned', 'content', 'media',
             'original_post', 'original_post_data',
             'like_count', 'comment_count', 'share_count', 'repost_count',
@@ -84,6 +85,20 @@ class PostSerializer(serializers.ModelSerializer):
     def get_club(self, obj: Post):
         from apps.clubs.serializer.club.club import ClubMinimalSerializer
         return ClubMinimalSerializer(obj.club, context=self.context).data if obj.club else None
+
+    def get_club_roles(self, obj: Post):
+        from apps.clubs.models import Membership
+
+        if not obj.club:
+            return None
+
+        membership: Membership | None = Membership.objects.filter(
+            user=obj.author, club=obj.club).first()
+
+        if not membership:
+            return None
+
+        return membership.role_names
 
     def get_author_avatar(self, obj):
         """Get author's avatar (profile picture or avatar URL)"""

@@ -62,6 +62,12 @@ const NavTabs = ({ menu, className, itemsClassName, avatar, id, variant = "defau
               aria-label={item.label}
               className={`flex items-center rounded-full p-2 transition-all duration-300 ${active ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-secondary active:not-aria-[haspopup]:scale-95"
                 } ${itemsClassName ?? ""}`}
+
+            // className={`border-b flex items-center p-2 transition-all duration-300 ${active
+            //   ? "border-b-2 border-b-accent-foreground text-secondary-foreground"
+            //   : "text-muted-foreground active:not-aria-[haspopup]:scale-95"
+            //   } ${itemsClassName ?? ""}`}
+
             >
               {item.icon && <span className="flex size-5 shrink-0 items-center justify-center">
                 {getIcon(item, active)}

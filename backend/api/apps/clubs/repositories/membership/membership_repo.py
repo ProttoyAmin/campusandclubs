@@ -12,6 +12,7 @@ from apps.clubs.models import (
 )
 from apps.accounts.models import User
 
+
 class MembershipRepository(BaseRepository[Membership]):
     """Membership repository class for managing membership operations"""
     model = Membership
@@ -40,7 +41,7 @@ class MembershipRepository(BaseRepository[Membership]):
             joined_method=JoinMethod.SELF
         )
         return self.get_queryset().get(club=club, user=user)
-    
+
     def create_membership_from_invite(
         self,
         club: Club,
@@ -53,10 +54,10 @@ class MembershipRepository(BaseRepository[Membership]):
             joined_method=join_method
         )
         return self.get_queryset().get(club=club, user=user)
-    
+
     def membership_exists(self, club: Club, user: User) -> bool:
         return self.filter(club=club, user=user, left_at__isnull=True).exists()
-    
+
     def leave(self, membership: Membership) -> None:
         membership.roles.clear()
         self.update(membership, primary_role=None, left_at=timezone.now())
@@ -74,7 +75,8 @@ class MembershipRepository(BaseRepository[Membership]):
         """List memberships for a club with filtering and sorting."""
         from django.db.models import F, Q
 
-        qs = self.get_queryset().filter(club=club).select_related("user").prefetch_related("roles")
+        qs = self.get_queryset().filter(club=club).select_related(
+            "user").prefetch_related("roles")
 
         if exclude_owner:
             qs = qs.exclude(user_id=F("club__owner_id"))
@@ -95,6 +97,3 @@ class MembershipRepository(BaseRepository[Membership]):
         if order != "asc":
             sort_field = f"-{sort_field}"
         return qs.order_by(sort_field)
-
-
-

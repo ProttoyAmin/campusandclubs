@@ -18,7 +18,6 @@ from apps.clubs.serializer.club.club import ClubSerializer
 from apps.clubs.serializer.club.club_details import ClubDetailSerializer
 
 
-
 # from rest_framework.decorators import api_view, permission_classes
 # from rest_framework import permissions, response, status
 # from django.db.models import Count, Prefetch
@@ -37,7 +36,7 @@ from apps.clubs.serializer.club.club_details import ClubDetailSerializer
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def list_posts(request: Request, pk:str)->response.Response:
+def list_posts(request: Request, pk: str) -> response.Response:
     """
     List all posts in a club with interaction counts
     """
@@ -79,20 +78,19 @@ def list_posts(request: Request, pk:str)->response.Response:
 
     # Efficiently fetch and map author roles
     data = serializer.data
-    author_ids = [post.author_id for post in paginated_posts]
+    # author_ids = [post.author.id for post in paginated_posts]
 
-    author_is_owner_map = {}
-    for user_id in author_ids:
-        if user_id == club.owner_id:
-            author_is_owner_map[user_id] = True
+    # author_is_owner_map = {}
+    # for user_id in author_ids:
+    #     if user_id == club.owner.id:
+    #         author_is_owner_map[user_id] = True
 
-    # Inject is_owner into response data
-    for item in data:
-        author_id = item.get('author_id')
-        item['is_owner'] = author_is_owner_map.get(author_id, False)
+    # # Inject is_owner into response data
+    # for item in data:
+    #     author_id = item.get('author').get('id')
+    #     item['is_owner'] = author_is_owner_map.get(author_id, False)
 
     return paginator.get_paginated_response(data)
-
 
 
 # ---------------------------------------------------------------------------

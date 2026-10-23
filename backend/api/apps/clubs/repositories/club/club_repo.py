@@ -77,9 +77,10 @@ class ClubRepository(BaseRepository[Club]):
             .prefetch_related(
                 Prefetch(
                     "memberships",
-                    queryset=Membership.objects.filter(user=viewer, left_at__isnull=True).prefetch_related("roles"),
+                    queryset=Membership.objects.filter(
+                        user=viewer, left_at__isnull=True).prefetch_related("roles"),
                     to_attr="user_memberships",
-                )
+                ),
             )
             .select_related("owner")
             .order_by("-created_at")
@@ -188,7 +189,8 @@ class ClubRepository(BaseRepository[Club]):
                     filter=Q(events__created_at__gte=week_ago),
                 ),
                 trending_score=(
-                    Count("club_posts", filter=Q(club_posts__created_at__gte=week_ago)) * 2
+                    Count("club_posts", filter=Q(
+                        club_posts__created_at__gte=week_ago)) * 2
                     + Count("events", filter=Q(events__created_at__gte=week_ago)) * 3
                     + Count("members", distinct=True) * 0.5
                 ),

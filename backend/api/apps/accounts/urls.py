@@ -46,7 +46,7 @@ urlpatterns = [
     # Djoser auth endpoints
     re_path(r'^auth/', include('djoser.urls')),
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
-#     re_path(r'^auth/', include('djoser.urls.jwt')),
+    #     re_path(r'^auth/', include('djoser.urls.jwt')),
 
     path("auth/refresh/", RefreshTokenView.as_view(), name="refresh"),
     path("auth/request-info/", get_request_info, name="request_info"),
@@ -55,8 +55,8 @@ urlpatterns = [
     # Authentication endpoints
     path("auth/logout/", allauth_logout,
          name="logout"),      # ---- DONE
-#     path("auth/login/", LoginView.as_view(),
-#          name="jwt_obtain_token"),      # ---- DONE
+    #     path("auth/login/", LoginView.as_view(),
+    #          name="jwt_obtain_token"),      # ---- DONE
     path("auth/login/", login_view,
          name="login"),      # ---- DONE
 
@@ -76,8 +76,8 @@ urlpatterns = [
     # # User lookup
     path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(lookup_field='username'),
          name="user_details_by_username"),  # DONE
-#     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
-#          name="update_user_details"),  # DONE
+    #     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
+    #          name="update_user_details"),  # DONE
     path('auth/all/', UserListCreateView.as_view(),
          name="all_users"),  # ---- DONE
     path('auth/<uuid:user_id>/all/',
@@ -95,7 +95,8 @@ urlpatterns = [
     path('auth/me/affiliations/', get_my_affiliations, name='my_affiliations'),
     path('auth/me/emails/', get_my_emails, name='my_emails'),
     # path('auth/me/profile/', views.update_profile, name='update_profile'),
-    path("auth/me/upload-profile-picture/", views.upload_profile_picture, name="upload_profile_picture"),
+    path("auth/me/upload-profile-picture/",
+         views.upload_profile_picture, name="upload_profile_picture"),
     # path('auth/me/clear-profile-picture/', views.clear_profile_picture, name='clear_profile_picture'),
     # path('auth/me/email-preference/', views.manage_email_preference, name='email_preference'),
 

@@ -25,16 +25,21 @@ function App() {
       <div className="md:hidden">
         <Header />
       </div>
-      {feed.isLoading ? <>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <PostCardSkeleton key={index} />
-        ))}
-      </> : <>
-        {feed?.data?.results.map((post: PostExtended) => (
-          <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
-            <PostCard post={post} />
-          </div>
-        ))}</>}
+      {feed.isLoading ? (
+        <>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <PostCardSkeleton key={index} />
+          ))}
+        </>
+      ) : (
+        <>
+          {feed?.data?.results.map((post: PostExtended) => (
+            <div key={post.id} className="grid grid-cols-1 p-0 min-h-fit">
+              <PostCard post={post} showMembership={false} />
+            </div>
+          ))}
+        </>
+      )}
       <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
         <BottomBar />
       </div>

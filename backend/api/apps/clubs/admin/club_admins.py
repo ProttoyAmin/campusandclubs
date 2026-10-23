@@ -1,12 +1,14 @@
 from django.contrib import admin
-from apps.clubs.models import Club, ClubDepartment, DepartmentTemplate, ClubPreference
+from apps.clubs.models import Club, ClubDepartment, DepartmentTemplate, ClubPreference, ClubPermission
 from .role_admins import RoleInline
 from .membership_admins import MembershipInline
 # from .form_admin import FormInline, FormQuestionInline
 
+
 @admin.register(Club)
 class ClubAdmin(admin.ModelAdmin):
-    list_display = ("name", "owner", "origin", "privacy", "status", "join_mode", "created_at")
+    list_display = ("name", "owner", "origin", "privacy",
+                    "status", "join_mode", "created_at")
     list_filter = ("privacy", "status", "join_mode", "origin", "scope")
     search_fields = ("name", "origin__name", "owner__username")
     inlines = [RoleInline, MembershipInline]
@@ -14,8 +16,10 @@ class ClubAdmin(admin.ModelAdmin):
 
     inlines = [RoleInline, MembershipInline]
 
+
 admin.site.register(ClubDepartment)
 admin.site.register(DepartmentTemplate)
+admin.site.register(ClubPermission)
 admin.site.register(ClubPreference)
 # @admin.register(Category)
 # class CategoryAdmin(admin.ModelAdmin):

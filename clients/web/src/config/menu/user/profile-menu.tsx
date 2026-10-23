@@ -32,4 +32,13 @@ export const profileMenu: (username: string) => MenuItemType[] = (
       isActive: (currentPath) =>
         isRouteActive(routes.user.private.profile.reposts, currentPath),
     },
+    {
+      id: 4,
+      label: "Saved",
+      icon: "",
+      iconActive: "",
+      link: () => paths.private.user.reposts(username),
+      isActive: (currentPath) =>
+        isRouteActive(routes.user.private.profile.reposts, currentPath),
+    },
   ];

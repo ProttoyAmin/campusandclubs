@@ -7,7 +7,7 @@ from apps.clubs.models import Membership, Visibility, Club, ClubStatus
 class UserClubMembershipSerializer(serializers.ModelSerializer):
     """Serializer for user's club memberships"""
     from apps.clubs.models import Club, Membership
-    
+
     id = serializers.CharField(source='club.id', read_only=True)
     name = serializers.CharField(source='club.name', read_only=True)
     slug = serializers.CharField(source='club.slug', read_only=True)
@@ -33,12 +33,14 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
 
     def get_is_active(self, obj: Membership):
         status = obj.club.status
-        if status == ClubStatus.ACTIVE: return True
+        if status == ClubStatus.ACTIVE:
+            return True
         return False
 
     def get_is_public(self, obj: Membership) -> bool:
         privacy = obj.club.privacy
-        if privacy == Visibility.PUBLIC: return True
+        if privacy == Visibility.PUBLIC:
+            return True
         return False
 
     def get_club_url(self, obj: Membership):
@@ -80,15 +82,8 @@ class UserClubMembershipSerializer(serializers.ModelSerializer):
 
     def get_role_permissions(self, obj: Membership):
         """Get combined role permissions for this membership"""
-        permissions = {
-            'can_manage_members': False,
-            'can_manage_posts': False,
-            'can_manage_events': False,
-            'can_manage_settings': False,
-        }
+        permissions = set()
         for role in obj.roles.all():
             role_perms = role.get_all_permissions()
-            for perm_name, has_perm in role_perms.items():
-                if has_perm:
-                    permissions[perm_name] = True
+            permissions.update(role_perms)
         return permissions

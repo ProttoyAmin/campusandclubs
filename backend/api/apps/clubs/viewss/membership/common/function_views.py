@@ -1,3 +1,6 @@
+from rest_framework.response import Response
+
+
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
@@ -63,14 +66,13 @@ def list_members(request: Request, pk) -> response.Response:
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def member_detail(request: Request, pk: str, user_id: str):
+def member_detail(request: Request, pk: str, user_id: str) -> Response:
     """
     Get detailed information about a specific member
     """
     # from apps.clubs.models import ClubStatus, Club,  Membership, Visibility
     from apps.accounts.models import User
     from apps.clubs.repositories import MembershipRepository
-
 
     repo = MembershipRepository()
     club = get_object_or_404(Club, pk=pk, status=ClubStatus.ACTIVE)
@@ -98,7 +100,7 @@ def member_detail(request: Request, pk: str, user_id: str):
         )
 
     membership = repo.get_membership(user=user, club=club)
-    
+
     # Membership.objects.filter(
     #     user=user, club=club
     # ).select_related('user').first()
@@ -122,6 +124,7 @@ def member_detail(request: Request, pk: str, user_id: str):
             'slug': club.slug
         },
         'member': MembershipSerializer(membership).data,
+        'post_count': post_count,
         'roles': [
             {
                 'id': str(role.id),
@@ -131,5 +134,6 @@ def member_detail(request: Request, pk: str, user_id: str):
         ],
         'permissions': role_permissions,
         'is_owner': club.owner == user,
-        'can_manage': False  # Will be populated based on requester's permissions
+        # Will be populated based on requester's permissions
+        'can_manage': (membership.has_permission('manage_club'))
     })

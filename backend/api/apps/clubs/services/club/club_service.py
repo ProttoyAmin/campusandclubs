@@ -11,6 +11,7 @@ from apps.clubs.models import FormSubmission
 import cloudinary
 from apps.clubs.policies.club import ClubPolicy
 from apps.clubs.dtos.club_create import ClubCreateDTO
+from apps.clubs.models.permission import ClubPermission
 from core.views import PolicyMixin
 import logging
 from django.contrib.auth.models import AnonymousUser
@@ -46,7 +47,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
 
     def __init__(
         self,
-        actor: Optional[AbstractBaseUser] = None,
+        actor: Optional[User] = None,
         repository: Optional[ClubRepository] = None,
     ) -> None:
         super().__init__(actor, repository)
@@ -164,7 +165,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
 
             if dto.avatar:
                 self.upload_media(club, dto.avatar, "avatar")
-            
+
             if dto.banner:
                 self.upload_media(club, dto.banner, "banner")
 
@@ -172,11 +173,23 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
                 club=club
             )
 
-            role = self.role_repository.get_or_create_default_owner_role(club)
+            # from apps.clubs.models.permission import PermissionCodename
+
+            # ClubPermission.objects.bulk_create(
+            #     [ClubPermission(club=club, codename=c.value, name=c.label)
+            #      for c in PermissionCodename],
+            #     ignore_conflicts=True,
+            # )
+
+            permissions = ClubPermission.objects.all()
+
+            role = self.role_repository.get_or_create_default_owner_role(
+                club, permissions=permissions)
             membership = self.membership_repository.create(
                 user=owner, club=club)
+            membership.permissions.set(permissions)
             self.membership_repository.add_role(
-                membership, role, set_as_primary=True)
+                membership, role)
 
         return club
 
@@ -309,7 +322,9 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
                 {"detail": "This form is no longer accepting submissions."}
             )
 
-        questions = {str(q.id): q for q in form.questions.all()}
+        questions = {
+            str(q.id): q for q in form.questions.all()  # type: ignore
+        }
         if not questions:
             raise ValidationError(
                 {"detail": "This form has no questions configured yet."}
@@ -320,7 +335,8 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         for entry in raw_answers:
             qid = str(entry.get("question_id", ""))
             if not qid:
-                raise ValidationError({"answers": "Every answer needs a question_id."})
+                raise ValidationError(
+                    {"answers": "Every answer needs a question_id."})
             if qid in seen:
                 raise ValidationError(
                     {"answers": f"Duplicate answer for question {qid}."}
@@ -345,7 +361,8 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         ]
         if missing:
             raise ValidationError(
-                {"answers": f"Missing required questions: {', '.join(missing)}"}
+                {"answers":
+                    f"Missing required questions: {', '.join(missing)}"}
             )
 
         return self.form_submission_repository.submit(
@@ -366,15 +383,16 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         application.save(
             update_fields=["status", "reviewed_by", "reviewed_at"])
 
-        default_role = self.role_repository.get_or_create_default_member_role(application.club)
-        
+        # default_role = self.role_repository.get_or_create_default_member_role(
+        #     application.club)
+
         membership = self.membership_repository.create(
-            user=application.applicant, 
-            club=application.club, 
+            user=application.applicant,
+            club=application.club,
             application=application
         )
-        if default_role:
-            membership.add_role(default_role, set_as_primary=True)
+        # if default_role:
+        #     membership.add_role(default_role, set_as_primary=True)
 
         return application
 

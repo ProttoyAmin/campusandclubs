@@ -8,30 +8,30 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { AlbumNotFound02Icon } from "@hugeicons/core-free-icons";
 
 const ClubPosts = () => {
-    const { club } = useOutletContext<{ club: ClubDetail }>();
-    const { posts } = useClubInfo(club?.id)
+  const { club } = useOutletContext<{ club: ClubDetail }>();
+  const { posts } = useClubInfo(club?.id);
 
-    return (
-        <>
-            <div className="grid grid-cols-1 p-0 min-h-fit">
-                {posts?.data?.results?.length ? (
-                    <>
-                        {posts?.data?.results?.map((post: PostExtended) => (
-                            <PostCard key={post.id} post={post} />
-                        ))}
-                    </>
-                ) : (
-                    <>
-                        <EmptyState
-                            title=""
-                            description="No posts yet"
-                            icon={<HugeiconsIcon icon={AlbumNotFound02Icon} />}
-                        />
-                    </>
-                )}
-            </div>
-        </>
-    );
-}
+  return (
+    <>
+      <div className="grid grid-cols-1 p-0 min-h-fit">
+        {posts?.data?.results?.length ? (
+          <>
+            {posts?.data?.results?.map((post: PostExtended) => (
+              <PostCard key={post.id} post={post} showMembership />
+            ))}
+          </>
+        ) : (
+          <>
+            <EmptyState
+              title=""
+              description="No posts yet"
+              icon={<HugeiconsIcon icon={AlbumNotFound02Icon} />}
+            />
+          </>
+        )}
+      </div>
+    </>
+  );
+};
 
-export default ClubPosts
+export default ClubPosts;

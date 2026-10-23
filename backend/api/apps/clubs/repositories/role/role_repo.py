@@ -1,4 +1,6 @@
+from django.db.models import QuerySet
 from core.repositories import BaseRepository
+from apps.clubs.models.permission import ClubPermission
 from apps.clubs.models import Role, Club
 from core.constants import DEFAULT_COLOR, DEFAULT_ROLE, DEFAULT_MEMBER_ROLE, DEFAULT_MEMBER_COLOR
 
@@ -6,24 +8,19 @@ from core.constants import DEFAULT_COLOR, DEFAULT_ROLE, DEFAULT_MEMBER_ROLE, DEF
 class RoleRepository(BaseRepository[Role]):
     model = Role
 
-    def get_or_create_default_owner_role(self, club: Club) -> Role:
+    def get_or_create_default_owner_role(self, club: Club, permissions: QuerySet[ClubPermission, ClubPermission]) -> Role:
 
-        role, _ = self.get_queryset().get_or_create(
+        role, created = self.get_queryset().get_or_create(
             club=club,
             name=DEFAULT_ROLE,
-            defaults={
-                "permissions": {
-                    "manage:members": True,
-                    "manage:posts": True,
-                    "manage:events": True,
-                    "manage:settings": True,
-                },
-                "is_default": True,
-                "color": DEFAULT_COLOR,
-            },
+            color=DEFAULT_COLOR,
         )
 
+        if created:
+            role.permissions.set(permissions)
+
         return role
+
     def get_or_create_default_member_role(self, club: Club) -> Role:
 
         role, _ = self.get_queryset().get_or_create(

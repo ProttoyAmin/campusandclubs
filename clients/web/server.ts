@@ -3,6 +3,8 @@ import path from "node:path";
 import { Transform } from "node:stream";
 import express from "express";
 import { createServer as createViteServer } from "vite";
+import { renderMeta, getPageMeta } from "./src/meta/page.ts";
+
 
 const PORT = process.env.VITE_WEB_PORT || 3000;
 
@@ -28,13 +30,17 @@ async function createServer() {
     if (isAssetPath || !wantsHtml) {
       return next();
     }
-
     try {
       let template = fs.readFileSync(
         path.resolve(import.meta.dirname, "index.html"),
         "utf-8",
       );
+      console.log("TEMPLATE BEFORE", template);
+      const meta = await getPageMeta(url);
+      template = template.replace("<!--ssr-head-->", renderMeta(meta));
+
       template = await vite.transformIndexHtml(url, template);
+      console.log("TEMPLATE TRANSFORM", template);
 
       const [htmlStart, htmlEnd] = template.split("<!--ssr-outlet-->");
       const { render } = await vite.ssrLoadModule("/src/app.server.tsx");

@@ -14,6 +14,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'gender', 'bio']
         read_only_fields = fields
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -31,19 +32,24 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar', 'status', 'is_following', 'is_followed_by', 'follow_status']
+        fields = ['id', 'username', 'email', 'avatar', 'status',
+                  'is_following', 'is_followed_by', 'follow_status']
 
     def get_email(self, obj: models.User):
         from apps.accounts.services.user_service import AccountService
         account = AccountService()
         email_address = account.emails(obj).filter(primary=True).first()
-        return email_address.email
+
+        if email_address:
+            return email_address.email
+        return None
 
     def get_avatar(self, obj: models.User):
         # from apps.media.serializers import MediaListSerializer
         media = obj.media.filter(role="avatar").first()
 
-        if not media: return obj.avatar
+        if not media:
+            return obj.avatar
 
         # serializer = MediaListSerializer(media, context=self.context)
         return media.secure_url
@@ -55,7 +61,7 @@ class UserMinimalSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated and request.user != obj:
             return obj.is_followed_by(request.user) if hasattr(obj, 'is_followed_by') else False
         return False
-    
+
     def get_is_followed_by(self, obj: models.User) -> bool | None:
         """Is this user following current user?"""
 
@@ -69,7 +75,7 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
         from apps.connections.models import Follow
         request = self.context.get('request')
-        
+
         if request and request.user.is_authenticated and request.user != obj:
             return Follow.get_follow_status(request.user, obj)
         return None
@@ -147,7 +153,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = models.User
         fields = visible_fields
         read_only_fields = [
-            'id', 'email', 
+            'id', 'email',
             'created_at', 'updated_at', 'last_login'
         ]
 
@@ -238,7 +244,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # from apps.media.serializers import MediaListSerializer
         media = obj.media.filter(role="avatar").first()
 
-        if not media: return obj.avatar
+        if not media:
+            return obj.avatar
 
         # serializer = MediaListSerializer(media, context=self.context)
         return media.secure_url

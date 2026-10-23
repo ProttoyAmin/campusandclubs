@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from apps.clubs.models import Club, Membership, Role, ClubPreference
 from apps.accounts.models import User
 from apps.clubs.serializer.membership.m_serializers import MembershipApplicationSerializer
+from apps.clubs.models.permission import ClubPermission
 
 
 class OwnerDetails(TypedDict):
@@ -25,6 +26,7 @@ class UserRoleDetails(TypedDict):
     id: int
     name: str
     permissions: list[str]
+
 
 class ClubPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,12 +43,15 @@ class ClubUpdateSerializer(serializers.ModelSerializer):
         ]
         partial = True
 
+
 class ClubPrivacyJoinModeUpdateSerializer(serializers.Serializer):
     privacy = serializers.ChoiceField(choices=Visibility.choices)
     join_mode = serializers.ChoiceField(choices=JoinMode.choices)
 
+
 class ClubScopeUpdateSerializer(serializers.Serializer):
     scope = serializers.ChoiceField(choices=MembershipScope.choices)
+
 
 class ClubDetailSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
@@ -86,7 +91,9 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         ]
 
     def _get_request(self) -> Request | None:
-        return self.context.get('request')
+        if 'request' in self.context:
+            return self.context.get('request')
+        return None
 
     def get_owner_details(self, obj: Club) -> OwnerDetails:
         owner: User = obj.owner
@@ -113,6 +120,9 @@ class ClubDetailSerializer(serializers.ModelSerializer):
         return obj.owner == request.user
 
     def get_avatar(self, obj: Club):
+        if obj.avatar:
+            return obj.avatar
+
         from apps.media.models import MediaRole
         return obj.media.filter(role=MediaRole.AVATAR).first().file.url if obj.media.filter(role=MediaRole.AVATAR).exists() else None
 
@@ -194,6 +204,10 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     def get_is_member(self, obj: Club) -> bool:
         request = self._get_request()
+
+        if not (request and request.user.is_authenticated):
+            return False
+
         if hasattr(obj, 'user_memberships'):
             return bool(obj.user_memberships)  # type: ignore[attr-defined]
         return Membership.objects.filter(
