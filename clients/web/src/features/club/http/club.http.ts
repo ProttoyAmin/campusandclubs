@@ -36,6 +36,7 @@ export type ApplicationCreateRequest = {
 
 export interface ClubDetailExtended extends Omit<ClubDetail, 'origin'> {
   origin: Institute;
+  me_permissions: string[];
 }
 
 
@@ -67,6 +68,28 @@ export type PaginaatedInvitesResponse = {
   previous: string | null;
   results: InviteResponse[];
 };
+
+export type ClubPermissionsResponse = {
+  club_id: string
+  club_name: string
+  total_permissions: number
+  permissions: Array<string>
+}
+
+export type ClubRolesResponse = {
+  club_id: string
+  club_name: string
+  total_roles: number
+  roles: Array<{
+    id: string
+    name: string
+    permissions: Array<number>
+    is_default: boolean
+    color: string
+    user_count: number
+  }>
+}
+
 
 
 export class ClubClient extends BaseClient<
@@ -209,6 +232,22 @@ export class ClubClient extends BaseClient<
     const response = await this.client.delete<unknown>(
       `${this.endpoint}${clubId}/invites/${invite_code}/remove/`
     );
+    return response;
+  }
+
+  async getClubPermissions(clubId: string): Promise<AxiosResponse<ClubPermissionsResponse>> {
+    const response = await this.client.get<ClubPermissionsResponse>
+      (
+        `${this.endpoint}${clubId}/permissions/`
+      );
+    return response;
+  }
+
+  async getClubRoles(clubId: string): Promise<AxiosResponse<ClubRolesResponse>> {
+    const response = await this.client.get<ClubRolesResponse>
+      (
+        `${this.endpoint}${clubId}/roles/`
+      );
     return response;
   }
 }

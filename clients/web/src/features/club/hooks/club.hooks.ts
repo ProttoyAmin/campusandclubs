@@ -4,12 +4,7 @@ import { queryClient } from "@/config/query-client";
 import type { ClubJoinErrorResponse } from "@/features/club/types/club-join";
 import type {
   ClubCreateRequestWritable,
-  ClubDetail,
-  ClubJoin,
-  ClubJoinWritable,
-  ClubsJoinCreateResponse,
   DepartmentTemplate,
-  MembershipApplicationCreateRequest,
   PaginatedClubList,
   PatchedClubDetailRequest,
 } from "@campus/api";
@@ -41,10 +36,11 @@ export const useInvite = (code: string) => {
   }
 }
 
-export const useClubInvites = (id: string) => {
+export const useClubInvites = (id: string, enabled = true) => {
   const invites = useQuery({
     queryKey: ["club", id, "invites"],
     queryFn: () => club.getInvites(id),
+    enabled: enabled && Boolean(id)
   });
 
   const createInvite = useMutation({
@@ -128,7 +124,21 @@ export const useClubInfo = (slug: string) => {
     },
   });
 
-  return { posts, postsWithMedia, postsWithoutMedia };
+  const getRoles = (clubId: string) => useQuery({
+    queryKey: ["club", slug, "roles"],
+    queryFn: () => {
+      return club.roles(clubId);
+    },
+  });
+
+  const getPermissions = (clubId: string) => useQuery({
+    queryKey: ["club", slug, "permissions"],
+    queryFn: () => {
+      return club.permissions(clubId);
+    },
+  });
+
+  return { posts, postsWithMedia, postsWithoutMedia, getRoles, getPermissions };
 };
 
 export const useUpdateClub = (slug: string) => {

@@ -1,7 +1,10 @@
+from rest_framework import serializers
 from rest_framework.response import Response
 
 
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework import permissions, response, status
@@ -11,6 +14,7 @@ from core.policies.utils import current_user
 from apps.clubs.models import Club, Membership, Visibility, ClubStatus
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
+from apps.clubs.serializer.role_serializers import RoleSerializer
 
 
 @api_view(['GET'])
@@ -136,4 +140,104 @@ def member_detail(request: Request, pk: str, user_id: str) -> Response:
         'is_owner': club.owner == user,
         # Will be populated based on requester's permissions
         'can_manage': (membership.has_permission('manage_club'))
+    })
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def search_members(request: Request, pk: str) -> response.Response:
+    """
+    Search members within a club
+    """
+    club = get_object_or_404(Club, pk=pk, deleted_at__isnull=True)
+
+    if not club: return Response(
+        {'detail': 'Club not found.'},
+        status=status.HTTP_404_NOT_FOUND
+    )
+
+    # Check if user can view members
+    is_member = Membership.objects.filter(
+        user=request.user, club=club).exists()
+    is_owner = club.owner == request.user
+
+    if not (is_member or is_owner):
+        return response.Response(
+            {'detail': 'You must be a club member to search members.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    query = request.query_params.get('q', '')
+
+    if not query:
+        return response.Response(
+            {'detail': 'Empty query.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    memberships = Membership.objects.filter(
+        club=club
+    ).filter(
+        Q(user__username__icontains=query) |
+        Q(user__email__icontains=query) |
+        Q(user__first_name__icontains=query) |
+        Q(user__last_name__icontains=query)
+    ).select_related('user', 'club').order_by('user__username')
+
+    serializer = MembershipSerializer(
+        memberships,
+        many=True,
+        context={'request': request}
+    )
+
+    return response.Response({
+        'club_id': club.id,
+        'club_name': club.name,
+        'query': query,
+        'total_results': memberships.count(),
+        'members': serializer.data
+    })
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_club_permissions(request: Request, pk: str):
+    """
+    Get all permissions available for the club
+    """
+    from apps.clubs.models.permission import ClubPermission
+    from django.shortcuts import get_object_or_404
+
+
+    permissions = ClubPermission.objects.all().order_by('codename')
+
+    club = get_object_or_404(Club, pk=pk, deleted_at__isnull=True)
+
+    is_member = Membership.objects.filter(
+        user=request.user, club=club
+    ).exists()
+    is_owner = club.owner == request.user
+
+    if not (is_member or is_owner):
+        return response.Response(
+            {'detail': 'You must be a club member to view permissions.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # roles = club.roles.all().order_by('name')
+    # serializer = RoleSerializer(
+    #     roles,
+    #     many=True,
+    #     context={'request': request}
+    # )
+
+    # # all unique permission keys from all roles
+    # all_permissions = sorted(
+    #     list(set().union(*(role.permissions.keys() for role in roles))))
+
+    return response.Response({
+        'club_id': str(club.id),
+        'club_name': club.name,
+        'total_permissions': permissions.count(),
+        # 'all_permissions': all_permissions,
+        'permissions': [p.codename for p in permissions]
     })

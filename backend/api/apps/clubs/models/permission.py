@@ -36,3 +36,6 @@ class ClubPermission(models.Model):
     class Meta:
         verbose_name = "Club Permission"
         verbose_name_plural = "Club Permissions"
+
+    def __str__(self) -> str:
+        return self.codename

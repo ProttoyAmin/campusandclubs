@@ -1,10 +1,9 @@
 import { useClubOutlet } from '@/features/club/context/club-layout-context';
 import { useClubInvites } from '@/features/club/hooks/club.hooks';
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -12,7 +11,7 @@ import {
 } from "design/components/ui/table"
 import { Button } from 'design/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Add01Icon, Cancel01Icon, Copy01Icon, LoadingIcon, MoreVerticalIcon, Pause } from '@hugeicons/core-free-icons';
+import { Add01Icon, Cancel01Icon, Copy01Icon, LoadingIcon, Pause, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import {
     Avatar,
     AvatarImage,
@@ -20,24 +19,38 @@ import {
 } from "design/components/ui/avatar"
 import { toast } from 'design/components/ui/toast';
 import EmptyState from '@/shared/components/empty-state';
-import { useState } from 'react';
 import ResponsiveDialog from '@/shared/components/responsive-dialog';
 import { Input } from 'design/components/ui/input';
 import { InviteCountdown } from '@/features/club/components/club/invite-countdown';
 import type { AppError } from '@/settings/app/error';
 import type { APIError } from '@/shared/types/response';
-import type { InviteResponse } from '@/features/club/http/club.http';
 
 const Invites = () => {
     const { club } = useClubOutlet();
-    const { invites, createInvite, removeInvite } = useClubInvites(club.id);
+    const canAccess =
+        club?.me_permissions?.includes("manage_members") ||
+        club?.is_owner;
+    const { invites, createInvite, removeInvite } = useClubInvites(club.id, canAccess);
     const [creating, setCreating] = useState(false);
     const [activeInvite, setActiveInvite] = useState<any>();
 
     useEffect(() => {
         setActiveInvite(invites?.data?.results.findLast((invite: any) => !invite.is_expired))
+
     }, [invites])
 
+
+    if (!canAccess) {
+        return (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+                <EmptyState
+                    title="Restricted Access"
+                    description="You don't have permission to view invites"
+                    icon={<HugeiconsIcon icon={ViewOffSlashIcon} />}
+                />
+            </div>
+        );
+    }
 
     const handleCopy = (link: string) => {
         navigator.clipboard.writeText(link)

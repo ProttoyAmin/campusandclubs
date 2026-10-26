@@ -66,7 +66,7 @@ class MembershipRepository(BaseRepository[Membership]):
         self,
         club: Club,
         *,
-        exclude_owner: bool = True,
+        exclude_owner: bool = False,
         role_name: str | None = None,
         search: str | None = None,
         sort_by: str = "joined_at",

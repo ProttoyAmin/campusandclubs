@@ -20,7 +20,7 @@ const imageFile = z
 export const clubCreateSchema = z
   .object({
     name: z.string().min(1, "Please enter the club name"),
-    about: z.string().optional(),
+    about: z.string().min(1, "Please enter the club description"),
     privacy: privacyEnumType,
     scope: scopeEnumType,
     join_mode: joinEnumType,
@@ -56,18 +56,18 @@ export const clubCreateSchema = z
       });
     }
 
-    if (!data.origin && data.scope !== "global") {
+    if (!data.origin && data.scope !== "open") {
       ctx.addIssue({
         code: "custom",
-        message: "Local clubs must have global scope.",
+        message: "Local clubs must have open scope.",
         path: ["scope"],
       });
     }
 
-    if (data.origin && data.scope === "global") {
+    if (data.origin && data.scope === "open") {
       ctx.addIssue({
         code: "custom",
-        message: "Originating clubs must have a scope other than global.",
+        message: "Originating clubs must have a scope other than open.",
         path: ["scope"],
       });
     }

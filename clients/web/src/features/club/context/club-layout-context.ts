@@ -1,9 +1,10 @@
 import { useOutletContext } from "react-router-dom";
-import type { ClubDetail, Club } from "@campus/api";
+import type { Club } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
+import type { ClubDetailExtended } from "../http/club.http";
 
 type ClubOutletContext = {
-  club: ClubDetail | undefined;
+  club: ClubDetailExtended | undefined;
   clubError: AppError<unknown>;
 };
 

@@ -3,10 +3,11 @@ import { club } from "../services/clubs";
 import { queryClient } from "@/config/query-client";
 
 
-export const useApplications = (clubId: string) => {
+export const useApplications = (clubId: string, enabled = true) => {
     return useQuery({
         queryKey: ["applications", clubId],
         queryFn: () => club.application.applications(clubId),
+        enabled: enabled && Boolean(clubId)
     });
 };
 

@@ -99,7 +99,7 @@ const ChatMessageActions = ({
             >
                 <DropdownMenuGroup>
                     <DropdownMenuLabel
-                        className="p-3 md:p-2 text-xs text-muted-foreground"
+                        className="p-3 text-xs text-muted-foreground"
                     >
                         {new Date(message.created_at).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -109,34 +109,26 @@ const ChatMessageActions = ({
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                        className="p-3 md:p-2 cursor-pointer"
+                        className="p-3 cursor-pointer"
                         onClick={onCopyContent}
                     >
-                        Copy text
+                        Copy Text
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        className="p-3 md:p-2 cursor-pointer"
+                        className="p-3 cursor-pointer"
                         onClick={() => {
                             setMenuOpen(false);
                         }}
                     >
-                        Copy link
+                        Delete for me
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                        className="p-3 md:p-2 cursor-pointer"
+                        className="p-3 cursor-pointer"
                         onClick={() => {
                             setMenuOpen(false);
                         }}
                     >
-                        Save
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        className="p-3 md:p-2 cursor-pointer"
-                        onClick={() => {
-                            setMenuOpen(false);
-                        }}
-                    >
-                        Not interested
+                        Unsend
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </ResponsiveDropDownMenu>

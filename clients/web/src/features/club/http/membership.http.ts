@@ -1,5 +1,4 @@
 import type {
-  ClubsMembersRetrieveResponses,
   ClubJoinWritable,
 } from "@campus/api";
 import { BaseClient } from "@/settings/api";
@@ -68,6 +67,18 @@ export class MembershipClient extends BaseClient<
   public async list(clubId: string) {
     return this.client.get<ClubMembershipResponse>(
       `${this.endpoint}${clubId}/members/`,
+    );
+  }
+
+  public async memberDetails(clubId: string, memberId: string) {
+    return this.client.get<ClubMembershipResponse>(
+      `${this.endpoint}${clubId}/members/${memberId}/`,
+    );
+  }
+
+  public async searchMembers(clubId: string) {
+    return this.client.get<ClubMembershipResponse>(
+      `${this.endpoint}${clubId}/members/search/`,
     );
   }
 }

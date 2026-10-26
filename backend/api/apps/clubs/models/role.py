@@ -6,11 +6,12 @@ import uuid
 from apps.clubs.models.club import Club
 from apps.clubs.models.permission import ClubPermission
 from django.core.exceptions import ValidationError
+from apps.accounts.models import User
 
 
 class Role(models.Model):
     """Dynamic role model for clubs - allows custom roles with specific permissions"""
-    DEFAULT_ROLE = 'Owner'
+    DEFAULT_ROLE = 'Admin'
     DEFAULT_COLOR = "#8F2811"
 
     id = models.UUIDField(
@@ -105,9 +106,8 @@ class Role(models.Model):
         return self.permissions.values_list('codename', flat=True)
 
     @property
-    def users(self):
+    def users(self) -> QuerySet[User]:
         """Get all users who have this role"""
-        from apps.accounts.models import User
         return User.objects.filter(
             club_memberships__club=self.club,
             club_memberships__roles=self

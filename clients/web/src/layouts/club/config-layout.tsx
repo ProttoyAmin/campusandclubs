@@ -5,7 +5,7 @@ import { clubConfigureMenu } from "@/config/menu/club-configure-menu";
 import EmptyState from "@/shared/components/empty-state";
 import { useIsMobile } from "design/hooks/use-mobile";
 import { useLocation } from "react-router-dom";
-import { paths, routes } from "@/settings/routes";
+import { paths } from "@/settings/routes";
 import NavTabs from "@/components/nav-tabs";
 import { isRouteActive } from "@/utils/route";
 
@@ -22,7 +22,7 @@ const ClubConfigLayout = () => {
     return null;
   }
 
-  if (!club?.is_owner) {
+  if (!club?.is_owner && club?.me_permissions?.length === 0) {
     return (
       <>
         <EmptyState
@@ -72,7 +72,7 @@ const ClubConfigLayout = () => {
             </div>
           </>
         )}
-        <main className="w-full bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-10rem)] scrollbar-none p-0">
+        <main className="w-full bg-background overflow-x-hidden gap-0 overflow-y-auto min-h-[calc(100vh-1rem)] scrollbar-none p-0">
           <Outlet context={{ club }} />
         </main>
       </section>

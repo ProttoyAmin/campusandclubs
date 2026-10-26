@@ -2,7 +2,6 @@ import type {
   ClubCreateRequestWritable,
   ClubDetail,
   DepartmentTemplate,
-  MembershipApplicationCreateRequest,
   PaginatedClubList,
   PatchedClubDetailRequest,
 } from "@campus/api";
@@ -120,6 +119,16 @@ class ClubService {
 
   async acceptInvite(clubId: string, invite_code: string) {
     const res = await this.clubClient.acceptInvite(clubId, invite_code);
+    return res.data;
+  }
+
+  async roles(clubId: string) {
+    const res = await this.clubClient.getClubRoles(clubId);
+    return res.data;
+  }
+
+  async permissions(clubId: string) {
+    const res = await this.clubClient.getClubPermissions(clubId);
     return res.data;
   }
 }

@@ -7,8 +7,8 @@ import ChatRequests from '@/features/chat/pages/chat-requests';
 import type { UserMinimal } from '@campus/api';
 import { Spinner } from 'design/components/ui/spinner';
 import BottomBar from '@/components/bottom-bar';
-import { useSocketEvent } from '@/shared/hooks/use-socket-event';
-import { queryClient } from '@/config/query-client';
+// import { useSocketEvent } from '@/shared/hooks/use-socket-event';
+// import { queryClient } from '@/config/query-client';
 
 const ChatsLayout = () => {
     // All hooks declared unconditionally at the very top
@@ -20,19 +20,19 @@ const ChatsLayout = () => {
 
     const initialUser = (location.state as { initialUser?: UserMinimal } | null)?.initialUser;
 
-    const isRequests = location.pathname.startsWith('/@/chats/requests');
-    const isNewChat = location.pathname.startsWith('/@/chats/new');
+    const isRequests = location.pathname.startsWith(routes.chat.requests);
+    const isNewChat = location.pathname.startsWith(routes.chat.new);
     const isConversationActive = Boolean(chatDetailMatch || chatInfoMatch);
     const isRightPaneActive = Boolean(isConversationActive || isNewChat);
 
     const chatsData = chats.data?.data ?? [];
     const isLoading = chats.isLoading;
 
-    useSocketEvent("chat:message", () => {
-        queryClient.invalidateQueries({
-            queryKey: ["chats"],
-        });
-    });
+    // useSocketEvent("chat:message", () => {
+    //     queryClient.invalidateQueries({
+    //         queryKey: ["chats"],
+    //     });
+    // });
 
     if (initialUser && !isNewChat && !isConversationActive) {
         if (isLoading) {

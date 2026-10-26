@@ -8,3 +8,22 @@ export const useMembers = (clubId: string) => {
         queryFn: () => club.members.list(clubId),
     });
 };
+
+
+export const useMembership = () => {
+    const memberDetails = (clubId: string, memberId: string) => {
+        return useQuery({
+            queryKey: ["member", clubId, memberId],
+            queryFn: () => club.members.member(clubId, memberId),
+        });
+    };
+
+    const searchMembers = (clubId: string) => {
+        return useQuery({
+            queryKey: ["search", clubId],
+            queryFn: () => club.members.search(clubId),
+        });
+    };
+
+    return { memberDetails, searchMembers };
+}

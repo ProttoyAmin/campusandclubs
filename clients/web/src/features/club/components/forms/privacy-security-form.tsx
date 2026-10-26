@@ -126,9 +126,9 @@ const PrivacySecurityForm = (props: PrivacySecurityFormProps) => {
                     control={control}
                     render={({ field }) => (
                         <>
-                            <FieldLabel>Join Mode</FieldLabel>
+                            <FieldLabel className="">Access</FieldLabel>
                             <FieldDescription>
-                                Join mode depends on how your privacy settings are. For example, if your club is private, then people join the club through application or invitation. Secret clubs should always be invite only.
+                                Access depends on how your privacy settings are. For example, if your club is private, then people join the club through application or invitation. Secret clubs should always be invite only.
                             </FieldDescription>
                             <RadioGroup value={field.value} onValueChange={field.onChange} aria-labelledby={field.name}>
                                 {JoinModeOptions.map((join_mode) => (

@@ -28,7 +28,16 @@ from apps.clubs.viewss.club.common import (
     AF_RetrieveAPIView,
 )
 
-from apps.clubs.viewss.membership.common import list_members, member_detail
+from apps.clubs.viewss.membership.common import (
+    list_members, 
+    member_detail, 
+    search_members,
+    get_club_permissions
+)
+from apps.clubs.viewss.role_views import (
+    list_roles,
+)
+
 from apps.clubs.viewss.membership.generics import (
     MA_ApproveAPIView,
     MA_RejectAPIView,
@@ -116,7 +125,7 @@ urlpatterns = [
     #     # ==================== MEMBER MANAGEMENT ====================
     path('<uuid:pk>/members/', list_members,
          name='list_members'),    # ---- checked
-    path('<int:pk>/members/search/', views_members_views.search_members,
+    path('<uuid:pk>/members/search/', search_members,
          name='search_members'),  # NEW
     path('<uuid:pk>/members/<uuid:user_id>/', member_detail,
          name='member_detail'),  # NEW
@@ -138,10 +147,10 @@ urlpatterns = [
     #          name='membership_requests'),  # NEW
 
     #     # ==================== ROLE MANAGEMENT ====================
-    #     path('<int:pk>/roles/', views_members_views.list_roles, name='list_roles'),
-    # #     path('<int:pk>/roles/<int:user_id>/permissions/', views_members_views.get_user_permissions, name='get_user_permissions'),
+        path('<uuid:pk>/roles/', list_roles, name='list_roles'),
+    #     path('<int:pk>/roles/<int:user_id>/permissions/', views_members_views.get_user_permissions, name='get_user_permissions'),
     #     path('<int:pk>/roles/<int:user_id>/permissions/', views_members_views.get_user_club_permissions, name='get_user_club_permissions'),
-    #     path('<int:pk>/permissions/', views.get_club_permissions, name='club_permissions'),
+        path('<uuid:pk>/permissions/', get_club_permissions, name='club_permissions'),
     #     path('<int:pk>/roles/assign/<int:user_id>/', views.add_role_to_member, name='add_role_to_member'),
     #     path('<int:pk>/roles/set_primary_role/<int:user_id>/', views.set_primary_role, name='set_primary_role'),
     #     path('<int:pk>/roles/user/<int:user_id>/',

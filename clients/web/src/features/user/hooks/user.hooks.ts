@@ -21,7 +21,6 @@ export const useUsers = () => {
 };
 
 export const useAccount = () => {
-  const me = useMe();
   const addEmail = useMutation<UserEmail, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
       return accounts.add_email(email);

@@ -4,6 +4,7 @@ import { Message, MessageAvatar, MessageContent, MessageHeader } from "design/co
 import type { Message as MessageT } from "../http/chat.http";
 import ChatMessageActions from "./chat-message-actions";
 import { cn } from "design/lib/utils";
+import Linkify from "linkify-react";
 
 interface ChatMessageGroupProps {
     messages: MessageT[]; // consecutive messages from the same sender, oldest-first
@@ -36,7 +37,17 @@ const ChatMessageGroup = ({ messages, isOwn }: ChatMessageGroupProps) => {
                         >
                             {message.content ? (
                                 <Bubble variant={isOwn ? "tinted" : "outline"} className="relative">
-                                    <BubbleContent>{message.content}</BubbleContent>
+                                    <BubbleContent>
+                                        <Linkify
+                                            options={{
+                                                className: "text-blue-600 hover:text-blue-700 underline",
+                                                target: "_blank",
+                                                rel: "noopener noreferrer",
+                                            }}
+                                        >
+                                            {message.content}
+                                        </Linkify>
+                                    </BubbleContent>
                                 </Bubble>
                             ) : null}
                             <ChatMessageActions message={message} isOwn={isOwn} />

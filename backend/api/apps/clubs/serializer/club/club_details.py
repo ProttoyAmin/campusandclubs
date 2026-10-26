@@ -62,6 +62,8 @@ class ClubDetailSerializer(serializers.ModelSerializer):
     total_posts = serializers.SerializerMethodField()
     total_events = serializers.SerializerMethodField()
     user_role = serializers.SerializerMethodField()
+
+    me_permissions = serializers.SerializerMethodField()
     is_member = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
@@ -85,7 +87,7 @@ class ClubDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'origin', 'slug', 'about', 'avatar', 'banner', 'media', 'privacy',
             'is_public', 'allow_public_posts', 'rules', 'owner', 'owner_details',
             'total_members', 'total_posts', 'total_events', 'join_mode', 'status', 'scope', 'category', 'application',
-            'user_role', 'is_member', 'is_owner', 'preferences',
+            'user_role', 'me_permissions', 'is_member', 'is_owner', 'preferences',
             'url', 'members_url', 'posts_url', 'events_url', 'leave_url', 'join_url',
             'created_at', 'updated_at'
         ]
@@ -112,6 +114,20 @@ class ClubDetailSerializer(serializers.ModelSerializer):
                 'code': obj.origin.code
             }
         return None
+
+    def get_me_permissions(self, obj: Club) -> list[str]:
+        request = self._get_request()
+        if not (request and request.user.is_authenticated):
+            return []
+
+        member = obj.memberships.filter(user=request.user).first()
+
+        permissions: list[str] = []
+
+        if member:
+            permissions = [p.name for p in member.roles.all()]
+
+        return permissions
 
     def get_is_owner(self, obj: Club) -> bool:
         request = self._get_request()
@@ -194,12 +210,14 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
         membership = memberships[0] if memberships else None
         if membership and membership.roles.exists():
-            role: Role = membership.roles.first()  # type: ignore[assignment]
-            return {
-                'id': role.id,
-                'name': role.name,
-                'permissions': list[str](role.get_all_permissions()),
-            }
+            roles: list[Role] = membership.roles.all()  # type: ignore[assignment]
+            return [
+                {
+                    'id': role.id,
+                    'name': role.name,
+                    'permissions': list[str](role.get_all_permissions()),
+                } for role in roles
+            ]
         return None
 
     def get_is_member(self, obj: Club) -> bool:

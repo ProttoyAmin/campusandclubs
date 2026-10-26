@@ -122,8 +122,8 @@ const ClubLayoutHeader = ({
                     club?.is_member
                       ? "ghost"
                       : club?.application &&
-                          //@ts-ignore
-                          club?.application?.status === "pending"
+                        //@ts-ignore
+                        club?.application?.status === "pending"
                         ? "secondary"
                         : "outline"
                   }
@@ -141,7 +141,9 @@ const ClubLayoutHeader = ({
               <Button variant={"ghost"} className={"rounded-full"} size="icon">
                 <HugeiconsIcon icon={Search01Icon} className="size-5" />
               </Button>
-              {club.is_owner && (
+
+              {/* <pre>{JSON.stringify(club, null, 2)}</pre> */}
+              {club.me_permissions && club.me_permissions.length > 0 && (
                 <Button
                   variant={"ghost"}
                   className={"rounded-full group"}
