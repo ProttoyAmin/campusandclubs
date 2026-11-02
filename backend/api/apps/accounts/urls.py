@@ -1,3 +1,4 @@
+from apps.accounts.view.auth.csrf import csrf_token_view
 from apps.accounts.view.auth.allauth_proxy import ChangePasswordView
 from apps.accounts.view.auth.allauth_proxy import (
     login_view,
@@ -48,6 +49,7 @@ urlpatterns = [
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
     #     re_path(r'^auth/', include('djoser.urls.jwt')),
 
+    path("csrf/", csrf_token_view, name="csrf"),
     path("auth/refresh/", RefreshTokenView.as_view(), name="refresh"),
     path("auth/request-info/", get_request_info, name="request_info"),
 

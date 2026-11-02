@@ -6,8 +6,8 @@ from apps.clubs.models import (
     JoinMode,
     MembershipScope,
     MembershipApplication,
-    ApplicationStatus
 )
+
 from apps.accounts.models import User
 from .membership_policy import MembershipAwarePolicy
 
@@ -78,6 +78,17 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
     def can_edit(self) -> Decision:
         return Decision(self.actor == self.record.owner, "Only club owners can edit the club")
 
+    def can_manage_member(self) -> Decision:
+        if self.actor == self.record.owner:
+            return Decision(True, "")
+        
+        if self._is_member():
+            membership = self.get_membership()
+            if membership and membership.has_permission("manage_members"):
+                return Decision(True, "")
+
+        return Decision(False, "You don't have permission to manage this club.")
+
     def can_delete(self) -> Decision:
         return Decision(self.actor == self.record.owner, "Only club owners can perform this action")
 
@@ -127,7 +138,7 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return LeaveDecision(True, {})
 
     def can_review_application(self) -> Decision:
-        """Only members with manage:members permission may approve/reject."""
+        """Only members with manage_members permission may approve/reject."""
         if self.actor == self.record.owner:
             return Decision(allowed=True, reason="")
 
@@ -135,12 +146,12 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return Decision(allowed=False, reason="You are not a member of this club.")
 
         membership = self.get_membership()
-        if membership and membership.has_permission("manage:members"):
+        if membership and membership.has_permission("manage_applications"):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to review applications.")
 
     def can_manage_forms(self) -> Decision:
-        """Owners and members with manage:members can create/edit the club's application form."""
+        """Owners and members with manage_members can create/edit the club's application form."""
         return self.can_review_application()
 
     def can_create_application(self) -> Decision:
@@ -151,12 +162,13 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
             return Decision(allowed=True, reason="")
 
         membership = self.get_membership()
-        if membership and membership.has_permission("manage:members"):
+        if membership and membership.has_permission("manage_members"):
             return Decision(allowed=True, reason="")
         return Decision(allowed=False, reason="You don't have permission to create applications.")
         
 
     def can_withdraw(self, application: MembershipApplication, user: User) -> Decision:
+        from apps.clubs.models.membership.form.enums import ApplicationStatus
         if application.applicant.id != user.id:
             return Decision(allowed=False, reason="This isn't your application.")
         if application.status != ApplicationStatus.PENDING:

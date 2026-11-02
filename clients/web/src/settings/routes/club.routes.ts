@@ -8,6 +8,8 @@ export const clubRoutes = {
       base: "/@/clubs/:slug/config/",
       info: "/@/clubs/:slug/config/info/",
       permissions: "/@/clubs/:slug/config/permissions/",
+      roles: "/@/clubs/:slug/config/roles/",
+      roleDetails: "/@/clubs/:slug/config/roles/details",
       members: "/@/clubs/:slug/config/members/",
       requests: {
         base: "/@/clubs/:slug/config/requests/",

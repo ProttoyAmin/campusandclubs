@@ -5,10 +5,24 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8000/api/v1/clubs/
+  url: http://localhost:8000/api/v1/clubs/0c60533b-eb08-44bd-84ec-d3a38a71769c/
   headers:
     - name: Cookie
-      value: csrftoken=OslU45JFI20edLbe1ipu2eh9KXKjgasg;sessionid=sd1x1hp5njfcvfev9l9le12ujm6sxuqk
+      value: csrftoken=nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib; sessionid=7ghagj68dpe421064uct6jds26pp1slh
+    - name: X-CSRFToken
+      value: nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "name" : "test club",
+        "about" : "test club about",
+        "privacy" : "private",
+        "join_mode" : "application",
+        "scope" : "open"
+      }
   auth: inherit
 
 settings:

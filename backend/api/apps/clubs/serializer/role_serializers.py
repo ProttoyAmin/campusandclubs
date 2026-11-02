@@ -16,3 +16,9 @@ class RoleSerializer(serializers.ModelSerializer):
     def get_user_count(self, obj):
         """Get count of users with this role"""
         return obj.user_count() if hasattr(obj, 'user_count') else 0
+
+
+class RoleAssignSerializer(serializers.Serializer):
+    member_ids = serializers.ListField(
+        child=serializers.UUIDField(), min_length=1
+    )

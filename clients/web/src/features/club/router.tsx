@@ -25,6 +25,10 @@ const ClubScopeSettings = React.lazy(
 const Permissions = React.lazy(
   () => import("./pages/private/config-club/permissions-page"),
 );
+
+const RoleDetails = React.lazy(
+  () => import("./pages/private/config-club/roles-permissions/role-details"),
+);
 const Members = React.lazy(
   () => import("./pages/private/config-club/members-page"),
 );
@@ -82,9 +86,14 @@ export const clubRoutes = [
         element: <Info />,
       },
       {
-        id: "club-permissions",
-        path: routes.club.private.config.permissions,
+        id: "club-roles-permissions",
+        path: routes.club.private.config.roles,
         element: <Permissions />,
+      },
+      {
+        id: "club-role-details",
+        path: routes.club.private.config.roleDetails,
+        element: <RoleDetails />,
       },
       {
         id: "club-invites",

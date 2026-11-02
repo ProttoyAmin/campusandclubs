@@ -33,7 +33,7 @@ class Role(models.Model):
         help_text="Is this a default role (e.g., Member role for new joiners)"
     )
     color = models.CharField(
-        max_length=7,
+        max_length=9,
         blank=True,
         null=True,
         help_text="Hex color code for role display (e.g., #FF5733)"
@@ -85,14 +85,14 @@ class Role(models.Model):
     @property
     def is_admin(self):
         """Check if role has admin-level permissions"""
-        return self.permissions.get('manage:settings', False) or (
-            self.permissions.get('manage:members', False) and
-            self.permissions.get('manage:posts', False)
+        return self.permissions.get('manage_settings', False) or (
+            self.permissions.get('manage_members', False) and
+            self.permissions.get('manage_posts', False)
         )
 
     def has_permission(self, permission_name: str) -> bool:
         """Check if role has a specific permission"""
-        return self.permissions.filter(name=permission_name).exists()  # type: ignore
+        return self.permissions.filter(codename=permission_name).exists()  # type: ignore
 
     # def set_permission(self, permission_name: str, value: bool):
     #     """Set a specific permission"""

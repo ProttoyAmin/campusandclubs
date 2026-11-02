@@ -56,7 +56,8 @@ class ListInvitesAPIView(generics.GenericAPIView[Invite], PolicyMixin[ClubPolicy
 
     def get(self, request: Request, pk: str) -> Response:
         club = self.get_club()
-        policy = self.get_policy(request, club).can_edit()
+
+        policy = self.get_policy(request, club).can_manage_member()
 
         if not policy.allowed:
             return Response(status=status.HTTP_403_FORBIDDEN, data={'detail': f'{policy.reason}'})
@@ -194,7 +195,7 @@ class UpdateInviteStatusAPIView(generics.GenericAPIView[Invite], PolicyMixin[Clu
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        invite = self.get_service(request).update_invite_status(invite_code, InviteStatus(serializer.validated_data['status']))
+        self.get_service(request).update_invite_status(invite_code, InviteStatus(serializer.validated_data['status']))
 
         return Response(status=status.HTTP_200_OK)
 

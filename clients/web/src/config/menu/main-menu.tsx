@@ -7,6 +7,7 @@ export type MenuItemType = {
   id: number | string;
   label: string;
   icon?: React.ReactNode;
+  description?: string;
   iconActive?: React.ReactNode | ((icon: string) => React.ReactNode);
   link: string | ((id: string) => string);
   isActive: (currentPath: string) => boolean;

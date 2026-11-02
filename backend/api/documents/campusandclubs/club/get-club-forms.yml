@@ -1,0 +1,46 @@
+info:
+  name: get-club-forms
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/clubs/0c60533b-eb08-44bd-84ec-d3a38a71769c/application-forms/
+  headers:
+    - name: Cookie
+      value: csrftoken=nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib; sessionid=oc2lj05ceh1r33wbekorp458rhf3laiq
+    - name: X-CSRFToken
+      value: nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "questions": [
+          {
+            "question": "What department do you want to apply in?",
+            "type": "single_choice",
+            "options": [
+              "HR",
+              "Photography",
+              "Something else"
+            ],
+            "required": true
+          },
+          {
+            "question": "What's your ID?",
+            "type": "short_text",
+            "required": true
+          }
+        ],
+        "title": "test club form"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

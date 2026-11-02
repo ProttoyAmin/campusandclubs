@@ -13,6 +13,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       label: "Info",
       icon: <InfoIcon size={18} />,
       iconActive: <InfoIcon size={18} fill="currentColor" stroke="currentColor" />,
+      description: "Club Information",
       link: () => paths.private.club.info(slug),
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.info, currentPath),
@@ -24,9 +25,10 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <ShieldCheckIcon size={18} fill="currentColor" stroke="currentColor" />
       ),
-      link: () => paths.private.club.permissions(slug),
+      description: "Roles & Permissions",
+      link: () => paths.private.club.roles(slug),
       isActive: (currentPath) =>
-        isRouteActive(routes.club.private.config.permissions, currentPath),
+        isRouteActive(routes.club.private.config.roles, currentPath),
     },
     {
       id: 3,
@@ -35,6 +37,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <HugeiconsIcon icon={FolderUploadIcon} size={18} />
       ),
+      description: "Submissions",
       link: () => paths.private.club.submissions.base(slug),
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.submissions.base, currentPath),
@@ -46,6 +49,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <FilesIcon size={18} fill="currentColor" stroke="currentColor" />
       ),
+      description: "Invites",
       link: () => paths.private.club.invites.base(slug),
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.invites.base, currentPath),
@@ -57,6 +61,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <Users2Icon size={18} fill="currentColor" stroke="currentColor" />
       ),
+      description: "Members",
       link: () => paths.private.club.members(slug),
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.members, currentPath),
@@ -68,6 +73,7 @@ export const clubConfigureMenu: (slug: string) => MenuItemType[] = (
       iconActive: (
         <Settings2Icon size={18} fill="currentColor" stroke="currentColor" />
       ),
+      description: "Settings",
       link: () => paths.private.club.settings.base(slug),
       isActive: (currentPath) =>
         isRouteActive(routes.club.private.config.settings.base, currentPath),

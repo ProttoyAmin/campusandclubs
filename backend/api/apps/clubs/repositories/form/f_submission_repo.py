@@ -6,7 +6,7 @@ from django.db import transaction
 from django.db.models import Model, QuerySet
 
 from apps.accounts.models import User
-from apps.clubs.models import Form, FormAnswer, FormQuestion, FormSubmission
+from apps.taxonomy.models import Form, FormAnswer, FormQuestion, FormSubmission
 from core.repositories import BaseRepository
 
 

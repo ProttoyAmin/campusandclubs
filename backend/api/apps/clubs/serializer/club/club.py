@@ -363,8 +363,8 @@ class ClubJoinSerializer(serializers.ModelSerializer):
     # user = serializers.CharField(read_only=True, source='User.id')
     class Meta:
         model = Membership
-        fields = "__all__"
-        read_only_fields = ['club', 'user']
+        fields = ["id"]
+        read_only_fields = ['id']
 
 
 class ClubListSerializer(serializers.ModelSerializer):

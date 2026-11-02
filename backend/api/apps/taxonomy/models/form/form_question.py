@@ -4,6 +4,8 @@ from .enums import QuestionType
 from .form import Form
 import uuid
 from .form_submission import FormSubmission
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 class FormQuestion(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -12,6 +14,8 @@ class FormQuestion(models.Model):
     type = models.CharField(max_length=30, choices=QuestionType.choices)
     required = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=0)
+    options = models.JSONField(default=list, blank=True)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -20,6 +24,31 @@ class FormQuestion(models.Model):
     class Meta:
         ordering = ["order"]
         indexes = [models.Index(fields=["form", "order"])]
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    ~Q(type__in=[
+                        QuestionType.SINGLE_CHOICE,
+                        QuestionType.MULTIPLE_CHOICE
+                    ]) | ~Q(options=[])
+                ),
+                name='choice_questions_require_options'
+            )
+        ]
+
+    def clean(self):
+        super().clean()
+
+        if (
+            self.type in (
+                QuestionType.SINGLE_CHOICE,
+                QuestionType.MULTIPLE_CHOICE,
+            )
+            and not self.options
+        ):
+            raise ValidationError({
+                "options": "Choice questions must have at least one option."
+            })
 
 
 class FormAnswer(models.Model):

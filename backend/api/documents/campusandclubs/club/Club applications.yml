@@ -1,0 +1,23 @@
+info:
+  name: Club applications
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: http://localhost:8000/api/v1/clubs/1b0b5b9f-7d80-4e90-8dcf-f14a987d1aff/applications/
+  headers:
+    - name: Cookie
+      value: csrftoken=nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib; sessionid=oc2lj05ceh1r33wbekorp458rhf3laiq
+    - name: X-CSRFToken
+      value: nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

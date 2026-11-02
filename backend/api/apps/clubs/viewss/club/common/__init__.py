@@ -4,7 +4,8 @@ from .function_views import (
     search_clubs,
     clubs_by_origin,
     club_stats,
-    list_posts
+    list_posts,
+    list_permissions
 )
 from .class_views import (
     ClubJoinView,
@@ -21,6 +22,7 @@ __all__ = [
     'clubs_by_origin',
     'club_stats',
     'list_posts',
+    list_permissions,
     "ClubJoinView",
     "LeaveClubView",
     "ClubMediaUploadView",

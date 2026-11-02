@@ -15,7 +15,7 @@ class FormSubmission(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     form = models.ForeignKey(
-        "clubs.Form", on_delete=models.CASCADE, related_name="submissions"
+        "taxonomy.Form", on_delete=models.CASCADE, related_name="submissions"
     )
     respondent = models.ForeignKey(
         settings.AUTH_USER_MODEL,

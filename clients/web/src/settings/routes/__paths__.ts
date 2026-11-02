@@ -114,6 +114,14 @@ export const paths = {
         generateRouteFromPath(routes.club.private.config.info, {
           slug,
         }),
+      roles: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.roles, {
+          slug,
+        }),
+      roleDetails: (slug: string) =>
+        generateRouteFromPath(routes.club.private.config.roleDetails, {
+          slug
+        }),
       permissions: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.permissions, {
           slug,

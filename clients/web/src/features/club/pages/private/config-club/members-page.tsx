@@ -7,7 +7,7 @@ import {
 } from "design/components/ui/avatar"
 import EmptyState from "@/shared/components/empty-state";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreVerticalIcon, UsersRoundIcon } from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon, MoreVerticalIcon, UsersRoundIcon } from "@hugeicons/core-free-icons";
 import {
   Table,
   TableBody,
@@ -20,8 +20,11 @@ import {
 import { getTimeAgo } from "@/utils/format-date";
 import { Button } from "design/components/ui/button";
 import { Badge } from "design/components/ui/badge";
+import { useIsMobile } from "design/hooks/use-mobile";
+import React from "react";
 
 const ClubMembersPage = () => {
+  const isMobile = useIsMobile();
   const { club } = useClubOutlet();
   const { data, isLoading } = useMembers(club?.id);
 
@@ -29,13 +32,44 @@ const ClubMembersPage = () => {
     return <>Loading...</>
   }
 
-  if (data?.results?.members.length === 0) {
+  if (!data && data?.results?.members.length === 0) {
     return (
       <div className="w-full">
         <EmptyState title="No Members" description="No members joined yet" icon={<HugeiconsIcon icon={UsersRoundIcon} />} />
       </div>
     )
   }
+
+  if (isMobile) {
+    const Avatar = React.lazy(() => import("design/components/ui/avatar").then((m) => ({ default: m.Avatar })))
+    const AvatarImage = React.lazy(() => import("design/components/ui/avatar").then((m) => ({ default: m.AvatarImage })))
+    const AvatarFallback = React.lazy(() => import("design/components/ui/avatar").then((m) => ({ default: m.AvatarFallback })))
+
+    return (
+      <>
+        <div className='rounded-md border divide-y divide-border'>
+          {data.results.members.map((member, index) => (
+            <div key={member.id} className={`w-full flex justify-between items-center p-4 ${index !== data.results.members.length - 1 ? 'border-border/50 border-b' : ''}`}>
+              <div className='flex items-center gap-2.5'>
+                <React.Suspense fallback={<div className="size-8 rounded-full bg-muted animate-pulse"></div>}>
+                  <Avatar className="size-8">
+                    <AvatarImage src={member.avatar ?? undefined} />
+                    <AvatarFallback>{member.username[0].toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                </React.Suspense>
+                <div className=''>
+                  <p className='font-semibold text-sm'>{member.username}</p>
+                  <p className='text-muted-foreground text-xs'>{member.role_details.map((role) => role.name).join(', ')}</p>
+                </div>
+              </div>
+              <HugeiconsIcon icon={ArrowRight01Icon} className="size-5" />
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  }
+
   return (
     <div className="min-h-0 overflow-y-auto">
       <Table>

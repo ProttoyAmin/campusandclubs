@@ -1,3 +1,4 @@
+from apps.clubs.serializer import ClubMinimalSerializer
 from apps.clubs.models import Membership
 from typing import Any
 from django.db.models import QuerySet
@@ -24,7 +25,7 @@ from apps.clubs.serializer import (
 from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
 
 
-class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.CreateAPIView):
+class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = ClubJoinSerializer
@@ -33,7 +34,7 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
     def get_queryset(self) -> QuerySet[Club]:
         return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
 
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
         club: Club = self.get_object()
         serializer = self.get_serializer(data=request.data)
@@ -49,13 +50,13 @@ class ClubJoinView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], gen
         if decision.requires_application:
             return Response({
                 "detail": decision.reason,
-                "application_url" : request.build_absolute_uri(reverse("clubs:application", args=[club.pk]))
+                "application_url" : request.build_absolute_uri(reverse("clubs:apply_for_club", args=[club.pk]))
             }, status=status.HTTP_303_SEE_OTHER)
 
 
         membership = self.get_service(request).join_club(
             club, user=current_user(request))
-        return Response(ClubJoinSerializer(membership).data, status=status.HTTP_201_CREATED)
+        return Response(ClubMinimalSerializer(membership).data, status=status.HTTP_201_CREATED)
 
 
 class LeaveClubView(ServiceMixin[ClubService], generics.DestroyAPIView):

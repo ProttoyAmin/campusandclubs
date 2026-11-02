@@ -1,4 +1,6 @@
 # apps/clubs/urls.py
+from apps.clubs.viewss.membership.generics.application import ApplyForMembershipAPIView
+from apps.clubs.viewss.role_views import ListCreateRoleAPIView
 from apps.clubs.viewss.invite.invite_views import RemoveInviteAPIView
 from apps.clubs.viewss.invite.invite_views import RetreiveInviteByCodeAPIView
 from apps.clubs.viewss.invite.invite_views import UpdateInviteStatusAPIView
@@ -22,6 +24,7 @@ from apps.clubs.viewss.club.common import (
     trending_clubs,
     search_clubs,
     list_posts,
+    list_permissions,
     clubs_by_origin,
     club_stats,
     ClubMediaUploadView,
@@ -35,7 +38,7 @@ from apps.clubs.viewss.membership.common import (
     get_club_permissions
 )
 from apps.clubs.viewss.role_views import (
-    list_roles,
+    AssignRoleAPIView
 )
 
 from apps.clubs.viewss.membership.generics import (
@@ -43,6 +46,7 @@ from apps.clubs.viewss.membership.generics import (
     MA_RejectAPIView,
     MA_WithdrawAPIView,
     MA_ListCreateAPIView,
+    MA_RetreiveAPIView,
     MA_BulkApproveAPIView,
     MA_BulkRejectAPIView,
     MA_ApplicationResponses
@@ -55,7 +59,6 @@ app_name = 'clubs'
 
 
 router = DefaultRouter()
-
 router.register(r'', ClubSettingsViewset, basename='club-settings')
 
 urlpatterns = [
@@ -64,15 +67,20 @@ urlpatterns = [
     '<uuid:pk>/settings/',
     include(router.urls),
     ),
+    path(
+    'permissions/',
+    list_permissions,
+    name='club_permissions_list'
+    ),
     # ==================== CLUB MANAGEMENT ====================
     #     path('', views.list_clubs, name='list_clubs'),    # ---- checked
     path('', ClubListCreateView.as_view(), name='list_clubs'),    # ---- checked
     path('department-templates/', DepartmentTemplateListView.as_view(), name='club_department_templates'),    # ---- checked
-    # path('<uuid:pk>/', club_info, name='club_info'),    #
+    # path('<uuid:pk>/', club_info, name='club_info'),
     path('<uuid:pk>/', ClubRetrieveUpdateDestroyAPIView.as_view(),
-         name='club_info'),    #
+         name='club_info'),
     path('<str:slug>/', ClubRetrieveUpdateDestroyAPIView.as_view(lookup_field='slug'),
-         name='club_info_slug'),    #
+         name='club_info_slug'),
 
     #     path('create/', views.create_club, name='create_club'),    # ---- checked
 
@@ -98,15 +106,18 @@ urlpatterns = [
          name='application_forms_detail'),      # ---- checked
          
     path('<uuid:pk>/applications/', MA_ListCreateAPIView.as_view(),
-         name='application'),      # ---- checked
+         name='applications'),      # ---- checked
+
+    path('<uuid:pk>/apply/', ApplyForMembershipAPIView.as_view(),
+         name='apply_for_club'),      # ---- checked
 
     path('<uuid:pk>/applications/bulk-approve/', MA_BulkApproveAPIView.as_view(),
-         name='application'),      # ---- checked
+         name='application_bulk_approve'),      # ---- checked
 
     path('<uuid:pk>/applications/bulk-reject/', MA_BulkRejectAPIView.as_view(),
-         name='application'),      # ---- checked
+         name='application_bulk_reject'),      # ---- checked
 
-    path('<uuid:pk>/applications/<uuid:application_pk>/', MA_ListCreateAPIView.as_view(),
+    path('<uuid:pk>/applications/<uuid:application_pk>/', MA_RetreiveAPIView.as_view(),
          name='application_detail'),      # ---- checked
      
     path('<uuid:pk>/applications/<uuid:application_pk>/responses/', MA_ApplicationResponses.as_view(),
@@ -147,16 +158,17 @@ urlpatterns = [
     #          name='membership_requests'),  # NEW
 
     #     # ==================== ROLE MANAGEMENT ====================
-        path('<uuid:pk>/roles/', list_roles, name='list_roles'),
+        path('<uuid:pk>/roles/', ListCreateRoleAPIView.as_view(), name='list_roles'),
     #     path('<int:pk>/roles/<int:user_id>/permissions/', views_members_views.get_user_permissions, name='get_user_permissions'),
     #     path('<int:pk>/roles/<int:user_id>/permissions/', views_members_views.get_user_club_permissions, name='get_user_club_permissions'),
         path('<uuid:pk>/permissions/', get_club_permissions, name='club_permissions'),
-    #     path('<int:pk>/roles/assign/<int:user_id>/', views.add_role_to_member, name='add_role_to_member'),
+     #    path('<uuid:pk>/roles/<uuid:role_id>/assign/', views.add_role_to_member, name='add_role_to_member'),
+        path('<uuid:pk>/roles/<uuid:role_id>/assign/', AssignRoleAPIView.as_view(), name='add_role_to_member'),
     #     path('<int:pk>/roles/set_primary_role/<int:user_id>/', views.set_primary_role, name='set_primary_role'),
     #     path('<int:pk>/roles/user/<int:user_id>/',
     #          views_members_views.get_user_roles, name='get_user_roles'),  # UPDATED
-    #     path('<int:pk>/roles/create/',
-    #          views_members_views.create_role, name='create_role'),
+     #    path('<uuid:pk>/roles/create/',
+     #         create_role, name='create_role'),
     #     path('<int:pk>/roles/<int:role_id>/',
     #          views_members_views.manage_role, name='manage_role'),
     #     path('<int:pk>/roles/<int:role_id>/users/',

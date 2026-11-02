@@ -36,3 +36,9 @@ export {
   QUESTION_TYPES,
   type ApplicationFormCreateInput,
 } from "./create-form-schema"
+
+export {
+  createRoleSchema,
+  type ClubRoleCreateOutputType,
+  type ClubRoleCreateSchemaType
+} from './create-role-schema'

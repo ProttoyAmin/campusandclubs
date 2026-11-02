@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { useParams, Outlet, useLocation } from "react-router-dom";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
-import { Card } from "design/components/ui/card";
 import ProfileLayoutHeader from "@/features/user/components/layout/layout-header";
 import { useUser } from "@/features/user/hooks/user.hooks";
 import type { UserResponse } from "@/features/user/api/user.client";

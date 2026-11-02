@@ -16,6 +16,7 @@ class AnswerPayloadSerializer(serializers.Serializer):
     answer = serializers.CharField(
         required=False, allow_blank=True, allow_null=True, default=""
     )
+
 class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
     """Inbound serializer for POST /clubs/<id>/applications/.
 
@@ -27,16 +28,15 @@ class MembershipApplicationCreateSerializer(serializers.ModelSerializer):
         required=False, allow_blank=True, allow_null=True, max_length=1000
     )
     answers = AnswerPayloadSerializer(many=True, required=False, default=list)
-
     class Meta:
         model = MembershipApplication
         fields = ["message", "answers"]
-
 
 class _AnswerOutSerializer(serializers.Serializer):
     question_id = serializers.UUIDField(source="question.id")
     question = serializers.CharField(source="question.question")
     type = serializers.CharField(source="question.type")
+    options = serializers.ListField(source="question.options")
     answer = serializers.CharField()
 
 class MembershipBulkApproveSerializer(serializers.Serializer):

@@ -8,7 +8,7 @@ import type {
 import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended } from "../../http/club.http";
 import { clubApplicationsService } from "./applications.service";
 import { membershipService } from "./membership.service";
-import type { ClubSettingsRequest, JoinMode, Privacy, Scope } from "validation/club";
+import type { ClubRoleCreateSchemaType, ClubSettingsRequest, JoinMode, Privacy, Scope } from "validation/club";
 
 class ClubService {
   private clubClient = clubClient;
@@ -127,8 +127,13 @@ class ClubService {
     return res.data;
   }
 
-  async permissions(clubId: string) {
-    const res = await this.clubClient.getClubPermissions(clubId);
+  async create_role(clubId: string, data: ClubRoleCreateSchemaType) {
+    const res = await this.clubClient.createClubRole(clubId, data)
+    return res.data
+  }
+
+  async permissions() {
+    const res = await this.clubClient.getClubPermissions();
     return res.data;
   }
 }

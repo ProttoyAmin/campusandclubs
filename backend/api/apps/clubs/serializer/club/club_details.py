@@ -122,12 +122,13 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
         member = obj.memberships.filter(user=request.user).first()
 
-        permissions: list[str] = []
-
+        permissions: set[str] = set()
         if member:
-            permissions = [p.name for p in member.roles.all()]
+            for p in member.roles.all():
+                permissions.update(p.permissions.values_list('codename', flat=True))
+            return list(permissions)
 
-        return permissions
+        return []
 
     def get_is_owner(self, obj: Club) -> bool:
         request = self._get_request()

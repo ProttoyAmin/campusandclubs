@@ -10,6 +10,7 @@ import { routes } from "@/settings/routes";
 import NavTabs from "@/components/nav-tabs";
 import { APP_NAME } from "@/config/constants";
 import NavigateButtons from "@/shared/components/navigate-buttons";
+import Menu from "@/shared/components/menu";
 
 export interface UserSettingsLayoutProps {
   me: UserProfile;
@@ -43,14 +44,9 @@ const SettingsLayout = () => {
                 </div>
               )}
             </div>
-            <Card className="relative bg-background overflow-y-auto max-h-[calc(100vh-5rem)]">
-              <CardContent className="w-full">
-                <NavTabs
-                  menu={SettingsMenu()}
-                  className="flex flex-col space-y-2"
-                />
-              </CardContent>
-            </Card>
+            <div className="p-2">
+              <Menu items={SettingsMenu()} />
+            </div>
           </section>
         </>
       ) : (

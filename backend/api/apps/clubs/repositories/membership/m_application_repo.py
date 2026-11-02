@@ -1,11 +1,11 @@
-from apps.clubs.models import FormSubmission
+from apps.taxonomy.models import FormSubmission
 import uuid
 
 from django.db.models import QuerySet
 from apps.clubs.models.membership.form.enums import ApplicationStatus
 from core.repositories import BaseRepository
 from apps.accounts.models import User
-from apps.clubs.models import MembershipApplication, Club, Membership, ApplicationStatus
+from apps.clubs.models import MembershipApplication, Club, Membership
 
 
 class MembershipApplicationRepository(BaseRepository[MembershipApplication]):
@@ -35,7 +35,7 @@ class MembershipApplicationRepository(BaseRepository[MembershipApplication]):
     def get_application(
         self, club_id: uuid.UUID, application_id: uuid.UUID
     ) -> MembershipApplication:
-        return self.get_queryset().get(club_id=club_id, pk=application_id)
+        return self.get(club_id=club_id, pk=application_id)
     
     def get_membership_application_for_user(self, club: Club, applicant: User) -> MembershipApplication | None:
         return self.get_queryset().filter(
@@ -57,7 +57,7 @@ class MembershipApplicationRepository(BaseRepository[MembershipApplication]):
             submission=submission,
         )
 
-    def application_exists(self, club: Club, applicant: User) -> bool:
-        return self.exists(club=club, applicant=applicant, status=ApplicationStatus.PENDING)
+    def application_exists(self, club: Club, applicant: User, status: ApplicationStatus = ApplicationStatus.PENDING) -> bool:
+        return self.exists(club=club, applicant=applicant, status=status)
 
     

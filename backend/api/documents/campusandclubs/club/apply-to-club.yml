@@ -1,0 +1,39 @@
+info:
+  name: apply-to-club
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/clubs/0c60533b-eb08-44bd-84ec-d3a38a71769c/apply/
+  headers:
+    - name: Cookie
+      value: csrftoken=nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib; sessionid=alru20n5yxeyj7r434owu3g23bp4ryd9
+    - name: X-CSRFToken
+      value: nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "message": "no message. just join me in",
+        "answers" : [
+          {
+            "question_id": "10702d11-2da4-46bf-9b4a-49abbfdb74c3",
+            "answer" : "Something else"
+          },
+          {
+            "question_id": "a8d6eeb9-0957-47a6-90e2-8a600c4977e4",
+            "answer" : "19101647"
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

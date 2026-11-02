@@ -70,10 +70,9 @@ export type PaginaatedInvitesResponse = {
 };
 
 export type ClubPermissionsResponse = {
-  club_id: string
-  club_name: string
-  total_permissions: number
-  permissions: Array<string>
+  id: number;
+  name: string;
+  codename: string
 }
 
 export type ClubRolesResponse = {
@@ -235,10 +234,10 @@ export class ClubClient extends BaseClient<
     return response;
   }
 
-  async getClubPermissions(clubId: string): Promise<AxiosResponse<ClubPermissionsResponse>> {
-    const response = await this.client.get<ClubPermissionsResponse>
+  async getClubPermissions(): Promise<AxiosResponse<ClubPermissionsResponse[]>> {
+    const response = await this.client.get<ClubPermissionsResponse[]>
       (
-        `${this.endpoint}${clubId}/permissions/`
+        `${this.endpoint}permissions/`
       );
     return response;
   }
@@ -249,6 +248,13 @@ export class ClubClient extends BaseClient<
         `${this.endpoint}${clubId}/roles/`
       );
     return response;
+  }
+
+  async createClubRole(clubId: string, data: unknown) {
+    const response = await this.client.post(
+      `${this.endpoint}${clubId}/roles/`, data
+    );
+    return response
   }
 }
 

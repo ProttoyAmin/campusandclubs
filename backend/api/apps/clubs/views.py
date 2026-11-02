@@ -57,40 +57,6 @@ def list_club_roles(request, pk):
     })
 
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def create_club_role(request, pk):
-    """Create a new role in a club"""
-    from django.shortcuts import get_object_or_404
-
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
-
-    # Check if user has permission to manage roles
-    membership = models.Membership.objects.filter(
-        user=request.user, club=club
-    ).prefetch_related('roles').first()
-
-    if not membership or not membership.has_permission('can_manage_members'):
-        return response.Response(
-            {'detail': 'You do not have permission to create roles in this club.'},
-            status=status.HTTP_403_FORBIDDEN
-        )
-
-    serializer = serializers.RoleCreateUpdateSerializer(
-        data=request.data,
-        context={'club': club, 'request': request}
-    )
-
-    if not serializer.is_valid():
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    role = serializer.save(club=club)
-
-    return response.Response(
-        serializers.RoleSerializer(role, context={'request': request}).data,
-        status=status.HTTP_201_CREATED
-    )
-
 
 # ---------------------------------------------------------------------------
 # Role assignment helpers (add / remove / set primary)

@@ -10,6 +10,7 @@ export const SettingsMenu: () => MenuItemType[] = () => [
     id: 1,
     label: "Accounts",
     icon: <HugeiconsIcon icon={UserRoundPenIcon} size={18} />,
+    description: "Manage your account settings",
     iconActive: <HugeiconsIcon icon={UserRoundPenIcon} size={18} />,
     link: () => paths.private.settings.account.base,
     isActive: (currentPath) =>
@@ -19,6 +20,7 @@ export const SettingsMenu: () => MenuItemType[] = () => [
     id: 2,
     label: "Privacy",
     icon: <HugeiconsIcon icon={SquareLock01Icon} size={18} />,
+    description: "Manage your privacy settings",
     iconActive: (
       <HugeiconsIcon icon={SquareLock01Icon} size={18} />
     ),
@@ -30,6 +32,7 @@ export const SettingsMenu: () => MenuItemType[] = () => [
     id: 3,
     label: "Affiliations",
     icon: <HugeiconsIcon icon={ThreeDScaleIcon} size={18} />,
+    description: "Manage your affiliations",
     iconActive: (
       <HugeiconsIcon icon={ThreeDScaleIcon} size={18} />
     ),

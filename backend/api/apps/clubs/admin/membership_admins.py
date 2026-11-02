@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from apps.clubs.models import (
-    FormAnswer,
     Membership,
     MembershipApplication,
     MembershipDepartment,
@@ -88,6 +87,10 @@ class MembershipAdmin(admin.ModelAdmin):
                 "fields": ("roles",),
                 "description": "Select multiple roles for this member",
             },
+        ),
+        (
+            "Permissions",
+            {"fields": ("permissions",)},
         ),
         (
             "Timestamps",

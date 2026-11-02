@@ -8,7 +8,11 @@ http:
   url: http://localhost:8000/api/v1/posts/
   headers:
     - name: Cookie
-      value: csrftoken=OslU45JFI20edLbe1ipu2eh9KXKjgasg;sessionid=qqbmbbbost4r9samzdrwjnqizvvvb0qn
+      value: csrftoken=nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib; sessionid=3pvbadottziou7063ilu2x04gj7k5sz2
+    - name: X-CSRFToken
+      value: nKIXTlrdGO6LuE0CRleREp8pWWE1dt2aKoMTDQOROmg9BskeJ9zDhgFjPpRBw6Ib
+    - name: Content-Type
+      value: application/json
   auth: inherit
 
 settings:

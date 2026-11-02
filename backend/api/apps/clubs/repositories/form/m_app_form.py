@@ -1,11 +1,10 @@
 from typing import Iterable
 from django.db import transaction
-from apps.clubs.models import FormQuestion
+from apps.taxonomy.models import Form, FormQuestion
 import uuid
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model, QuerySet
 from core.repositories import BaseRepository
-from apps.clubs.models import Form
 
 
 class FormRepository(BaseRepository[Form]):
@@ -70,6 +69,7 @@ class FormRepository(BaseRepository[Form]):
                 form=form,
                 question=q["question"],
                 type=q["type"],
+                options=q['options'],
                 required=bool(q.get("required", False)),
                 order=int(q.get("order", i)),
             )

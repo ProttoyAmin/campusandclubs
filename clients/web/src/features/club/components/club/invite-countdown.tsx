@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 interface InviteCountdownProps {
     expiresAt: string | null;
+    className?: string;
 }
 
 function formatTimeLeft(targetDate: string | null): { text: string; isExpired: boolean } {
@@ -41,7 +42,7 @@ function formatTimeLeft(targetDate: string | null): { text: string; isExpired: b
     };
 }
 
-export function InviteCountdown({ expiresAt }: InviteCountdownProps) {
+export function InviteCountdown({ expiresAt, className }: InviteCountdownProps) {
     const [timeLeft, setTimeLeft] = useState(() => formatTimeLeft(expiresAt));
 
     useEffect(() => {
@@ -67,8 +68,8 @@ export function InviteCountdown({ expiresAt }: InviteCountdownProps) {
 
     return (
         <span
-            className={`font-mono text-sm ${timeLeft.isExpired ? "text-destructive font-medium" : "text-muted-foreground"
-                }`}
+            className={`font-mono text-sm ${timeLeft.isExpired ? "text-destructive font-medium" : "text-green-300"
+                } ${className}`}
         >
             {timeLeft.text}
         </span>

@@ -16,13 +16,13 @@ from core.policies.utils import current_user
 
 from apps.accounts.models.user import User
 from core.views import PolicyMixin, ServiceMixin
-from apps.clubs.models import Club, MembershipApplication, Form, FormQuestion
+from apps.clubs.models import Club, MembershipApplication
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.policies.club import ClubPolicy
 
 from apps.clubs.serializers import DemoSerializer
 from apps.clubs.serializer.forms import FormSerializers, QuestionSerializers, FormCreateSerializer, FormRetrieveSerializer
-
+from apps.taxonomy.models import Form
 
 
 
@@ -43,6 +43,11 @@ class AF_ListCreateAPIView(
     serializer_class = FormSerializers
     queryset = Form.objects.all()
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return FormCreateSerializer
+        return FormSerializers
+
     def get(self, request: Request, pk) -> Response:
         club = generics.get_object_or_404(Club, pk=pk)
         # view_decision = self.get_policy(request, club).can_view()
@@ -59,7 +64,7 @@ class AF_ListCreateAPIView(
 
     def post(self, request: Request, pk) -> Response:
         club = generics.get_object_or_404(Club, pk=pk)
-        serializer = FormSerializers(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         form = self.get_service(request).set_club_form(
@@ -74,7 +79,7 @@ class AF_ListCreateAPIView(
         )
         
 
-class AF_RetrieveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.RetrieveAPIView[Form], generics.CreateAPIView[Form]):
+class AF_RetrieveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.RetrieveAPIView[Form], generics.UpdateAPIView[Form]):
     """
     GET - Get a specific application form
     data = {
@@ -92,29 +97,15 @@ class AF_RetrieveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club
     policy_class = ClubPolicy
     lookup_field = "pk"
     lookup_url_kwarg = "form_pk"
-    serializer_class = FormSerializers
     queryset = Form.objects.all().prefetch_related("questions")
 
     def get_serializer_class(self) -> type[serializers.Serializer]:
         if self.request.method == "GET":
             return FormRetrieveSerializer
-        return MembershipApplicationSerializer
+        return FormRetrieveSerializer
     
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         form = self.get_object()
 
         serializer = self.get_serializer(form)
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
-
-    def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.get_serializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response({"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        form: Form = self.get_object()
-        
-
-
-
-        return Response({"data": form}, status=status.HTTP_201_CREATED)

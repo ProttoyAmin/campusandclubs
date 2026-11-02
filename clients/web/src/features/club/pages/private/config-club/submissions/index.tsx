@@ -91,7 +91,7 @@ const FilterDropDown = ({
 const ApplicationSubmissions = () => {
     const { club } = useClubOutlet();
     const canAccess =
-        club?.me_permissions?.includes("manage_members") || club?.is_owner;
+        club?.me_permissions?.includes("manage_applications") || club?.is_owner;
     const { data: applications, isLoading } = useApplications(club?.id, canAccess);
     const { bulkApplicationsApprove, bulkApplicationsReject } =
         useApplicationBulkActions(club.id);
@@ -113,7 +113,6 @@ const ApplicationSubmissions = () => {
     }, [applications, statusFilter]);
 
     if (isLoading) return <>Loading...</>;
-
 
     if (!canAccess) {
         return (

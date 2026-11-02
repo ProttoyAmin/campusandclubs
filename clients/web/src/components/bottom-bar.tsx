@@ -14,7 +14,7 @@ const BottomBar: React.FC<BottomBarProps> = (props) => {
         menu={MainMobileMenu(currentUser?.username || '')}
         className="flex w-full justify-center"
         itemsClassName="justify-center flex-1"
-        variant="tab"
+        variant="gooey-tab"
         onlyIcon
       />
     </header>

@@ -15,9 +15,9 @@ class MembershipApplication(models.Model):
     applicant = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="club_applications"
     )
-    form = models.ForeignKey("clubs.Form", on_delete=models.SET_NULL, null=True, blank=True, related_name="application_forms")
+    form = models.ForeignKey("taxonomy.Form", on_delete=models.SET_NULL, null=True, blank=True, related_name="application_forms")
     submission = models.OneToOneField(
-        "clubs.FormSubmission",
+        "taxonomy.FormSubmission",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -42,6 +42,9 @@ class MembershipApplication(models.Model):
     reviewed_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    rejected_at = models.DateTimeField(null=True, blank=True)
+    withdrawn_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

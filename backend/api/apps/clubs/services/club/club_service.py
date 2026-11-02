@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+from apps.clubs.services.role_service import RoleService
 from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
 from apps.clubs.dtos.club_create import ClubUpdateSettingsDTO
 from apps.clubs.models import MembershipScope
@@ -5,9 +7,8 @@ from apps.clubs.models.club.club import _ALLOWED_JOIN_MODES
 from rest_framework.exceptions import PermissionDenied
 from uuid import UUID
 from apps.clubs.repositories.form.f_submission_repo import FormSubmissionRepository
-from apps.clubs.models import FormQuestion
+from apps.taxonomy.models import FormQuestion, FormSubmission
 from typing import Iterable
-from apps.clubs.models import FormSubmission
 import cloudinary
 from apps.clubs.policies.club import ClubPolicy
 from apps.clubs.dtos.club_create import ClubCreateDTO
@@ -16,17 +17,16 @@ from core.views import PolicyMixin
 import logging
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
-from django.contrib.auth.base_user import AbstractBaseUser
 from typing import Optional
 from django.db import transaction
 from django.db.models import QuerySet
 from django.views.generic.dates import timezone_today
 from rest_framework.exceptions import ValidationError
 
-from apps.clubs.models import Membership, ApplicationStatus, Role
+from apps.clubs.models import Membership
 from apps.clubs.repositories.form import FormRepository
 from core.services import BaseService
-from apps.clubs.models import Club, Visibility, MembershipApplication, JoinMode, Form
+from apps.clubs.models import Club, Visibility, MembershipApplication
 from apps.clubs.repositories.club.club_repo import ClubRepository
 from apps.clubs.dtos import ClubListFilters
 from apps.clubs.repositories.role.role_repo import RoleRepository
@@ -35,6 +35,9 @@ from apps.clubs.repositories import MembershipRepository, MembershipApplicationR
 from apps.accounts.models import User
 from django.core.files.uploadedfile import UploadedFile
 
+from apps.clubs.models.membership.form.enums import ApplicationStatus
+from apps.taxonomy.models import Form
+from ...services.application_service import ApplicationService
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +59,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         self.membership_application_repository = MembershipApplicationRepository()
         self.form_repository = FormRepository()
         self.form_submission_repository = FormSubmissionRepository()
+        self.application_service = ApplicationService(self.actor, self.membership_application_repository)
 
     def _get_object(self, pk: UUID) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
@@ -172,15 +176,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
             ClubPreference.objects.create(
                 club=club
             )
-
-            # from apps.clubs.models.permission import PermissionCodename
-
-            # ClubPermission.objects.bulk_create(
-            #     [ClubPermission(club=club, codename=c.value, name=c.label)
-            #      for c in PermissionCodename],
-            #     ignore_conflicts=True,
-            # )
-
+            
             permissions = ClubPermission.objects.all()
 
             role = self.role_repository.get_or_create_default_owner_role(
@@ -254,9 +250,16 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         the form's question set and persisted onto a new FormSubmission.
         If there is no form, a freeform ``message`` is allowed.
         """
+        from apps.taxonomy.models import FormQuestion
+        
         if self.membership_application_repository.application_exists(club, user):
             raise ValidationError(
                 {"detail": "You already have a pending application for this club."}
+            )
+
+        if not club.preferences.allow_reapplication and self.membership_application_repository.application_exists(club, user, status=ApplicationStatus.REJECTED):
+            raise ValidationError(
+                {"detail": "This club isn't taking re-applications."}
             )
 
         active_form = self.form_repository.get_active_form(club)
@@ -264,6 +267,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         submission: FormSubmission | None = None
 
         answers_list = list(answers or [])
+
         if active_form is not None:
             submission = self._submit_form(active_form, user, answers_list)
         else:
@@ -303,6 +307,15 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         decision = policy.can_manage_forms()
         if not decision.allowed:
             raise ValidationError({"detail": decision.reason})
+
+        existing: Form | None = self.form_repository.filter(content_type=ContentType.objects.get_for_model(club), is_active=True).first()
+
+        if existing:
+            # raise ValidationError({"detail": 'ALREADY EXISTS'})
+            existing.is_active = False
+            existing.save()
+
+        
         return self.form_repository.create_form_for(
             target=club,
             title=title,
@@ -321,6 +334,8 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
             raise ValidationError(
                 {"detail": "This form is no longer accepting submissions."}
             )
+
+        logger.info(f'raw answers {raw_answers}')
 
         questions = {
             str(q.id): q for q in form.questions.all()  # type: ignore
@@ -373,15 +388,17 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         return self.membership_application_repository.get_membership_applications(club)
 
     def approve_application(self, application: MembershipApplication, reviewer: User) -> MembershipApplication:
+        now = timezone.now()
         if application.status != ApplicationStatus.PENDING:
             raise ValidationError(
                 {"detail": "Only a pending application can be approved."})
 
         application.status = ApplicationStatus.APPROVED
-        application.reviewed_by = reviewer
-        application.reviewed_at = timezone.now()
+        application.approved_at = now
+        application.reviewed_by = self.actor
+        application.reviewed_at = now
         application.save(
-            update_fields=["status", "reviewed_by", "reviewed_at"])
+            update_fields=["status", "approved_at", "reviewed_by", "reviewed_at"])
 
         # default_role = self.role_repository.get_or_create_default_member_role(
         #     application.club)
@@ -397,20 +414,25 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         return application
 
     def reject_application(self, application: MembershipApplication, reviewer: User) -> MembershipApplication:
+        now = timezone.now()
+
         if application.status != ApplicationStatus.PENDING:
             raise ValidationError(
                 {"detail": "Only a pending application can be rejected."})
 
         application.status = ApplicationStatus.REJECTED
+        application.rejected_at = now
         application.reviewed_by = reviewer
-        application.reviewed_at = timezone.now()
+        application.reviewed_at = now
         application.save(
-            update_fields=["status", "reviewed_by", "reviewed_at"])
+            update_fields=["status", "rejected_at", "reviewed_by", "reviewed_at"])
         return application
 
     def withdraw_application(self, application: MembershipApplication) -> MembershipApplication:
+        now = timezone.now()
         application.status = ApplicationStatus.WITHDRAWN
-        application.save(update_fields=["status"])
+        application.withdrawn_at = now
+        application.save(update_fields=["status", "withdrawn_at"])
         return application
 
     # ---------- Discovery / Stats ----------

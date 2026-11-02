@@ -2,7 +2,7 @@ from apps.clubs.models.enums import JoinMethod
 from apps.clubs.serializer.membership.form.application import FormSubmissionOutSerializer
 from apps.accounts.serialize.user.profile import UserMinimalSerializer
 from rest_framework.request import Request
-from apps.clubs.models import Membership, ApplicationStatus, Role, MembershipApplication
+from apps.clubs.models import Membership, Role, MembershipApplication
 from rest_framework import serializers
 
 from apps.clubs.serializers import RoleSerializer

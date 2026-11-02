@@ -12,6 +12,7 @@ import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
 import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse, type InvitationResponse } from "../http/club.http";
 import type { JoinMode, Privacy, Scope } from "validation/club";
+import type { ClubRoleCreateSchemaType } from "validation/club";
 
 export const useInvite = (code: string) => {
   const getInvite = useQuery<InvitationResponse, AppError<{}>>({
@@ -124,22 +125,30 @@ export const useClubInfo = (slug: string) => {
     },
   });
 
-  const getRoles = (clubId: string) => useQuery({
+  const getRoles = (clubId: string, enabled?: boolean) => useQuery({
     queryKey: ["club", slug, "roles"],
     queryFn: () => {
       return club.roles(clubId);
     },
+    enabled: enabled
   });
 
-  const getPermissions = (clubId: string) => useQuery({
-    queryKey: ["club", slug, "permissions"],
-    queryFn: () => {
-      return club.permissions(clubId);
+  const createRole = (clubId: string, enabled?: boolean) => useMutation({
+    mutationFn: async (data: ClubRoleCreateSchemaType) => await club.create_role(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club", slug, "roles"] });
     },
-  });
+  })
 
-  return { posts, postsWithMedia, postsWithoutMedia, getRoles, getPermissions };
+  return { posts, postsWithMedia, postsWithoutMedia, getRoles, createRole };
 };
+
+export const useClubPermissions = () => useQuery({
+  queryKey: ["club", "permissions"],
+  queryFn: () => {
+    return club.permissions();
+  },
+});
 
 export const useUpdateClub = (slug: string) => {
   const update = (id: string) => useMutation({

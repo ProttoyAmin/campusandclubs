@@ -2,8 +2,7 @@ from django.db.models import QuerySet
 from core.repositories import BaseRepository
 from apps.clubs.models.permission import ClubPermission
 from apps.clubs.models import Role, Club
-from core.constants import DEFAULT_COLOR, DEFAULT_ROLE, DEFAULT_MEMBER_ROLE, DEFAULT_MEMBER_COLOR
-
+from core.constants import DEFAULT_MEMBER_ROLE, DEFAULT_MEMBER_COLOR
 
 class RoleRepository(BaseRepository[Role]):
     model = Role
@@ -12,8 +11,8 @@ class RoleRepository(BaseRepository[Role]):
 
         role, created = self.get_queryset().get_or_create(
             club=club,
-            name=DEFAULT_ROLE,
-            color=DEFAULT_COLOR,
+            name=Role.DEFAULT_ROLE,
+            color=Role.DEFAULT_COLOR,
         )
 
         if created:
@@ -34,3 +33,6 @@ class RoleRepository(BaseRepository[Role]):
         )
 
         return role
+
+    def list_roles(self, club_pk: str) -> QuerySet[Role]:
+        return self.model.objects.filter(club__id=club_pk)

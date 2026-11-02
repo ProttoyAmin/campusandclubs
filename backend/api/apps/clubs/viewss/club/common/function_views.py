@@ -16,6 +16,13 @@ from apps.clubs.models import (
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.serializer.club.club import ClubSerializer
 from apps.clubs.serializer.club.club_details import ClubDetailSerializer
+from rest_framework import serializers
+from apps.clubs.models import ClubPermission
+
+class ClubPermissionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClubPermission
+        fields = "__all__"
 
 
 # from rest_framework.decorators import api_view, permission_classes
@@ -30,7 +37,10 @@ from apps.clubs.serializer.club.club_details import ClubDetailSerializer
 # from core import pagination
 # from apps.posts.serializers import PostSerializer
 # from apps.posts.models import Post
-
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def list_permissions(request: Request) -> response.Response:
+    return response.Response(ClubPermissionsSerializer(ClubPermission.objects.all(), many=True, context={ 'request ' : request}).data, status=status.HTTP_200_OK)
 
 # # ==================== POST VIEWS ====================
 

@@ -3,7 +3,6 @@ from apps.accounts.serialize.auth.token import RefreshTokenSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-
 class RefreshTokenView(TokenRefreshView):
     serializer_class = RefreshTokenSerializer
 
