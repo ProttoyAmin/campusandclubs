@@ -1,0 +1,131 @@
+# =============================================================================
+# Docker Compose — Campus & Clubs (Development)
+# =============================================================================
+#
+# WHAT IS DOCKER COMPOSE?
+#   Docker Compose is a tool for defining and running multi-container Docker
+#   applications. Instead of running each container with a long `docker run`
+#   command, you describe all your services in this YAML file and manage
+#   them with simple commands like `docker compose up` and `docker compose down`.
+#
+# WHY DO WE NEED THIS?
+#   Your Django app uses "channels" for WebSocket support (real-time chat,
+#   notifications, etc.). Channels needs a "channel layer" — a message broker
+#   that passes messages between Django processes. Redis is that broker.
+#   So you need a Redis server running alongside your Django app.
+#
+# HOW TO USE (CLI — no Docker Desktop needed!):
+#   Start everything:       docker compose up -d
+#   See running containers: docker compose ps
+#   View Redis logs:        docker compose logs redis
+#   Follow logs live:       docker compose logs -f redis
+#   Stop everything:        docker compose down
+#   Stop & delete data:     docker compose down -v    (removes the volume too)
+#   Restart Redis:          docker compose restart redis
+#
+# NOTE: You only need Docker Engine (CLI) installed, NOT Docker Desktop.
+#   On Windows, Docker Desktop installs the CLI for you, but you can also
+#   install just the Docker CLI + Docker Compose plugin if you want to
+#   avoid the heavy Desktop GUI. See: https://docs.docker.com/engine/install/
+# =============================================================================
+
+# "services" is the top-level key that lists every container you want to run.
+# Think of each service as one "box" (container) that runs one program.
+services:
+  # ---------------------------------------------------------------------------
+  # Redis — In-memory data store used as the Django Channels message broker
+  # ---------------------------------------------------------------------------
+  #
+  # WHAT IS REDIS?
+  #   Redis is a super-fast, in-memory key-value store. Django Channels uses
+  #   it to pass WebSocket messages between different parts of your app.
+  #   When user A sends a chat message, Django writes it into Redis, and
+  #   Django's other worker reads it from Redis and pushes it to user B.
+  #
+  # WHY "redis:7-alpine"?
+  #   - "redis" is the official Redis image from Docker Hub (https://hub.docker.com/_/redis)
+  #   - "7" pins it to Redis version 7.x (stable, matches channels-redis 4.x)
+  #   - "alpine" is a tiny Linux distro (~5MB) so the image downloads fast
+  #     and uses less disk. The full image is ~130MB; alpine is ~30MB.
+  #
+  redis:
+    # The Docker image to use. Docker pulls this from Docker Hub automatically.
+    # Format: <image-name>:<tag>
+    image: redis:7-alpine
+
+    # "container_name" gives your container a fixed, human-readable name.
+    # Without this, Docker Compose names it something like "api-redis-1".
+    # You'll see this name in `docker ps` output.
+    container_name: campusandclubs-redis
+
+    # "ports" maps a port on YOUR machine (host) to a port INSIDE the container.
+    # Format: "<host-port>:<container-port>"
+    #
+    # Redis listens on port 6379 inside the container by default.
+    # We map it to 6379 on your machine so Django (running outside Docker)
+    # can connect to 127.0.0.1:6379 — exactly what your settings.py expects:
+    #
+    #   CHANNEL_LAYERS.default.CONFIG.hosts = [{"host": "127.0.0.1", "port": 6379}]
+    #
+    # If port 6379 is already in use on your machine, change the LEFT number:
+    #   ports:
+    #     - "6380:6379"
+    # Then update REDIS_PORT=6380 in your .env.local
+    ports:
+      # Explicitly bind to 127.0.0.1 on the host to match REDIS_HOST=127.0.0.1 in .env.local
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+
+    # "volumes" persist data across container restarts.
+    #
+    # Without a volume, all data inside the container is LOST when you stop it.
+    # Redis periodically saves snapshots to /data inside the container.
+    # This line mounts a named volume ("redis-data") at /data so your cached
+    # channel messages survive a `docker compose restart`.
+    #
+    # For development this is optional (you won't lose much if Redis restarts),
+    # but it's good practice and mirrors how production would work.
+    volumes:
+      - redis-data:/data
+
+    # "restart: unless-stopped" means:
+    #   - If the container crashes → Docker restarts it automatically
+    #   - If you explicitly stop it with `docker compose stop` → it stays stopped
+    #   - When your machine reboots → it starts again automatically
+    #
+    # Other options:
+    #   "no"            — never restart (default)
+    #   "always"        — always restart, even after `docker stop`
+    #   "on-failure"    — only restart if the process inside exited with an error
+    restart: unless-stopped
+
+    # "healthcheck" tells Docker how to verify the container is actually working,
+    # not just running. Docker will mark the container as "healthy" or "unhealthy".
+    #
+    # "redis-cli ping" sends a PING command to Redis. If Redis is alive,
+    # it responds with "PONG" and the exit code is 0 (success).
+    #
+    # interval: check every 30 seconds
+    # timeout:  if the check takes longer than 10s, consider it failed
+    # retries:  after 3 consecutive failures, mark as "unhealthy"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# =============================================================================
+# Volumes — Named storage that persists across container lifecycles
+# =============================================================================
+#
+# Named volumes are managed by Docker. They live somewhere on your disk
+# (Docker decides where) and survive container removals.
+#
+# To see all volumes:    docker volume ls
+# To inspect one:        docker volume inspect campusandclubs_redis-data
+# To delete all unused:  docker volume prune
+#
+volumes:
+  redis-data:
+    # "driver: local" means Docker stores the volume on your local filesystem.
+    # This is the default, but we're explicit here for learning purposes.
+    driver: local

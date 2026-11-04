@@ -1,10 +1,15 @@
 # apps/notifications/models.py
 import uuid
+from typing import TYPE_CHECKING
 from django.db import models
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from .enums import NotificationVerb
+
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
+    from apps.notifications.models import NotificationActor
 
 class Notification(models.Model):
     """
@@ -39,6 +44,9 @@ class Notification(models.Model):
     seen_at = models.DateTimeField(null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
+
+    if TYPE_CHECKING:
+        actors: RelatedManager["NotificationActor"]
 
     class Meta:
         ordering = ['-created_at']

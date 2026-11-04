@@ -1,5 +1,3 @@
-from apps.notifications.routing import websocket_urlpatterns as notifications_ws
-from apps.accounts.routing import websocket_urlpatterns as accounts_ws
 from apps.realtime.routing import websocket_urlpatterns as realtime_ws
 import os
 import django

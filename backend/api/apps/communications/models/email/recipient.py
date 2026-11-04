@@ -3,7 +3,7 @@ from django.db import models
 from .enums import EmailRecipientType, EmailRecipientStatus
 
 class EmailRecipient(models.Model):
-    email = models.EmailField()
+    email = models.ForeignKey("communications.Email", on_delete=models.CASCADE, related_name='recipients')
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,

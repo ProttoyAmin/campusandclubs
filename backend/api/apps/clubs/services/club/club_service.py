@@ -28,6 +28,7 @@ from apps.clubs.repositories.form import FormRepository
 from core.services import BaseService
 from apps.clubs.models import Club, Visibility, MembershipApplication
 from apps.clubs.repositories.club.club_repo import ClubRepository
+from apps.communications.repositories import EmailRepository
 from apps.clubs.dtos import ClubListFilters
 from apps.clubs.repositories.role.role_repo import RoleRepository
 from apps.clubs.repositories import MembershipRepository, MembershipApplicationRepository
@@ -38,6 +39,7 @@ from django.core.files.uploadedfile import UploadedFile
 from apps.clubs.models.membership.form.enums import ApplicationStatus
 from apps.taxonomy.models import Form
 from ...services.application_service import ApplicationService
+from apps.communications.services.email.email_service import EmailService
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,8 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         self.form_repository = FormRepository()
         self.form_submission_repository = FormSubmissionRepository()
         self.application_service = ApplicationService(self.actor, self.membership_application_repository)
+        self._email_repo = EmailRepository()
+        self.email_service = EmailService(self.actor, self._email_repo)
 
     def _get_object(self, pk: UUID) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
@@ -410,6 +414,16 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
         )
         # if default_role:
         #     membership.add_role(default_role, set_as_primary=True)
+
+        email = self.email_service.send_club_email(
+            sender=reviewer,
+            club=application.club,
+            target_users=[application.applicant],
+            subject=f'Application approved for {application.club.name}',
+        )
+        
+        if not email:
+            logger.error(f"Unable to send email for application {application.id}")
 
         return application
 

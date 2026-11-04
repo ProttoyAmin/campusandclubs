@@ -179,7 +179,7 @@ class NotificationSignalHandlers:
         """
         Send WebSocket event to the notification recipient
         """
-        actor: User = notification.actors.first().actor
+        actor: User = notification.actors.first().actor             # type: ignore
 
         broadcast_to_user_sync(
             user_id=notification.recipient.id,
@@ -288,7 +288,7 @@ class NotificationSignalHandlers:
 
 
     @staticmethod
-    def _delete_post_like_notification(instance: Like, liker: User, post_object: Post) -> Notification:
+    def _delete_post_like_notification(instance: Like, liker: User, post_object: Post) -> Notification | None:
         notification = Notification.objects.filter(
             recipient=post_object.author,
             target_ct=ContentType.objects.get_for_model(instance.content_object),
@@ -297,7 +297,7 @@ class NotificationSignalHandlers:
         ).first()
 
         if notification is None:
-            return
+            return None
 
         NotificationActor.objects.filter(
             notification=notification,

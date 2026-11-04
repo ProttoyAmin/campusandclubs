@@ -1,4 +1,10 @@
 scripts:
+  docker:up: cd backend/api && docker compose up -d
+  docker:stop: cd backend/api && docker compose stop
+  docker:down: cd backend/api && docker compose down
+  docker:redis: cd backend/api && docker start campusandclubs-redis
+  docker:redis:stop: cd backend/api && docker stop campusandclubs-redis
+
   superuser: cd backend/api && uv run python manage.py createsuperuser
 
   backend:check: cd backend/api && uv run python manage.py check

@@ -12,6 +12,7 @@ from apps.communications.models import Email, EmailRecipient
 from apps.communications.services.email.email_service import EmailService
 from rest_framework import permissions
 from core.pagination import StandardResultsSetPagination
+from apps.clubs.models import Club
 
 class SendEmailAPIView(ServiceMixin[EmailService, ], generics.ListCreateAPIView):
     service_class = EmailService
@@ -26,15 +27,18 @@ class SendEmailAPIView(ServiceMixin[EmailService, ], generics.ListCreateAPIView)
     def get_queryset(self) -> QuerySet[Email]:
         return self.get_service(self.request).list_emails()
 
-    def create(self, request):
+    def create(self, request: Request):
         serializer = self.get_serializer_class()(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
+        club = generics.get_object_or_404(Club, pk=serializer.validated_data['club_id'])
+
         self.get_service(request).send_club_email(
-            sender=request.user,
-            receiver=serializer.validated_data["receiver"],
-            club_id=serializer.validated_data["club_id"],
+            sender=current_user(request),
+            target_users=[serializer.validated_data["receiver"]],
+            club=club,
             body=serializer.validated_data["body"],
+            subject=serializer.validated_data["subject"]
         )
 
         return Response(

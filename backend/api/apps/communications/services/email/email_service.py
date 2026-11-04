@@ -3,18 +3,20 @@ from django.utils import timezone
 from django.conf import settings
 from apps.institutes.models import InstituteAffiliate
 from anymail.message import AnymailMessage
+from django.core.mail import send_mail
 from django.db.models import QuerySet
 from apps.communications.models.email.enums import EmailProvider
 from django.template.loader import render_to_string
 import uuid
+from django.db import transaction
 from apps.clubs.models import Club
 from apps.accounts.models import User
 import logging
 from core.services import BaseService
-from apps.communications.models import Email, EmailStatus, EmailType
+from apps.communications.models import Email, EmailRecipient, EmailRecipientStatus, EmailRecipientType, EmailStatus, EmailType
 from apps.communications.repositories import EmailRepository, EmailRecipientRepository
 from apps.accounts.repositories.user_repo import UserRepository
-
+from apps.institutes.models import Institute
 from apps.clubs.repositories import ClubRepository
 
 
@@ -31,8 +33,8 @@ class EmailService(BaseService[Email, EmailRepository]):
         return self.repository.get_queryset()
 
     def send_affiliate_confirmation_email(self, affiliate: InstituteAffiliate, email: str):
-        user = affiliate.user
-        institute = affiliate.institute
+        user: User = affiliate.user
+        institute: Institute = affiliate.institute
         role = affiliate.role
 
         recipient = self.recipient_repo.create(user_id=user.id, email=email)
@@ -50,7 +52,7 @@ class EmailService(BaseService[Email, EmailRepository]):
         email = self.repository.create(
             subject=subject + " for " + institute.name, body=body, type=EmailType.SYSTEM, status=EmailStatus.PENDING)
 
-        sent_email = self.send_resend_email(email, recipient.email)
+        sent_email = self._send_email(email, [recipient.email])
         recipient.sent_at = timezone.now()
         recipient.status = EmailStatus.SENT
         recipient.save()
@@ -60,58 +62,171 @@ class EmailService(BaseService[Email, EmailRepository]):
 
         return sent_email
 
-    def send_club_email(self, sender: User, receiver: str, club_id: uuid.UUID,  body: str, **kwargs):
-        club = self.club_repo.get_queryset().filter(pk=club_id).first()
-        recipient = self.recipient_repo.get_queryset().filter(email=receiver).first()
+    def send_club_email(self, sender: User, club: Club, subject: str, target_users: list[User], **kwargs) -> Email:
+        sent_emails_log: list[Email] = []
+        visit_url = f"{settings.FRONTEND_URL}/@/clubs/{club.slug}"
 
-        if club.owner.id != sender.id:
-            raise ValueError("You are not the owner of this club")
+        with transaction.atomic():
+            user_email_map: dict[int, tuple[Email, EmailRecipient]] = {}
 
-        if not club:
-            raise ValueError("Club not found")
+            for user in target_users:
+                personalized_body = render_to_string("emails/membership_approval.html", {
+                    "username" : user.username,
+                    "club_name" : club.name if hasattr(club, "name") else "",
+                    "visit_link" : visit_url
+                })
 
-        if not recipient:
-            raise ValueError("User not found")
+                email_record = self.get_repository().create(
+                    club=club,
+                    sender=sender,
+                    type=EmailType.CLUB,
+                    subject=subject,
+                    body=personalized_body,
+                    status=EmailStatus.PENDING
+                )
 
-        email = self.repository.create(
-            sender=sender, club=club, body=body, type=EmailType.CLUB, status=EmailStatus.PENDING)
-        self.recipient_repo.add_to_email(email, recipient=recipient)
+                recipient_node = self.recipient_repo.create(
+                    email=email_record,
+                    user=user,
+                    recipient_type=EmailRecipientType.TO,
+                    status=EmailRecipientStatus.PENDING,
+                )
 
-        return self.send_resend_email(email, recipient.email)
+                user_email_map[user.id] = (email_record, recipient_node)
+        
+        for user in target_users:
+            email_record, recipient_node = user_email_map[user.id]
 
-    def send_resend_email(self, email: Email, receiver: str):
+            sent_instance = self._send_email(
+                email=email_record,
+                to=[user.email]
+            )
+            sent_emails_log.append(sent_instance)
+        
+        return sent_instance
+
+    def _send_email(self, email: Email, to: list[str]) -> Email:
         django_email = AnymailMessage(
             subject=email.subject,
             body=email.body,
-            to=[receiver]
+            to=to
         )
+        django_email.content_subtype = "html"
+        logger.info("Initiating email dispatch sequence")
 
         try:
             django_email.send()
-
+            logger.info("Network payload sent successfully")
+            
             if hasattr(django_email, "anymail_status") and django_email.anymail_status.recipients:
-                status = django_email.anymail_status
+                status_meta = django_email.anymail_status
                 email.provider = EmailProvider.RESEND
-                email.provider_message_id = status.message_id
+                email.provider_message_id = getattr(
+                    status_meta, "message_id", None
+                )
+                # FIXED: Corrected logging string serialization formatting
+                logger.info(f"Provider metadata resolved message ID: {email.provider_message_id}")
             else:
                 email.provider = EmailProvider.SMTP
+                email.provider_message_id = None
 
-            status = django_email.anymail_status
             email.status = EmailStatus.SENT
             email.sent_at = timezone.now()
+            logger.info("Internal delivery state set to SENT")
 
+            status_data = (
+                {
+                    "message_id": getattr(status_meta, "message_id", None),
+                    "status": list(status_meta.status) if hasattr(status_meta, "status") else [],  # type: ignore
+                }
+                if "status_meta" in locals() and status_meta
+                else None
+            )
+            
+            logger.info("Base status dictionary payload constructed")
+            esp_extra_raw = getattr(django_email, "esp_extra", None)
+            # Check if esp_extra exists and is not the internal sentinel class
+            # if esp_extra_raw and esp_extra_raw.__class__.__name__ != "UNSET":
+            #     safe_esp_extra = dict(esp_extra_raw)
+            # else:
+            #     safe_esp_extra = {}
+
+            
+            email.provider_metadata = {
+                "subject": django_email.subject,
+                "body": django_email.body,
+                "to": django_email.to,
+                "cc": getattr(django_email, "cc", []),
+                "bcc": getattr(django_email, "bcc", []),
+                "from_email": django_email.from_email,
+                "extra_headers": getattr(django_email, "extra_headers", {}),
+                "anymail_status": status_data,
+                # "esp_extra": safe_esp_extra,
+            }
+            
+            # FIXED: Corrected logger structure syntax
+            logger.info(f"Provider metadata snapshot ready: {email.provider_metadata}")
+            
+            safe_attachments = []
+            for att in getattr(django_email, "attachments", []):
+                if isinstance(att, tuple) and len(att) > 0:
+                    safe_attachments.append(str(att[0]))
+                else:
+                    safe_attachments.append(str(att))
+
+            safe_alternatives = [
+                {"content": alt[0], "mimetype": alt[1]} 
+                for alt in getattr(django_email, "alternatives", [])
+                if isinstance(alt, tuple) and len(alt) >= 2
+            ]
+            logger.info("Safe alternative structures converted")
+
+            email._raw = {
+                "subject": django_email.subject,
+                "body": django_email.body,
+                "to": django_email.to,
+                "cc": getattr(django_email, "cc", []),
+                "bcc": getattr(django_email, "bcc", []),
+                "from_email": django_email.from_email,
+                "extra_headers": getattr(django_email, "extra_headers", {}),
+                "anymail_status": status_data,
+                "alternatives": safe_alternatives,
+                "content_subtype": django_email.content_subtype,
+                # "esp_extra": safe_esp_extra,
+                "attachments": safe_attachments,
+            }
+            
+            # FIXED: Corrected logger structure syntax
+            logger.info(f"Raw logging dictionary payload ready: {email._raw}")
+            
             email.save(
                 update_fields=[
                     "provider",
                     "provider_message_id",
                     "status",
                     "sent_at",
+                    "provider_metadata",
+                    "_raw",
                 ]
             )
+            logger.info("Parent email record successfully updated and saved")
+
+            # FIXED: Changed from .recipients to .recieved_email to match your model's exact related_name definition
+            email.recipients.update(
+                status=EmailRecipientStatus.SENT, sent_at=timezone.now()
+            )
+            logger.info("Recipient nodes updated to SENT status state")
 
             return email
 
-        except Exception:
+        except Exception as e:
+            # CRITICAL DEVELOPER BEST PRACTICE: Log the actual error stack trace message 'e' so you can catch issues instantly
+            logger.error(f"Execution failed inside the email processing exception block. Error details: {str(e)}")
             email.status = EmailStatus.FAILED
             email.save(update_fields=["status"])
-            raise
+            
+            # FIXED: Changed from .recipients to .recieved_email
+            email.recipients.update(
+                status=EmailRecipientStatus.FAILED, failed_at=timezone.now()
+            )
+            return email

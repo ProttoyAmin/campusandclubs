@@ -36,7 +36,8 @@ from allauth.headless.account.views import (
 from allauth.headless.constants import Client
 
 from rest_framework.request import Request
-from rest_framework.decorators import api_view, APIView
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 
 # ------------------------------------------------------------------ #
 # Build the allauth view callables once, pinned to the BROWSER

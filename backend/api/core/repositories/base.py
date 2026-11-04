@@ -37,6 +37,9 @@ class BaseRepository(Generic[T], ABC):
     def get_or_none(self, **kwargs: Any) -> Optional[T]:
         return self.get_queryset().filter(**kwargs).first()
 
+    def get_or_create(self, **kwargs: Any) -> T:
+        return self.get_or_create(**kwargs)
+
     def exists(self, **kwargs: Any) -> bool:
         return self.get_queryset().filter(**kwargs).exists()
 

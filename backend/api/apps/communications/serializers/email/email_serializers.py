@@ -19,10 +19,10 @@ class EmailSerializer(serializers.ModelSerializer):
     recipients = serializers.SerializerMethodField()
     class Meta:
         model = Email
-        fields = ["id", "club", "sender", "recipients", "cc_recipients", "bcc_recipients", "subject", "body", "attachments", "status", "created_at", "updated_at", "sent_at"]
+        fields = ["id", "club", "sender", "recipients", "subject", "body", "attachments", "status", "created_at", "updated_at", "sent_at", "provider_metadata", "_raw"]
 
     def _get_request(self) -> Request:
         return self.context["request"]
 
     def get_recipients(self, obj: Email):
-        return obj.recipients.all().values_list("email", flat=True)
+        return obj.recipients.all().values_list("user", flat=True)

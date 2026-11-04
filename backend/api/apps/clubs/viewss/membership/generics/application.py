@@ -59,7 +59,6 @@ class MA_RetreiveAPIView(
     queryset = MembershipApplication.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
-    # ---- DRF plumbing ----
     def get_serializer_class(self):
         return MembershipApplicationSerializer
 
@@ -87,7 +86,6 @@ class ApplyForMembershipAPIView(
     service_class = ClubService
     permission_classes = [permissions.IsAuthenticated]
 
-    # ---- DRF plumbing ----
     def get_serializer_class(self):
         return MembershipApplicationCreateSerializer
 
@@ -145,7 +143,7 @@ class ApplyForMembershipAPIView(
         )
 
 
-class MA_ApproveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView):
+class MA_ApproveAPIView(ServiceMixin[ClubService], PolicyMixin[ClubPolicy, Club], generics.GenericAPIView[MembershipApplication]):
     policy_class = ClubPolicy
     service_class = ClubService
     serializer_class = MembershipApplicationSerializer

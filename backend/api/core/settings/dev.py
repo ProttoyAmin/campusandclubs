@@ -74,3 +74,9 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# CELERY_BROKER_URL = getenv(
+#     "CELERY_BROKER_URL",
+#     f"redis://{getenv('REDIS_HOST', '127.0.0.1')}:{getenv('REDIS_PORT', 6379)}/1",
+# )  # db 1, so it stays separate from the Channels layer
+# CELERY_TIMEZONE = "UTC"

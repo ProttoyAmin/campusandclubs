@@ -1,3 +1,4 @@
+from core.policies.utils import current_user
 from core.pagination import StandardResultsSetPagination
 from apps.institutes.serializers import VerifyAffiliateSerializer
 from rest_framework.request import Request
@@ -103,7 +104,7 @@ class AffiliateClaimView(ServiceMixin[AffiliateService], generics.GenericAPIView
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user: User = request.user
+        user: User = current_user(request)
         validated_data = serializer.validated_data
 
         academic_profile = affiliate_service.claim(

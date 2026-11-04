@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8000/api/v1/accounts/csrf
+  url: http://localhost:8000/api/v1/accounts/auth/request-info
   headers:
     - name: Cookie
       value: csrftoken=fhzCSXX2h4G6mph1kV3y3fJ7yTsaJsLt;sessionid=abseddv39z9vwp1rdugubxfh3aml9t0m

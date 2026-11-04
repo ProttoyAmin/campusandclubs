@@ -169,7 +169,6 @@ HEADLESS_CLIENTS = ('app', 'browser')
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_SERVE_CSRF_TOKEN = True
 SOCIALACCOUNT_ONLY = False
-
 # HEADLESS_TOKEN_STRATEGY = (
 #     "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
 # )

@@ -1,11 +1,19 @@
+from email.policy import default
+from typing import TYPE_CHECKING
+
 from django.conf import settings
 from django.db import models
 from apps.clubs.models import Club
 from .enums import EmailStatus
 from .recipient import EmailRecipient
 from .enums import EmailStatus, EmailProvider, EmailType
+import uuid
+
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
 
 class Email(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     club = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True, blank=True, related_name="emails")
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -13,9 +21,9 @@ class Email(models.Model):
         null=True,
         related_name="sent_emails",
     )
-    recipients = models.ManyToManyField(EmailRecipient, related_name="emails")
-    cc_recipients = models.ManyToManyField(EmailRecipient, related_name="cc_emails", blank=True)
-    bcc_recipients = models.ManyToManyField(EmailRecipient, related_name="bcc_emails", blank=True)
+    # recipients = models.ManyToManyField(EmailRecipient, related_name="emails")
+    # cc_recipients = models.ManyToManyField(EmailRecipient, related_name="cc_emails", blank=True)
+    # bcc_recipients = models.ManyToManyField(EmailRecipient, related_name="bcc_emails", blank=True)
 
     type = models.CharField(max_length=32, choices=EmailType.choices, default=EmailType.CLUB)
     
@@ -43,10 +51,20 @@ class Email(models.Model):
         default=dict,
         blank=True,
     )
+
+    _raw = models.JSONField(
+        default=dict,
+        blank=True
+    )
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     sent_at = models.DateTimeField(null=True, blank=True)
+
+    if TYPE_CHECKING:
+        from django.db.models.fields.related_descriptors import RelatedManager
+        recipients: RelatedManager["EmailRecipient"]
+        
 
     def __str__(self):
         return f"{self.club} - {self.id}"
