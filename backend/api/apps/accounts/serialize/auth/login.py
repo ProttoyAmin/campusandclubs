@@ -13,6 +13,10 @@ class LoginSerializerData(TypedDict):
     username_or_email: str
     password: str
 
+class LoginInputSerializer(serializers.Serializer):
+    login = serializers.CharField(max_length=254, trim_whitespace=True)
+    password = serializers.CharField(write_only=True, trim_whitespace=False)
+    remember = serializers.BooleanField(default=True)   # keeps the 2-week session you have today
 
 class LoginSerializer(serializers.Serializer):
     """Pure input validation — no auth logic here."""

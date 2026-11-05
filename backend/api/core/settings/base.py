@@ -84,6 +84,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+
+
+    "core.middlewares.device_middleware.DeviceCookieMiddleware",
 ]
 
 TEMPLATES = [
@@ -183,7 +186,9 @@ ACCOUNT_SIGNUP_FIELDS = [
     "password1*",
     "password2*",
 ]
+ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 
@@ -200,7 +205,7 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_EMAIL_NOTIFICATIONS  = True
-
+EMAIL_VERIFICATION_MAX_RESEND_COUNT = 5
 # Cookie and Session configuration
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"

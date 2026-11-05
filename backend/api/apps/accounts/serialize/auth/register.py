@@ -7,13 +7,49 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-
+from ..user.profile import UserMinimalSerializer
 
 from typing import TypedDict
 
 from apps.accounts import models
 
 logger = logging.getLogger(__name__)
+
+
+
+class SignupSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField(max_length=150)
+    password1 = serializers.CharField(write_only=True, trim_whitespace=False)
+    password2 = serializers.CharField(write_only=True, trim_whitespace=False)
+
+    def validate(self, attrs):
+        if attrs["password1"] != attrs["password2"]:
+            raise serializers.ValidationError({"password2": "Passwords do not match."})
+        return attrs
+
+
+class SignupResponseSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    verification_required = serializers.BooleanField()
+    code_expires_in = serializers.IntegerField(allow_null=True)
+    max_attempts = serializers.IntegerField(allow_null=True)
+
+class ConfirmCodeSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=16, trim_whitespace=True)
+
+class AuthStateSerializer(serializers.Serializer):
+    authenticated = serializers.BooleanField()
+    pending_stage = serializers.CharField(allow_null=True)
+    user = UserMinimalSerializer(allow_null=True)
+
+
+
+
+
+
+
+
 
 
 class RegisterSerializerData(TypedDict):

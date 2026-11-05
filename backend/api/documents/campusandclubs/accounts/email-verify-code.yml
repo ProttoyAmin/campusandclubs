@@ -1,0 +1,29 @@
+info:
+  name: email-verify-code
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/accounts/email/verify/
+  headers:
+    - name: Cookie
+      value: csrftoken=G3FdHrArimZH8HviNyFjhnd3QICucM7fY3Dorz1F1Wm7Cw7Opi247gCEtGtKVEhu;
+    - name: X-CSRFToken
+      value: G3FdHrArimZH8HviNyFjhnd3QICucM7fY3Dorz1F1Wm7Cw7Opi247gCEtGtKVEhu
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "code" : "149776"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 from apps.institutes.models.choices import VerificationMethod
 from django.utils import timezone
 from django.conf import settings
@@ -18,7 +20,7 @@ from apps.communications.repositories import EmailRepository, EmailRecipientRepo
 from apps.accounts.repositories.user_repo import UserRepository
 from apps.institutes.models import Institute
 from apps.clubs.repositories import ClubRepository
-
+from apps.accounts.services.security_service import LoginCheck, RecordResult
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +106,60 @@ class EmailService(BaseService[Email, EmailRepository]):
             sent_emails_log.append(sent_instance)
         
         return sent_instance
+
+    def send_login_alert_email(self, target_user: User, subject: str, record: RecordResult):
+
+        if not isinstance(target_user, User) or not target_user.is_authenticated:
+            raise ValidationError("User is anonymous. Aborting sending email")
+
+        security_url = "/something/dummy/for-now"
+        recipient_email = target_user.get_notification_email()
+
+        if not recipient_email:
+            raise ValidationError(
+                "No verified notification email address is available."
+            )
+
+        body = render_to_string(
+            "emails/new_login_alert.html",
+            {
+                "username": target_user.username,
+                "device": (
+                    f"{record.device.browser} "
+                    f"{record.device.browser_version} "
+                    f"on {record.device.os} "
+                    f"{record.device.os_version}"
+                ),
+                "ip_address": record.check.ip or "Unavailable",
+                "login_time": timezone.localtime().strftime(
+                    "%Y-%m-%d %H:%M %Z"
+                ),
+                "security_link": security_url,
+            },
+        )
+        
+
+        with transaction.atomic():
+
+            email_record = self.get_repository().create(
+                type=EmailType.SYSTEM,
+                subject=subject,
+                body=body,
+                status=EmailStatus.PENDING
+            )
+
+            self.recipient_repo.create(
+                email=email_record,
+                user=target_user,
+                recipient_type=EmailRecipientType.TO,
+                status=EmailRecipientStatus.PENDING
+            )
+
+        sent = self._send_email(
+            email=email_record,
+            to=[target_user.get_notification_email()]
+        )
+        return sent
 
     def _send_email(self, email: Email, to: list[str]) -> Email:
         django_email = AnymailMessage(

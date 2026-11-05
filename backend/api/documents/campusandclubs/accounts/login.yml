@@ -1,0 +1,30 @@
+info:
+  name: login
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:8000/api/v1/accounts/login/
+  headers:
+    - name: Cookie
+      value: "csrftoken=VrenyXvGiNKLn3joMm05jm7As8jye7eiERQSMqWmLtJ4VZV4LUtA1WQZU41rkXvW; "
+    - name: X-CSRFToken
+      value: VrenyXvGiNKLn3joMm05jm7As8jye7eiERQSMqWmLtJ4VZV4LUtA1WQZU41rkXvW
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "login" : "prottoy",
+        "password" : "12345"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

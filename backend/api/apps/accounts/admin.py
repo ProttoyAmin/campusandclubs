@@ -3,6 +3,7 @@ from . import models
 
 # Register your models here.
 admin.site.register(models.UserPreference)
+admin.site.register(models.LoginRecord)
 
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):

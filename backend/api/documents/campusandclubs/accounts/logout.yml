@@ -1,0 +1,26 @@
+info:
+  name: logout
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: http://localhost:8000/api/v1/accounts/session/
+  headers:
+    - name: Cookie
+      value: "csrftoken=VrenyXvGiNKLn3joMm05jm7As8jye7eiERQSMqWmLtJ4VZV4LUtA1WQZU41rkXvW; "
+    - name: X-CSRFToken
+      value: VrenyXvGiNKLn3joMm05jm7As8jye7eiERQSMqWmLtJ4VZV4LUtA1WQZU41rkXvW
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
