@@ -8,7 +8,7 @@ from apps.accounts.models import User
 from rest_framework import serializers
 from apps.institutes.models import InstituteAffiliate
 from apps.institutes.serializers.institute_serializers import InstituteSerializer
-from apps.accounts.serialize.user.profile import UserMinimalSerializer
+from apps.accounts.serializers.user.profile import UserMinimalSerializer
 
 
 class InstituteAffiliateSerializer(serializers.ModelSerializer):

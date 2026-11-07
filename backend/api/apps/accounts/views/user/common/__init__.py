@@ -9,7 +9,12 @@ from .function_views import (
 
 from .class_views import (
     UserRetrieveUpdateDestroyView,
-    UserListCreateView
+    UserListCreateView,
+    ChangePasswordAPIView,
+    ManageEmailAPIView,
+    ResendAddedEmailView,
+    ConfirmAddedEmailView,
+    ManageProvidersView
 )
 
 __all__ = [
@@ -21,5 +26,12 @@ __all__ = [
     'get_my_clubs',
 
     'UserRetrieveUpdateDestroyView',
-    'UserListCreateView'
+    'UserListCreateView',
+    'ChangePasswordAPIView',
+
+    'ManageEmailAPIView',
+    'ResendAddedEmailView',
+    'ConfirmAddedEmailView',
+
+    'ManageProvidersView'
 ]

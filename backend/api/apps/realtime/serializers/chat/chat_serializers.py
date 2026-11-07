@@ -1,6 +1,6 @@
 # apps/realtime/serializers.py
 from apps.realtime.models import ChatParticipant
-from apps.accounts.serialize.user.profile import UserMinimalSerializer
+from apps.accounts.serializers.user.profile import UserMinimalSerializer
 from rest_framework import serializers
 from apps.realtime.models import Chat, Message, MessageStatus
 
@@ -38,7 +38,7 @@ class MessageSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "client_msg_id", "sender", "created_at", "edited_at"]
     
     def get_sender(self, obj: Message):
-        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        from apps.accounts.serializers.user.profile import UserMinimalSerializer
         return UserMinimalSerializer(obj.sender).data
 
     def get_reply_to(self, obj: Message):

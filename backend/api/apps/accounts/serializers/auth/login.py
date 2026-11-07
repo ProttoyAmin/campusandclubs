@@ -18,6 +18,9 @@ class LoginInputSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, trim_whitespace=False)
     remember = serializers.BooleanField(default=True)   # keeps the 2-week session you have today
 
+class RequestLoginCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
 class LoginSerializer(serializers.Serializer):
     """Pure input validation — no auth logic here."""
     username_or_email = serializers.CharField()

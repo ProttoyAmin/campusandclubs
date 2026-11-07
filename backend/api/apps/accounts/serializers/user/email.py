@@ -13,3 +13,15 @@ class UserEmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailAddress
         fields = ['id', 'email', 'primary', 'verified']
+
+        
+class EmailSerializerInput(serializers.Serializer):
+    email = serializers.EmailField()
+
+class MakeEmailPrimaryInput(serializers.Serializer):
+    email = serializers.EmailField()
+    primary = serializers.BooleanField(default=True)
+
+
+class ConfirmCodeSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=16, trim_whitespace=True)

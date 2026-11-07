@@ -7,6 +7,15 @@ from core.policies.utils import current_user
 from .club_membership import UserClubMembershipSerializer
 
 
+class UserSessionSerializer(serializers.ModelSerializer):
+    has_usable_password = serializers.SerializerMethodField()
+    class Meta:
+        model = models.User
+        fields = ['id', 'username', 'email', 'avatar', 'has_usable_password', 'status']
+
+    def get_has_usable_password(self, obj: models.User) -> bool:
+        return obj.has_usable_password()
+
 class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:

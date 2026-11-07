@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from apps.accounts.models import User
 from apps.connections.models import Follow
-from apps.accounts.serialize.user.profile import UserProfileSerializer
-from apps.accounts.serialize.user.email import UserEmailSerializer
+from apps.accounts.serializers.user.profile import UserProfileSerializer
+from apps.accounts.serializers.user.email import UserEmailSerializer
 from apps.accounts.schema import my_affiliations_schema, my_emails_schema
 from apps.institutes.serializers.affiliates.affiliates_serializer import (
     InstituteAffiliateForUserSerializer,
@@ -61,7 +61,7 @@ def get_user_activity(request: Request, username: str) -> Response:
 def get_my_clubs(request: Request) -> Response:
     """Get all clubs a user has joined"""
     from apps.clubs.serializer.club.club import ClubListSerializer
-    from apps.accounts.serialize.user import UserClubMembershipSerializer
+    from apps.accounts.serializers.user import UserClubMembershipSerializer
     from apps.clubs.models import Membership
 
     user: User = current_user(request)
@@ -84,7 +84,7 @@ def get_my_clubs(request: Request) -> Response:
 def get_user_clubs(request, username) -> Response:
     """Get all clubs a user has joined"""
     from apps.clubs.serializer.club.club import ClubListSerializer
-    from apps.accounts.serialize.user import UserClubMembershipSerializer
+    from apps.accounts.serializers.user import UserClubMembershipSerializer
     from apps.clubs.models import Membership
 
     user = get_object_or_404(User, username=username)

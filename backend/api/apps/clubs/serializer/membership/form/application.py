@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework.request import Request
 from apps.clubs.models import MembershipApplication
 from apps.clubs.models.club.club import Club
-from apps.accounts.serialize.user.profile import UserMinimalSerializer
+from apps.accounts.serializers.user.profile import UserMinimalSerializer
 
 
 class AnswerPayloadSerializer(serializers.Serializer):

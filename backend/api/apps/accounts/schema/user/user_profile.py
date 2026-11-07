@@ -1,8 +1,8 @@
-from apps.accounts.serialize.user.profile import UserUpdateSerializer
+from apps.accounts.serializers.user.profile import UserUpdateSerializer
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
-from apps.accounts.serialize.user import (
+from apps.accounts.serializers.user import (
     UserProfileSerializer,
     PrivateUserSerializer,
     UserEmailSerializer,

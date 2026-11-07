@@ -5,7 +5,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.accounts.serialize.auth.register import RegisterSerializer
+from apps.accounts.serializers.auth.register import RegisterSerializer
 from apps.accounts.schema import register_schema
 from core.response import ApiError
 from core.response import ApiResponse
@@ -16,7 +16,7 @@ from allauth.headless.account.views import (
 )
 from allauth.headless.constants import Client
 from ...services.auth_service import AuthService
-from ...serialize.auth.register import SignupSerializer, SignupResponseSerializer
+from ...serializers.auth.register import SignupSerializer, SignupResponseSerializer
 from rest_framework.authentication import SessionAuthentication
 
 _signup_view = _AllauthSignupView.as_api_view(

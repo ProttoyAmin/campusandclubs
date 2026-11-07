@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.views import TokenRefreshView
-from apps.accounts.serialize.auth.token import RefreshTokenSerializer
+from apps.accounts.serializers.auth.token import RefreshTokenSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 

@@ -4,7 +4,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView
-from apps.accounts.serialize.auth.login import CustomTokenObtainPairSerializer
 from apps.accounts.schema import login_response
 from core.response import ApiResponse
 from allauth.headless.account.views import LoginView as HeadlessLoginView
@@ -16,9 +15,9 @@ from allauth.headless.account.views import (
     LoginView as _AllauthLoginView
 )
 from ...services.auth_service import AuthService, AuthState
-from ...serialize.auth.login import LoginInputSerializer
-from ...serialize.auth.register import AuthStateSerializer
-
+from ...serializers.auth.login import LoginInputSerializer, RequestLoginCodeSerializer
+from ...serializers.auth.register import AuthStateSerializer, ConfirmCodeSerializer
+from core.views.base import AuthAPIView
 
 
 _login_view = _AllauthLoginView.as_api_view(
@@ -85,6 +84,33 @@ class LoginView(APIView):
         state = AuthService().login(request._request, s.validated_data)
         msg = "Signed in." if state.authenticated else "Verification required."
         return auth_response(state, msg)
+
+
+class RequestLoginCodeView(AuthAPIView):
+
+    def post(self, request: Request):
+        s = RequestLoginCodeSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        data = AuthService().request_login_code(request._request, s.validated_data["email"])
+        return Response({"success": True, "message": "If that email is registered, a code was sent.", "data": data})
+
+
+class ConfirmLoginCodeView(AuthAPIView):
+
+    def post(self, request: Request):
+        s = ConfirmCodeSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        state = AuthService().confirm_login_code(request._request, s.validated_data["code"])
+        return auth_response(state, "Signed in." if state.authenticated else "Verification required.")
+
+
+class ResendLoginCodeView(AuthAPIView):
+    
+    def post(self, request: Request):
+        data = AuthService().resend_login_code(request._request)
+        return Response({"success": True, "message": "Verification code sent.", "data": data})
+
+
 
 
 @ensure_csrf_cookie

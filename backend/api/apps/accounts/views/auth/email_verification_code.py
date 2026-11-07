@@ -5,14 +5,14 @@ from rest_framework import generics, permissions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.accounts.serialize.auth.register import RegisterSerializer
+from apps.accounts.serializers.auth.register import RegisterSerializer
 from apps.accounts.schema import register_schema
-from apps.accounts.serialize.user.profile import UserMinimalSerializer
+from apps.accounts.serializers.user.profile import UserMinimalSerializer
 from core.response import ApiError
 from core.response import ApiResponse
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from ...services.auth_service import AuthService
-from ...serialize.auth.register import ConfirmCodeSerializer
+from ...serializers.auth.register import ConfirmCodeSerializer
 from rest_framework.authentication import SessionAuthentication
 
 @method_decorator([ensure_csrf_cookie, csrf_protect], name="dispatch")

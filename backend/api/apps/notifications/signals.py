@@ -1,6 +1,6 @@
 # # apps/notifications/signals.py
 from __future__ import annotations
-from apps.accounts.serialize.user.profile import UserMinimalSerializer
+from apps.accounts.serializers.user.profile import UserMinimalSerializer
 
 
 

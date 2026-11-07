@@ -2,6 +2,10 @@ import uuid
 from django.conf import settings
 from django.db import models
 from .chat import Chat
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
 
 class MessageDeleteMode(models.TextChoices):
     """Describes how a deleted message should be treated."""
@@ -36,6 +40,9 @@ class Message(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     edited_at = models.DateTimeField(null=True, blank=True)
+
+    if TYPE_CHECKING:
+        statuses: RelatedManager["MessageStatus"]
 
     class Meta:
         ordering = ["-created_at"]

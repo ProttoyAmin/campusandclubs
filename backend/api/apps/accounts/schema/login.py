@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiResponse
 
-from apps.accounts.serialize.auth.login import CustomTokenObtainPairSerializer
+from apps.accounts.serializers.auth.login import CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from core.schema import api_response
 

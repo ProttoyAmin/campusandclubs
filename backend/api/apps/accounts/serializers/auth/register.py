@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 
 from rest_framework import serializers
@@ -7,7 +9,8 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from ..user.profile import UserMinimalSerializer
+from ..user.profile import UserMinimalSerializer, UserSessionSerializer
+from allauth.account.authentication import get_authentication_records
 
 from typing import TypedDict
 
@@ -41,11 +44,10 @@ class ConfirmCodeSerializer(serializers.Serializer):
 class AuthStateSerializer(serializers.Serializer):
     authenticated = serializers.BooleanField()
     pending_stage = serializers.CharField(allow_null=True)
-    user = UserMinimalSerializer(allow_null=True)
-
-
-
-
+    pending_signup = serializers.BooleanField()
+    user = UserSessionSerializer(allow_null=True)
+    methods = serializers.ListField()
+    flows = serializers.ListField(child=serializers.DictField())
 
 
 

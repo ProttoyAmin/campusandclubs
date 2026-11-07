@@ -1,4 +1,4 @@
-from apps.clubs.serializer.club.club_details import ClubDetailSerializer, ClubUpdateSerializer, ClubPrivacyJoinModeUpdateSerializer
+from ..serializer.club import ClubDetailSerializer, ClubUpdateSerializer, ClubPrivacyJoinModeUpdateSerializer
 from .membership.form.application import MembershipApplicationCreateSerializer
 from .club.club import (
     ClubJoinSerializer,

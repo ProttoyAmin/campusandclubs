@@ -2,6 +2,12 @@ import uuid
 from django.conf import settings
 from django.db import models
 from .enums import ChatType
+from typing import TYPE_CHECKING
+from .message import Message
+
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
+
 
 class Chat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -14,6 +20,9 @@ class Chat(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    if TYPE_CHECKING:
+        messages: RelatedManager["Message"]
 
     def __str__(self):
         if self.club:
