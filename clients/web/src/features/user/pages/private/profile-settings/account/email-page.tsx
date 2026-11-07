@@ -166,7 +166,7 @@ const EmailPage = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    {emails?.map((email) => {
+                    {emails?.data?.map((email) => {
                         return (
                             <div key={email.id} className="border p-2 rounded-md">
                                 <div className="flex flex-col gap-1">

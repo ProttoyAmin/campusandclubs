@@ -110,7 +110,7 @@ urlpatterns = [
     # path("auth/validate/", ValidateUserTypeView.as_view(), name="validate_type"),
 
     # # User lookup
-    path("auth/users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(lookup_field='username'),
+    path("users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(lookup_field='username'),
          name="user_details_by_username"),  # DONE
 #     #     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
 #     #          name="update_user_details"),  # DONE
@@ -121,7 +121,7 @@ urlpatterns = [
 
 
     # user lookups with username:
-    path('auth/users/user/<str:username>/clubs/',
+    path('users/user/<str:username>/clubs/',
          get_user_clubs, name='user_clubs'),
 
 
@@ -141,7 +141,7 @@ urlpatterns = [
     # # User profiles
     # path('auth/<uuid:user_id>/', views.get_user_profile, name='user_profile'),
     # path('auth/users/<uuid:user_id>/clubs/', get_user_clubs, name='user_clubs'),
-    path('auth/users/<uuid:user_id>/posts/',
+    path('users/<uuid:user_id>/posts/',
          pre_views.get_user_posts, name='user_posts'),
 #     path('auth/users/user/<str:username>/activity/',
 #          get_user_activity, name='user_activity'),

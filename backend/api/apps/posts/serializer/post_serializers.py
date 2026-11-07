@@ -79,7 +79,7 @@ class PostSerializer(serializers.ModelSerializer):
                             'repost_count', 'created_at', 'updated_at']
 
     def get_author(self, obj: Post):
-        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        from apps.accounts.serializers.user.profile import UserMinimalSerializer
         return UserMinimalSerializer(obj.author, context=self.context).data
 
     def get_club(self, obj: Post):

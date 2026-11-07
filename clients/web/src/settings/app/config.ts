@@ -21,10 +21,10 @@ export const config = {
       baseUrl: (import.meta.env.DEV ? "" : VITE_PUBLIC_API_URL) + "/api/v1/",
       version: "1.0.0",
       account: {
-        base: `accounts/auth/`,
-        login: `accounts/auth/login/`,
-        register: `accounts/auth/register/`,
-        logout: `accounts/auth/logout/`,
+        base: `accounts/`,
+        login: `accounts/login/`,
+        register: `accounts/register/`,
+        logout: `accounts/logout/`,
       },
       allauth: {
         base: `_allauth/browser/v1/`,
