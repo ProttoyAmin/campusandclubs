@@ -1,9 +1,12 @@
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   authentication,
   type SocialProvider,
 } from "../services/authentication";
-import { queryClient } from "@/config/query-client";
 import type {
   AccountsAuthJwtRefreshCreateResponse,
   RegisterRequestWritable,
@@ -17,21 +20,10 @@ export const authKeys = {
   session: ["auth", "session"] as const,
 };
 
-
-// export const sessionQueryOptions = queryOptions({
-//   queryKey: ["session"],
-//   queryFn: () => authentication.check_session(),
-//   staleTime:
-// })
-
-
 export const useSocials = () => {
   const socialLogin = useMutation({
     mutationFn: async (provider: SocialProvider) =>
       authentication.submitSocialLogin(provider),
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: authKeys.session });
-    // },
   });
 
   return { socialLogin };
@@ -47,6 +39,8 @@ export const useSession = () => {
 };
 
 export const useAuth = () => {
+  const queryClient = useQueryClient();
+
   const logout = useMutation({
     mutationFn: async () => {
       await authentication.logout();
@@ -86,7 +80,6 @@ export const useAuth = () => {
     mutationFn: (data) => authentication.login(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: authKeys.session });
-      // queryClient.clear();
     },
   });
 

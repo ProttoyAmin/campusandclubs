@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: Number(env.VITE_WEB_PORT),
+      allowedHosts: true,
       proxy: {
         "/api": {
           target: env.VITE_PUBLIC_API_URL,

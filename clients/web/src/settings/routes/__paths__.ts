@@ -223,6 +223,7 @@ export const paths = {
     auth: {
       signIn: routes.auth.public.sign_in,
       signUp: routes.auth.public.sign_up,
+      socialCallback: routes.auth.public.social_callback,
     },
 
     club: {

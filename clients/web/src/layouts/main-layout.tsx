@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import Guard from "@/guards/guard";
 import { Toaster } from "design/components/ui/toast";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
@@ -7,7 +8,6 @@ import { SocketProvider } from "@/providers/socket-provider";
 import { AppSidebar } from "@/shared/components/app-sidebar";
 import { useSocketEvent } from "@/shared/hooks/use-socket-event";
 import { toast } from "design/components/ui/toast";
-import { queryClient } from "@/config/query-client";
 import {
   Avatar,
   AvatarImage,
@@ -18,6 +18,7 @@ import { SidebarProvider } from "design/components/ui/sidebar";
 const MainLayout: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const queryClient = useQueryClient();
   useScrollRestoration(scrollRef, location.key);
 
   useSocketEvent("notification:created", (data: any) => {

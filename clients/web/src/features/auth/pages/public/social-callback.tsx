@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "design/components/ui/spinner";
 import { Button } from "design/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 import { paths } from "@/settings/routes";
-import { queryClient } from "@/config/query-client";
 import { authKeys } from "../../hooks/session.hook";
 import { authentication } from "../../services/authentication";
 
 const SocialAuthCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const SocialAuthCallback = () => {
     };
 
     processLogin();
-  }, [location.search, navigate]);
+  }, [location.search, navigate, queryClient]);
 
   if (errorMessage) {
     return (
