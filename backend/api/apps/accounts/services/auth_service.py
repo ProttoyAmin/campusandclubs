@@ -69,9 +69,7 @@ class AuthService(BaseService[User, UserRepository]):
 
         form = SignupForm(data=data)
         if not form.is_valid():
-            raise ValidationError(
-                {field: [str(e) for e in errs] for field, errs in form.errors.items()}
-            )
+            raise ValidationError(form_errors(form))
 
         user, resp = form.try_save(request)
 

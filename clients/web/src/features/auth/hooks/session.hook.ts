@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import {
   authentication,
   type SocialProvider,
@@ -9,13 +9,21 @@ import type {
   RegisterRequestWritable,
 } from "@campus/api";
 import type { AxiosError, AxiosResponse } from "axios";
-import type { AllauthError, SignUpError } from "../api/auth.client";
+import type { AllauthError, LoginRequest, SignUpError, SignUpResponse } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
 
 export const authKeys = {
   session: ["auth", "session"] as const,
 };
+
+
+// export const sessionQueryOptions = queryOptions({
+//   queryKey: ["session"],
+//   queryFn: () => authentication.check_session(),
+//   staleTime:
+// })
+
 
 export const useSocials = () => {
   const socialLogin = useMutation({
@@ -63,7 +71,7 @@ export const useAuth = () => {
   });
 
   const signUp = useMutation<
-    AxiosResponse<RegisterRequestWritable>,
+    AxiosResponse<SignUpResponse>,
     AppError<SignUpError>,
     RegisterRequestWritable
   >({
@@ -73,7 +81,7 @@ export const useAuth = () => {
   const login = useMutation<
     AxiosResponse<AccountsAuthJwtRefreshCreateResponse>,
     AppError<AllauthError>,
-    SignInSchemaType
+    LoginRequest
   >({
     mutationFn: (data) => authentication.login(data),
     onSuccess: () => {

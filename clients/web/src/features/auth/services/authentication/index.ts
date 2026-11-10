@@ -1,6 +1,6 @@
 import type { ActivationRequest } from "@campus/api";
 import type { RegisterRequestWritable } from "@campus/api";
-import { authClient } from "../../api/auth.client";
+import { authClient, type LoginRequest } from "../../api/auth.client";
 import type { SignInSchemaType } from "validation/auth";
 import { cookie } from "@/settings/storage/cookie";
 
@@ -23,6 +23,19 @@ export type AuthSession = {
   };
 };
 
+export type AppSession = {
+  success: boolean;
+  message: string;
+  data: {
+    authenticated: boolean;
+    pending_stage: unknown | null;
+    pending_signup: boolean;
+    user: AuthUser | null;
+    methods: Array<string>;
+    flows: Array<{ id: string; providers?: Array<string>; is_pending?: boolean }>;
+  }
+}
+
 export type SocialProvider = "google" | "facebook" | "github";
 
 export class Authentication {
@@ -36,7 +49,7 @@ export class Authentication {
   //   });
   // }
 
-  async login(data: SignInSchemaType) {
+  async login(data: LoginRequest) {
     const response = await this.apiClient.login(data);
 
     if (response.status === 200) {
@@ -79,7 +92,13 @@ export class Authentication {
   }
 
   async sign_up(data: RegisterRequestWritable) {
-    return await this.apiClient.signUp(data);
+    const payload = {
+      username: data.username,
+      email: data.email,
+      password1: data.password,
+      password2: data.re_password
+    }
+    return await this.apiClient.signUp(payload);
   }
 
   async verify_email(key: string) {
@@ -115,7 +134,7 @@ export class Authentication {
     return response;
   }
 
-  async check_session(): Promise<AuthSession | null> {
+  async check_session(): Promise<AppSession | null> {
     try {
       const response = await this.apiClient.getSession();
       if (response.status === 200) {

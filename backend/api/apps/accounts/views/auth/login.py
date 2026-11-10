@@ -1,30 +1,23 @@
+from __future__ import annotations
+
 from rest_framework import status, permissions, authentication
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.views import TokenObtainPairView
-from apps.accounts.schema import login_response
+from apps.accounts.schema import login_schema
 from core.response import ApiResponse
 from allauth.headless.account.views import LoginView as HeadlessLoginView
 from allauth.account.forms import LoginForm as AllauthLoginForm
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
-from allauth.headless.constants import Client
-from allauth.headless.account.views import (
-    LoginView as _AllauthLoginView
-)
 from ...services.auth_service import AuthService, AuthState
 from ...serializers.auth.login import LoginInputSerializer, RequestLoginCodeSerializer
 from ...serializers.auth.register import AuthStateSerializer, ConfirmCodeSerializer
 from core.views.base import AuthAPIView
 
-
-_login_view = _AllauthLoginView.as_api_view(
-    client=Client.BROWSER
-)
-
-# @login_response
+# @login_schema
 # class LoginView(TokenObtainPairView):
 #     serializer_class = CustomTokenObtainPairSerializer
     # form_class = AllauthLoginForm
@@ -70,11 +63,8 @@ def auth_response(state: AuthState, message: str, http_status=200) -> Response:
         {"success": True, "message": message, "data": AuthStateSerializer(state).data},
         status=http_status,
     )
-
-
-
-@method_decorator([ensure_csrf_cookie, csrf_protect], name="dispatch")
-class LoginView(APIView):
+@login_schema
+class LoginView(AuthAPIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = [authentication.SessionAuthentication]
 
@@ -109,16 +99,3 @@ class ResendLoginCodeView(AuthAPIView):
     def post(self, request: Request):
         data = AuthService().resend_login_code(request._request)
         return Response({"success": True, "message": "Verification code sent.", "data": data})
-
-
-
-
-@ensure_csrf_cookie
-def login_view(request: Request, *args, **kwargs):
-    """POST /api/v1/accounts/auth/login/
-
-    Accepts allauth's LoginInput: by default ``{"username"|"email", "password"}``
-    (depending on ``ACCOUNT_LOGIN_METHODS``). Returns allauth's
-    AuthenticationResponse and sets the Django session cookie.
-    """
-    return _login_view(request, *args, **kwargs)

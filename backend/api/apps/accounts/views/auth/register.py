@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 from django.utils.decorators import method_decorator
@@ -5,26 +7,17 @@ from rest_framework import generics, permissions, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.accounts.serializers.auth.register import RegisterSerializer
-from apps.accounts.schema import register_schema
 from core.response import ApiError
 from core.response import ApiResponse
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-
-from allauth.headless.account.views import (
-    SignupView as _AllauthSignupView,
-)
-from allauth.headless.constants import Client
+from ...schema.register import register_schema
 from ...services.auth_service import AuthService
 from ...serializers.auth.register import SignupSerializer, SignupResponseSerializer
 from rest_framework.authentication import SessionAuthentication
 
-_signup_view = _AllauthSignupView.as_api_view(
-    client=Client.BROWSER
-)
-
 
 @method_decorator([ensure_csrf_cookie, csrf_protect], name="dispatch")
+@register_schema
 class SignUpView(APIView):
     permission_classes = [permissions.AllowAny, ]
     authentication_classes = [SessionAuthentication]
@@ -45,16 +38,6 @@ class SignUpView(APIView):
             status=status.HTTP_201_CREATED,
         )
 
-
-@ensure_csrf_cookie
-def signup_view(request: Request, *args, **kwargs):
-    """POST /api/v1/accounts/auth/signup/
-
-    Accepts allauth's SignupInput (email/username/password, per
-    ``ACCOUNT_SIGNUP_FIELDS``). Returns AuthenticationResponse on
-    success (and logs the user in automatically, per allauth defaults).
-    """
-    return _signup_view(request, *args, **kwargs)
 
 # @register_schema
 # class RegisterView(generics.CreateAPIView):

@@ -15,7 +15,8 @@ from django.http import HttpRequest
 from types import SimpleNamespace
 from rest_framework.exceptions import ValidationError, APIException
 from allauth.core.internal.cryptokit import compare_user_code
-
+from rest_framework.exceptions import ErrorDetail
+from django.core.exceptions import ValidationError as DjangoValidationError
 class Conflict(APIException):
     status_code = 409
     default_detail = "You are already signed in."
@@ -48,12 +49,15 @@ def consume_rate_limit(request: HttpRequest, action: str, key: str | None = None
     except RateLimited:
         raise Throttled(detail="Too many attempts. Try again in a minute.")
 
-
 def form_errors(form) -> dict:
-    return {
-        ("non_field_errors" if f == "__all__" else f): [str(e) for e in errs]
-        for f, errs in form.errors.items()
-    }
+    out = {}
+    for field, errs in form.errors.as_data().items():
+        key = "non_field_errors" if field == "__all__" else field
+        out[key] = [ErrorDetail(m, code=e.code or "invalid") for e in errs for m in e.messages]
+    return out
+
+def django_errors(e: DjangoValidationError) -> list[ErrorDetail]:
+    return [ErrorDetail(m, code=err.code or "invalid") for err in e.error_list for m in err.messages]
 
 
 def _ensure_headless_client(request, client=Client.BROWSER):

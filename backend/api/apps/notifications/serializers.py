@@ -246,7 +246,7 @@ class NotificationListSerializer(serializers.ModelSerializer):
 
     def get_primary_actor(self, obj):
         """Get the primary (most recent) actor"""
-        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        from apps.accounts.serializers.user.profile import UserMinimalSerializer
         actor = obj.actors.first()
         if actor:
             return UserMinimalSerializer(actor.actor, context=self.context).data

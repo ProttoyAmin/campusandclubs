@@ -1,4 +1,4 @@
-from .login import login_response
+from .login import login_schema
 from .register import register_schema
 from .user.user_profile import (
     me_schema,
@@ -8,7 +8,7 @@ from .user.user_profile import (
 )
 
 __all__ = [
-    'login_response',
+    'login_schema',
     'register_schema',
     'me_schema',
     'list_users_schema',

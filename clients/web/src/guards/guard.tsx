@@ -49,7 +49,7 @@ const Guard = ({ children }: { children: React.ReactNode }) => {
     return <>{children}</>;
   }
 
-  if (!session && !isPublicRoute) {
+  if (!session.data?.authenticated && !isPublicRoute) {
     return (
       <Navigate
         to={paths.public.auth.signIn}
@@ -59,7 +59,7 @@ const Guard = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  if (session && isAuthRoute) {
+  if (session.data?.authenticated && isAuthRoute) {
     return <Navigate to={paths.public.home} replace />;
   }
 

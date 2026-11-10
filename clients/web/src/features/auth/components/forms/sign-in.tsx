@@ -6,25 +6,27 @@ import { Button } from "design/components/ui/button";
 import { Spinner } from "design/components/ui/spinner";
 import { Separator } from "design/components/ui/separator";
 import { Field, FieldError, FieldGroup } from "design/components/ui/field";
-import type { AllauthError } from "../../api/auth.client";
+import type { AllauthError, LoginRequest } from "../../api/auth.client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { routes } from "@/settings/routes";
 import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "@/features/auth/hooks/session.hook";
 import { Link } from "react-router-dom";
+import PasswordInput from "@/shared/components/password-input";
 
 type SignInFormProps = {
-  onSubmit: (data: SignInSchemaType) => void;
+  onSubmit: (data: LoginRequest) => void;
   serverErrors?: AllauthError | null;
   pending: boolean;
 };
+
 
 const SignInForm = (props: SignInFormProps) => {
   const { socialLogin } = useSocials();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      username: "",
+      login: "",
       password: "",
     },
   });
@@ -34,7 +36,7 @@ const SignInForm = (props: SignInFormProps) => {
       <form onSubmit={form.handleSubmit(props.onSubmit)}>
         <FieldGroup>
           <Controller
-            name="username"
+            name="login"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
@@ -42,8 +44,7 @@ const SignInForm = (props: SignInFormProps) => {
                   {...field}
                   id="username_or_email"
                   aria-invalid={fieldState.invalid}
-                  placeholder="Username"
-                  autoComplete="off"
+                  placeholder="Username or Email"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -64,15 +65,8 @@ const SignInForm = (props: SignInFormProps) => {
             name="password"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <Input
-                  {...field}
-                  id="password"
-                  type="text"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Password"
-                  autoComplete="off"
-                />
+              <Field data-invalid={fieldState.invalid} className="w-full">
+                <PasswordInput field={field} fieldState={fieldState} />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -88,6 +82,14 @@ const SignInForm = (props: SignInFormProps) => {
               </Field>
             )}
           />
+          {props.serverErrors && (
+            <FieldError
+              errors={[
+                ...(props.serverErrors.errors || [])
+                  .map((item) => new Error(item.message || "")),
+              ]}
+            />
+          )}
           <CardAction className="flex justify-between w-full">
             <Link
               to={routes.auth.private.forgot_password}

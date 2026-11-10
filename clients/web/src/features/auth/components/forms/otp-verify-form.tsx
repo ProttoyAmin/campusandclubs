@@ -28,18 +28,15 @@ const OTPVerifyForm = (props: OTPProps) => {
                             aria-invalid={props.invalid} />
                         <InputOTPSlot index={2} className='w-12 h-10'
                             aria-invalid={props.invalid} />
-                        <InputOTPSlot index={3} className='w-12 h-10'
-                            aria-invalid={props.invalid} />
+
                     </InputOTPGroup>
                     <InputOTPSeparator />
                     <InputOTPGroup>
+                        <InputOTPSlot index={3} className='w-12 h-10'
+                            aria-invalid={props.invalid} />
                         <InputOTPSlot index={4} className='w-12 h-10'
                             aria-invalid={props.invalid} />
                         <InputOTPSlot index={5} className='w-12 h-10'
-                            aria-invalid={props.invalid} />
-                        <InputOTPSlot index={6} className='w-12 h-10'
-                            aria-invalid={props.invalid} />
-                        <InputOTPSlot index={7} className='w-12 h-10'
                             aria-invalid={props.invalid} />
                     </InputOTPGroup>
                 </InputOTP>

@@ -2,20 +2,16 @@ from __future__ import annotations
 
 
 from apps.accounts.views.auth.csrf import csrf_token_view
-from apps.accounts.views.auth.allauth_proxy import ChangePasswordView
 from apps.accounts.views.auth import (
-    login_view, LoginView,
+    LoginView,
     RequestLoginCodeView,
     ConfirmLoginCodeView,
     ResendLoginCodeView,
-    logout as allauth_logout,
-    signup_view,
     SignUpView,
     ConfirmEmailCodeView,
     ResendEmailCodeView,
-    session_view, SessionView,
+    SessionView,
     ConfigAPIView,
-    reset_password_view,
     PasswordResetRequestView,
     PasswordResetVerifyView,
     PasswordResetConfirmView,
@@ -114,8 +110,8 @@ urlpatterns = [
          name="user_details_by_username"),  # DONE
 #     #     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
 #     #          name="update_user_details"),  # DONE
-#     path('auth/all/', UserListCreateView.as_view(),
-#          name="all_users"),  # ---- DONE
+    path('all/', UserListCreateView.as_view(),
+         name="all_users"),  # ---- DONE
 #     path('auth/<uuid:user_id>/all/',
 #          CompleteUserInfoView.as_view(), name="all_users_by_id"),
 
@@ -127,8 +123,8 @@ urlpatterns = [
 
     # # Current user endpoints
     path('me/', get_current_user, name='current_user'),
-#     path('auth/me/clubs/', get_my_clubs, name='my_clubs'),
-#     path('auth/me/affiliations/', get_my_affiliations, name='my_affiliations'),
+    path('me/clubs/', get_my_clubs, name='my_clubs'),
+    path('me/affiliations/', get_my_affiliations, name='my_affiliations'),
     path('me/emails/', ManageEmailAPIView.as_view(), name='my_emails'),
     path('me/emails/resend/', ResendAddedEmailView.as_view(), name='resend_email_code'),
     path('me/emails/confirm/', ConfirmAddedEmailView.as_view(), name='confirm_email_code'),

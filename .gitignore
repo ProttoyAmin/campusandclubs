@@ -6,7 +6,10 @@ backend/api/requirements.txt
 backend/api/FEED_ALGORITHM.md
 backend/api/WEBSOCKET_IMPLEMENTATION_PLAN.md
 clients/v1/*
+backend/api/documents/*
 
+*.jwt-private.pem
+*.xlsx
 # Python
 __pycache__/
 *.py[cod]

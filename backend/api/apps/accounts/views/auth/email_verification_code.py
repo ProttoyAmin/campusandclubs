@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 from django.utils.decorators import method_decorator
@@ -31,7 +33,7 @@ class ConfirmEmailCodeView(APIView):
                 "authenticated": result.authenticated,
                 "user": UserMinimalSerializer(result.user).data if result.user else None,
             },
-        })
+        }, status=status.HTTP_200_OK)
 
 
 @method_decorator([ensure_csrf_cookie, csrf_protect], name="dispatch")
@@ -39,6 +41,6 @@ class ResendEmailCodeView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = [SessionAuthentication]
 
-    def post(self, request):
+    def post(self, request: Request):
         data = AuthService().resend_email_code(request._request)
-        return Response({"success": True, "message": "Verification code sent.", "data": data})
+        return Response({"success": True, "message": "Verification code sent.", "data": data}, status=status.HTTP_200_OK)

@@ -11,9 +11,21 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (formData: RegisterRequestWritable) => {
     signUp.mutate(formData, {
-      onSuccess: () => {
-        navigate(paths.private.auth.verify_email_otp);
+      onSuccess: (data) => {
+        const response = data.data.data
+        navigate(paths.private.auth.verify_email_otp, {
+          state: {
+            email: response.email,
+            verification_required: response.verification_required,
+            code_expires_in: response.code_expires_in,
+            max_attempts: response.max_attempts,
+            expiresAt: Date.now() + response.code_expires_in * 1000
+          }
+        });
       },
+      onError: (error) => {
+        console.log(error.response.data);
+      }
     });
   };
 

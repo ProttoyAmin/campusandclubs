@@ -35,7 +35,7 @@ def _serialize_payload(data: Any) -> Any:
 def _get_layer() -> BaseChannelLayer:
     layer = get_channel_layer()
     logger.info("layer: %s", layer)
-    return layer
+    return layer                        #type: ignore
 
 
 # ---------------------------------------------------------------------- #

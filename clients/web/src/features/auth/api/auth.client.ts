@@ -11,6 +11,14 @@ import { config } from "@/settings/app";
 import type { SignInSchemaType } from "validation/auth";
 import { cookie } from "@/settings/storage/cookie";
 import { routes } from "@/settings/routes";
+import type { AppSession } from "../services/authentication";
+
+
+export type LoginRequest = {
+  login: string;
+  password: string;
+}
+
 
 export type AllauthError = {
   errors: {
@@ -19,6 +27,28 @@ export type AllauthError = {
     param: string;
   }[];
 };
+
+
+export type SignUpRequest = {
+  username: string;
+  email: string;
+  password1: string
+  password2: string
+}
+
+export type CodeSendResponse = {
+  email: string;
+  verification_required: boolean;
+  code_expires_in: number;
+  max_attempts: number;
+  expiresAt: number
+}
+
+export type SignUpResponse = {
+  success: number;
+  message: string;
+  data: CodeSendResponse
+}
 
 // Kept as an alias while sign-up consumers migrate to the shared allauth shape.
 export type SignUpError = AllauthError;
@@ -29,10 +59,10 @@ export class AuthClient extends BaseAuthClient {
   }
 
   async signUp(
-    data: RegisterWritable,
-  ): Promise<AxiosResponse<RegisterRequestWritable>> {
-    const response = await this.client.post<RegisterRequestWritable>(
-      `${this.allauthBrowser}auth/signup`,
+    data: SignUpRequest,
+  ): Promise<AxiosResponse<SignUpResponse>> {
+    const response = await this.client.post<SignUpResponse>(
+      `${this.endpoint}signup/`,
       data,
     );
     return response;
@@ -86,7 +116,7 @@ export class AuthClient extends BaseAuthClient {
   ): Promise<AxiosResponse<AccountsAuthJwtRefreshCreateResponse>> {
     const response =
       await this.client.post<AccountsAuthJwtRefreshCreateResponse>(
-        `${this.allauthBrowser}auth/login`,
+        `${this.endpoint}login/`,
         data,
       );
     return response;
@@ -121,7 +151,7 @@ export class AuthClient extends BaseAuthClient {
   async logout(): Promise<AxiosResponse> {
     try {
       const response = await this.client.delete(
-        `${this.allauthBrowser}auth/session`,
+        `${this.endpoint}session/`,
       );
       // window.dispatchEvent(new Event("auth:logout"));
       return response;
@@ -178,8 +208,8 @@ export class AuthClient extends BaseAuthClient {
     }
   }
 
-  async getSession(): Promise<AxiosResponse> {
-    return this.client.get(`${this.allauthBrowser}auth/session`);
+  async getSession(): Promise<AxiosResponse<AppSession>> {
+    return this.client.get<AppSession>(`${this.endpoint}session`);
   }
 }
 

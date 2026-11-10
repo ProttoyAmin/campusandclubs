@@ -17,6 +17,7 @@ import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "../../hooks/session.hook";
 import { Link } from "react-router-dom";
 import { routes } from "@/settings/routes";
+import PasswordInput from "@/shared/components/password-input";
 
 type SignUpFormProps = {
   onSubmit: (data: SignUpSchemaType) => void;
@@ -102,15 +103,8 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             name="password"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <Input
-                  {...field}
-                  id="password"
-                  type="password"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Password"
-                  autoComplete="off"
-                />
+              <Field data-invalid={fieldState.invalid} className="">
+                <PasswordInput field={field} fieldState={fieldState} />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -134,15 +128,19 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
             name="re_password"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <Input
+              <Field data-invalid={fieldState.invalid} className="">
+                <PasswordInput field={field} fieldState={fieldState} props={{
+                  placeholder: "Confirm password",
+                  autoComplete: "new-password"
+                }} />
+                {/* <Input
                   {...field}
                   id="re_password"
                   type="password"
                   aria-invalid={fieldState.invalid}
                   placeholder="Confirm Password"
                   autoComplete="new-password"
-                />
+                /> */}
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -162,6 +160,18 @@ const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) => {
               </Field>
             )}
           />
+          {props.serverErrors && (
+            <FieldError
+              errors={[
+                ...(props.serverErrors.errors || [])
+                  .filter(
+                    (item) =>
+                      !item.param
+                  )
+                  .map((item) => new Error(item.message || "")),
+              ]}
+            />
+          )}
           <Link
             to={routes.auth.public.sign_in}
             className="place-items-end-safe text-primary cursor-pointer w-fit transition-all duration-200 border-b border-transparent hover:border-b hover:border-primary/50"

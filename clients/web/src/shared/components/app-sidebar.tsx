@@ -28,6 +28,7 @@ import { MenuTwoLineIcon, PlusIcon } from "@hugeicons/core-free-icons";
 import { Button } from "design/components/ui/button";
 import { useSidebar } from "design/components/ui/sidebar";
 import type { Scope } from "validation/club";
+import { Spinner } from "design/components/ui/spinner";
 
 // interface AppSideBarProps {
 //     main?: boolean;
@@ -42,7 +43,7 @@ export type ClubCreateRequestWritableExtended = ClubCreateRequestWritable & {
 
 export function AppSidebar() {
   const [isCreating, setIsCreating] = React.useState<boolean>(false);
-  const { data: currentUser } = useMe();
+  const { data: currentUser, isPending } = useMe();
   const { data: affiliations } = useAffiliations();
   const { data: templates, isPending: templatesIsPending } =
     useDepartmentTemplates();
@@ -52,6 +53,7 @@ export function AppSidebar() {
     // @ts-ignore
     // TODO: Fix the type later (priority:low)
     currentUser?.clubs || [];
+
 
   const handleClubCreate = async (data: ClubCreateRequestWritableExtended) => {
     await create.mutateAsync(data, {
@@ -71,6 +73,10 @@ export function AppSidebar() {
       },
     });
   };
+
+  if (isPending) {
+    return <Spinner />
+  }
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="bg-background">
