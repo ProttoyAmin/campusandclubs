@@ -66,3 +66,6 @@ Thumbs.db
 
 # Angular
 .angular/
+
+# React Router generated types
+.react-router/

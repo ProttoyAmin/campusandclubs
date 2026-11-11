@@ -1,0 +1,48 @@
+{
+  "name": "web-rrp",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc"
+  },
+  "dependencies": {
+    "@campus/api": "workspace:*",
+    "@hookform/resolvers": "^5.7.1",
+    "@tanstack/react-query": "^5.101.4",
+    "@tanstack/react-query-devtools": "^5.101.4",
+    "axios": "^1.18.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "design": "workspace:*",
+    "isbot": "^5.1.22",
+    "lucide-react": "^1.28.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-hook-form": "^7.84.0",
+    "react-router": "^8.5.1",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0",
+    "typescript-cookie": "^1.0.6",
+    "validation": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^8.5.1",
+    "@react-router/node": "^8.5.1",
+    "@react-router/serve": "^8.5.1",
+    "@tailwindcss/vite": "^4.3.2",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^6.0.2",
+    "vite": "^8.1.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
