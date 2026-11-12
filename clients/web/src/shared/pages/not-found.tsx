@@ -3,7 +3,6 @@ import { Button } from "design/components/ui/button";
 import { ArrowLeft, House } from "lucide-react";
 import { paths } from "@/settings/routes";
 
-
 const NotFound = () => {
   const navigate = useNavigate();
 

@@ -44,6 +44,16 @@ export type CodeSendResponse = {
   expiresAt: number
 }
 
+export type ResetPasswordRequestResponse = {
+  success: true;
+  message: string;
+  data: {
+    code_expires_in: number;
+    max_attempts: number;
+    expiresAt?: number;
+  }
+}
+
 export type SignUpResponse = {
   success: number;
   message: string;
@@ -82,6 +92,21 @@ export class AuthClient extends BaseAuthClient {
       console.error("Activate error:", (err as AxiosError).response?.data);
       throw err;
     }
+  }
+
+  async verifyPasswordResetCode(code: string): Promise<AxiosResponse> {
+    const response = await this.client.post(
+      `${this.endpoint}reset-password/verify/`,
+      {
+        code,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response;
   }
 
   async verifyEmail(key: string): Promise<AxiosResponse> {
@@ -165,11 +190,26 @@ export class AuthClient extends BaseAuthClient {
     }
   }
 
-  async requestPasswordReset(email: string): Promise<AxiosResponse> {
-    const response = await this.client.post(
-      this.allauthBrowser + "auth/password/request",
+  async requestPasswordReset(email: string): Promise<AxiosResponse<ResetPasswordRequestResponse>> {
+    const response = await this.client.post<ResetPasswordRequestResponse>(
+      this.endpoint + "reset-password/",
       {
         email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response;
+  }
+
+  async resetPasswordVerify(code: string): Promise<AxiosResponse> {
+    const response = await this.client.post(
+      this.endpoint + "reset-password/verify/",
+      {
+        code,
       },
       {
         headers: {

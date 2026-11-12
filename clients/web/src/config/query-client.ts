@@ -1,6 +1,9 @@
 import { sessionKeys, ANONYMOUS_SESSION } from "@/features/auth/queries/session";
-import { QueryClient, QueryCache } from "@tanstack/react-query";
+import { QueryClient, QueryCache, dehydrate, HydrationBoundary, type DehydratedState } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
+
+
+let clientSideQueryClient: QueryClient | null = null;
 
 // export const queryClient = new QueryClient({
 //   defaultOptions: {
@@ -44,4 +47,18 @@ export function createQueryClient() {
   return client
 }
 
+export function getClientQueryClient(): QueryClient {
+  if (!clientSideQueryClient) {
+    clientSideQueryClient = createQueryClient();
+  }
+  return clientSideQueryClient;
+}
+
+/** For tests / logout flows. */
+export function resetClientQueryClient(): void {
+  clientSideQueryClient = null;
+}
+
 export const queryClient = createQueryClient()
+export { dehydrate, HydrationBoundary };
+export type { DehydratedState };

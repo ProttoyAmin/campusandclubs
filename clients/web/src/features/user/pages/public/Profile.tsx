@@ -6,12 +6,12 @@ import { useUserOutlet } from "../../context/user-layout-context";
 import { Outlet } from "react-router-dom";
 import NavTabs from "@/components/nav-tabs";
 import { profileMenu } from "@/config/menu/user/profile-menu";
-import type { AuthSession } from "@/features/auth/services/authentication";
+import type { AppSession } from "@/features/auth/services/authentication";
 import BottomBar from "@/components/bottom-bar";
 
 export type ProfileOutletContext = {
   user: UserProfile | PrivateUserResponse;
-  currentUser: AuthSession;
+  currentUser: AppSession;
   isLoading: boolean;
 }
 

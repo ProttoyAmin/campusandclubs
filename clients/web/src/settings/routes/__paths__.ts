@@ -223,6 +223,7 @@ export const paths = {
     auth: {
       signIn: routes.auth.public.sign_in,
       signUp: routes.auth.public.sign_up,
+      resetPasswordOtp: routes.auth.public.reset_password_otp,
     },
 
     club: {

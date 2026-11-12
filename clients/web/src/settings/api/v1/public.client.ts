@@ -25,11 +25,18 @@ export class V1PublicClient {
     });
 
     this.client.interceptors.request.use(async (reqConfig) => {
+      console.log(reqConfig?.data);
       if (!this.hasCsrfCookie()) {
         await this.ensureCsrfCookie();
       }
       return reqConfig;
     });
+    this.client.interceptors.response.use(
+      (response) => {
+        console.log(response.data);
+        return response
+      },
+    )
   }
 
   private ensureCsrfCookie(): Promise<void> {

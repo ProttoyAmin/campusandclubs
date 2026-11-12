@@ -16,6 +16,15 @@ import NotificationLayout from "./layouts/notification/notification-layout";
 import { notificationRoutes } from "./features/notifications/router";
 import AcceptInvitationPage from "./features/club/pages/public/invitation-page";
 import ChatsShell from "./layouts/chat/shell";
+import type { RouteNode } from "./router/types";
+import React from "react";
+
+
+const SignIn = React.lazy(() => import("./features/auth/pages/public/sign-in"));
+
+const SignUp = React.lazy(() => import("./features/auth/pages/public/sign-up"));
+
+const tree: RouteNode[] = []
 
 
 export const routes: RouteObject[] = [
@@ -65,6 +74,15 @@ export const routes: RouteObject[] = [
     element: <AuthLayout />,
     children: [...authRoutes],
   },
+  // {
+  //   path: "auth",
+  //   element: <AuthLayout />,
+  //   children: [
+  //     { path: "sign-in", element: <SignIn />, handle: { crumb: { label: "Sign in" } } },
+  //     { path: "sign-up", element: <SignUp /> },
+  //     // …etc
+  //   ],
+  // },
   {
     path: "*",
     element: <NotFound />,

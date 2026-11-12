@@ -14,7 +14,7 @@ import {
 } from "design/components/ui/avatar";
 import { EditProfileDialog } from "../profile/edit-profile-dialog";
 import type { UserProfile } from "@campus/api";
-import type { AuthSession } from "@/features/auth/services/authentication";
+import type { AppSession } from "@/features/auth/services/authentication";
 import ProfileDropdown from "../profile/profile-dropdown";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon, SquareLockIcon } from "@hugeicons/core-free-icons";
@@ -45,7 +45,7 @@ const ProfileLayoutHeader = ({
   isLoading
 }: {
   user: UserResponse;
-  currentUser: AuthSession;
+  currentUser: AppSession;
   isLoading: boolean;
 }) => {
   const navigate = useNavigate();

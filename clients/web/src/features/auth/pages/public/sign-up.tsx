@@ -30,13 +30,11 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <>
-      <SignUpForm
-        onSubmit={handleSubmit}
-        pending={signUp.isPending}
-        serverErrors={signUp.error?.response.data ?? undefined}
-      />
-    </>
+    <SignUpForm
+      onSubmit={handleSubmit}
+      pending={signUp.isPending}
+      serverErrors={signUp.error?.response.data ?? undefined}
+    />
   );
 };
 

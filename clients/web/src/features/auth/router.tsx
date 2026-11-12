@@ -18,6 +18,10 @@ const ResetPassword = React.lazy(
   () => import("./pages/private/reset-password"),
 );
 
+const ResetPasswordVerifyOtp = React.lazy(
+  () => import("./pages/public/verify-password-reset-otp"),
+);
+
 export const authRoutes = [
   {
     path: routes.auth.public.sign_in,
@@ -43,6 +47,10 @@ export const authRoutes = [
   {
     path: routes.auth.private.reset_password,
     element: <ResetPassword />,
+  },
+  {
+    path: routes.auth.public.reset_password_otp,
+    element: <ResetPasswordVerifyOtp />,
   },
   {
     path: routes.auth.private.verify_email,

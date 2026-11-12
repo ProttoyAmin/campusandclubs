@@ -9,7 +9,7 @@ import type {
   RegisterRequestWritable,
 } from "@campus/api";
 import type { AxiosError, AxiosResponse } from "axios";
-import type { AllauthError, LoginRequest, SignUpError, SignUpResponse } from "../api/auth.client";
+import type { AllauthError, LoginRequest, ResetPasswordRequestResponse, SignUpError, SignUpResponse } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
 
@@ -90,7 +90,7 @@ export const useAuth = () => {
     },
   });
 
-  const forgotPassword = useMutation<void, AppError<AllauthError>, string>({
+  const forgotPassword = useMutation<ResetPasswordRequestResponse, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
       return authentication.request_password_reset(email);
     },
@@ -112,6 +112,19 @@ export const useAuth = () => {
     },
   });
 
+  const resetPasswordVerify = useMutation<
+    AxiosResponse,
+    AppError<AllauthError>,
+    { code: string; }
+  >({
+    mutationFn: ({ code }) => {
+      return authentication.reset_password_verify(code);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.session });
+    },
+  });
+
   return {
     logout,
     login,
@@ -119,5 +132,6 @@ export const useAuth = () => {
     forgotPassword,
     resetPassword,
     verifyEmail,
+    resetPasswordVerify,
   };
 };

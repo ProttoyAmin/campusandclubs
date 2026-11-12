@@ -5,14 +5,14 @@ import ProfileLayoutHeader from "@/features/user/components/layout/layout-header
 import { useUser } from "@/features/user/hooks/user.hooks";
 import type { UserResponse } from "@/features/user/api/user.client";
 import { useSession } from "@/features/auth/hooks";
-import type { AuthSession } from "@/features/auth/services/authentication";
+import type { AppSession } from "@/features/auth/services/authentication";
 import { useScrollRestoration } from "@/shared/hooks/use-scroll-restoration";
 import Create from "@/components/create";
 
 export type UserProfileLayoutProps = {
   user: UserResponse;
-  currentUser: AuthSession;
-  isLoading?: boolean;
+  currentUser: AppSession;
+  isLoading: boolean;
 };
 
 export const UserProfileLayout: React.FC = () => {

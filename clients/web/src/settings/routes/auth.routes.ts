@@ -3,6 +3,7 @@ export const authRoutes = {
     sign_in: "/auth/sign-in",
     sign_up: "/auth/sign-up",
     social_callback: "/auth/callback",
+    reset_password_otp: "/auth/reset-password/verify/",
 
   },
   private: {

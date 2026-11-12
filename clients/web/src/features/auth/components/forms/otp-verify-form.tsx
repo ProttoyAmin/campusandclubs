@@ -10,6 +10,7 @@ type OTPProps = {
     onResend: () => void;
     pending: boolean;
     invalid?: boolean;
+    isExpired?: boolean;
 }
 
 
@@ -62,7 +63,7 @@ const OTPVerifyForm = (props: OTPProps) => {
                 )}
             </Button>
 
-            <Button variant="default" onClick={props.onResend} className={'w-full rounded-full'}>
+            {props.isExpired && <Button variant="default" onClick={props.onResend} className={'w-full rounded-full'}>
                 {props.pending ? (
                     <div className="flex items-center gap-2">
                         <Spinner />
@@ -71,7 +72,7 @@ const OTPVerifyForm = (props: OTPProps) => {
                 ) : (
                     "Resend"
                 )}
-            </Button>
+            </Button>}
         </form>
     )
 }

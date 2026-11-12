@@ -126,6 +126,11 @@ export class Authentication {
     return response.data;
   }
 
+  async reset_password_verify(code: string) {
+    const response = await this.apiClient.resetPasswordVerify(code);
+    return response.data;
+  }
+
   async logout() {
     const response = await this.apiClient.logout();
     if (response.data.success) {

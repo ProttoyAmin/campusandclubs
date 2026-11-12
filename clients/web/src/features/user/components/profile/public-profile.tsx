@@ -6,13 +6,12 @@ import {
 } from "design/components/ui/card";
 import {
   Avatar,
-  AvatarBadge,
   AvatarFallback,
   AvatarImage,
 } from "design/components/ui/avatar";
 import type { UserMinimal, UserProfile } from "@campus/api";
 import { Button } from "design/components/ui/button";
-import type { AuthSession } from "@/features/auth/services/authentication";
+import type { AppSession, } from "@/features/auth/services/authentication";
 import ToggleFollowButton from "@/features/user/components/actions/follow-button";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/settings/routes";
@@ -51,7 +50,7 @@ export const PublicProfileSkeleton = () => {
 
 export const PublicProfileHeader: React.FC<{
   data: UserProfile;
-  currentUser: AuthSession;
+  currentUser: AppSession;
   isLoading: boolean;
 }> = ({ data, currentUser, isLoading }) => {
   const navigate = useNavigate();
