@@ -19,10 +19,9 @@ from core.policies.utils import current_user
 
 logger = logging.getLogger(__name__)
 
-
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
-def get_current_user(request) -> Response:
+def get_current_user(request: Request) -> Response:
     """Get current authenticated user's profile"""
     serializer = UserProfileSerializer(
         request.user, context={'request': request})

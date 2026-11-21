@@ -20,7 +20,7 @@ import {
 import { useAffiliations, useMe } from "@/features/user/hooks/user.hooks";
 import React from "react";
 import { toast } from "design/components/ui/toast";
-import { clubMenu } from "@/config/menu/club-menu";
+import { clubMenu } from "@/config/menu/dynamic-menu";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -29,6 +29,8 @@ import { Button } from "design/components/ui/button";
 import { useSidebar } from "design/components/ui/sidebar";
 import type { Scope } from "validation/club";
 import { Spinner } from "design/components/ui/spinner";
+import { Skeleton } from "design/components/ui/skeleton";
+
 
 // interface AppSideBarProps {
 //     main?: boolean;
@@ -36,6 +38,21 @@ import { Spinner } from "design/components/ui/spinner";
 //     menu?: (param: any) => MenuItemType[];
 //     menuParam?: any;
 // }
+export function AppSidebarLoadingSkeleton() {
+  return (
+    <Sidebar variant="sidebar" collapsible="icon" className="bg-background">
+      <div className="flex flex-col gap-2 p-4 bg-background h-full">
+        <Skeleton className="h-5 w-5" />
+        <Skeleton className="h-5 w-5" />
+        <Skeleton className="h-5 w-5" />
+      </div>
+    </Sidebar>
+  );
+}
+
+
+
+
 
 export type ClubCreateRequestWritableExtended = ClubCreateRequestWritable & {
   scope: Scope;
@@ -75,7 +92,7 @@ export function AppSidebar() {
   };
 
   if (isPending) {
-    return <Spinner />
+    return <AppSidebarLoadingSkeleton />
   }
 
   return (

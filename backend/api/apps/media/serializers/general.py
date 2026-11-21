@@ -69,7 +69,7 @@ class MediaListSerializer(serializers.ModelSerializer):
 
     def get_target(self, obj: Media):
         from apps.clubs.serializer import ClubSerializer
-        from apps.accounts.serialize.user import UserProfileSerializer
+        from apps.accounts.serializers.user import UserProfileSerializer
         from apps.posts.serializer import PostSerializer
 
         # serializer_map = {

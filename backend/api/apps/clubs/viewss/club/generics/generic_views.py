@@ -83,9 +83,9 @@ class ClubListCreateView(
             origin=request.query_params.get("origin"),
         )
 
-        # clubs = self.get_service(request).list_clubs(
-        #     viewer=current_user(request), filters=filters)
-        clubs = self.get_service(request).exclude_secret_clubs()
+        clubs = self.get_service(request).list_clubs(
+            viewer=current_user(request), filters=filters)
+        # clubs = self.get_service(request).exclude_secret_clubs()
 
         # from apps.clubs.models.permission import PERMISSIONS_LIST
         # return Response({"message": "Hello, world!", 'codenames': PERMISSIONS_LIST})
@@ -127,7 +127,7 @@ class ClubRetrieveUpdateDestroyAPIView(
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[Club]:
-        return self.get_service(self.request).list_clubs(filters=ClubListFilters(), viewer=current_user(self.request))
+        return self.get_service(self.request).exclude_secret_clubs()
 
     def get_serializer_class(self) -> type[serializers.BaseSerializer[Club]]:
         if self.request.method == "PUT" or self.request.method == "PATCH":

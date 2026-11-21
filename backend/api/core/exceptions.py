@@ -1,3 +1,5 @@
+
+from typing import Any
 from rest_framework.exceptions import APIException
 from rest_framework.views import exception_handler
 
@@ -16,7 +18,7 @@ def _flatten(detail, param=None):
         yield err
 
 
-def api_exception_handler(exc, context):
+def api_exception_handler(exc: Exception, context: dict[str, Any]):
     response = exception_handler(exc, context)
     if response is None:
         return None

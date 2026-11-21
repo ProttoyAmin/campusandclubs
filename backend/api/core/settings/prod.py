@@ -83,3 +83,59 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
 }
+
+
+# --------------------------------------------------------------------------
+# Caches / Channels / Redis
+# --------------------------------------------------------------------------
+from redis.maint_notifications import MaintNotificationsConfig
+DISABLED_MAINT_NOTIFICATIONS = MaintNotificationsConfig(enabled=False)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{getenv("REDIS_HOST", "127.0.0.1")}:{int(getenv("REDIS_PORT", 6379))}/1",
+        "KEY_PREFIX": "myapp",
+        "TIMEOUT": 300,                 # default 5 minutes
+        "OPTIONS": {
+            "maint_notifications_config" : DISABLED_MAINT_NOTIFICATIONS
+        }
+    }
+}
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                {
+                    "host": getenv("REDIS_HOST", "127.0.0.1"),
+                    "port": int(getenv("REDIS_PORT", 6379)),
+                    "socket_keepalive": True,
+                    "socket_connect_timeout": 5,
+                    "socket_timeout": 30,
+                    "retry_on_timeout": True,
+                    "maint_notifications_config" : DISABLED_MAINT_NOTIFICATIONS
+                }
+            ],
+            "capacity": 1500,
+            "expiry": 10,
+        },
+    },
+}
+
+
+
+# --------------------------------------------------------------------------
+# Storage / Media                           :TODO
+# --------------------------------------------------------------------------
+MEDIA_STORAGE_BACKEND = "cloudinary"
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}

@@ -14,21 +14,31 @@ from allauth.account.internal.flows import (
     email_verification_by_code as evc,
 )
 from allauth.core.ratelimit import RateLimited
+from django.contrib.sessions.backends.db import SessionStore as DjangoSession
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from rest_framework.exceptions import ValidationError, NotAuthenticated, PermissionDenied, Throttled
-from ..repositories import UserRepository
-from ..models import User
+from ..repositories import UserRepository, UserSessionRepository
+from ..models import User, UserSession
 from core.services import BaseService
 from .utils import consume_rate_limit, form_errors, check_process_code, Conflict, provider_sociallogin
 from .auth_service import EmailInput
 from core.policies.utils import current_user
 from allauth.account import app_settings as accounts_settings
 from .auth_state import AuthState, get_auth_state
+from importlib import import_module
+from django.conf import settings
+from typing import Optional
 
+SessionStore: DjangoSession = import_module(settings.SESSION_ENGINE).SessionStore
 
 class CredentialService(BaseService[User, UserRepository]):
     repository_class = UserRepository
+
+    def __init__(self, actor: Optional[User] = None, repository: Optional[UserRepository] = None) -> None:
+        super().__init__(actor, repository)
+        self.sessions = UserSessionRepository()
 
     def _require_user(self, request: HttpRequest) -> User:
         user = current_user(request)
@@ -39,13 +49,46 @@ class CredentialService(BaseService[User, UserRepository]):
     def _serialize_emails(self, request: HttpRequest, user: User) -> list[dict]:
         addrs = manage_email.list_email_addresses(request, user)
         return [
-            {
+            {   
+                "id": a.id,
                 "email": a.email,
                 "verified": a.verified,
                 "primary": a.primary,
             }
             for a in addrs
         ]
+
+    def list_sessions(self, request: HttpRequest) -> QuerySet[UserSession]:
+        user = self._require_user(request)
+        return self.sessions.list(user_id=user.id)
+
+    def revoke_session(self, request: HttpRequest, session_id: str) -> QuerySet[UserSession]:
+        user = self._require_user(request)
+
+        if not request.session.session_key:
+            raise ReauthenticationRequired()
+        
+        row = self.sessions.filter(user=user, id=session_id).first()
+
+        if row is None:
+            raise ValidationError({"session": ["Session not found."]})
+
+        if row.session_key == request.session.session_key:
+            raise ValidationError({"session": ["Sign out to terminate the current session."]})
+        
+        SessionStore(session_key=row.session_key).delete()                  #type: ignore
+        self.sessions.terminate_session(user, row.session_key)
+
+        return self.list_sessions(request)
+
+    def revoke_other_sessions(self, request: HttpRequest) -> QuerySet[UserSession]:
+        user = self._require_user(request)
+
+        for row in self.sessions.filter(user=user).exclude(session_key=request.session.session_key):
+            SessionStore(session_key=row.session_key).delete()              #type: ignore
+            self.sessions.terminate_session(user, row.session_key)
+        
+        return self.list_sessions(request)
 
     def list_emails(self, request: HttpRequest) -> list[dict]:
         user = self._require_user(request)

@@ -28,12 +28,15 @@ from apps.accounts.views.auth import (
 #     LoginView,
 #     LogoutView,
 #     RegisterView,
-    get_request_info,
+    get_request_object,
+    get_session_object,
     RefreshTokenView
 )
 
 from apps.accounts.views.user.generics import (
-    CompleteUserInfoView
+    CompleteUserInfoView,
+    RetreieveMeSessions,
+    RevokeOtherSessionsView
 )
 
 from apps.accounts.views.user.common import (
@@ -51,21 +54,28 @@ from apps.accounts.views.user.common import (
     ConfirmAddedEmailView,
     ManageProvidersView
 )
+from apps.accounts.views.user.viewsets.user_viewsets import UserPrivacyUpdatesViewset
+
+
+from django.urls import URLResolver
+from django.urls import URLPattern
+
 
 app_name = 'accounts'
 
 router = DefaultRouter()
-# router.register(r'auth/main', views.UserViewSet, basename='user')
+router.register(r'', UserPrivacyUpdatesViewset, basename='user-preference')
 
-urlpatterns = [
+urlpatterns: list[URLPattern | URLResolver]  = [
     # Djoser auth endpoints
-#     re_path(r'^auth/', include('djoser.urls')),
+    # re_path(r'^auth/', include('djoser.urls')),
     # re_path(r'^auth/', include('djoser.urls.authtoken')),
     #     re_path(r'^auth/', include('djoser.urls.jwt')),
 
     path("csrf/", csrf_token_view, name="csrf"),
 #     path("auth/refresh/", RefreshTokenView.as_view(), name="refresh"),
-    path("request-info/", get_request_info, name="request_info"),
+    path("request-object/", get_request_object, name="request_object"),
+    # path("session-object/", get_session_object, name="session_object"),
     
     
     path("provider/signup/", ProviderSignupView.as_view(), name="provider_signup"),
@@ -108,8 +118,8 @@ urlpatterns = [
     # # User lookup
     path("users/user/<str:username>/", UserRetrieveUpdateDestroyView.as_view(lookup_field='username'),
          name="user_details_by_username"),  # DONE
-#     #     path("auth/users/me/", MeRetreiveUpdateView.as_view(),
-#     #          name="update_user_details"),  # DONE
+    # path("users/me/", MeRetreiveUpdateView.as_view(),
+    #          name="update_user_details"),
     path('all/', UserListCreateView.as_view(),
          name="all_users"),  # ---- DONE
 #     path('auth/<uuid:user_id>/all/',
@@ -122,15 +132,18 @@ urlpatterns = [
 
 
     # # Current user endpoints
-    path('me/', get_current_user, name='current_user'),
+    path('me/', MeRetreiveUpdateView.as_view(), name='me'),
+    path('me/preference/', include(router.urls)),
+    path('me/sessions/', RetreieveMeSessions.as_view(), name='me_session_list_and_revoke'),
+    path('me/sessions/revoke-others/', RevokeOtherSessionsView.as_view(), name='me_revoke_other_sessions'),
     path('me/clubs/', get_my_clubs, name='my_clubs'),
     path('me/affiliations/', get_my_affiliations, name='my_affiliations'),
     path('me/emails/', ManageEmailAPIView.as_view(), name='my_emails'),
     path('me/emails/resend/', ResendAddedEmailView.as_view(), name='resend_email_code'),
     path('me/emails/confirm/', ConfirmAddedEmailView.as_view(), name='confirm_email_code'),
     # path('auth/me/profile/', views.update_profile, name='update_profile'),
-#     path("auth/me/upload-profile-picture/",
-#          views.upload_profile_picture, name="upload_profile_picture"),
+    path("me/upload-profile-picture/",
+         pre_views.upload_profile_picture, name="upload_profile_picture"),
     # path('auth/me/clear-profile-picture/', views.clear_profile_picture, name='clear_profile_picture'),
     # path('auth/me/email-preference/', views.manage_email_preference, name='email_preference'),
 

@@ -62,8 +62,8 @@ HEADLESS_FRONTEND_URLS = {
 # addresses, which breaks testing against random dev/test inboxes. Use plain
 # SMTP (Gmail) locally instead — same backend allauth was already using
 # before Resend was introduced.
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL")
 
 REST_FRAMEWORK = {
@@ -76,8 +76,73 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
 }
 
+
+
+# --------------------------------------------------------------------------
+# Caches / Channels / Redis
+# --------------------------------------------------------------------------
+from redis.maint_notifications import MaintNotificationsConfig
+DISABLED_MAINT_NOTIFICATIONS = MaintNotificationsConfig(enabled=False)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": f"redis://{getenv("REDIS_HOST", "127.0.0.1")}:{int(getenv("REDIS_PORT", 6379))}/1",
+        "KEY_PREFIX": "myapp",
+        "TIMEOUT": 300,                 # default 5 minutes
+        "OPTIONS": {
+            "maint_notifications_config" : DISABLED_MAINT_NOTIFICATIONS
+        }
+    }
+}
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                {
+                    "host": getenv("REDIS_HOST", "127.0.0.1"),
+                    "port": int(getenv("REDIS_PORT", 6379)),
+                    "socket_keepalive": True,
+                    "socket_connect_timeout": 5,
+                    "socket_timeout": 30,
+                    "retry_on_timeout": True,
+                    "maint_notifications_config" : DISABLED_MAINT_NOTIFICATIONS
+                }
+            ],
+            "capacity": 1500,
+            "expiry": 10,
+        },
+    },
+}
+
+
 # CELERY_BROKER_URL = getenv(
 #     "CELERY_BROKER_URL",
 #     f"redis://{getenv('REDIS_HOST', '127.0.0.1')}:{getenv('REDIS_PORT', 6379)}/1",
 # )  # db 1, so it stays separate from the Channels layer
 # CELERY_TIMEZONE = "UTC"
+
+
+
+
+# --------------------------------------------------------------------------
+# Storage / Media
+# --------------------------------------------------------------------------
+MEDIA_STORAGE_BACKEND = "local"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS" : {
+            "location" : BASE_DIR / "storage",
+            "base_url" : "http://localhost:8000/storage/"
+        }
+    },
+    "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+}
+MEDIA_URL = "/storage/"
+MEDIA_ROOT = BASE_DIR / "storage"

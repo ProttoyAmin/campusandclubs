@@ -1,4 +1,5 @@
 import uuid
+from cloudinary.utils import process_ki
 from django.db.models import QuerySet
 from apps.clubs.models.enums import JoinMethod
 from core.constants import DEFAULT_MEMBER_COLOR
@@ -16,7 +17,7 @@ from apps.clubs.models.enums import InviteType
 from django.core.exceptions import PermissionDenied
 from apps.clubs.policies.club import ClubPolicy
 from core.views import PolicyMixin
-from apps.clubs.models import Club
+from apps.clubs.models import Club, Membership
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from apps.clubs.dtos.invite_dto import InviteDTO
@@ -41,9 +42,29 @@ class RoleService(BaseService[Role, RoleRepository]):
         self.membership_repo = MembershipRepository()
         self.usage_repo = InviteUsageRepository()
 
-    def _get_object(self, pk: uuid.UUID) -> Club:
+    def _get_object(self, pk: str) -> Role:
         return self.repository.get(pk=pk)
+
+    def get_role(self, role_id: str) -> Role:
+        return self.repository.get(id=role_id)
+
+    def get_role_with_members(self, role_id: str, club_pk: str) -> Role:
+        return self.repository.filter(club__id=club_pk).get(id=role_id)
     
+    def get_role_members(self, club_pk: str, role_id: str) -> QuerySet[Membership]:
+        role = self._get_object(pk=role_id)
+        club = get_object_or_404(Club, pk=club_pk)
+        logger.info(f"Role with members: {role}")
+        # memberships = self.membership_repo.get_membership_by_role(role, club_pk)
+        memberships = self.membership_repo.filter(
+            club=club,
+            roles=role
+        ).select_related('user').order_by('joined_at')
+        # members_data = []
+
+        return memberships
+
+
     def list_roles(self, club_pk: str) -> QuerySet[Role]:
         return self.repository.list_roles(club_pk=club_pk)
 
@@ -56,6 +77,6 @@ class RoleService(BaseService[Role, RoleRepository]):
         exists = []
         for member in members:
             if member.roles.filter(pk=role_id).exists():
-                exists.append(member.id)
+                exists.append(member.user.id)
         
         raise ValidationError(f"Already exists {len(exists)}")

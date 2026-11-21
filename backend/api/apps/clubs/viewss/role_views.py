@@ -1,5 +1,5 @@
 from apps.clubs.services.role_service import RoleService
-from core.views import ServiceMixin
+from core.mixins import ServiceMixin, PolicyMixin
 from apps.clubs.policies.club import ClubPolicy
 from django.db.models import QuerySet
 from apps.clubs.serializers import RoleCreateUpdateSerializer
@@ -10,18 +10,21 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from rest_framework import generics
+from rest_framework import generics, serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
-from rest_framework import permissions, response, status
+from rest_framework import status
+from rest_framework.views import APIView
 
+from core.views.base import current_user
 from core import pagination
 from core.policies.utils import current_user
 from apps.clubs.models import Club, Membership, Visibility, ClubStatus, Role
 from apps.clubs.services.club.club_service import ClubService
 from apps.clubs.serializer.membership.m_serializers import MembershipSerializer
-from apps.clubs.serializer.role_serializers import RoleSerializer, RoleAssignSerializer
-from core.views import PolicyMixin
+from apps.clubs.serializer.role_serializers import RoleSerializer, RoleAssignSerializer, RoleDetailSerializer
+from core.response.api_response import ApiResponse
+
 
 
 class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, Club], ServiceMixin[RoleService]):
@@ -42,14 +45,11 @@ class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, 
         """
         club = get_object_or_404(Club, pk=pk, deleted_at__isnull=True)
 
-        # Check if user is a member
-        is_member = Membership.objects.filter(
-            user=request.user, club=club).exists()
-        is_owner = club.owner == request.user
-
-        if not (is_member or is_owner):
-            return response.Response(
-                {'detail': 'You must be a club member to view roles.'},
+        policy = self.get_policy(request, club)
+        decision = policy.can_view()
+        if not decision.allowed:
+            return Response(
+                {'detail': decision.reason},
                 status=status.HTTP_403_FORBIDDEN
             )
 
@@ -71,7 +71,7 @@ class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, 
             context={'request': request}
         )
 
-        return response.Response({
+        return Response({
             'club_id': club.id,
             'club_name': club.name,
             'total_roles': roles.count(),
@@ -87,13 +87,13 @@ class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, 
         club = get_object_or_404(Club, pk=pk, deleted_at__isnull=True)
         svc = self.get_service(request)
 
-        membership = self.get_service(request).membership_repo.get_membership(club, request.user)
+        membership = self.get_service(request).membership_repo.get_membership(club, current_user(request))
 
         if not membership: return Response({'detail': 'Not a member.'}, status=status.HTTP_403_FORBIDDEN) 
         is_owner = club.owner == request.user
 
         if not (membership.has_permission('manage_roles') or is_owner):
-            return response.Response(
+            return Response(
                 {'detail': 'You must have manage_roles permission to create a role.'},
                 status=status.HTTP_403_FORBIDDEN
             )
@@ -104,7 +104,7 @@ class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, 
         )
 
         if not serializer.is_valid():
-            return response.Response(
+            return Response(
                 serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
@@ -113,7 +113,7 @@ class ListCreateRoleAPIView(generics.ListCreateAPIView, PolicyMixin[ClubPolicy, 
         role  = svc.role_repository.create(name=data['name'], club=club, color=data['color'])
         role.permissions.set(data['permissions'])
 
-        return response.Response({
+        return Response({
             'club_id': club.id,
             'club_name': club.name,
             'role': serializer.data
@@ -139,9 +139,75 @@ class AssignRoleAPIView(generics.GenericAPIView, ServiceMixin[RoleService]):
     def post(self, request: Request, pk: str, role_id: str, *args, **kwargs) -> Response:
         club = get_object_or_404(Club, pk=pk, deleted_at__isnull=True)
         role = get_object_or_404(Role, pk=role_id)
-        serializer = self.get_serializer(data=request.data)
 
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         svc = self.get_service(request).assign_role(serializer.validated_data['member_ids'], role_id)
         return Response(serializer.validated_data)
+
+class RetreiveRoleAPIView(APIView, ServiceMixin[RoleService], PolicyMixin[ClubPolicy, Club]):
+    service_class = RoleService
+    serializer_class = RoleDetailSerializer
+    policy_class = ClubPolicy
+
+    def get(self, request: Request, pk: str, role_id: str, *args, **kwargs) -> Response:
+        role = self.get_service(request).get_role_with_members(role_id=role_id, club_pk=pk)
+        policy = self.get_policy(request, role.club)
+        decision = policy.can_edit_roles()
+
+        if not decision.allowed:
+            return Response(
+                {'detail': decision.reason},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        serializer = self.serializer_class(role, context={'request': request})
+
+        return ApiResponse(serializer.data)
+
+    def patch(self, request: Request, pk: str, role_id: str, *args, **kwargs) -> Response:
+        role = self.get_service(request).get_role_with_members(role_id=role_id, club_pk=pk)
+        policy = self.get_policy(request, role.club)
+        decision = policy.can_edit_roles()
+
+        if not decision.allowed:
+            return Response(
+                {'detail': decision.reason},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        update_serializer = RoleCreateUpdateSerializer(
+            role,
+            data=request.data,
+            partial=True,
+            context={'request': request, 'club': role.club}
+        )
+        update_serializer.is_valid(raise_exception=True)
+        updated_role = update_serializer.save()
+        detail_serializer = self.serializer_class(
+            updated_role,
+            context={'request': request}
+        )
+
+        return ApiResponse(detail_serializer.data, message='Role updated successfully.')
+
+class RoleMembersAPIView(APIView, ServiceMixin[RoleService], PolicyMixin[ClubPolicy, Club]):
+    service_class = RoleService
+    serializer_class = MembershipSerializer
+    policy_class = ClubPolicy
+
+    def get(self, request: Request, pk: str, role_id: str, *args, **kwargs) -> Response:
+        role = self.get_service(request).get_role(role_id=role_id)
+        policy = self.get_policy(request, role.club)
+        decision = policy.can_edit_roles()
+
+        if not decision.allowed:
+            return Response(
+                {'detail': decision.reason},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        members = self.get_service(request).get_role_members(club_pk=pk, role_id=role_id)
+        serializer = self.serializer_class(members, many=True, context={'request': request})
+
+        return ApiResponse(serializer.data)

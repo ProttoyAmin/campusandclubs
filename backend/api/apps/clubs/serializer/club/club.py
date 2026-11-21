@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from apps.clubs.models import Club, Visibility, MembershipScope, Membership, JoinMode
 from apps.institutes.models import Institute
 from apps.clubs.models.club import DepartmentTemplate
-from apps.clubs.dtos.club_create import ClubCreateDTO
+from apps.clubs.dtos.club_create import ClubCreateAttrs, ClubCreateDTO
 from core.policies.utils import current_user
 
 
@@ -113,7 +113,7 @@ class ClubCreateSerializer(serializers.ModelSerializer):
         ]
         return validators
 
-    def validate(self, attrs: ClubCreateDTO):
+    def validate(self, attrs: ClubCreateAttrs):
         """Check for duplicate club name + origin combination (robust)"""
         from apps.clubs.dtos.club_create import ClubDuplicateCheckDTO
         from apps.clubs.utils.club import allowed_join_modes
@@ -192,6 +192,7 @@ class ClubSerializer(serializers.ModelSerializer):
     is_public = serializers.SerializerMethodField()
 
     club_url = serializers.SerializerMethodField()
+    slug_url = serializers.SerializerMethodField()
     join_url = serializers.SerializerMethodField()
     leave_url = serializers.SerializerMethodField()
     members_url = serializers.SerializerMethodField()
@@ -201,7 +202,7 @@ class ClubSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'owner', 'origin', 'about', "media", 'slug',
                   'avatar', 'banner', 'privacy', 'allow_public_posts', 'is_member',
                   'total_members', 'total_events', 'total_posts', 'is_public',
-                  'club_url', 'join_url', 'leave_url', 'members_url'
+                  'club_url', 'slug_url', 'join_url', 'leave_url', 'members_url'
                   ]
         read_only_fields = ['id']
 
@@ -237,6 +238,11 @@ class ClubSerializer(serializers.ModelSerializer):
         request = self._get_request()
         assert request is not None
         return request.build_absolute_uri(reverse('clubs:club_info', kwargs={'pk': obj.pk}))
+
+    def get_slug_url(self, obj: Club) -> str:
+        request = self._get_request()
+        assert request is not None
+        return request.build_absolute_uri(reverse('clubs:club_info_slug', kwargs={'slug': obj.slug}))
 
     def get_leave_url(self, obj: Club) -> str:
         request = self._get_request()

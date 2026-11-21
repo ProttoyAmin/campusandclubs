@@ -2,7 +2,8 @@ from __future__ import annotations
 
 
 from django.db import models
-from .club.club import Club
+
+
 
 PERMISSIONS_LIST: list[tuple[str, str]] = [
     ("create_event", "Can create event"),
@@ -22,7 +23,6 @@ class PermissionCodename(models.TextChoices):
     CREATE_FORMS = "create_forms", "Can create forms"
     CREATE_EVENT = "create_event", "Can create event"
     CREATE_INVITES = "create_invites", "Can create invites"
-
 
 
 

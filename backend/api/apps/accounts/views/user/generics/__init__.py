@@ -1,7 +1,11 @@
 from .generic_views import (
-    CompleteUserInfoView
+    CompleteUserInfoView,
+    RetreieveMeSessions,
+    RevokeOtherSessionsView
 )
 
 __all__ = [
-    'CompleteUserInfoView'
+    'CompleteUserInfoView',
+    'RetreieveMeSessions',
+    'RevokeOtherSessionsView'
 ]

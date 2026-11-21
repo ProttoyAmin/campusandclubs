@@ -249,30 +249,6 @@ EMAIL_HOST_PASSWORD = getenv("EMAIL_APP_PASSWORD")
 EMAIL_USE_TLS = True
 
 # --------------------------------------------------------------------------
-# Channels / Redis
-# --------------------------------------------------------------------------
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [
-                {
-                    "host": getenv("REDIS_HOST", "127.0.0.1"),
-                    "port": int(getenv("REDIS_PORT", 6379)),
-                    "socket_keepalive": True,
-                    "socket_connect_timeout": 5,
-                    "socket_timeout": 30,
-                    "retry_on_timeout": True,
-                }
-            ],
-            "capacity": 1500,
-            "expiry": 10,
-        },
-    },
-}
-
-# --------------------------------------------------------------------------
 # Cloudinary / static / media
 # --------------------------------------------------------------------------
 

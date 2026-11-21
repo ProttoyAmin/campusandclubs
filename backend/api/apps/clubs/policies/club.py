@@ -7,11 +7,20 @@ from apps.clubs.models import (
     MembershipScope,
     MembershipApplication,
 )
-
+from apps.clubs.models.permission import PermissionCodename
 from apps.accounts.models import User
 from .membership_policy import MembershipAwarePolicy
+from .strategies.scopes.registry import MembershipScopeRegistry
+
+
+
+
 
 class ClubPolicy(MembershipAwarePolicy[User, Club]):
+
+    # strategies = {
+    #     "PUBLIC" : 
+    # }
 
     def get_membership(self) -> Membership | None:
         return Membership.objects.filter(user=self.actor, club=self.record).first()
@@ -20,6 +29,14 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
         return Membership.objects.filter(user=self.actor, club=self.record, left_at__isnull=True).exists()
 
     def _check_scope(self, actor: User, club: Club) -> tuple[bool, str]:
+
+        strategy = MembershipScopeRegistry.resolve(
+            self.record.scope
+        )
+
+        strategy.evaluate(self.actor, self.record)
+
+
         if club.scope == MembershipScope.OPEN:
             return True, ""
 
@@ -78,13 +95,21 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
     def can_edit(self) -> Decision:
         return Decision(self.actor == self.record.owner, "Only club owners can edit the club")
 
+    def can_edit_roles(self) -> Decision:
+        if self.actor == self.record.owner:
+            return Decision(True, "")
+        
+        if self._is_member():
+            if self.has_permission(PermissionCodename.MANAGE_ROLES):
+                return Decision(True, "")
+        return Decision(False, "You don't have permission to edit roles in this club.")
+
     def can_manage_member(self) -> Decision:
         if self.actor == self.record.owner:
             return Decision(True, "")
         
         if self._is_member():
-            membership = self.get_membership()
-            if membership and membership.has_permission("manage_members"):
+            if self.has_permission(PermissionCodename.MANAGE_MEMBERS):
                 return Decision(True, "")
 
         return Decision(False, "You don't have permission to manage this club.")
@@ -153,6 +178,20 @@ class ClubPolicy(MembershipAwarePolicy[User, Club]):
     def can_manage_forms(self) -> Decision:
         """Owners and members with manage_members can create/edit the club's application form."""
         return self.can_review_application()
+
+    def can_create_invite(self) -> Decision:
+        if self.actor == self.record.owner:
+            return Decision(True, "")
+
+        if not self._is_member():
+            return Decision(False, "You are not a member. Go away.")
+
+        membership = self.get_membership()
+
+        if membership and membership.has_permission(PermissionCodename.CREATE_INVITES):
+            return Decision(True, "")
+
+        return Decision(False, "You don't have permissions to create invites.")
 
     def can_create_application(self) -> Decision:
         if not self.membership_exists():

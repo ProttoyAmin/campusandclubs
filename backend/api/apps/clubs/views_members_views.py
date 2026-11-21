@@ -644,7 +644,7 @@ def role_users(request, pk, role_id):
     """
     Get all users with a specific role in a club
     """
-    club = get_object_or_404(models.Club, pk=pk, is_active=True)
+    club = get_object_or_404(models.Club, pk=pk, deleted_at__isnull=True)
     role = get_object_or_404(models.Role, pk=role_id, club=club)
 
     # Check if user can view members

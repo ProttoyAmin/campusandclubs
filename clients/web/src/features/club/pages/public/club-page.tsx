@@ -1,13 +1,11 @@
 import React from "react";
-import { CardContent, CardHeader } from "design/components/ui/card";
 import { useClubOutlet } from "../../context/club-layout-context";
 import { Outlet, useParams } from "react-router-dom";
-import NavTabs from "@/components/nav-tabs";
-import { clubProfileMenu } from "@/config/menu/club/club-menu";
 import EmptyState from "@/shared/components/empty-state";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FileEmpty02Icon, LockKeyholeIcon } from "@hugeicons/core-free-icons";
 import defaultBanner from "@/assets/4578-dragon-ball-z.png";
+import BottomBar from "@/components/bottom-bar";
 
 const ClubPage: React.FC = () => {
   const { club } = useClubOutlet();
@@ -59,6 +57,9 @@ const ClubPage: React.FC = () => {
       </div>
       <div className="p-0">
         <Outlet context={{ club }} />
+      </div>
+      <div className="md:hidden fixed bottom-0 w-full z-50 h-10 bg-background">
+        <BottomBar />
       </div>
     </div>
   );

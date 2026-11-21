@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AnonymousUser
 from apps.accounts.models import User
 from abc import ABC
 from typing import ClassVar, Generic, TypeVar, Optional, cast
@@ -33,5 +34,5 @@ class BaseService(Generic[T, RepoT], ABC):
         return self.repository
 
     @property
-    def user(self) -> User:
-        return self.actor
+    def user(self) -> User | AnonymousUser:
+        return self.actor if self.actor else AnonymousUser()

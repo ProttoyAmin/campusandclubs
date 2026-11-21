@@ -14,4 +14,6 @@ interface PermissionContextType {
     hasPermission: (permission: Permission) => boolean;
 }
 
+
 const PermissionContext = createContext<PermissionContextType | undefined>(undefined);
+

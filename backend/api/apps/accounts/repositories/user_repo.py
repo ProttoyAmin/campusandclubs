@@ -14,10 +14,15 @@ class UserRepository(BaseRepository[User]):
     def emails(self, user: User) -> QuerySet[EmailAddress]:
         return EmailAddress.objects.filter(user=user)
 
-    def update(self, user: User, dto: UpdateUserDTO_minimal) -> User:
+    def update_user(self, user: User, dto: UpdateUserDTO_minimal) -> User:
         self.model.objects.filter(pk=user.pk).update(
             first_name=dto.first_name,
             last_name=dto.last_name,
             bio=dto.bio
         )
         return self.get(pk=user.pk)
+
+    def toggle_privacy(self, user: User) -> User:
+        user.is_private = True
+        user.save(update_fields=['is_private'])
+        return user

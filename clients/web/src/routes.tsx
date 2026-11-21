@@ -18,6 +18,7 @@ import AcceptInvitationPage from "./features/club/pages/public/invitation-page";
 import ChatsShell from "./layouts/chat/shell";
 import type { RouteNode } from "./router/types";
 import React from "react";
+import RouteErrorBoundary from "./shared/pages/route-error-boundary";
 
 
 const SignIn = React.lazy(() => import("./features/auth/pages/public/sign-in"));
@@ -32,6 +33,7 @@ export const routes: RouteObject[] = [
     id: "base",
     path: "/",
     element: <MainLayout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       {
         index: true,
@@ -68,11 +70,13 @@ export const routes: RouteObject[] = [
     id: "club-invite",
     path: AppRoute.club.private.config.invites.accept,
     element: <AcceptInvitationPage />,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     id: "auth",
     element: <AuthLayout />,
     children: [...authRoutes],
+    errorElement: <RouteErrorBoundary />,
   },
   // {
   //   path: "auth",
@@ -86,5 +90,6 @@ export const routes: RouteObject[] = [
   {
     path: "*",
     element: <NotFound />,
+    errorElement: <RouteErrorBoundary />,
   },
 ];

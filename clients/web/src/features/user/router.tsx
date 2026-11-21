@@ -41,6 +41,10 @@ const Settings = React.lazy(
   () => import("./pages/private/profile-settings/settings-page"),
 );
 
+const SessionsPage = React.lazy(
+  () => import("./pages/private/profile-settings/account/sessions-page"),
+);
+
 export const userRoutes = [
   {
     id: "user-profile",
@@ -101,6 +105,11 @@ export const userSettingsRoutes = [
     id: "user-settings-privacy-account",
     path: routes.settings.privacy.account,
     element: <AccountPrivacy />,
+  },
+  {
+    id: "user-settings-sessions",
+    path: routes.settings.account.sessions,
+    element: <SessionsPage />,
   },
   {
     id: "user-settings-privacy-online-status",

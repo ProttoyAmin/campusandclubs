@@ -1,16 +1,33 @@
 from functools import cached_property
+from pyclbr import Class
 
+from apps.accounts.models import User
 from apps.clubs.models import Club, Membership
 from core.policies.base import ActorT, Policy, RecordT
+from abc import ABC, abstractmethod
 
 
-class MembershipAwarePolicy(Policy[ActorT, RecordT]):
+class MembershipStrategy(ABC):
+
+    @abstractmethod
+    def can_join(self, user: User, club: Club) -> bool:
+        pass
+
+# class PublicMembership(MembershipStrategy):
+
+#     def can_join(self, user: User, club: Club) -> bool:
+#         ...
+
+
+class MembershipAwarePolicy(Policy[ActorT, RecordT], MembershipStrategy):
     """Mixin for policies whose authorization depends on the actor's
     club membership. Subclasses must implement `get_club()` to say
     which Club the membership check applies to. 
     """
 
-    def get_club(self) -> Club:
+    strategies: dict[str, Class] = {}
+
+    def get_club(self) -> Club | None:
         assert self.get_club is not None, f"{type(self).__name__} has no get_club() method"
 
     @cached_property

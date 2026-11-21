@@ -30,7 +30,8 @@ class Media(models.Model):
     )
 
 
-    file = CloudinaryField("media")
+    # file = CloudinaryField("media")
+    file = models.FileField(upload_to="storage/media/")
     original_file_name = models.CharField(
         max_length=255,
         blank=True

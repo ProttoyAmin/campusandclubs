@@ -8,6 +8,18 @@ from rest_framework import serializers
 from apps.clubs.serializers import RoleSerializer
 
 
+class MembershipMinimalSerializer(serializers.ModelSerializer):
+    member = serializers.SerializerMethodField()
+    class Meta:
+        model = Membership
+        fields = [
+            "id",
+            "member",
+        ]
+    
+    def get_member(self, obj: Membership):
+        return UserMinimalSerializer(obj.user).data
+
 class MembershipApplicationSerializer(serializers.ModelSerializer):
     """Used for list/detail responses for admins reviewing applications."""
 

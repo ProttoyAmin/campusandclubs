@@ -42,7 +42,7 @@ const CreateRoleForm = ({ onSubmit, isCreating }: { onSubmit: (data: ClubRoleCre
     }
 
     return (
-        <form id={formId} onSubmit={form.handleSubmit((data) => handleSubmit(data))}>
+        <form id={formId} onSubmit={form.handleSubmit((data) => handleSubmit(data))} className='flex flex-col gap-5'>
             <Tabs defaultValue="display" className={'gap-5 max-h-svh'}>
                 <TabsList variant="line">
                     <TabsTrigger value="display">Display</TabsTrigger>
@@ -81,7 +81,7 @@ const CreateRoleForm = ({ onSubmit, isCreating }: { onSubmit: (data: ClubRoleCre
                         name="permissions"
                         control={form.control}
                         render={({ field }) => (
-                            <FieldGroup className='max-h-50 overflow-y-auto'>
+                            <FieldGroup className='overflow-y-auto'>
                                 {data?.map((option) => {
                                     const isChecked = field.value.includes(option.id)
 
@@ -113,7 +113,7 @@ const CreateRoleForm = ({ onSubmit, isCreating }: { onSubmit: (data: ClubRoleCre
                     />
                 </TabsContent>
             </Tabs>
-            <Button type='submit' disabled={isCreating}>Submit</Button>
+            <Button type='submit' variant='outline' size="lg" disabled={isCreating} className='rounded-full'>Submit</Button>
         </form>
     )
 }

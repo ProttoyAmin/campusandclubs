@@ -16,7 +16,7 @@ const ForgotPasswordForm = ({ onSubmit, pending, serverErrors, defaultEmail }: P
     const [email, setEmail] = React.useState(defaultEmail || "");
 
     return (
-        <>
+        <div className="space-y-4">
             <CardHeader>
                 <CardTitle>Forgot Password</CardTitle>
                 <CardDescription>
@@ -49,7 +49,7 @@ const ForgotPasswordForm = ({ onSubmit, pending, serverErrors, defaultEmail }: P
                     Reset password
                 </Button>
             </CardFooter>
-        </>
+        </div>
     );
 };
 

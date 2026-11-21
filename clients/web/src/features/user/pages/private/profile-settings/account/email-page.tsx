@@ -1,7 +1,6 @@
 import { CardHeader, CardContent } from "design/components/ui/card";
 import { useAccount, useEmails } from "@/features/user/hooks/user.hooks";
 import { Button } from "design/components/ui/button";
-import { Plus, Trash } from "lucide-react";
 import { Input } from "design/components/ui/input";
 import { toast } from "design/components/ui/toast";
 import { useState } from "react";
@@ -12,6 +11,8 @@ import { usePageHeader } from "@/shared/hooks/use-page-header";
 import React from "react";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import OTPVerifyForm from "@/features/auth/components/forms/otp-verify-form";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { BadgeInfoIcon, Delete02Icon, PlusIcon, Tick01Icon } from "@hugeicons/core-free-icons";
 
 const EmailPage = () => {
     const { data: emails } = useEmails();
@@ -155,6 +156,7 @@ const EmailPage = () => {
     };
     return (
         <>
+            {/* <pre>{JSON.stringify(emails, null, 2)}</pre> */}
             <div className="w-full flex flex-col gap-4">
                 <CardHeader>
                     <div className="flex flex-col gap-1">
@@ -166,41 +168,43 @@ const EmailPage = () => {
                     </div>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                    {emails?.data?.map((email) => {
+                    {emails && emails.data.length > 0 && emails.data.map((email) => {
                         return (
-                            <div key={email.id} className="border p-2 rounded-md">
-                                <div className="flex flex-col gap-1">
+                            <div key={email.id} className="p-4 rounded-md">
+                                <div className="flex gap-2.5 items-center">
                                     <h1 className="text-muted-foreground">{email.email}</h1>
                                     <Badge
-                                        variant={email.verified ? "default" : "secondary"}
+                                        variant={email.verified ? "ghost" : "secondary"}
                                         className={`w-fit ${email.verified
-                                            ? "bg-blue-900 text-white"
-                                            : "bg-orange-900"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-orange-600"
                                             }`}
                                     >
-                                        {email.verified ? "Verified" : "Unverified"}
+                                        {email.verified ? <HugeiconsIcon icon={Tick01Icon} />: <HugeiconsIcon icon={BadgeInfoIcon} />}
                                     </Badge>
                                 </div>
                                 <div className="flex items-center justify-end gap-2">
                                     {!email.primary && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            disabled={email.primary}
-                                            onClick={() => handleMakePrimary(email.email)}
-                                        >
-                                            Make Primary
-                                        </Button>
+                                        <>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={email.primary}
+                                                onClick={() => handleMakePrimary(email.email)}
+                                            >
+                                                Make Primary
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="text-destructive"
+                                                onClick={() => handleDelete(email.email)}
+                                                disabled={email.primary}
+                                            >
+                                                <HugeiconsIcon icon={Delete02Icon} />
+                                            </Button>
+                                        </>
                                     )}
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="text-destructive"
-                                        onClick={() => handleDelete(email.email)}
-                                        disabled={email.primary}
-                                    >
-                                        <Trash />
-                                    </Button>
                                 </div>
                             </div>
                         );
@@ -217,9 +221,9 @@ const EmailPage = () => {
                             }
                         }}
                         trigger={
-                            <Button variant="glass" size="lg" className="rounded-full">
-                                <Plus />
-                                Add Email
+                            <Button variant="outline" size="lg" className="rounded-full space-x-1.5">
+                                <HugeiconsIcon icon={PlusIcon} />
+                                <span>Add Email</span>
                             </Button>
                         }
                         title={step === "email" ? "Add Email" : "Verify Email"}

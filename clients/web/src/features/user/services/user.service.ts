@@ -47,6 +47,21 @@ export class UserService {
     const response = await this.userClient.fetchFeed();
     return response.data;
   }
+
+  async sessions() {
+    const response = await this.userClient.getSessions();
+    return response.data;
+  }
+
+  async revoke_session(sessionId: string) {
+    const response = await this.userClient.revokeSession(sessionId);
+    return response.data;
+  }
+
+  async revoke_other_sessions() {
+    const response = await this.userClient.revokeOtherSessions();
+    return response.data;
+  }
 }
 
 export const user = new UserService();

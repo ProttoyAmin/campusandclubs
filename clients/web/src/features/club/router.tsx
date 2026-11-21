@@ -52,6 +52,19 @@ const Rejected = React.lazy(
   () => import("./pages/private/config-club/requests/rejected"),
 );
 
+const RolesLayout = React.lazy(
+  () => import("@/layouts/club/club-config/roles-layout"),
+)
+
+const RoleDetail = React.lazy(
+  () => import("./pages/private/config-club/roles-permissions/role-detail"),
+);
+
+
+const RoleLayout = React.lazy(
+  () => import("@/layouts/club/club-config/role-layout"),
+);
+
 export const clubRoutes = [
   // {
   //   id: "clubs-page-layout",
@@ -91,9 +104,38 @@ export const clubRoutes = [
         element: <Permissions />,
       },
       {
-        id: "club-role-details",
+        id: "club-role-details-layout",
         path: routes.club.private.config.roleDetails,
-        element: <RoleDetails />,
+        element: <RolesLayout />,
+        children: [
+          {
+            id: "club-role-details",
+            index: true,
+            element: <RoleDetails />,
+          },
+          {
+            id: "club-role-detail-layout",
+            path: routes.club.private.config.roleId,
+            element: <RoleLayout />,
+            children: [
+              {
+                id: "club-role-detail",
+                index: true,
+                element: <RoleDetail />,
+              },
+              {
+                id: "club-role-permissions",
+                path: routes.club.private.config.rolePermissions,
+                element: <RoleDetail />,
+              },
+              {
+                id: "club-role-members",
+                path: routes.club.private.config.roleMembers,
+                element: <RoleDetail />,
+              },
+            ],
+          },
+        ]
       },
       {
         id: "club-invites",

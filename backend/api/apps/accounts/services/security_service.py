@@ -2,6 +2,7 @@ import hashlib
 import secrets
 from dataclasses import asdict, dataclass
 from allauth.core.internal.httpkit import get_client_ip   # honors ALLAUTH_TRUSTED_PROXY_COUNT
+from apps.accounts.repositories.session_repo import UserSessionRepository
 from core.services import BaseService
 from rest_framework.request import Request
 from django.http import HttpRequest
@@ -80,6 +81,10 @@ def get_device_information(user_agent_string: str) -> DeviceInfo:
 class SecurityService(BaseService[User, LoginRecordRepository]):
     repository_class = LoginRecordRepository
 
+    def __init__(self, actor=None, repository=None, session_repository=None) -> None:
+        super().__init__(actor, repository)
+        self.sessions = session_repository or UserSessionRepository()
+
 
     def record(self, request: HttpRequest, user: User) -> RecordResult:
         token = getattr(request, "_device_token", None)
@@ -117,8 +122,18 @@ class SecurityService(BaseService[User, LoginRecordRepository]):
             **asdict(device_info)
         )
 
+        if not request.session.session_key:
+            request.session.save()
+
+        self.sessions.upsert(
+            session_key=request.session.session_key,
+            user=user,
+            device_hash=device_hash,
+            ip_address=ip,
+            user_agent=ua,
+            browser=device_info.browser,
+            os=device_info.os,
+            device_type=device_info.device_type
+        )
+
         return RecordResult(check=check, device=device_info)
-
-
-
-

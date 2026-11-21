@@ -10,7 +10,7 @@ import type {
 } from "@campus/api";
 import type { AppError } from "@/settings/app/error";
 import type { APIError } from "@/shared/types/response";
-import { type ApplicationCreateRequest, type ClubDetailExtended, type PaginaatedClubPostsResponse, type InvitationResponse } from "../http/club.http";
+import { type ApplicationCreateRequest, type ClubDetailExtended, type ClubRoleUpdatePayload, type PaginaatedClubPostsResponse, type InvitationResponse } from "../http/club.http";
 import type { JoinMode, Privacy, Scope } from "validation/club";
 import type { ClubRoleCreateSchemaType } from "validation/club";
 
@@ -142,6 +142,21 @@ export const useClubInfo = (slug: string) => {
 
   return { posts, postsWithMedia, postsWithoutMedia, getRoles, createRole };
 };
+
+export const useRole = (clubId: string, roleId: string) => useQuery({
+  queryKey: [clubId, roleId],
+  queryFn: () => club.role(clubId, roleId)
+})
+
+export const useUpdateRole = (clubId: string, roleId: string, slug: string) =>
+  useMutation({
+    mutationFn: (data: ClubRoleUpdatePayload) =>
+      club.update_role(clubId, roleId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [clubId, roleId] });
+      queryClient.invalidateQueries({ queryKey: ["club", slug, "roles"] });
+    },
+  });
 
 export const useClubPermissions = () => useQuery({
   queryKey: ["club", "permissions"],

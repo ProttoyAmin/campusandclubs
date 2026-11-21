@@ -8,7 +8,7 @@ import { Button } from "design/components/ui/button";
 import SidebarDropDown from "@/components/sidebar-dropdown";
 import { SettingsDropdownMenu } from "@/config/menu/settings-menu";
 import { useAffiliations, useMe } from "@/features/user/hooks/user.hooks";
-import { clubMenu } from "@/config/menu/club-menu";
+import { clubMenu } from "@/config/menu/dynamic-menu";
 import type { ClubCreateRequestWritable, ClubDetail } from "@campus/api";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import ClubCreateForm from "@/features/club/forms/create-club-form";

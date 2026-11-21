@@ -75,19 +75,37 @@ export type ClubPermissionsResponse = {
   codename: string
 }
 
+export type Role = {
+    id: string
+    name: string
+    permissions: Array<ClubPermissionsResponse>
+    is_default: boolean
+    color: string
+    user_count: number
+    memberships: {
+      id: number
+      member: UserMinimal
+    }[]
+}
+
 export type ClubRolesResponse = {
   club_id: string
   club_name: string
   total_roles: number
-  roles: Array<{
-    id: string
-    name: string
-    permissions: Array<number>
-    is_default: boolean
-    color: string
-    user_count: number
-  }>
+  roles: Array<Role>
 }
+
+export type ClubRoleRetreiveResponse = {
+  success: boolean
+  message: string
+  data: Role
+}
+
+export type ClubRoleUpdatePayload = {
+  name: string;
+  color: string | null;
+  permissions: number[];
+};
 
 
 
@@ -248,6 +266,25 @@ export class ClubClient extends BaseClient<
         `${this.endpoint}${clubId}/roles/`
       );
     return response;
+  }
+
+  async getRoleDetail(clubId: string, roleId: string): Promise<AxiosResponse<ClubRoleRetreiveResponse>> {
+    const response = await this.client.get<ClubRoleRetreiveResponse>
+      (
+        `${this.endpoint}${clubId}/roles/${roleId}/`
+      );
+    return response;
+  }
+
+  async updateRole(
+    clubId: string,
+    roleId: string,
+    data: ClubRoleUpdatePayload,
+  ): Promise<AxiosResponse<ClubRoleRetreiveResponse>> {
+    return this.client.patch<ClubRoleRetreiveResponse>(
+      `${this.endpoint}${clubId}/roles/${roleId}/`,
+      data,
+    );
   }
 
   async createClubRole(clubId: string, data: unknown) {

@@ -9,6 +9,7 @@ class UserPreference(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='preferences')
     
     show_in_search = models.BooleanField(default=True)
+    show_active_status = models.BooleanField(default=True)
 
 
     created_at = models.DateTimeField(auto_now_add=True)

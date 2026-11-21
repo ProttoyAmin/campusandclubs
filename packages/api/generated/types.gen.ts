@@ -992,8 +992,9 @@ export type SetPassword = {
 };
 
 export type SetPasswordRequest = {
-  new_password: string;
-  current_password: string;
+  current_password?: string;
+  new_password1: string;
+  new_password2: string;
 };
 
 export type SetUsername = {

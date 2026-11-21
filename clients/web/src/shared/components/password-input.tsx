@@ -20,6 +20,7 @@ const PasswordInput = ({ field, fieldState, props }: {
         placeholder={props?.placeholder ?? "Password"}
         autoComplete={props?.autoComplete ?? "off"}
         className="w-full pr-10"
+        disabled={props?.disabled ?? false}
       />
       <button
         type="button"

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from 'design/components/ui/input';
 import { Button } from 'design/components/ui/button';
 import { Spinner } from 'design/components/ui/spinner';
 import {
     Field,
+    FieldDescription,
     FieldError,
     FieldGroup,
 } from 'design/components/ui/field';
@@ -13,6 +13,7 @@ import type { ChangePasswordSchemaType } from 'validation/auth';
 import { changePasswordSchema } from 'validation/auth';
 import type { AllauthError } from '../../api/auth.client';
 import { useSession } from '../../hooks';
+import PasswordInput from '@/shared/components/password-input';
 
 type ChangePasswordProps = {
     onSubmit: (data: ChangePasswordSchemaType) => void;
@@ -45,15 +46,15 @@ const ChangePassword = (props: ChangePasswordProps) => {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <Input
-                                {...field}
-                                type="text"
-                                id="change-password-form-current_password"
-                                aria-invalid={fieldState.invalid}
-                                placeholder="Current password"
-                                autoComplete="off"
-                                disabled={!session.data?.user.has_usable_password}
-                            />
+                            <PasswordInput field={field} fieldState={fieldState} props={{
+                                id: "change-password-form-current_password",
+                                placeholder: "Current password",
+                                autoComplete: "off",
+                                disabled: !session.data?.user.has_usable_password
+                            }}/>
+                            {!session.data?.user.has_usable_password && 
+                                <FieldDescription className='text-amber-600'>Account connected by third party. Proceed with password reset without current password.</FieldDescription>
+                            }
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}
@@ -74,14 +75,11 @@ const ChangePassword = (props: ChangePasswordProps) => {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <Input
-                                {...field}
-                                type="text"
-                                id="change-password-form-new_password"
-                                aria-invalid={fieldState.invalid}
-                                placeholder="New password"
-                                autoComplete="off"
-                            />
+                            <PasswordInput field={field} fieldState={fieldState} props={{
+                                id: "change-password-form-new_password",
+                                placeholder: "New password",
+                                autoComplete: "off",
+                            }}/>
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}
@@ -102,14 +100,11 @@ const ChangePassword = (props: ChangePasswordProps) => {
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <Input
-                                {...field}
-                                type="text"
-                                id="change-password-form-repeat_password"
-                                aria-invalid={fieldState.invalid}
-                                placeholder="Confirm new password"
-                                autoComplete="off"
-                            />
+                            <PasswordInput field={field} fieldState={fieldState} props={{
+                                id: "change-password-form-repeat_password",
+                                placeholder: "Confirm new password",
+                                autoComplete: "off",
+                            }}/>
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}

@@ -10,7 +10,6 @@ import {
   ComboboxList,
 } from "design/components/ui/combobox";
 import { Button } from "design/components/ui/button";
-import { Input } from "design/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -27,13 +26,15 @@ import {
 import type { Institute, UserEmail } from "@campus/api";
 import { formatLabel } from "@/utils/format-label";
 import { useComponentId } from "@/shared/hooks/id";
+import PasswordInput from "@/shared/components/password-input";
+import type { ServerError } from "@/settings/api";
 
 type ClaimAffiliationFormProps = {
   institutes: Pick<Institute, "id" | "name" | "code">[];
   emails: UserEmail[];
   onSubmit: (data: AffiliationClaimInput) => void;
   isPending?: boolean;
-  serverErrors?: Record<string, string[]>;
+  serverErrors?: ServerError;
 };
 
 const ClaimAffiliationForm = ({
@@ -95,12 +96,12 @@ const ClaimAffiliationForm = ({
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               {serverErrors && (
                 <FieldError
-                  errors={[
-                    ...(serverErrors["institute"] || []).map(
-                      (item) => new Error(item || ""),
-                    ),
-                  ]}
-                />
+                    errors={[
+                      ...(serverErrors.errors || [])
+                        .filter((item) => item.param === "institute")
+                        .map((item) => new Error(item.message || "")),
+                    ]}
+                  />
               )}
             </Field>
           )}
@@ -135,12 +136,12 @@ const ClaimAffiliationForm = ({
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               {serverErrors && (
                 <FieldError
-                  errors={[
-                    ...(serverErrors["role"] || []).map(
-                      (item) => new Error(item || ""),
-                    ),
-                  ]}
-                />
+                    errors={[
+                      ...(serverErrors.errors || [])
+                        .filter((item) => item.param === "role")
+                        .map((item) => new Error(item.message || "")),
+                    ]}
+                  />
               )}
             </Field>
           )}
@@ -183,12 +184,12 @@ const ClaimAffiliationForm = ({
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               {serverErrors && (
                 <FieldError
-                  errors={[
-                    ...(serverErrors["email"] || []).map(
-                      (item) => new Error(item || ""),
-                    ),
-                  ]}
-                />
+                    errors={[
+                      ...(serverErrors.errors || [])
+                        .filter((item) => item.param === "email")
+                        .map((item) => new Error(item.message || "")),
+                    ]}
+                  />
               )}
             </Field>
           )}
@@ -199,29 +200,26 @@ const ClaimAffiliationForm = ({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <Input
-                {...field}
-                id="claim-affiliation-password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="Your account password"
-                aria-invalid={fieldState.invalid}
-              />
+              <PasswordInput field={field} fieldState={fieldState} props={{
+                id: "claim-affiliation-password",
+                autoComplete: "current-password",
+                placeholder: "Your account password",
+              }}/>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               {serverErrors && (
                 <FieldError
-                  errors={[
-                    ...(serverErrors["password"] || []).map(
-                      (item) => new Error(item || ""),
-                    ),
-                  ]}
-                />
+                    errors={[
+                      ...(serverErrors.errors || [])
+                        .filter((item) => item.param === "password")
+                        .map((item) => new Error(item.message || "")),
+                    ]}
+                  />
               )}
             </Field>
           )}
         />
 
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button type="submit" disabled={isPending} variant={"outline"} size="lg" className="rounded-full w-full">
           {isPending ? (
             <>
               <Spinner /> Claiming...

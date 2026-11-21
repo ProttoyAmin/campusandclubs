@@ -31,27 +31,20 @@ import { Input } from "design/components/ui/input";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/settings/routes";
-import {
-  Tabs,
-  TabsContent,
-  TabsTrigger,
-  TabsList
-} from "design/components/ui/tabs";
-import { Switch } from "design/components/ui/switch";
 import CreateRoleForm from "@/features/club/components/forms/create-role-form";
 import type { ClubRoleCreateSchemaType } from "validation/club";
 import { toast } from "design/components/ui/toast";
 
 const ClubPermissionsPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { club } = useClubOutlet();
-  const [isCreating, setIsCreating] = useState<boolean>(false)
+  const [isCreating, setIsCreating] = useState<boolean>(false);
   const canAccess =
     club?.me_permissions?.includes("manage_roles") || club?.is_owner;
   const { getRoles, createRole } = useClubInfo(club.slug);
   const roleData = getRoles(club.id, canAccess);
-  const createRoleMutation = createRole(club.id)
+  const createRoleMutation = createRole(club.id);
 
   if (!canAccess) {
     return (
@@ -87,16 +80,16 @@ const ClubPermissionsPage = () => {
 
   const renderCreateRoleDialog = () => {
     const onSubmit = (data: ClubRoleCreateSchemaType) => {
-      console.log('data from dialog');
+      console.log("data from dialog", data);
       createRoleMutation.mutateAsync(data, {
         onSuccess: () => {
           toast.add({
-            title: "Created role"
-          })
-        }
-      })
-      setIsCreating(false)
-    }
+            title: "Created role",
+          });
+        },
+      });
+      setIsCreating(false);
+    };
     return (
       <ResponsiveDialog
         open={isCreating}
@@ -107,7 +100,10 @@ const ClubPermissionsPage = () => {
           </Button>
         }
       >
-        <CreateRoleForm onSubmit={onSubmit} isCreating={createRoleMutation.isPending} />
+        <CreateRoleForm
+          onSubmit={onSubmit}
+          isCreating={createRoleMutation.isPending}
+        />
       </ResponsiveDialog>
     );
   };
@@ -131,6 +127,9 @@ const ClubPermissionsPage = () => {
             >
               <div
                 key={role.id}
+                onClick={() => {
+                  navigate(paths.private.club.roleDetail(role.id, club.slug))
+                }}
                 className={`w-full flex justify-between items-center p-4 ${index !== roleData.data.roles.length - 1 ? "border-border/50 border-b" : ""}`}
               >
                 <div className="flex items-center gap-2.5">
@@ -182,10 +181,19 @@ const ClubPermissionsPage = () => {
               <TableCell>
                 <Tooltip>
                   <TooltipTrigger>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Button
+                      className="flex items-center gap-2 text-sm text-muted-foreground p-0 m-0"
+                      size="icon-lg"
+                      variant="ghost"
+                      onClick={() => {
+                        navigate(
+                          paths.private.club.roleMembers(role.id, club.slug),
+                        );
+                      }}
+                    >
                       <HugeiconsIcon icon={UserRoundIcon} className="size-5" />
                       {role.user_count}
-                    </div>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>View members</p>
@@ -201,7 +209,9 @@ const ClubPermissionsPage = () => {
                         className={"p-0 m-0"}
                         variant="ghost"
                         onClick={() => {
-                          navigate(paths.private.club.roleDetails(club.slug))
+                          navigate(
+                            paths.private.club.roleDetail(role.id, club.slug),
+                          );
                         }}
                       >
                         <HugeiconsIcon icon={Edit04Icon} />

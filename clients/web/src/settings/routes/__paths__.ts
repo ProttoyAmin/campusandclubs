@@ -59,6 +59,7 @@ export const paths = {
     settings: {
       base: routes.settings.base,
       account: routes.settings.account,
+      sessions: routes.settings.account.sessions,
       privacy: {
         base: routes.settings.privacy.base,
         account: routes.settings.privacy.account,
@@ -121,6 +122,21 @@ export const paths = {
       roleDetails: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.roleDetails, {
           slug
+        }),
+      roleDetail: (roleId: string, slug: string) =>
+        generateRouteFromPath(routes.club.private.config.roleId, {
+          roleId: roleId,
+          slug: slug,
+        }),
+      roleMembers: (roleId: string, slug: string) =>
+        generateRouteFromPath(routes.club.private.config.roleMembers, {
+          roleId: roleId,
+          slug: slug,
+        }),
+      rolePermissions: (roleId: string, slug: string) =>
+        generateRouteFromPath(routes.club.private.config.rolePermissions, {
+          roleId: roleId,
+          slug: slug,
         }),
       permissions: (slug: string) =>
         generateRouteFromPath(routes.club.private.config.permissions, {

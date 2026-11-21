@@ -36,3 +36,6 @@ class RoleRepository(BaseRepository[Role]):
 
     def list_roles(self, club_pk: str) -> QuerySet[Role]:
         return self.model.objects.filter(club__id=club_pk)
+
+    def role_detail_with_members(self, role_id: str) -> Role:
+        return self.get_queryset().prefetch_related('memberships').get(id=role_id)

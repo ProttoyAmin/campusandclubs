@@ -1,6 +1,6 @@
 from .login import LoginView, ConfirmLoginCodeView, RequestLoginCodeView, ResendLoginCodeView
 from .register import SignUpView
-from .request_info import get_request_info
+from .request_info import get_request_object, get_session_object
 from .refresh_view import RefreshTokenView
 from .session import SessionView, ConfigAPIView
 from .reset_password import reset_password_view, PasswordResetRequestView, PasswordResetConfirmView, PasswordResetVerifyView
@@ -29,7 +29,9 @@ __all__ = [
     'PasswordResetVerifyView',
 
     'RefreshTokenView',
-    'get_request_info',
+
+    'get_request_object',
+    'get_session_object',
 
     'SessionView',
     'ConfigAPIView'

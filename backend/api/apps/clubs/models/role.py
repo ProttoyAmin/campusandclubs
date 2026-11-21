@@ -8,7 +8,6 @@ from apps.clubs.models.permission import ClubPermission
 from django.core.exceptions import ValidationError
 from apps.accounts.models import User
 
-
 class Role(models.Model):
     """Dynamic role model for clubs - allows custom roles with specific permissions"""
     DEFAULT_ROLE = 'Admin'
@@ -25,7 +24,6 @@ class Role(models.Model):
     permissions = models.ManyToManyField(
         ClubPermission,
         blank=True,
-        null=True
     )
 
     is_default = models.BooleanField(

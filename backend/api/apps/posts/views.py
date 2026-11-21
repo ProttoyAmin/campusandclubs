@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
@@ -625,7 +626,7 @@ def toggle_post_share(request, post_id):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_feed(request):
+def get_feed(request: Request):
     """
     Get personalized feed for the current user
 

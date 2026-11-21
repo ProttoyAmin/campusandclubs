@@ -1,3 +1,4 @@
+import type { AppSession } from "@/features/auth/services/authentication";
 import { BaseClient } from "@/settings/api/";
 import { config } from "@/settings/app";
 import type {
@@ -54,6 +55,24 @@ export type PaginatedUserMinimalResult = {
   results: Array<UserMinimal>;
 };
 
+export type UserSessions = {
+  success: boolean
+  data: Array<{
+    id: string
+    kind: string
+    is_active: boolean
+    ip_address: string
+    browser: string
+    os: string
+    last_seen_at: string
+  }>
+}
+
+export type UserEmailList = {
+  success: boolean;
+  data: UserEmail[]
+}
+
 export class UserClient extends BaseClient<
   AxiosResponse,
   AccountsAuthUsersRetrieveResponse,
@@ -64,15 +83,10 @@ export class UserClient extends BaseClient<
   }
 
   async grabUsers(): Promise<AxiosResponse<PaginatedUserProfileList>> {
-    try {
       const response = await this.client.get<PaginatedUserProfileList>(
         this.endpoint + "all/",
       );
-      return response;
-    } catch (err) {
-      console.error("Grab users error:", (err as AxiosError).response?.data);
-      throw err;
-    }
+      return response
   }
 
   async updateProfile(data: PatchedUserProfileRequest): Promise<AxiosResponse> {
@@ -109,16 +123,16 @@ export class UserClient extends BaseClient<
     return response;
   }
 
-  async get_my_emails() {
-    const response = await this.client.get<UserEmail[]>(
+  async get_my_emails(): Promise<AxiosResponse<UserEmailList>> {
+    const response = await this.client.get<UserEmailList>(
       this.endpoint + "me/emails/",
     );
     return response;
   }
 
   async addEmail(email: string) {
-    const resopnse = await this.client.post<UserEmail>(
-      `${this.allauthBrowser}account/email`,
+    const resopnse = await this.client.post<UserEmailList>(
+      `${this.endpoint}me/emails/`,
       {
         email,
       },
@@ -127,15 +141,15 @@ export class UserClient extends BaseClient<
   }
 
   async requestEmailVerification(email: string): Promise<AxiosResponse> {
-    const response = await this.client.put(
-      `${this.allauthBrowser}account/email`,
+    const response = await this.client.post(
+      `${this.endpoint}me/emails/`,
       { email },
     );
     return response;
   }
 
-  async changePrimaryEmail(email: string): Promise<AxiosResponse<UserEmail[]>> {
-    const response = await this.client.patch<UserEmail[]>(
+  async changePrimaryEmail(email: string): Promise<AxiosResponse<UserEmailList>> {
+    const response = await this.client.patch<UserEmailList>(
       `${this.allauthBrowser}account/email`,
       { email: email, primary: true },
     );
@@ -144,15 +158,15 @@ export class UserClient extends BaseClient<
 
   async deleteEmail(email: string): Promise<AxiosResponse<UserEmail[]>> {
     const response = await this.client.delete<UserEmail[]>(
-      `${this.allauthBrowser}account/email`,
+      `${this.endpoint}me/emails/`,
       { data: { email } },
     );
     return response;
   }
 
-  async passwordChange(data: SetPasswordRequest): Promise<AxiosResponse<void>> {
-    const response = await this.client.post<void>(
-      `${this.allauthBrowser}account/password/change`,
+  async passwordChange(data: SetPasswordRequest): Promise<AxiosResponse<AppSession>> {
+    const response = await this.client.post<AppSession>(
+      `${this.endpoint}change-password/`,
       data,
     );
     return response;
@@ -184,6 +198,21 @@ export class UserClient extends BaseClient<
 
   async searchUsers(username?: string) {
     const response = await this.client.get<PaginatedUserMinimalResult>(this.endpoint + `search${username ? `?q=${username}` : ""}`);
+    return response;
+  }
+
+  async getSessions(): Promise<AxiosResponse<UserSessions>> {
+    const response = await this.client.get<UserSessions>(this.endpoint + "me/sessions/");
+    return response;
+  }
+
+  async revokeSession(sessionId: string): Promise<AxiosResponse<UserSessions>> {
+    const response = await this.client.delete<UserSessions>(this.endpoint + "me/sessions/" + `?id=${sessionId}`);
+    return response;
+  }
+
+  async revokeOtherSessions(): Promise<AxiosResponse<UserSessions>> {
+    const response = await this.client.post<UserSessions>(this.endpoint + "me/sessions/revoke-others/");
     return response;
   }
 }

@@ -1,4 +1,8 @@
-import { CardContent, CardDescription, CardTitle } from "design/components/ui/card";
+import {
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "design/components/ui/card";
 import { useSettingsOutlet } from "@/features/user/context/user-layout-context";
 import EmptyState from "@/shared/components/empty-state";
 import { Button } from "design/components/ui/button";
@@ -16,6 +20,10 @@ import React, { useState } from "react";
 import ResponsiveDialog from "@/shared/components/responsive-dialog";
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import NavigateButtons from "@/shared/components/navigate-buttons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PlusSignIcon } from "@hugeicons/core-free-icons";
+import { Link } from "react-router-dom";
+import { routes } from "@/settings/routes";
 
 const UserAffiliationsPage = () => {
   const { me } = useSettingsOutlet();
@@ -23,27 +31,25 @@ const UserAffiliationsPage = () => {
   const { data: emails } = useEmails();
   const { claim } = useAffiliation();
   const [open, setOpen] = useState(false);
-  const pageHeader = usePageHeader()
+  const pageHeader = usePageHeader();
 
   React.useEffect(() => {
     const id = pageHeader.push(
       <>
         <div className="flex items-center gap-4">
-          <NavigateButtons
-            hideForward
-          />
+          <NavigateButtons hideForward />
           <h1 className="text-lg font-semibold">Affiliations</h1>
         </div>
-      </>
+      </>,
     );
 
     return () => {
-      pageHeader.pop(id)
+      pageHeader.pop(id);
     };
   }, [pageHeader.push, pageHeader.pop]);
 
   const handleSubmit = (data: AffiliationClaimInput) => {
-    const email = emails.find((email) => email.email === data.email);
+    const email = emails.data?.find((email) => email.email === data.email);
     const values = {
       ...data,
       email: Number(email?.id),
@@ -73,8 +79,9 @@ const UserAffiliationsPage = () => {
             open={open}
             onOpenChange={setOpen}
             trigger={
-              <Button variant={"ghost"}>
-                <Plus /> Claim affiliation
+              <Button variant={"outline"} className="rounded-full p-4">
+                <HugeiconsIcon icon={PlusSignIcon} />{" "}
+                <span>Claim affiliation</span>
               </Button>
             }
             title="Claim Affialition"
@@ -82,10 +89,10 @@ const UserAffiliationsPage = () => {
             children={
               <ClaimAffiliationForm
                 institutes={institutes.data?.results || []}
-                emails={emails}
+                emails={(emails && emails.data) || []}
                 onSubmit={handleSubmit}
                 isPending={claim.isPending}
-                serverErrors={claim.error?.response.data}
+                serverErrors={claim.error?.response?.data}
               />
             }
           />
@@ -101,8 +108,9 @@ const UserAffiliationsPage = () => {
           open={open}
           onOpenChange={setOpen}
           trigger={
-            <Button variant={"ghost"}>
-              <Plus /> Claim affiliation
+            <Button variant={"outline"}>
+              <HugeiconsIcon icon={PlusSignIcon} />{" "}
+              <span>Claim affiliation</span>
             </Button>
           }
           title="Claim Affialition"
@@ -110,7 +118,7 @@ const UserAffiliationsPage = () => {
           children={
             <ClaimAffiliationForm
               institutes={institutes.data?.results || []}
-              emails={emails}
+              emails={(emails && emails.data) || []}
               onSubmit={handleSubmit}
               isPending={claim.isPending}
               serverErrors={claim.error?.response.data}
@@ -119,8 +127,19 @@ const UserAffiliationsPage = () => {
         />
       </div>
 
-      <div className="pb-6">
-        <p className="text-muted-foreground text-sm">Claiming affiliation will allow you to join the clubs in your institute. You can claim multiple affiliations. We verify through your active email that is associated with your affiliated institute or you can choose for a manual review to verify. PS: To add your professional email address, please use the "Add Email" feature first from accounts.</p>
+      <div className="pb-6 pt-6">
+        <p className="text-muted-foreground text-sm">
+          Claiming affiliation will allow you to join the clubs in your
+          institute. You can claim multiple affiliations. We verify through your
+          active email that is associated with your affiliated institute or you
+          can choose for a manual review to verify.
+        </p>
+        <p className="text-muted-foreground text-sm">
+          To add your professional email address, go to{" "}
+          <Link to={routes.settings.account.email}>
+            <Button variant="link" className={'p-0 text-blue-400'}>Emails</Button>
+          </Link>
+        </p>
       </div>
       {me.affiliations.map((affiliation) => (
         <AffiliationCard

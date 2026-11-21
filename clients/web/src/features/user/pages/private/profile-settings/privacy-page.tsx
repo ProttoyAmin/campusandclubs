@@ -6,7 +6,7 @@ import NavigateButtons from '@/shared/components/navigate-buttons';
 import { usePageHeader } from '@/shared/hooks/use-page-header';
 import { CardContent } from 'design/components/ui/card';
 import React from 'react';
-
+import Menu from '@/shared/components/menu';
 
 const UserPrivacyPage = () => {
   const pageHeader = usePageHeader()
@@ -33,10 +33,8 @@ const UserPrivacyPage = () => {
     // <CardContent>
     //   <PrivacySwitch />
     // </CardContent>
-    <NavTabs
-      menu={AccountPrivacyMenu()}
-      className="w-full flex flex-col justify-center gap-2"
-      itemsClassName=""
+    <Menu
+      items={AccountPrivacyMenu()}
     />
   )
 }

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.clubs.models import Role
+from apps.clubs.serializer.membership.m_serializers import MembershipSerializer, MembershipMinimalSerializer
 
 class RoleSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(read_only=True)
@@ -12,6 +13,36 @@ class RoleSerializer(serializers.ModelSerializer):
             'color', 'user_count'
         ]
         read_only_fields = ['id']
+
+    def get_user_count(self, obj):
+        """Get count of users with this role"""
+        return obj.user_count() if hasattr(obj, 'user_count') else 0
+class RoleDetailSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    user_count = serializers.SerializerMethodField(read_only=True)
+    memberships = serializers.SerializerMethodField(read_only=True)
+    permissions = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Role
+        fields = [
+            'id', 'name', 'permissions', 'is_default',
+            'color', 'user_count', 'memberships'
+        ]
+        read_only_fields = ['id']
+
+    def get_memberships(self, obj: Role):
+        return MembershipMinimalSerializer(obj.memberships, many=True).data
+
+    def get_permissions(self, obj: Role):
+        return [
+            {
+                "id" : permission.id,
+                "codename" : permission.codename,
+                "name" : permission.name,
+
+            } for permission in obj.permissions.all()
+        ]
 
     def get_user_count(self, obj):
         """Get count of users with this role"""

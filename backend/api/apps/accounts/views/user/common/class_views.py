@@ -1,4 +1,6 @@
+from rest_framework import serializers
 from rest_framework.serializers import BaseSerializer
+from rest_framework.views import APIView
 
 from apps.accounts.dtos.profile_update_dto import UpdateAttrs
 from typing import TypedDict
@@ -77,6 +79,23 @@ class UserRetrieveUpdateDestroyView(
         return Response(serializer.data)
 
 
+class UserRetrieveAPIView(APIView, ServiceMixin[AccountService], PrivateResponseMixin[User], PolicyMixin[UserPolicy, User]):
+    policy_class = UserPolicy
+    service_class = AccountService
+    private_serializer_class = PrivateUserSerializer
+    private_detail_message = "This profile is private"
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        user: User = self.get_service(request).get_by_username(kwargs.get("username"))
+        policy = self.get_policy(request, user)
+
+        if not policy.can_view_profile(viewer=current_user(request)):
+            return self.get_private_payload(user, request)
+        
+        serializer = UserProfileSerializer(user, context={"request": request})
+        return Response(serializer.data)
+
 @extend_schema_view(
     list=list_users_schema,
     retrieve=retrieve_user_by_username_schema,
@@ -98,7 +117,14 @@ class MeRetreiveUpdateView(
     permission_classes = [permissions.IsAuthenticated]
 
     # DRF class attributes
-    serializer_class = UserUpdateSerializer
+    # serializer_class = UserUpdateSerializer
+
+    def get_serializer_class(self) -> type[serializers.Serializer]:
+        if self.request.method == "GET":
+            return UserProfileSerializer
+        elif self.request.method == "PATCH":
+            return UserUpdateSerializer
+        return UserProfileSerializer
 
     def get_queryset(self) -> QuerySet[User]:
         return self.get_service(self.request).repository.get_queryset().filter(
@@ -106,7 +132,8 @@ class MeRetreiveUpdateView(
         )
 
     def get(self, request: Request) -> Response:
-        user: User = current_user(request)
+        # user: User = current_user(request)
+        user: User = self.get_service(request).get_me(current_user(request))
         policy = self.get_policy(request, user)
 
         if not policy.can_view_profile(viewer=user):
@@ -168,7 +195,7 @@ class ChangePasswordAPIView(AuthAPIView):
         state = CredentialService(actor=current_user(request)).change_password(
             request._request,
             data.get("current_password"),
-            data.get("new_password")
+            data.get("new_password1")
         )
 
         msg = "Password updated." if state.authenticated else "Password updated. Please sign in again."
@@ -215,10 +242,10 @@ class ManageEmailAPIView(BaseAPIView):
 class ConfirmAddedEmailView(AuthAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request: Request):
         s = ConfirmCodeSerializer(data=request.data)
         s.is_valid(raise_exception=True)
-        emails = CredentialService(actor=request.user).confirm_email(request._request, s.validated_data["code"])
+        emails = CredentialService(actor=current_user(request)).confirm_email(request._request, s.validated_data["code"])
         return Response({"success": True, "message": "Email verified.", "data": {"emails": emails}})
 
 

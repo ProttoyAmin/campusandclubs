@@ -3,6 +3,8 @@ import type { ClaimAffiliateRequest } from "@campus/api";
 import { institute } from "../services/institute.service";
 import type { AppError } from "@/settings/app/error";
 import type { AffiliationClaimInput } from "validation/institute";
+import type { ServerError } from "@/settings/api";
+import { queryClient } from "@/config/query-client";
 
 export const useInstitutes = (fields?: string) => {
   const institutes = useQuery({
@@ -15,21 +17,15 @@ export const useInstitutes = (fields?: string) => {
 export const useAffiliation = () => {
   const claim = useMutation<
     AffiliationClaimInput,
-    AppError<{
-      email?: string[];
-      role?: string[];
-      institute?: string[];
-      password?: string[];
-    }>,
+    AppError<ServerError>,
     AffiliationClaimInput
   >({
     mutationFn: (data: AffiliationClaimInput) =>
       institute.claim_affiliation(data as unknown as ClaimAffiliateRequest),
     onSuccess: () => {
-      console.log("Affiliation claimed successfully!");
-    },
-    onError: (error) => {
-      console.log("Failed to claim affiliation", error);
+      queryClient.invalidateQueries({
+        queryKey: ["users", "me"]
+      })
     },
   });
 

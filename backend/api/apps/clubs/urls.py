@@ -1,6 +1,6 @@
 # apps/clubs/urls.py
 from apps.clubs.viewss.membership.generics.application import ApplyForMembershipAPIView
-from apps.clubs.viewss.role_views import ListCreateRoleAPIView
+from apps.clubs.viewss.role_views import ListCreateRoleAPIView, RetreiveRoleAPIView, RoleMembersAPIView
 from apps.clubs.viewss.invite.invite_views import RemoveInviteAPIView
 from apps.clubs.viewss.invite.invite_views import RetreiveInviteByCodeAPIView
 from apps.clubs.viewss.invite.invite_views import UpdateInviteStatusAPIView
@@ -54,6 +54,9 @@ from apps.clubs.viewss.membership.generics import (
 from apps.clubs.viewss.invite.invite_views import ListInvitesAPIView
 
 from rest_framework.routers import DefaultRouter
+from django.urls import URLResolver
+from django.urls import URLPattern
+
 
 app_name = 'clubs'
 
@@ -61,7 +64,7 @@ app_name = 'clubs'
 router = DefaultRouter()
 router.register(r'', ClubSettingsViewset, basename='club-settings')
 
-urlpatterns = [
+urlpatterns: list[URLPattern | URLResolver]  = [
 
     path(
     '<uuid:pk>/settings/',
@@ -169,10 +172,14 @@ urlpatterns = [
     #          views_members_views.get_user_roles, name='get_user_roles'),  # UPDATED
      #    path('<uuid:pk>/roles/create/',
      #         create_role, name='create_role'),
-    #     path('<int:pk>/roles/<int:role_id>/',
-    #          views_members_views.manage_role, name='manage_role'),
-    #     path('<int:pk>/roles/<int:role_id>/users/',
-    #          views_members_views.role_users, name='role_users'),  # NEW
+     #    path('<uuid:pk>/roles/<uuid:role_id>/',
+     #         views_members_views.manage_role, name='manage_role'),
+        path('<uuid:pk>/roles/<uuid:role_id>/',
+             RetreiveRoleAPIView.as_view(), name='role_detail'),
+     #    path('<uuid:pk>/roles/<uuid:role_id>/members/',
+     #         views_members_views.role_users, name='role_members'),  # NEW
+        path('<uuid:pk>/roles/<uuid:role_id>/members/',
+             RoleMembersAPIView.as_view(), name='role_members'),  # NEW
     #     path('<int:pk>/roles/<str:role_name>/users/',
     #          views_members_views.role_users_by_name, name='role_users_by_name'),  # NEW
 

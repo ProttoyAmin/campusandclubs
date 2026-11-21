@@ -1,6 +1,7 @@
 import { config } from "@/settings/app";
 import type { AxiosInstance } from "axios";
 import axios from "axios";
+import { reportAxiosFailure } from "@/shared/lib/app-failure";
 
 /**
  * Bare axios client for unauthenticated / public endpoints
@@ -25,7 +26,6 @@ export class V1PublicClient {
     });
 
     this.client.interceptors.request.use(async (reqConfig) => {
-      console.log(reqConfig?.data);
       if (!this.hasCsrfCookie()) {
         await this.ensureCsrfCookie();
       }
@@ -33,8 +33,11 @@ export class V1PublicClient {
     });
     this.client.interceptors.response.use(
       (response) => {
-        console.log(response.data);
         return response
+      },
+      (error: unknown) => {
+        reportAxiosFailure(error);
+        return Promise.reject(error);
       },
     )
   }

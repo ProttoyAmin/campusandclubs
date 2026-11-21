@@ -10,6 +10,9 @@ export const clubRoutes = {
       permissions: "/@/clubs/:slug/config/permissions/",
       roles: "/@/clubs/:slug/config/roles/",
       roleDetails: "/@/clubs/:slug/config/roles/details",
+      roleId: "/@/clubs/:slug/config/roles/details/:roleId",
+      roleMembers: "/@/clubs/:slug/config/roles/details/:roleId/members/",
+      rolePermissions: "/@/clubs/:slug/config/roles/details/:roleId/permissions/",
       members: "/@/clubs/:slug/config/members/",
       requests: {
         base: "/@/clubs/:slug/config/requests/",

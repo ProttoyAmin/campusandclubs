@@ -17,7 +17,7 @@ def generate_code(length=8):
 
 class Invite(models.Model):
     """
-    Discord-style shareable invite.
+    Shareable invite.
     Can be used for:
       - Joining a Club
       - Attending an Event (even by non-members / outsiders)
@@ -76,7 +76,7 @@ class Invite(models.Model):
         max_length=10, choices=InviteStatus, default=InviteStatus.ONGOING)
     message = models.TextField(blank=True, null=True, default='')
 
-    # Auto-expire after 7 days by default
+    # Auto-expire after 30 days by default
     expires_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     responded_at = models.DateTimeField(null=True, blank=True)

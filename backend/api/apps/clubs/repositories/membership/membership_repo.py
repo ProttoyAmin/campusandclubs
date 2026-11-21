@@ -30,6 +30,9 @@ class MembershipRepository(BaseRepository[Membership]):
     def get_membership(self, club: Club, user: User) -> Membership:
         return self.get_queryset().get(club=club, user=user)
 
+    def get_membership_by_role(self, role: Role, club_pk: str) -> QuerySet[Membership]:
+        return self.get_queryset().filter(club__id=club_pk, roles__id=role.id)
+
     def create_membership(
         self,
         club: Club,

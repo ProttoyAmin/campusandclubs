@@ -7,3 +7,11 @@ export interface ApiResponse<T = any> {
     total: number;
   };
 }
+
+export interface ServerError {
+  errors: {
+    message: string;
+    code: string;
+    param: string;
+  }[];
+}

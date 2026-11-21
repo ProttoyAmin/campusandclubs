@@ -1,7 +1,7 @@
 # apps/clubs/dtos.py
 from apps.clubs.models import ClubStatus
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, TypedDict
 import uuid
 from django.core.files.uploadedfile import UploadedFile
 
@@ -16,6 +16,18 @@ class ClubDuplicateCheckDTO:
     origin: Optional[Institute]
     exclude_pk: Optional[uuid.UUID] = None
 
+
+@dataclass(frozen=True)
+class ClubCreateAttrs(TypedDict):
+    name: str
+    about: str
+    privacy: Visibility
+    scope: MembershipScope
+    join_mode: JoinMode
+    origin: Optional[Institute]
+    departments: list[DepartmentTemplate]
+    avatar: Optional[UploadedFile]
+    banner: Optional[UploadedFile]
 
 @dataclass(frozen=True)
 class ClubCreateDTO:

@@ -1,3 +1,4 @@
+import json
 from django.contrib.contenttypes.models import ContentType
 from apps.clubs.services.role_service import RoleService
 from apps.clubs.dtos.club_create import ClubPrivacyJoinModeDTO
@@ -35,11 +36,13 @@ from apps.clubs.repositories import MembershipRepository, MembershipApplicationR
 
 from apps.accounts.models import User
 from django.core.files.uploadedfile import UploadedFile
-
+from django.core.cache import cache
+from hashlib import md5
 from apps.clubs.models.membership.form.enums import ApplicationStatus
 from apps.taxonomy.models import Form
 from ...services.application_service import ApplicationService
 from apps.communications.services.email.email_service import EmailService
+from apps.clubs.utils.cache import bump_clubs_list_version
 
 logger = logging.getLogger(__name__)
 
@@ -68,12 +71,37 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
     def _get_object(self, pk: UUID) -> Club:
         return self.repository.get_queryset().filter(pk=pk).get()
 
+    def _clubs_list_key(self, viewer: User, filters: ClubListFilters) -> str:
+        from ...utils.cache import get_clubs_list_version
+
+        version = get_clubs_list_version()
+        viewer_part = f"user:{viewer.id}" if viewer.is_authenticated else "anon"
+
+        filter_data = {
+            "joined": filters.joined,
+            "search": filters.search or "",
+            "privacy": str(filters.privacy) if filters.privacy else "",
+            "origin": str(filters.origin) if filters.origin else "",
+        }
+        filter_hash = md5(json.dumps(filter_data, sort_keys=True).encode()).hexdigest()[:10]
+        return f"clubs:list:v:{version}:{viewer_part}:{filter_hash}"
+
     def exclude_secret_clubs(self) -> QuerySet[Club]:
         return self.repository.get_queryset().exclude(privacy=Visibility.SECRET).order_by("-created_at")
 
-    def list_clubs(self, viewer: User | AnonymousUser, filters: ClubListFilters | None = None) -> QuerySet[Club]:
+    def list_clubs(self, viewer: User, filters: ClubListFilters | None = None) -> QuerySet[Club]:
         if filters is None:
             filters = ClubListFilters()
+
+        cache_key = self._clubs_list_key(viewer, filters)
+        cached = cache.get(cache_key)
+
+        if cached is not None:
+            logger.info("Cache HIT!!")
+            return cached
+
+        logger.info("Cache Miss")
+
         clubs = (
             self.repository.joined_by(viewer)
             if filters.joined
@@ -88,8 +116,13 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
 
         if filters.origin:
             clubs = clubs.filter(origin=filters.origin)
+        
+        clubs = self.repository.with_list_annotations(clubs, viewer)
 
-        return self.repository.with_list_annotations(clubs, viewer)
+        cache.set(cache_key, list(clubs), timeout=60 * 5)
+        logger.info("Clubs list cached for 5 minutes.")
+
+        return clubs
 
     def update_settings(self, pk: UUID, dto: ClubUpdateSettingsDTO) -> Club:
         club = self._get_object(pk)
@@ -191,6 +224,7 @@ class ClubService(PolicyMixin[ClubPolicy, Club], BaseService[Club, ClubRepositor
             self.membership_repository.add_role(
                 membership, role)
 
+        bump_clubs_list_version()
         return club
 
     def get_club_detail(self, club_pk, viewer: User) -> Club:

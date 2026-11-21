@@ -5,7 +5,7 @@ import type {
   PaginatedClubList,
   PatchedClubDetailRequest,
 } from "@campus/api";
-import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended } from "../../http/club.http";
+import { clubClient, type ApplicationCreateRequest, type ClubDetailExtended, type ClubRoleUpdatePayload, type Role } from "../../http/club.http";
 import { clubApplicationsService } from "./applications.service";
 import { membershipService } from "./membership.service";
 import type { ClubRoleCreateSchemaType, ClubSettingsRequest, JoinMode, Privacy, Scope } from "validation/club";
@@ -125,6 +125,20 @@ class ClubService {
   async roles(clubId: string) {
     const res = await this.clubClient.getClubRoles(clubId);
     return res.data;
+  }
+
+  async role(clubId: string, roleId: string) {
+    const res = await this.clubClient.getRoleDetail(clubId, roleId)
+    return res
+  }
+
+  async update_role(
+    clubId: string,
+    roleId: string,
+    data: ClubRoleUpdatePayload,
+  ): Promise<Role> {
+    const res = await this.clubClient.updateRole(clubId, roleId, data);
+    return res.data.data;
   }
 
   async create_role(clubId: string, data: ClubRoleCreateSchemaType) {

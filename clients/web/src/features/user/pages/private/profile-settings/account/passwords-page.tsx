@@ -1,7 +1,6 @@
 import React from 'react'
 import { usePageHeader } from "@/shared/hooks/use-page-header";
 import NavigateButtons from '@/shared/components/navigate-buttons';
-import { CardContent } from 'design/components/ui/card';
 import type { ChangePasswordSchemaType } from 'validation/auth';
 import ChangePassword from '@/features/auth/components/forms/change-password';
 import { useAccount } from '@/features/user/hooks/user.hooks';
@@ -15,6 +14,7 @@ import { Button } from 'design/components/ui/button';
 
 const PasswordsPage = () => {
     const [attemptForgotPassword, setAttemptForgotPassword] = React.useState(false);
+    const [passwordEditing, setPasswordEditing] = React.useState(false);
     const { user } = useUserOutlet();
     const pageHeader = usePageHeader();
     const { passwordChange } = useAccount();
@@ -23,14 +23,12 @@ const PasswordsPage = () => {
 
     React.useEffect(() => {
         const id = pageHeader.push(
-            <>
-                <div className="flex items-center gap-4">
-                    <NavigateButtons
-                        hideForward
-                    />
-                    <h1 className="text-lg font-semibold">Passwords</h1>
-                </div>
-            </>
+            <div className="flex items-center gap-4">
+                <NavigateButtons
+                    hideForward
+                />
+                <h1 className="text-lg font-semibold">Password & Security</h1>
+            </div>
         );
 
         return () => {
@@ -42,7 +40,8 @@ const PasswordsPage = () => {
         console.log(data);
 
         passwordChange.mutate(data, {
-            onSuccess: () => {
+            onSuccess: (data) => {
+                console.log(data);
                 // show success message
                 toast.add({
                     type: "success",
@@ -51,7 +50,7 @@ const PasswordsPage = () => {
             },
             onError: (error) => {
                 // show error message
-                console.log(error);
+                console.warn(error);
                 toast.add({
                     type: "error",
                     description: error.response?.data?.errors?.[0]?.message,
@@ -59,11 +58,11 @@ const PasswordsPage = () => {
             },
         });
 
-        if (!passwordChange.isPending) {
-            navigate(paths.public.auth.signIn, {
-                replace: true
-            })
-        }
+        // if (!passwordChange.isPending) {
+        //     navigate(paths.public.auth.signIn, {
+        //         replace: true
+        //     })
+        // }
 
     }, [passwordChange]);
 
@@ -84,24 +83,42 @@ const PasswordsPage = () => {
                     onSubmit={handleSendCode}
                 />
             </ResponsiveDialog>
-            <CardContent className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                    <h2 className="text-lg font-semibold">Passwords</h2>
-                    <p className="text-muted-foreground text-sm">Change your password anytime</p>
+            <ResponsiveDialog
+                showCloseButton={false}
+                open={passwordEditing}
+                onOpenChange={() => setPasswordEditing(false)}
+            >
+                <div className="flex flex-col gap-4">
+                    <div className='space-y-1 mb-4'>
+                        <h2 className="text-lg font-semibold">Update your password</h2>
+                    <p className="text-sm text-muted-foreground">Enter your current password and a new password. You will be logged out and required to sign in again.</p>
+                    </div>
+                    <ChangePassword
+                        pending={passwordChange.isPending}
+                        serverErrors={passwordChange.error?.response?.data || null}
+                        onSubmit={handleSubmit}
+                    />
+                    <Button
+                        className="w-fit mx-auto"
+                        variant="link"
+                        onClick={() => setAttemptForgotPassword(true)}
+                    >
+                        Forgot your password
+                    </Button>
                 </div>
-                <ChangePassword
-                    pending={passwordChange.isPending}
-                    serverErrors={passwordChange.error?.response?.data || null}
-                    onSubmit={handleSubmit}
-                />
-                <Button
-                    className="w-fit mx-auto"
-                    variant="link"
-                    onClick={() => setAttemptForgotPassword(true)}
-                >
-                    Forgot your password
-                </Button>
-            </CardContent>
+            </ResponsiveDialog>
+            <div className="flex gap-1 w-full justify-between items-center mb-6">
+                <h2 className="text-md">Password</h2>
+                <Button onClick={() => setPasswordEditing(true)} variant='outline' size='lg' className={'px-6'}>Edit</Button>
+            </div>
+            <div className="flex gap-1 w-full justify-between items-center mb-6">
+                <h2 className="text-md flex flex-col items-start">Disable your account <span className='text-sm text-muted-foreground'>Temporarily disable your account.</span></h2>
+                <Button variant='outline' size='lg' className={'px-6 text-destructive'}>Disable</Button>
+            </div>
+            <div className="flex gap-1 w-full justify-between items-center">
+                <h2 className="text-md flex flex-col items-start">Close your account <span className='text-sm text-muted-foreground'>Permanently close your account.</span></h2>
+                <Button variant='destructive' size='lg' className={'px-6'}>Delete account</Button>
+            </div>
         </>
     )
 }

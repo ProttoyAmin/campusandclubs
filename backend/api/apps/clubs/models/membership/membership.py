@@ -60,7 +60,6 @@ class Membership(models.Model):
         ClubPermission,
         related_name="members",
         blank=True,
-        null=True,
         help_text="User's permissions in the club"
     )
 

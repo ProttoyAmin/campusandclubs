@@ -7,6 +7,7 @@ import {
   AvatarFallback,
 } from "design/components/ui/avatar";
 import dummyImage from "@/assets/Manga.jpeg";
+import { generateRouteFromPath } from "@/settings/routes/utils";
 
 export const clubMenu: (
   id: string,
@@ -32,3 +33,21 @@ export const clubMenu: (
     },
   ];
 };
+
+
+export const DynamicMenu = (id: string, name: string, route: string, icon?: string, slug?: string): MenuItemType[] => {
+  const path = generateRouteFromPath(route, {
+              slug: slug || "",
+              roleId: id
+            })
+
+  return [
+    {
+      id: id,
+      label: name,
+      icon: icon,
+      link: () => path,
+      isActive: (currentPath) => isRouteActive(path, currentPath, false),
+    }
+  ]
+}

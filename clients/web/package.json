@@ -27,6 +27,7 @@
     "linkifyjs": "^4.4.0",
     "lucide-react": "^1.28.0",
     "react": "^19.2.7",
+    "react-colorful": "^5.8.1",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.84.0",
     "react-router-dom": "^7.18.1",

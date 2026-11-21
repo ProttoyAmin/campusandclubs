@@ -10,6 +10,8 @@ import type { AllauthError } from "@/features/auth/api/auth.client";
 import type { PaginaatedClubPostsResponse } from "@/features/club/http/club.http";
 import type { AxiosResponse } from "axios";
 import type { ChangePasswordSchemaType } from "validation/auth";
+import type { UserEmailList } from "../api/user.client";
+import type { AppSession } from "@/features/auth/services/authentication";
 
 export const useUsers = () => {
   return useQuery({
@@ -21,7 +23,7 @@ export const useUsers = () => {
 };
 
 export const useAccount = () => {
-  const addEmail = useMutation<UserEmail, AppError<AllauthError>, string>({
+  const addEmail = useMutation<UserEmailList, AppError<AllauthError>, string>({
     mutationFn: (email: string) => {
       return accounts.add_email(email);
     },
@@ -79,7 +81,7 @@ export const useAccount = () => {
   });
 
   const changePrimaryEmail = useMutation<
-    UserEmail[],
+    UserEmailList,
     AppError<AllauthError>,
     string
   >({
@@ -92,7 +94,7 @@ export const useAccount = () => {
   });
 
   const passwordChange = useMutation<
-    void,
+    AppSession,
     AppError<AllauthError>,
     ChangePasswordSchemaType
   >({
@@ -116,7 +118,7 @@ export const useAccount = () => {
 };
 
 export const useEmails = () => {
-  return useQuery<UserEmail[]>({
+  return useQuery<UserEmailList>({
     queryKey: ["emails"],
     queryFn: () => {
       return accounts.user.emails();
@@ -202,6 +204,31 @@ export const useMe = () => {
     queryKey: ["users", "me"],
     queryFn: () => {
       return accounts.user.me();
+    },
+  });
+};
+
+export const useMeSessions = () => {
+  return useQuery({
+    queryKey: ["users", "me", "sessions"],
+    queryFn: () => {
+      return accounts.user.sessions();
+    },
+  });
+};
+
+export const useRevokeSession = () => {
+  return useMutation({
+    mutationFn: (sessionId: string) => {
+      return accounts.user.revoke_session(sessionId);
+    },
+  });
+};
+
+export const useRevokeOtherSessions = () => {
+  return useMutation({
+    mutationFn: () => {
+      return accounts.user.revoke_other_sessions();
     },
   });
 };

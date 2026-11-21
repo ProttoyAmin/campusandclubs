@@ -1,6 +1,7 @@
 import { config } from "@/settings/app";
 import type { AxiosError, AxiosInstance } from "axios";
 import axios from "axios";
+import { reportAxiosFailure } from "@/shared/lib/app-failure";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
@@ -34,6 +35,7 @@ export class V1Client {
         return response;
       },
       async (error: AxiosError) => {
+        reportAxiosFailure(error);
         const originalRequest = error.config;
         if (
           error.response?.status === 401 &&
@@ -72,6 +74,7 @@ export class V1Client {
 
             return this.client(originalRequest);
           } catch (refreshError) {
+            reportAxiosFailure(refreshError);
             this.refreshSubscribers.forEach((cb) => cb(false));
             this.refreshSubscribers = [];
 

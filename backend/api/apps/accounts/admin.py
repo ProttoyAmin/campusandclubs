@@ -5,6 +5,7 @@ from django.contrib.sessions.models import Session
 # Register your models here.
 admin.site.register(models.UserPreference)
 admin.site.register(models.LoginRecord)
+admin.site.register(models.UserSession)
 admin.site.register(Session)
 
 @admin.register(models.User)

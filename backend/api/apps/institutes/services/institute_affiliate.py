@@ -59,9 +59,6 @@ class AffiliateService(BaseService[InstituteAffiliate, AffiliateRepository]):
     def list_banned_affiliates(self, id: uuid.UUID) -> QuerySet[InstituteAffiliate]:
         return self.repository.get_queryset().filter(id=id, status=AffiliateStatus.BANNED)
 
-    def roles(self) -> QuerySet[InstituteRole]:
-        return InstituteRole.choices()
-
     def claim(self, data: dict, user_id: uuid.UUID) -> AcademicProfile:
         """Claim affiliation"""
         from apps.communications.services.email.email_service import EmailService

@@ -1,11 +1,41 @@
+from __future__ import annotations
+
+
 from typing import Any
 from apps.accounts import models
 from rest_framework import serializers
+from rest_framework.request import Request
 from rest_framework.reverse import reverse
 from core.policies.utils import current_user
 
 from .club_membership import UserClubMembershipSerializer
 
+
+class UserSessionsSerializer(serializers.ModelSerializer):
+    is_active = serializers.SerializerMethodField()
+    class Meta:
+        model = models.UserSession
+        fields = [
+            "id",
+            "kind",
+            "is_active",
+            "ip_address",
+            "browser",
+            "os",
+            "last_seen_at"
+        ]
+        read_only_fields = fields
+    
+    def get_is_active(self, obj: models.UserSession) -> bool:
+        request: Request | None = self.context.get("request")
+        
+        if request is None:
+            return False
+
+        return obj.session_key == request.session.session_key
+
+class RevokeSessionSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
 
 class UserSessionSerializer(serializers.ModelSerializer):
     has_usable_password = serializers.SerializerMethodField()
@@ -41,7 +71,7 @@ class UserMinimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ['id', 'username', 'email', 'avatar', 'status',
+        fields = ['id', 'username', 'email', 'avatar', 'status', "is_private",
                   'is_following', 'is_followed_by', 'follow_status']
 
     def get_email(self, obj: models.User):

@@ -5,7 +5,7 @@ import type {
 import { userClient } from "../api/user.client";
 import { useSession } from "@/features/auth/hooks";
 import { UserService } from "./user.service";
-import { authentication, type AuthSession } from "@/features/auth/services/authentication";
+import { authentication, type AppSession, type AuthSession } from "@/features/auth/services/authentication";
 import type { ChangePasswordSchemaType } from "validation/auth";
 import { queryClient } from "@/config/query-client";
 
@@ -47,18 +47,20 @@ class AccountService {
   }
 
   async password_change(data: ChangePasswordSchemaType) {
-    const session: AuthSession = queryClient.getQueryData(["auth", "session"])
+    const session: AppSession = queryClient.getQueryData(["auth", "session"])
 
     let payload: Partial<SetPasswordRequest>;
 
     if (!session?.data?.user?.has_usable_password) {
       payload = {
-        new_password: data.new_password,
+        new_password1: data.new_password,
+        new_password2: data.new_password,
       };
     } else {
       payload = {
         current_password: data.current_password,
-        new_password: data.new_password,
+        new_password1: data.new_password,
+        new_password2: data.new_password,
       };
     }
 

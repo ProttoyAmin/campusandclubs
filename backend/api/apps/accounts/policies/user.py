@@ -41,7 +41,7 @@ class UserPolicy(Policy[User, User]):
         from apps.connections.models import Follow
         return Follow.is_following(viewer, target)
 
-    def can_edit_profile(self, viewer: User) -> bool:
+    def can_edit_profile(self) -> bool:
         """
         Check if viewer can edit this user's profile
         """

@@ -43,13 +43,16 @@ class InviteService(BaseService[Invite, InviteRepository], PolicyMixin[ClubPolic
     def create(self, attrs: InviteAttrs):
         club = get_object_or_404(Club, id=attrs['club_id'], deleted_at__isnull=True)
 
+        if self.actor is None or not self.actor.is_authenticated:
+            raise PermissionDenied()
+
         if not club:
             raise ValidationError({'detail': 'Club not found'})
 
         if attrs.get('invite_type') != InviteType.CLUB and not attrs.get('event_id'):
             raise ValidationError({'detail': 'Event ID is required for event invites'})
 
-        policy = self.get_policy(self.actor, club).can_edit()
+        policy = self.get_policy(self.actor, club).can_create_invite()
 
         if not policy.allowed:
             raise PermissionDenied(f'{policy.reason}')
