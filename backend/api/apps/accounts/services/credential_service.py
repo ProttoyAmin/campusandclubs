@@ -22,7 +22,7 @@ from rest_framework.exceptions import ValidationError, NotAuthenticated, Permiss
 from ..repositories import UserRepository, UserSessionRepository
 from ..models import User, UserSession
 from core.services import BaseService
-from .utils import consume_rate_limit, form_errors, check_process_code, Conflict, provider_sociallogin
+from .utils import consume_rate_limit, form_errors, check_process_code, Conflict, provider_sociallogin, exchange_google_code
 from .auth_service import EmailInput
 from core.policies.utils import current_user
 from allauth.account import app_settings as accounts_settings
@@ -30,6 +30,10 @@ from .auth_state import AuthState, get_auth_state
 from importlib import import_module
 from django.conf import settings
 from typing import Optional
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 SessionStore: DjangoSession = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -244,8 +248,11 @@ class CredentialService(BaseService[User, UserRepository]):
 
     def connect_provider(self, request: HttpRequest, data: dict) -> list[dict]:
         self._require_user(request)
+        
 
-        social = provider_sociallogin(data, "connect")
+        token = exchange_google_code(request, data.get("code") if data.get("code") else data.get("token"))
+        logger.info(f"Exchanged code for token: {token}")
+        social = provider_sociallogin({"provider": data["provider"], "token": token}, process="login")
 
         try:
             complete_token_login(request, social)

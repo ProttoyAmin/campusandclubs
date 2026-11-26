@@ -14,6 +14,7 @@ const VerifyPasswordResetOTP = () => {
     const navigate = useNavigate()
     const location = useLocation();
     const state: ResetPasswordRequestResponse = location.state;
+    console.log(location.state)
 
     const handleVerify = (code: string) => {
         console.log(code);
@@ -25,7 +26,7 @@ const VerifyPasswordResetOTP = () => {
                 toast.add({
                     title: "Failed to verify email",
                     description:
-                        error.response.data.errors?.[0]?.message ||
+                        error?.response?.data.errors?.[0]?.message ||
                         "Please try again later",
                     timeout: 3000,
                     type: "error",
@@ -48,7 +49,7 @@ const VerifyPasswordResetOTP = () => {
                 invalid={resetPasswordVerify.isError}
                 isExpired={Boolean(state.data?.expiresAt)}
             />
-            <CodeCountdown expiresAt={state.data?.expiresAt} onExpire={() => setExpired(true)} className={`${!state.data?.expiresAt ? "text-red-700" : ""}`} />
+            <CodeCountdown expiresAt={state.data?.expiresAt!} onExpire={() => setExpired(true)} className={`${!state.data?.expiresAt ? "text-red-700" : ""}`} />
         </div>
     )
 }

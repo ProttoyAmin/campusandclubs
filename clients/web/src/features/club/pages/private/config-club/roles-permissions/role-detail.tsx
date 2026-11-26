@@ -10,23 +10,29 @@ import {
   TabsList,
   TabsTrigger,
 } from "design/components/ui/tabs";
-import { useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const RoleDetail = () => {
   const { club, editedRole, setEditedRole, isLoading } = useRoleLayoutOutlet();
   const { roleId: routeRoleId } = useParams();
   const roleId = routeRoleId ?? "";
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const menu = ClubRoleMenu(club.slug, roleId);
-  const initialTab = menu.find((item) => item.isActive(pathname)) ?? menu[0];
-  const [activeTab, setActiveTab] = useState(String(initialTab.id));
+  const activeTab = menu.find((item) => item.isActive(pathname)) ?? menu[0];
+
+  const handleTabChange = (tabId: string) => {
+    const item = menu.find((entry) => String(entry.id) === tabId);
+    if (!item) return;
+
+    navigate(typeof item.link === "function" ? item.link(roleId) : item.link);
+  };
 
   return (
     <div className="space-y-6">
       <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
+        value={String(activeTab.id)}
+        onValueChange={handleTabChange}
         className="w-full"
       >
         <TabsList variant="line" className="w-full justify-start">

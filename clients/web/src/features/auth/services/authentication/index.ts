@@ -91,6 +91,10 @@ export class Authentication {
     form.requestSubmit();
   }
 
+  async provider_login_by_code(code: string) {
+    return await this.apiClient.providerLogin("google", undefined, code);
+  }
+
   async sign_up(data: RegisterRequestWritable) {
     const payload = {
       username: data.username,

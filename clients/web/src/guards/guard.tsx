@@ -12,15 +12,18 @@ const PUBLIC_PATTERNS = [
   routes.auth.private.verify_email,
   routes.auth.public.social_callback,
   routes.auth.private.verify_email_otp,
+  routes.auth.public.reset_password_otp,
 ];
 
 const AUTH_PATTERNS = [
   routes.auth.public.sign_in,
   routes.auth.public.sign_up,
+  routes.auth.public.reset_password_otp,
   routes.auth.private.forgot_password,
+  routes.auth.private.verify_email_otp,
   routes.auth.public.social_callback,
   routes.auth.private.activation,
-  routes.auth.private.reset_password
+  routes.auth.private.reset_password,
 ];
 
 const matchesAny = (patterns: string[], pathname: string) =>

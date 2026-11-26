@@ -444,7 +444,7 @@ def get_user_posts(request, user_id) -> Response:
 @permission_classes([permissions.IsAuthenticated])
 def search_users(request: Request):
     """Search users by username or email"""
-    from apps.accounts.serialize.user.profile import UserMinimalSerializer
+    from apps.accounts.serializers.user.profile import UserMinimalSerializer
 
     query = request.query_params.get('q', '')
 

@@ -10,10 +10,14 @@ import {
 import { Button } from "design/components/ui/button";
 import { Input } from "design/components/ui/input";
 import EmptyState from "@/shared/components/empty-state";
+import ResponsiveDialog from "@/shared/components/responsive-dialog";
+import AddMembersToRole from "../../../../components/club/add-members-to-role";
+
 
 const RoleMembers = () => {
-    const { role } = useRoleLayoutOutlet();
+    const { role, club } = useRoleLayoutOutlet();
     const [search, setSearch] = useState("");
+    const [open, setOpen] = useState(false)
 
     const filteredMemberships =
         role?.memberships.filter((m) =>
@@ -23,11 +27,23 @@ const RoleMembers = () => {
     return (
         <div className="space-y-4">
             {/* Rendered once regardless of empty state */}
-            <Input
-                placeholder="Search members..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="flex gap-2.5">
+                <Input
+                    placeholder="Search members..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                <ResponsiveDialog
+                    open={open}
+                    onOpenChange={setOpen}
+                    trigger={<Button>Add members</Button>} showCloseButton={false}>
+                    <AddMembersToRole clubId={club.id} />
+                    <div className="w-full flex items-center justify-between gap-2.5">
+                        <Button variant="ghost" className={'w-1/2'} onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button variant="outline" className={'w-1/2'} onClick={() => setOpen(false)}>Save</Button>
+                    </div>
+                </ResponsiveDialog>
+            </div>
 
             {/* Single conditional branch below the search box */}
             {!role || filteredMemberships.length === 0 ? (
@@ -44,13 +60,11 @@ const RoleMembers = () => {
                     {filteredMemberships.map((membership, index) => (
                         <div
                             key={membership.id}
-                            className={`w-full flex justify-between items-center p-4 border-border/50 ${
-                                index % 2 === 0 ? "md:border-r" : ""
-                            } ${
-                                index < filteredMemberships.length - 2
+                            className={`w-full flex justify-between items-center p-4 border-border/50 ${index % 2 === 0 ? "md:border-r" : ""
+                                } ${index < filteredMemberships.length - 2
                                     ? "md:border-b"
                                     : ""
-                            }`}
+                                }`}
                         >
                             <div className="flex items-center gap-2.5">
                                 <div

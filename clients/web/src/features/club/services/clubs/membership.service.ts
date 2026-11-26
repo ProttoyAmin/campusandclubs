@@ -16,8 +16,8 @@ class ClubMembershipService {
         return response.data;
     }
 
-    async search(clubId: string) {
-        const response = await this.membershipClient.searchMembers(clubId);
+    async search(clubId: string, query: string) {
+        const response = await this.membershipClient.searchMembers(clubId, query);
         return response.data;
     }
 }

@@ -8,6 +8,7 @@ from rest_framework.exceptions import Throttled
 from allauth import app_settings as allauth_settings
 from allauth.account import app_settings as account_settings
 from allauth.account.adapter import get_adapter as get_account_adapter
+from allauth.socialaccount.adapter import get_adapter as get_socialaccount_adapter
 from allauth.account.internal.stagekit import get_pending_stage, LOGIN_SESSION_KEY
 from allauth.headless.constants import Flow, Client
 from allauth.account.internal.flows import password_reset_by_code
@@ -21,6 +22,30 @@ class Conflict(APIException):
     status_code = 409
     default_detail = "You are already signed in."
     default_code = "conflict"
+
+
+
+def exchange_google_code(request: HttpRequest, code: str) -> dict:
+        import requests
+        
+        app = get_socialaccount_adapter().get_app(request, "google")
+        token_url = "https://oauth2.googleapis.com/token"
+        response = requests.post(
+            token_url,
+            data={
+                "code": code,
+                "client_id": app.client_id,
+                "client_secret": app.secret,
+                # "redirect_uri": allauth_settings.SOCIALACCOUNT_PROVIDERS["google"]["APP"]["redirect_uri"],
+                "redirect_uri": "postmessage",
+                "grant_type": "authorization_code"
+            },
+            timeout=10
+        )
+        id_token = response.json().get("id_token") if response.ok else None
+        if not id_token:
+            raise ValidationError({"code": "Invalid code or failed to exchange code for token."})
+        return {"id_token": id_token, "client_id": app.client_id}
 
 
 

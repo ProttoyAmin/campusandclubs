@@ -3,6 +3,8 @@ import PageHeaderProvider from "./page-header-provider";
 import ErrorBoundary from "@/shared/pages/error-boundary";
 import { TooltipProvider } from "design/components/ui/tooltip";
 import FormDialogProvider from "./form-dialog-provider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { VITE_GOOGLE_CLIENT_ID } from "@/settings/app/env";
 
 export function AppProviders({
     queryClient,
@@ -17,7 +19,9 @@ export function AppProviders({
                 <TooltipProvider>
                     <FormDialogProvider>
                         <PageHeaderProvider>
-                            {children}
+                            <GoogleOAuthProvider clientId={VITE_GOOGLE_CLIENT_ID || ""}>
+                                {children}
+                            </GoogleOAuthProvider>
                         </PageHeaderProvider>
                     </FormDialogProvider>
                 </TooltipProvider>

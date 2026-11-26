@@ -14,7 +14,7 @@ from apps.accounts.models import User
 from core.policies.utils import current_user
 from core.services import BaseService
 from django.http import HttpRequest
-from .utils import consume_rate_limit, form_errors, get_auth_flows, Conflict, provider_sociallogin
+from .utils import consume_rate_limit, form_errors, get_auth_flows, Conflict, provider_sociallogin, exchange_google_code
 from .auth_state import AuthState, get_auth_state
 
 import logging
@@ -23,13 +23,16 @@ logger = logging.getLogger(__name__)
 
 class SocialAccountService(BaseService[User, UserRepository]):
     repository_class = UserRepository
-
+    
     def login_with_provider(self, request: HttpRequest, data: dict) -> AuthState:
         if request.user.is_authenticated:
             raise Conflict("You are already signed in.")
 
         consume_rate_limit(request, "login")
-        sociallogin = provider_sociallogin(data=data, process="login")
+        
+        token = exchange_google_code(request, data.get("code") if data.get("code") else data.get("token"))
+        logger.info(f"Exchanged code for token: {token}")
+        sociallogin = provider_sociallogin({"provider": data["provider"], "token": token}, process="login")
 
         try:
             complete_token_login(request, sociallogin)

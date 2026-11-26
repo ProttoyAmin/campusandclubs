@@ -13,6 +13,10 @@ import googleIconLogo from "../../../../assets/google-icon-logo.svg";
 import { useSocials } from "@/features/auth/hooks/session.hook";
 import { Link } from "react-router-dom";
 import PasswordInput from "@/shared/components/password-input";
+import { GoogleLogin } from "@react-oauth/google";
+import { useReactGoogleLogin } from "@/features/auth/hooks/session.hook";
+import { useNavigate } from "react-router-dom";
+
 
 type SignInFormProps = {
   onSubmit: (data: LoginRequest) => void;
@@ -23,6 +27,8 @@ type SignInFormProps = {
 
 const SignInForm = (props: SignInFormProps) => {
   const { socialLogin } = useSocials();
+  const navigate = useNavigate();
+  const googleLogin = useReactGoogleLogin();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -120,6 +126,18 @@ const SignInForm = (props: SignInFormProps) => {
       </form>
       <Separator className="my-4" />
       <div className="flex flex-col gap-2 items-center">
+        {/* <GoogleLogin
+        theme="filled_black"
+        shape="pill"
+        text="continue_with"
+        logo_alignment="center"
+        size="large"
+        containerProps={{ className: "w-full" }}
+        cancel_on_tap_outside={true}
+        onSuccess={(res) => {
+          console.log(res);
+        }}
+        /> */}
         <Button
           type="button"
           variant="glass"
@@ -128,6 +146,7 @@ const SignInForm = (props: SignInFormProps) => {
           disabled={props.pending || socialLogin.isPending}
           onClick={() => {
             socialLogin.mutate("google");
+            // googleLogin();
           }}
         >
           {socialLogin.isPending ? (

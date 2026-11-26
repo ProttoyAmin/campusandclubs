@@ -43,7 +43,7 @@ class PasswordResetVerifyView(AuthAPIView):
         serializer = VerifyResetCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        data = AuthService().verify_reset_code(request._request, serializer.validated_data)
+        data = AuthService().verify_reset_code(request._request, serializer.validated_data["code"])
         return Response({"success": True, "message": "Code confirmed.", "data": data})
 
 class PasswordResetConfirmView(AuthAPIView):

@@ -18,10 +18,10 @@ export const useMembership = () => {
         });
     };
 
-    const searchMembers = (clubId: string) => {
+    const searchMembers = (clubId: string, query: string) => {
         return useQuery({
-            queryKey: ["search", clubId],
-            queryFn: () => club.members.search(clubId),
+            queryKey: ["search", clubId, query],
+            queryFn: () => club.members.search(clubId, query),
         });
     };
 

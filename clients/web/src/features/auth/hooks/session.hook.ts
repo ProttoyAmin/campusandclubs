@@ -12,6 +12,7 @@ import type { AxiosError, AxiosResponse } from "axios";
 import type { AllauthError, LoginRequest, ResetPasswordRequestResponse, SignUpError, SignUpResponse } from "../api/auth.client";
 import type { AppError } from "@/settings/app/error";
 import type { SignInSchemaType } from "validation/auth";
+import { useGoogleLogin } from "@react-oauth/google"
 
 export const authKeys = {
   session: ["auth", "session"] as const,
@@ -36,6 +37,34 @@ export const useSocials = () => {
 
   return { socialLogin };
 };
+
+export const useProviderLogin = () => useMutation({
+  mutationFn: async (code: string) =>
+    authentication.provider_login_by_code(code),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: authKeys.session });
+  },
+});
+
+export const useReactGoogleLogin = () => useGoogleLogin({
+  flow: "auth-code",
+  onSuccess: (response) => {
+    const code = response.code;
+    if (code) {
+      try {
+        authentication.provider_login_by_code(code);
+      } catch (error) {
+        console.error("Google login failed:", error);
+      }
+    } else {
+      console.error("Google login failed: No code received");
+    }
+  },
+  onError: (error) => {
+    console.error("Google login failed:", error);
+  },
+  redirect_uri: "http://localhost:3000/auth/callback",
+})
 
 export const useSession = () => {
   return useQuery({

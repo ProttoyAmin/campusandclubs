@@ -35,14 +35,17 @@ const ForgotPasswordPage = () => {
   const onSubmit = () => {
     forgotPassword.mutate(email, {
       onSuccess: (data) => {
+        console.log(data)
         navigate(paths.public.auth.resetPasswordOtp, {
           state: {
             success: data.success,
             message: data.message,
             code_expires_in: data.data.code_expires_in,
             max_attempts: data.data.max_attempts,
-            expiresAt: Date.now() + data.data.code_expires_in * 1000
-          }
+            expiresAt: Date.now() + data.data.code_expires_in * 1000,
+            code: "test",
+          },
+          replace: true
         })
       },
       onError: (error) => {
@@ -65,7 +68,7 @@ const ForgotPasswordPage = () => {
           password.
         </CardDescription>
       </CardHeader>
-      {JSON.stringify(forgotPassword.error?.response?.data)}
+      {/* {JSON.stringify(forgotPassword.error?.response?.data)} */}
       <CardContent className="">
         <form>
           <Field>

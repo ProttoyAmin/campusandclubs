@@ -76,9 +76,9 @@ export class MembershipClient extends BaseClient<
     );
   }
 
-  public async searchMembers(clubId: string) {
+  public async searchMembers(clubId: string, query: string) {
     return this.client.get<ClubMembershipResponse>(
-      `${this.endpoint}${clubId}/members/search/`,
+      `${this.endpoint}${clubId}/members/?q=${query}`,
     );
   }
 }

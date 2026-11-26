@@ -147,6 +147,17 @@ export class AuthClient extends BaseAuthClient {
     return response;
   }
 
+  async providerLogin(provider: string, token?: object, code?: string){
+    return this.client.post(
+      `${this.endpoint}provider/login/`,
+      {
+        provider,
+        token,
+        code,
+      },
+    )
+  }
+
   async loginWithGoogle() {
     await this.getSession();
     const form = document.createElement("form");
