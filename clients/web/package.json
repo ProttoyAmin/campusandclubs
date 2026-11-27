@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch server.ts",
+    "dev:next": "tsx watch server/index.ts",
+    "build:next": "vite build --config vite.next.config.ts && vite build --config vite.next.config.ts --ssr src/entry.server.tsx",
+    "start:next": "tsx server/index.ts --production",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

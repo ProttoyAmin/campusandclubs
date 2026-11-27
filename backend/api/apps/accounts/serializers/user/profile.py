@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-
 from typing import Any
 from apps.accounts import models
 from rest_framework import serializers
 from rest_framework.request import Request
 from rest_framework.reverse import reverse
 from core.policies.utils import current_user
-
 from .club_membership import UserClubMembershipSerializer
-
 
 class UserSessionsSerializer(serializers.ModelSerializer):
     is_active = serializers.SerializerMethodField()

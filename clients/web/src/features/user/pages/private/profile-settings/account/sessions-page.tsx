@@ -49,7 +49,6 @@ const SessionsPage = () => {
   //   () => excludeCurrentSession(sessions),
   //   [sessions],
   // );
-  const dummy = true;
 
   React.useEffect(() => {
     const id = pageHeader.push(
@@ -110,14 +109,12 @@ const SessionsPage = () => {
           </div>
         )}
         <ul className="space-y-4">
-          {sessions && sessions.data.length > 0 ? (
+          <h1 className="text-md text-muted-foreground">Other sessions</h1>
+          {sessions && sessions.data && sessions.data.length > 0 ? (
             sessions.data
-              .filter((s) => s.id !== currentSession.id)
+              .filter((s) => s?.id !== currentSession?.id)
               .map((session) => (
                 <li key={session.id} className="">
-                  <h1 className="text-md text-muted-foreground">
-                    Other sessions
-                  </h1>
                   <div className="flex w-full justify-between items-center">
                     <div className="flex items-center gap-4 p-4">
                       <div className="flex items-center gap-2">

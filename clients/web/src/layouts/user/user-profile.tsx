@@ -24,13 +24,13 @@ export const UserProfileLayout: React.FC = () => {
   const location = useLocation();
   useScrollRestoration(scrollRef, location.key);
 
-  React.useEffect(() => {
-    if (user.data) {
-      document.title = `${user.data.first_name ? user.data.first_name : ""} ${user.data.last_name ? user.data.last_name : ""} (@${username})`;
-    } else {
-      document.title = `@${username}`;
-    }
-  }, [username, user.data]);
+  // React.useEffect(() => {
+  //   if (user.data) {
+  //     document.title = `${user.data.first_name ? user.data.first_name : ""} ${user.data.last_name ? user.data.last_name : ""} (@${username})`;
+  //   } else {
+  //     document.title = `@${username}`;
+  //   }
+  // }, [username, user.data]);
 
   return (
     <section className="flex flex-col gap-4 max-w-3xl justify-around mx-auto md:px-4 md:rounded-b-4xl">

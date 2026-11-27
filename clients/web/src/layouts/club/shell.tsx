@@ -74,9 +74,9 @@ const ClubShellLayout: React.FC = () => {
         });
     };
 
-    React.useEffect(() => {
-        document.title = `${slug ? slug + " - Clubs" : "Clubs"}`;
-    }, [slug]);
+    // React.useEffect(() => {
+    //     document.title = `${slug ? slug + " - Clubs" : "Clubs"}`;
+    // }, [slug]);
 
     return (
         <section

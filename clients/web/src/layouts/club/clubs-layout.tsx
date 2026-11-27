@@ -14,9 +14,9 @@ export const ClubsLayout: React.FC = () => {
   const clubs = data?.results;
   const pageHeader = usePageHeader();
 
-  React.useEffect(() => {
-    document.title = `Clubs`;
-  }, []);
+  // React.useEffect(() => {
+  //   document.title = `Clubs`;
+  // }, []);
 
   const handleCreateClub = () => {
     toast.add({

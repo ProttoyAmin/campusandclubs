@@ -14,9 +14,9 @@ const AuthLayout: React.FC = () => {
   const pageHeader = usePageHeader();
   const { data: session, isPending: isSessionPending } = useSession()
 
-  React.useEffect(() => {
-    document.title = `Auth • ${APP_NAME}`;
-  }, []);
+  // React.useEffect(() => {
+  //   document.title = `Auth • ${APP_NAME}`;
+  // }, []);
 
   return (
     <Suspense fallback={

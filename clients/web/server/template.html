@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/clubs-svgrepo-com.svg" />
+    <link rel="stylesheet" href="/src/App.css" />
+    <!--app-head-->
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <!--app-state-->
+    <script type="module" src="/src/entry.client.tsx"></script>
+  </body>
+</html>

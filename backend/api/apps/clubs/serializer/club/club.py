@@ -314,7 +314,7 @@ class ClubPrivateSerializer(serializers.ModelSerializer):
 
     def get_owner_details(self, obj: Club):
         from apps.accounts.models import User
-        from apps.accounts.serialize.user.profile import UserMinimalSerializer
+        from apps.accounts.serializers.user.profile import UserMinimalSerializer
         owner: User = obj.owner
 
         return UserMinimalSerializer(owner).data
